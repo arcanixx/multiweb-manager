@@ -1,0 +1,17 @@
+{
+  "_comment": "FILE: defaultProfiles.json | VERSION: 0.0.3 | PURPOSE: Domyślne profile użytkownika (template)",
+  "version": "0.0.3",
+  "data": [
+    {
+      "id": "default-ai",
+      "name": "ChatGPT",
+      "url": "https://chat.openai.com",
+      "icon": "CHATGPT",
+      "category": "AI",
+      "isPinned": true,
+      "isFavorite": true,
+      "userAgent": "",
+      "partition": "profile-chatgpt"
+    }
+  ]
+}

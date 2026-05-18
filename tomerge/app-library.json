@@ -1,0 +1,216 @@
+{
+  "_comment": "FILE: app-library.json | VERSION: 0.0.3 | PURPOSE: Lista aplikacji dostępnych w App Library",
+  "version": "0.0.3",
+  "categories": [
+    {
+      "id": "AI",
+      "label": "AI",
+      "apps": [
+        {
+          "id": "chatgpt",
+          "name": "ChatGPT",
+          "url": "https://chat.openai.com",
+          "icon": "CHATGPT",
+          "category": "AI",
+          "isPinned": true,
+          "isDefault": true,
+          "isFavorite": true
+        },
+        {
+          "id": "claude",
+          "name": "Claude",
+          "url": "https://claude.ai",
+          "icon": "CLAUDE",
+          "category": "AI",
+          "isPinned": true,
+          "isDefault": false,
+          "isFavorite": true
+        },
+        {
+          "id": "deepseek",
+          "name": "DeepSeek",
+          "url": "https://chat.deepseek.com",
+          "icon": "DEEPSEEK",
+          "category": "AI",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        },
+        {
+          "id": "gemini",
+          "name": "Google Gemini",
+          "url": "https://gemini.google.com",
+          "icon": "GEMINI",
+          "category": "AI",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "id": "DEV",
+      "label": "Development",
+      "apps": [
+        {
+          "id": "github",
+          "name": "GitHub",
+          "url": "https://github.com",
+          "icon": "GITHUB",
+          "category": "DEV",
+          "isPinned": true,
+          "isDefault": false,
+          "isFavorite": true
+        },
+        {
+          "id": "stackOverflow",
+          "name": "Stack Overflow",
+          "url": "https://stackoverflow.com",
+          "icon": "STACKOVERFLOW",
+          "category": "DEV",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        },
+        {
+          "id": "npm",
+          "name": "NPM",
+          "url": "https://www.npmjs.com",
+          "icon": "NPM",
+          "category": "DEV",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        },
+        {
+          "id": "codesandbox",
+          "name": "CodeSandbox",
+          "url": "https://codesandbox.io",
+          "icon": "CODESANDBOX",
+          "category": "DEV",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "id": "PRODUCTIVITY",
+      "label": "Productivity",
+      "apps": [
+        {
+          "id": "notion",
+          "name": "Notion",
+          "url": "https://www.notion.so",
+          "icon": "NOTION",
+          "category": "PRODUCTIVITY",
+          "isPinned": true,
+          "isDefault": false,
+          "isFavorite": true
+        },
+        {
+          "id": "todoist",
+          "name": "Todoist",
+          "url": "https://todoist.com",
+          "icon": "TODOIST",
+          "category": "PRODUCTIVITY",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        },
+        {
+          "id": "trello",
+          "name": "Trello",
+          "url": "https://trello.com",
+          "icon": "TRELLO",
+          "category": "PRODUCTIVITY",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        },
+        {
+          "id": "calendar",
+          "name": "Google Calendar",
+          "url": "https://calendar.google.com",
+          "icon": "CALENDAR",
+          "category": "PRODUCTIVITY",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "id": "SOCIAL",
+      "label": "Social",
+      "apps": [
+        {
+          "id": "discord",
+          "name": "Discord",
+          "url": "https://discord.com/app",
+          "icon": "DISCORD",
+          "category": "SOCIAL",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        },
+        {
+          "id": "messenger",
+          "name": "Messenger",
+          "url": "https://www.messenger.com",
+          "icon": "MESSENGER",
+          "category": "SOCIAL",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        },
+        {
+          "id": "whatsapp",
+          "name": "WhatsApp Web",
+          "url": "https://web.whatsapp.com",
+          "icon": "WHATSAPP",
+          "category": "SOCIAL",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        }
+      ]
+    },
+    {
+      "id": "MEDIA",
+      "label": "Media",
+      "apps": [
+        {
+          "id": "youtube",
+          "name": "YouTube",
+          "url": "https://www.youtube.com",
+          "icon": "YOUTUBE",
+          "category": "MEDIA",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        },
+        {
+          "id": "spotify",
+          "name": "Spotify",
+          "url": "https://open.spotify.com",
+          "icon": "SPOTIFY",
+          "category": "MEDIA",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        },
+        {
+          "id": "twitch",
+          "name": "Twitch",
+          "url": "https://www.twitch.tv",
+          "icon": "TWITCH",
+          "category": "MEDIA",
+          "isPinned": false,
+          "isDefault": false,
+          "isFavorite": false
+        }
+      ]
+    }
+  ]
+}

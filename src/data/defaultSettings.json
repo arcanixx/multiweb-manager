@@ -1,0 +1,12 @@
+{
+  "_comment": "FILE: defaultSettings.json | VERSION: 0.0.3 | PURPOSE: Domyślne ustawienia aplikacji",
+  "version": "0.0.3",
+  "data": {
+    "theme": "dark",
+    "language": "pl",
+    "autoUpdate": false,
+    "showTooltips": true,
+    "enableAnimations": true,
+    "defaultHomeModule": "profiles"
+  }
+}

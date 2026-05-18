@@ -1,0 +1,147 @@
+/* =============================================================================
+FILE: layout.css
+PATH: src/ui/layout.css
+VERSION: 0.0.3
+PURPOSE: Layout aplikacji MultiWeb Manager
+         - sidebar
+         - main area
+         - moduły
+         - listy
+         - badge
+         - placeholdery
+         - layout kontenerów
+         - priority dots
+DEPENDENCY: index.css (zmienne + tailwind)
+============================================================================= */
+
+/* ─── App root ─── */
+.app-root {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* ─── Sidebar ─── */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.sidebar-logo {
+  font-weight: 700;
+  margin-bottom: 16px;
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.sidebar-section {
+  padding: 6px 4px;
+  cursor: pointer;
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  transition: background 0.12s;
+}
+
+.sidebar-section:hover {
+  background: var(--bg-hover);
+}
+
+.sidebar-section-active {
+  background: var(--bg-active);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ─── Main area ─── */
+.main-area {
+  flex: 1;
+  background: var(--bg-primary);
+  overflow-y: auto;
+}
+
+.main-placeholder {
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 20px;
+}
+
+/* ─── Module containers ─── */
+.module-container {
+  padding: 16px;
+  color: var(--text-primary);
+}
+
+.module-container h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.module-loading {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.module-empty {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* ─── Lists ─── */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list-item {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.list-item-title {
+  font-size: 14px;
+}
+
+.list-item-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ─── Badges ─── */
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 10px;
+  border-radius: var(--radius);
+  margin-top: 4px;
+}
+
+.badge-archived {
+  background: #553333;
+  color: #ffaaaa;
+}
+
+/* ─── Priority dots (used in TaskList, AggregatedTasks) ─── */
+.priority-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.priority-A { background: #ef4444; }
+.priority-B { background: #f97316; }
+.priority-C { background: #eab308; }
+.priority-D { background: #3b82f6; }
+.priority-E { background: #22c55e; }
+
+/* =============================================================================
+END OF FILE
+============================================================================= */

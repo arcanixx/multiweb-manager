@@ -1,0 +1,54 @@
+{
+  "name": "multiweb-manager",
+  "version": "1.0.0",
+  "description": "MultiWeb Manager – zarządzaj wieloma kontami i narzędziami w jednej aplikacji",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently \"npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
+    "react-start": "cross-env BROWSER=none react-scripts start",
+    "build": "react-scripts build",
+    "make": "electron-forge make"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "chokidar": "^3.5.3",
+    "diff": "^5.1.0",
+    "adm-zip": "^0.5.10",
+    "electron-store": "^8.1.0",
+    "node-pty": "^0.10.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.1",
+    "tailwindcss": "^3.3.6",
+    "lucide-react": "^0.292.0",
+    "@hello-pangea/dnd": "^1.0.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.3.0",
+    "@electron-forge/maker-squirrel": "^7.3.0",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^28.0.0",
+    "react-scripts": "5.0.1",
+    "wait-on": "^7.0.2"
+  },
+  "proxy": "http://localhost:3000",
+  "config": {
+    "forge": {
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "MultiWebManager",
+            "setupIcon": "./assets/app-icon.ico",
+            "setupExe": "MultiWebManager-Setup.exe",
+            "shortcutName": "MultiWeb Manager",
+            "createDesktopShortcut": true,
+            "createStartMenuShortcut": true
+          }
+        }
+      ]
+    }
+  }
+}
