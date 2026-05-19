@@ -43,6 +43,9 @@ constants.js — rozszerzenie kategorii
 Disk space check przy starcie
   - Ostrzeżenie gdy wolne miejsce < ~5% (Windows) — WDROŻONE w main (v0.0.3)
 
+Obsługa GitHub
+  - obsługa GitHub jakaś działająca, albo poprzez WebView albo natywna w aplikacji, z obsługa repozytoriów, commitami, branchami itp
+
 Monitoring sieci
   - Ping / status online + ikona w UI — częściowo (online/offline); rozszerzyć ping
 
