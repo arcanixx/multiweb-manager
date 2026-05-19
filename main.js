@@ -8,17 +8,26 @@
 //          - bezpieczeństwo WebView
 //          - single instance lock
 //          - logowanie błędów
+//          - sprawdzenie wolnego miejsca na dysku
 //          - integracja z TestRunner
+// UWAGA: Nie usuwaj komentarzy — opisują przeznaczenie sekcji i funkcji.
 // =============================================================================
 
 import { app, BrowserWindow, ipcMain, session, shell } from "electron";
 import path from "path";
+import { fileURLToPath } from "url";
 import fs from "fs";
 import { execSync } from "child_process";
 import { APP_ENV, FEATURES, DEFAULT_SETTINGS } from "./config.js";
 import { loadSettings } from "./src/core/settingsStore.js";
 import { logInfo, logError } from "./src/utils/logger.js";
 import { runAllTests } from "./tests/TestRunner.js";
+
+// ESM nie ma __dirname — obliczamy ręcznie
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Preload jest .cjs bo Electron preload nie obsługuje ESM
+const PRELOAD_PATH = path.join(__dirname, "preload.cjs");
 
 // Rejestracja handlerów IPC (import = side-effect register)
 import "./src/ipc/ipcLegacyBridge.js";
@@ -37,6 +46,7 @@ import "./src/ipc/ipcMainHandlers_workspaces.js";
 
 // =============================================================================
 // SINGLE INSTANCE LOCK
+// Zapobiega uruchomieniu wielu instancji aplikacji
 // =============================================================================
 
 const gotLock = app.requestSingleInstanceLock();
@@ -57,7 +67,6 @@ app.on("second-instance", () => {
 // =============================================================================
 
 let mainWindow = null;
-const PRELOAD_PATH = path.join(__dirname, "preload.js");
 
 // =============================================================================
 // CREATE WINDOW
@@ -94,25 +103,20 @@ function createWindow() {
 
 // =============================================================================
 // SECURITY — WebView
+// Blokuje otwieranie nowych okien w webview + opcjonalny whitelist domen
 // =============================================================================
 
 app.on("web-contents-created", (_, contents) => {
   if (contents.getType() === "webview") {
     contents.setWindowOpenHandler(() => ({ action: "deny" }));
-    contents.on("will-navigate", (e) => {
-      // Możesz dodać whitelistę domen
+    contents.on("will-navigate", (_e) => {
+      // Można dodać whitelist domen tutaj jeśli potrzeba
     });
   }
 });
 
 // =============================================================================
-// IPC HANDLERS (skrót — pełne w ipcMainHandlers.js)
-// =============================================================================
-
-// open-external: ipcLegacyBridge + misc:openExternal
-
-// =============================================================================
-// STARTUP TESTS — integracja z TestRunner
+// STARTUP TESTS — uruchamia TestRunner gdy debugMode=true
 // =============================================================================
 
 async function runStartupTestsIfEnabled() {
@@ -122,10 +126,7 @@ async function runStartupTestsIfEnabled() {
 
     if (FEATURES.startupTests && debugMode) {
       logInfo("Startup tests enabled — running TestRunner...");
-      const summary = await runAllTests({
-        logToFile: true,
-        verbose: false
-      });
+      const summary = await runAllTests({ logToFile: true, verbose: false });
       logInfo("Startup tests finished", summary);
     }
   } catch (err) {
@@ -134,28 +135,47 @@ async function runStartupTestsIfEnabled() {
 }
 
 // =============================================================================
-// APP EVENTS
+// DISK SPACE WARNING
+// Ostrzega gdy wolne miejsce < 5% (tylko Windows)
 // =============================================================================
 
 function checkDiskSpaceWarning() {
   try {
-    if (process.platform === "win32") {
-      const drive = path.parse(app.getPath("userData")).root;
-      const out = execSync(
-        `wmic logicaldisk where "DeviceID='${drive.replace("\\", "")}'" get FreeSpace,Size /format:value`,
-        { encoding: "utf8" }
-      );
-      const free = Number((out.match(/FreeSpace=(\d+)/) || [])[1] || 0);
-      const size = Number((out.match(/Size=(\d+)/) || [])[1] || 1);
+    if (process.platform !== "win32") return;
+
+    const drive = path.parse(app.getPath("userData")).root;
+    // Usuwamy trailing slash dla wmic: "C:\" -> "C:"
+    const driveLetter = drive.replace(/\\$/, "");
+
+    const out = execSync(
+      `wmic logicaldisk where "DeviceID='${driveLetter}'" get FreeSpace,Size /format:value`,
+      { encoding: "utf8", timeout: 3000 }
+    );
+
+    const freeMatch = out.match(/FreeSpace=(\d+)/);
+    const sizeMatch = out.match(/Size=(\d+)/);
+
+    if (freeMatch && sizeMatch) {
+      const free = Number(freeMatch[1]);
+      const size = Number(sizeMatch[1]) || 1;
       const pctFree = (free / size) * 100;
+
       if (pctFree < 5) {
-        logError("Low disk space", { pctFree: pctFree.toFixed(1), drive });
+        logError("Low disk space warning", {
+          pctFree: pctFree.toFixed(1),
+          drive: driveLetter
+        });
       }
     }
   } catch (err) {
-    logError("checkDiskSpaceWarning", err);
+    // Nie przerywamy startu — brak wmic to nie problem krytyczny
+    logError("checkDiskSpaceWarning failed", err.message);
   }
 }
+
+// =============================================================================
+// APP EVENTS
+// =============================================================================
 
 app.whenReady().then(async () => {
   checkDiskSpaceWarning();
@@ -167,8 +187,13 @@ app.whenReady().then(async () => {
   });
 });
 
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") app.quit();
+});
+
 // =============================================================================
 // GLOBAL ERROR HANDLERS
+// Logują błędy, które inaczej znikają bez śladu
 // =============================================================================
 
 process.on("uncaughtException", (err) => {

@@ -2,12 +2,14 @@
 // FILE: ipcMainHandlers_history.js
 // PATH: src/ipc/ipcMainHandlers_history.js
 // VERSION: 0.0.3
-// PURPOSE: IPC handlers dla historii odwiedzin/akcji.
+// PURPOSE: IPC dla historii odwiedzin/akcji.
 //          - history:getAll    – zwraca pełną historię (max 100 wpisów)
 //          - history:add       – dodaje nowy wpis i zapisuje
-//          - history:clear     – czyści historię (zwraca pustą tablicę)
+//          - history:clear     – czyści historię
 //          - history:getRecent – zwraca ostatnie 10 wpisów
+// FUNCTIONS: history:getAll, history:add, history:clear, history:getRecent
 // DEPENDS ON: electron (ipcMain), logger.js, core/historyStore.js
+// UWAGA: Nie usuwaj komentarzy — opisują przeznaczenie każdego handlera.
 // =============================================================================
 
 import { ipcMain } from "electron";
@@ -42,7 +44,6 @@ ipcMain.handle("history:add", async (_, entry) => {
       throw new Error("INVALID_HISTORY_ENTRY");
     }
     const updated = addHistoryEntry(entry);
-    saveHistory(updated);
     return { ok: true, data: updated };
   } catch (err) {
     logError("history:add failed", err);
@@ -64,7 +65,7 @@ ipcMain.handle("history:clear", async () => {
 });
 
 // ----------------------------------------------------------------
-// history:getRecent – zwraca ostatnie 10 wpisów (dla quick access)
+// history:getRecent – zwraca ostatnie 10 wpisów (quick access)
 // ----------------------------------------------------------------
 ipcMain.handle("history:getRecent", async () => {
   try {
