@@ -13,6 +13,8 @@
 
 import { app, BrowserWindow, ipcMain, session, shell } from "electron";
 import path from "path";
+import fs from "fs";
+import { execSync } from "child_process";
 import { APP_ENV, FEATURES, DEFAULT_SETTINGS } from "./config.js";
 import { loadSettings } from "./src/core/settingsStore.js";
 import { logInfo, logError } from "./src/utils/logger.js";
@@ -135,7 +137,28 @@ async function runStartupTestsIfEnabled() {
 // APP EVENTS
 // =============================================================================
 
+function checkDiskSpaceWarning() {
+  try {
+    if (process.platform === "win32") {
+      const drive = path.parse(app.getPath("userData")).root;
+      const out = execSync(
+        `wmic logicaldisk where "DeviceID='${drive.replace("\\", "")}'" get FreeSpace,Size /format:value`,
+        { encoding: "utf8" }
+      );
+      const free = Number((out.match(/FreeSpace=(\d+)/) || [])[1] || 0);
+      const size = Number((out.match(/Size=(\d+)/) || [])[1] || 1);
+      const pctFree = (free / size) * 100;
+      if (pctFree < 5) {
+        logError("Low disk space", { pctFree: pctFree.toFixed(1), drive });
+      }
+    }
+  } catch (err) {
+    logError("checkDiskSpaceWarning", err);
+  }
+}
+
 app.whenReady().then(async () => {
+  checkDiskSpaceWarning();
   await runStartupTestsIfEnabled();
   createWindow();
 

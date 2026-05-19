@@ -9,8 +9,8 @@
 import React, { useState } from "react";
 import { useTranslation } from "../../hooks/useTranslation";
 import { ICONS } from "../../utils/icons";
-import RemoveBgTool from "../../components/RemoveBgTool.jsx";
-import StringCombiner from "../../components/StringCombiner.jsx";
+import RemoveBgTool from "./RemoveBgTool";
+import StringCombiner from "./StringCombiner";
 
 export default function ToolsPanel({ removeBgApiKey, plan = "free" }) {
   const { t } = useTranslation();

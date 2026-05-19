@@ -8,9 +8,9 @@
 // =============================================================================
 //
 // STAN FAKTYCZNY v0.0.3 (2026-05-19) — różnice względem mapy poniżej:
-// - Aktywny UI: src/components/* (App.jsx), nie nested components/Sidebar/
-// - Równoległy staging: src/ui/* (nowsze moduły taskpanel/webview — niepodpięte do App)
-// - Merge archiwum: tomerge/ (nie usuwać do czasu weryfikacji)
+// - Aktywny UI: src/ui/* (modułowo: sidebar/, webview/, taskpanel/, …)
+// - App.jsx importuje wyłącznie z src/ui/
+// - tomerge/ i src/components/ — usunięte po merge (kopia w Backup/)
 // - IPC: src/ipc/* + ipcLegacyBridge.js (kanały preload: get-profiles, save-settings, …)
 // - Store: src/core/* (profiles, settings, tasks, projects, history, notes, workspaces)
 // - Ikony kanonicznie: src/data/icons.js (re-export w src/utils/icons.js)

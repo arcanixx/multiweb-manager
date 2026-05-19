@@ -10,7 +10,7 @@
 
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import './ui/index.css';
 import { TranslationProvider } from './hooks/useTranslation';
 import App from './App';
 

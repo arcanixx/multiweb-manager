@@ -16,7 +16,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ICONS } from '../../utils/icons';
 import { useTranslation } from '../../hooks/useTranslation';
 import { log, setDebugMode } from '../../utils/logger';
-import UpdateChecker from './UpdateChecker';
+import UpdateChecker from '../system/UpdateChecker';
+import SettingsAccount from './SettingsAccount';
 
 export default function Settings({ settings, onSave }) {
   const { t, locale, setLocale } = useTranslation();
@@ -221,6 +222,11 @@ export default function Settings({ settings, onSave }) {
             { value: 'free', label: t('settings.removebg_plan_free') },
             { value: 'pro',  label: t('settings.removebg_plan_pro') },
           ])}
+        </Section>
+
+        {/* ─── Konto / sync (placeholder) ─── */}
+        <Section title={t('settings.section_account') || 'Konto'} icon={ICONS.LOCK}>
+          <SettingsAccount />
         </Section>
 
         {/* ─── Zaawansowane ─── */}
