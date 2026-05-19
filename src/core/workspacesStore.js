@@ -70,6 +70,13 @@ export function saveWorkspace(workspace) {
   return workspace;
 }
 
+/** Zastępuje całą listę workspace'ów. */
+export function saveWorkspaces(workspaces) {
+  saveStore({ version: "0.0.3", data: workspaces });
+  logInfo("workspacesStore.saveWorkspaces", workspaces.length);
+  return workspaces;
+}
+
 /** Usuwa workspace po id. */
 export function deleteWorkspace(id) {
   const store = loadStore();

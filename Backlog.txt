@@ -1,0 +1,102 @@
+# MultiWeb Manager — Backlog
+# VERSION: 0.0.3
+# Ostatnia aktualizacja: 2026-05-19
+# Źródła: OstatniePodsumowania.txt, MWM Expectations, DevelopersGuide, uwagi użytkownika
+
+================================================================================
+DO-ANALYSIS (wymaga decyzji / researchu przed implementacją)
+================================================================================
+
+1q. Voice agent / AI agent
+    - Oczekiwane (docelowo): dyktowanie PL → akcje (nowy profil/task z wypełnieniem modala)
+      lub wpisywanie w aktywne pole w WebView (tylko gdy focus na input).
+    - Web Speech API + lokalne reguły / mały LLM — do analizy kosztu i prywatności.
+    - Status: BACKLOG (duży zakres)
+
+1r. Automatyczne code review
+    - Bez płatnych API: lokalny ESLint + własne heurystyki w Tools/CodeReview.jsx;
+      opcjonalnie Ollama lokalnie (nie w v0.0.3).
+    - Status: BACKLOG
+
+2g. Multi-account login / credential sharing
+    - Logowanie Gmail w jednym kafelku → reuse sesji/cookies przy dodawaniu kolejnych
+      (Claude, GitHub, Drive…) — partition + bezpieczny export/import cookies (szyfrowany).
+    - Status: DO-ANALYSIS → BACKLOG (bezpieczeństwo: OS keychain / electron safeStorage)
+
+7e. Konto użytkownika + sync w chmurze
+    - Placeholder w Settings (sekcja Account) — TAK, wdrożony jako UI stub v0.0.3
+    - Pełna sync: BACKLOG
+
+================================================================================
+BACKLOG — funkcje i usprawnienia
+================================================================================
+
+theme.js
+  - Schematy kolorów aplikacji (poza CSS variables)
+
+App Library — ulubione przy multi-kontach
+  - isFavorite / pin przy wyborze konta z biblioteki (nie tylko Sidebar)
+
+constants.js — rozszerzenie kategorii
+  - Grafika, Search engines, Email, Cloud, Version Control (bez „food/apple” itp.)
+
+Disk space check przy starcie
+  - Ostrzeżenie gdy wolne miejsce < ~5% (Windows) — WDROŻONE w main (v0.0.3)
+
+Monitoring sieci
+  - Ping / status online + ikona w UI — częściowo (online/offline); rozszerzyć ping
+
+Toasty — kolory tła
+  - success=zielony, error=czerwony, warning=żółty — WDROŻONE w CSS (v0.0.3)
+
+TestRunner — ikony wyników
+  - ICONS.testPass / ICONS.testFail w logach — WDROŻONE w icons.js
+
+Unified Search Ctrl+K, Quick Switcher Ctrl+P
+  - searchIndex.js istnieje; UI GlobalSearch — BACKLOG
+
+Tile View WebView (2–3 obok siebie)
+  - BACKLOG
+
+Hotkeys manager (globalShortcut + UI)
+  - BACKLOG
+
+Pushbullet, Cookie Grabber UI, Mini Postman panel
+  - BACKLOG (IPC częściowo w tools)
+
+CodeMirror / Monaco w Notepad
+  - BACKLOG
+
+AdBlocker w main (webRequest)
+  - BACKLOG
+
+Export/Import pełnego backupu (modal + walidacja)
+  - BACKLOG (IPC settings:export częściowo)
+
+Plugin system, AI chat panel, workspace templates
+  - IDEAS / długi termin
+
+================================================================================
+TECH DEBT (do ciągłego domykania)
+================================================================================
+
+- Nagłówki FILE/PATH/VERSION we wszystkich plikach + „nie kasuj komentarzy”
+- Logger przy debugMode w każdym module
+- Martwe exporty w utils/ — podłączyć lub usunąć
+- Jedna warstwa IPC ({ ok, data, error }) + cienki preload
+- Numeracja sekcji w DevelopersGuide (7a zamiast powtórnego 6a)
+
+================================================================================
+WDROŻONE / W TOKU (v0.0.3)
+================================================================================
+
+[x] Store: settings, profiles, tasks, projects, history, appLibrary
+[x] IPC legacy bridge + handlers podpięte w main.js
+[x] Struktura src/ui/ (migracja z components/)
+[x] Placeholder Account/Cloud w Settings
+[x] sleepTabsManager, notificationsManager, searchIndex (szkielet)
+[x] config.js root re-export
+
+================================================================================
+KONIEC
+================================================================================

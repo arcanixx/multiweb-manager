@@ -1,7 +1,7 @@
 // =============================================================================
 // FILE: preload.js
 // PATH: multiweb-manager/preload.js
-// VERSION: v1
+// VERSION: 0.0.3
 // PURPOSE: Eksponuje API Electrona do renderera (React) przez contextBridge.
 //          Każda metoda to cienka warstwa nad ipcRenderer.invoke/on.
 //          Żadna logika biznesowa – tylko przepuszczenie wywołań.
@@ -50,7 +50,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
   terminalWrite: (id, data) => ipcRenderer.invoke('terminal-write', id, data),
   terminalResize: (id, cols, rows) => ipcRenderer.invoke('terminal-resize', id, cols, rows),
   killTerminal: (id) => ipcRenderer.invoke('kill-terminal', id),
-  onTerminalData: (cb) => ipcRenderer.on('terminal-data', (e, d) => cb(d)),
+  openExternal: (url) => ipcRenderer.invoke('misc:openExternal', url),
+
+  onTerminalData: (cb) => {
+    const listener = (_, payload) => cb(payload);
+    ipcRenderer.on('terminal-data', listener);
+    return () => ipcRenderer.removeListener('terminal-data', listener);
+  },
 
   // --- App lifecycle ---
   confirmQuit: () => ipcRenderer.invoke('confirm-quit'),

@@ -1,7 +1,7 @@
 // =============================================================================
 // FILE: src/App.jsx
 // PATH: multiweb-manager/src/App.jsx
-// VERSION: v1
+// VERSION: 0.0.3
 // PURPOSE: Główny komponent aplikacji. Zarządza stanem globalnym (profiles,
 //          settings, activeItem), obsługuje routing widoków, dark mode,
 //          zdarzenia online/offline, ostrzeżenie przed zamknięciem.

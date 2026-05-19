@@ -1,7 +1,8 @@
 // =============================================================================
 // FILE: src/utils/logger.js
 // PATH: multiweb-manager/src/utils/logger.js
-// VERSION: v1
+// VERSION: 0.0.3
+// UWAGA: Nie usuwaj komentarzy nagłówkowych — opisują przeznaczenie modułu.
 // PURPOSE: Moduł logowania dla procesu renderera (React). Loguje tylko gdy
 //          debugMode=true. Eksponuje log(), warn(), error() oraz initLogger()
 //          do załadowania ustawień debugMode z electron-store.
@@ -77,4 +78,33 @@ function timestamp() {
 // Eksport stanu (do odczytu w komponentach np. Settings)
 export function isDebugMode() {
   return debugMode;
+}
+
+// --- API procesu głównego (main) i wspólne aliasy ---
+export function logDebug(...args) {
+  log(...args);
+}
+
+export function logInfo(...args) {
+  if (debugMode || typeof window === "undefined") {
+    console.log(`[${timestamp()}] [INFO]`, ...args);
+  }
+}
+
+export function logWarn(...args) {
+  warn(...args);
+}
+
+export function logError(msg, meta) {
+  console.error(`[${timestamp()}] [ERROR]`, msg, meta ?? "");
+}
+
+export function getLogFilePath() {
+  try {
+    const { app } = require("electron");
+    const path = require("path");
+    return path.join(app.getPath("userData"), "logs", "app.log");
+  } catch {
+    return null;
+  }
 }

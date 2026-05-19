@@ -23,9 +23,23 @@
 import { ipcMain, clipboard, session } from "electron";
 import fs from "fs";
 import path from "path";
-import yaml from "js-yaml";
-import sharp from "sharp";
 import { logError } from "../utils/logger.js";
+
+async function loadYaml() {
+  try {
+    return (await import("js-yaml")).default;
+  } catch {
+    return null;
+  }
+}
+
+async function loadSharp() {
+  try {
+    return (await import("sharp")).default;
+  } catch {
+    return null;
+  }
+}
 
 // ─── JSON / YAML Formatters ───────────────────────────────────────────────────
 
@@ -43,6 +57,8 @@ ipcMain.handle("tools:formatJSON", async (_, text) => {
 // tools:yamlToJson – konwertuje YAML → sformatowany JSON
 ipcMain.handle("tools:yamlToJson", async (_, text) => {
   try {
+    const yaml = await loadYaml();
+    if (!yaml) return { ok: false, error: "YAML_MODULE_MISSING" };
     const parsed = yaml.load(text);
     const formatted = JSON.stringify(parsed, null, 2);
     return { ok: true, data: formatted };
@@ -54,6 +70,8 @@ ipcMain.handle("tools:yamlToJson", async (_, text) => {
 // tools:jsonToYaml – konwertuje JSON → YAML
 ipcMain.handle("tools:jsonToYaml", async (_, text) => {
   try {
+    const yaml = await loadYaml();
+    if (!yaml) return { ok: false, error: "YAML_MODULE_MISSING" };
     const parsed = JSON.parse(text);
     const formatted = yaml.dump(parsed);
     return { ok: true, data: formatted };
@@ -93,6 +111,8 @@ ipcMain.handle("tools:markdownRender", async (_, markdownText) => {
 // tools:image:resize – zmienia rozmiar obrazu do width x height
 ipcMain.handle("tools:image:resize", async (_, { inputPath, width, height, outputPath }) => {
   try {
+    const sharp = await loadSharp();
+    if (!sharp) return { ok: false, error: "SHARP_MODULE_MISSING" };
     await sharp(inputPath).resize(width, height).toFile(outputPath);
     return { ok: true, data: outputPath };
   } catch (err) {
@@ -104,6 +124,8 @@ ipcMain.handle("tools:image:resize", async (_, { inputPath, width, height, outpu
 // tools:image:convert – konwertuje obraz do podanego formatu
 ipcMain.handle("tools:image:convert", async (_, { inputPath, format, outputPath }) => {
   try {
+    const sharp = await loadSharp();
+    if (!sharp) return { ok: false, error: "SHARP_MODULE_MISSING" };
     await sharp(inputPath).toFormat(format).toFile(outputPath);
     return { ok: true, data: outputPath };
   } catch (err) {
@@ -115,6 +137,8 @@ ipcMain.handle("tools:image:convert", async (_, { inputPath, format, outputPath 
 // tools:image:compress – kompresuje JPEG do podanej jakości (1-100)
 ipcMain.handle("tools:image:compress", async (_, { inputPath, quality, outputPath }) => {
   try {
+    const sharp = await loadSharp();
+    if (!sharp) return { ok: false, error: "SHARP_MODULE_MISSING" };
     await sharp(inputPath).jpeg({ quality }).toFile(outputPath);
     return { ok: true, data: outputPath };
   } catch (err) {
@@ -128,6 +152,8 @@ ipcMain.handle("tools:image:compress", async (_, { inputPath, quality, outputPat
 // tools:svgToPng – konwertuje plik SVG → PNG (przez sharp buffer)
 ipcMain.handle("tools:svgToPng", async (_, { svgPath, outputPath, width, height }) => {
   try {
+    const sharp = await loadSharp();
+    if (!sharp) return { ok: false, error: "SHARP_MODULE_MISSING" };
     const svg = fs.readFileSync(svgPath, "utf8");
     const png = await sharp(Buffer.from(svg)).resize(width, height).png().toBuffer();
     fs.writeFileSync(outputPath, png);

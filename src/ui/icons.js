@@ -1,10 +1,9 @@
 // =============================================================================
-// FILE: src/utils/icons.js
-// PATH: multiweb-manager/src/utils/icons.js
+// FILE: icons.js
+// PATH: src/ui/icons.js
 // VERSION: 0.0.3
-// PURPOSE: Re-export ikon z kanonicznej lokalizacji src/data/icons.js
+// PURPOSE: Re-export ikon dla modułów UI (TestRunner, komponenty).
 // DEPENDS ON: src/data/icons.js
-// UWAGA: Nie usuwaj komentarzy — opisują konwencję ikon w projekcie.
 // =============================================================================
 
 export * from "../data/icons.js";

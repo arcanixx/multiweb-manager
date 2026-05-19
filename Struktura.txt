@@ -1,21 +1,10 @@
 // =============================================================================
 // FILE: structure.txt
 // PATH: multiweb-manager/structure.txt
-// VERSION: 0.0.3
+// VERSION: v1
 // PURPOSE: Struktura projektu + mapowanie modułów, feature’ów i odpowiedzialności.
 // DEPENDS ON: DevelopersGuide.md
 // FUNCTIONS: brak
-// =============================================================================
-//
-// STAN FAKTYCZNY v0.0.3 (2026-05-19) — różnice względem mapy poniżej:
-// - Aktywny UI: src/components/* (App.jsx), nie nested components/Sidebar/
-// - Równoległy staging: src/ui/* (nowsze moduły taskpanel/webview — niepodpięte do App)
-// - Merge archiwum: tomerge/ (nie usuwać do czasu weryfikacji)
-// - IPC: src/ipc/* + ipcLegacyBridge.js (kanały preload: get-profiles, save-settings, …)
-// - Store: src/core/* (profiles, settings, tasks, projects, history, notes, workspaces)
-// - Ikony kanonicznie: src/data/icons.js (re-export w src/utils/icons.js)
-// - Pomoc: helpData.js + helpData_pl.json / helpData_en.json (rozbudowa w toku)
-//
 // =============================================================================
 
 multiweb-manager/

@@ -1,6 +1,6 @@
 {
   "name": "multiweb-manager",
-  "version": "1.0.0",
+  "version": "0.0.3",
   "description": "MultiWeb Manager – zarządzaj wieloma kontami i narzędziami w jednej aplikacji",
   "main": "main.js",
   "scripts": {
@@ -22,7 +22,7 @@
     "react-router-dom": "^6.20.1",
     "tailwindcss": "^3.3.6",
     "lucide-react": "^0.292.0",
-    "@hello-pangea/dnd": "^1.0.0"
+    "@hello-pangea/dnd": "^16.5.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.3.0",
