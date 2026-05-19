@@ -13,7 +13,6 @@
 
 // Stan wewnętrzny modułu
 let debugMode = false;
-let initialized = false;
 
 // ----------------------------------------------------------------
 // timestamp() – pomocnicza, zwraca czytelny znacznik czasu
@@ -30,8 +29,7 @@ export async function initLogger() {
   try {
     if (typeof window !== "undefined" && window.electronAPI) {
       const settings = await window.electronAPI.getSettings();
-      debugMode = settings?.debugMode || false;
-      initialized = true;
+      debugMode = settings?.debugMode !== false;
       if (debugMode) {
         console.log("[LOG] Logger initialized, debugMode=true");
       }

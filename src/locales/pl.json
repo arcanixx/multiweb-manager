@@ -6,16 +6,18 @@
     "unsaved_notes": "Notatki zostaną automatycznie zapisane."
   },
   "sidebar": {
-    "add_profile": "Dodaj profil",
+    "add_profile": "Dodaj workspace",
+    "add_workspace": "Dodaj workspace",
     "special": "Narzędzia",
     "favorites": "Ulubione",
-    "all_profiles": "Profile",
+    "all_profiles": "Workspaces",
+    "all_workspaces": "Workspaces",
     "search_placeholder": "Szukaj...",
     "edit_category": "Edytuj kategorię",
     "add_category": "Dodaj kategorię",
     "delete_category": "Usuń kategorię",
     "move_to": "Przenieś do...",
-    "no_profiles": "Brak profili. Kliknij + aby dodać.",
+    "no_profiles": "Brak workspace. Kliknij + aby dodać.",
     "pin": "Przypnij",
     "unpin": "Odepnij",
     "edit_profile": "Edytuj profil",
@@ -23,9 +25,9 @@
     "open_tasks": "Otwórz zadania"
   },
   "profile_modal": {
-    "add_title": "Dodaj profil",
-    "edit_title": "Edytuj profil",
-    "name_label": "Nazwa profilu",
+    "add_title": "Dodaj workspace",
+    "edit_title": "Edytuj workspace",
+    "name_label": "Nazwa workspace",
     "name_placeholder": "np. DS DEV",
     "url_label": "URL",
     "url_placeholder": "https://...",
@@ -36,7 +38,8 @@
     "ad_blocker_label": "Blokuj reklamy",
     "notifications_label": "Powiadomienia",
     "save": "Zapisz",
-    "cancel": "Anuluj"
+    "cancel": "Anuluj",
+    "invalid_url": "Podaj poprawny adres URL, np. https://google.pl lub chat.openai.com"
   },
   "category_modal": {
     "add_title": "Dodaj kategorię",
@@ -186,6 +189,10 @@
     "loading": "Ładowanie...",
     "error_offline": "Brak połączenia z internetem",
     "error_404": "Strona {url} nie odpowiada",
+    "error_bad_host": "Nie można otworzyć strony — sprawdź adres URL (np. https://domena.pl)",
+    "invalid_url": "Nieprawidłowy adres URL workspace",
+    "invalid_url_hint": "Użyj pełnego adresu z domeną, np. https://google.pl. Edytuj workspace z menu PPM.",
+    "paused_for_modal": "Podgląd wstrzymany (otwarty modal)",
     "save_selection": "Zapisz zaznaczenie do pliku"
   },
   "tasks": {

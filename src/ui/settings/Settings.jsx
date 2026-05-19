@@ -45,7 +45,7 @@ export default function Settings({ settings, onSave }) {
   // ----------------------------------------------------------------
   const save = useCallback(async () => {
     await onSave(local);
-    setDebugMode(local.debugMode || false);
+    setDebugMode(local.debugMode !== false);
     showToast(t('settings.saved'));
     log('Settings: saved', Object.keys(local).join(', '));
   }, [local, onSave, t]);
@@ -150,8 +150,8 @@ export default function Settings({ settings, onSave }) {
         </div>
 
         {/* ─── Ogólne ─── */}
-        <Section title={t('settings.section_general')} icon={ICONS.SETTINGS_ICON}>
-          {renderInputRow(ICONS.DOWNLOAD, t('settings.downloads_path'), 'downloadsPath', app?.getPath?.('downloads') || 'Downloads')}
+        <Section title={t('settings.section_general')} icon={ICONS.SETTINGS}>
+          {renderInputRow(ICONS.DOWNLOAD, t('settings.downloads_path'), 'downloadsPath', local.downloadsPath || 'Downloads')}
 
           {/* Język */}
           <div style={{

@@ -10,13 +10,27 @@
 // FUNCTIONS: toggleSection, renderSection, renderShortcut, renderFAQ
 // =============================================================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ICONS } from '../../utils/icons';
 import { useTranslation } from '../../hooks/useTranslation';
 
 export default function Help() {
   const { t } = useTranslation();
-  const [open, setOpen] = useState({ profiles: true }); // Pierwsza sekcja otwarta domyślnie
+  const [ready, setReady] = useState(false);
+  const [open, setOpen] = useState({ profiles: true });
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  if (!ready) {
+    return (
+      <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+        {t('app.loading') || 'Ładowanie pomocy…'}
+      </div>
+    );
+  }
 
   const toggle = (key) => setOpen(prev => ({ ...prev, [key]: !prev[key] }));
 

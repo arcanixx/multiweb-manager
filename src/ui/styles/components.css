@@ -16,8 +16,30 @@ body {
 }
 
 /* Pozwól na zaznaczanie tekstu w obszarach treści */
-textarea, input, .selectable {
+textarea,
+input,
+select,
+.form-input,
+.form-select,
+.modal-box,
+.selectable {
   user-select: text;
+  -webkit-user-select: text;
+  pointer-events: auto;
+}
+
+/* Electron: natywny webview nad HTML — ukryj przy modalu */
+body.modal-open webview {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.tools-active webview {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* ─── Scrollbar ─── */
@@ -107,7 +129,7 @@ textarea, input, .selectable {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 20000;
   animation: fadeIn 0.15s ease;
 }
 .modal-box {
@@ -229,7 +251,7 @@ textarea, input, .selectable {
 .sidebar-item.active {
   background: var(--bg-active);
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 500;
 }
 .sidebar-category {
   display: flex;

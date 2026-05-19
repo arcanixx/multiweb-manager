@@ -20,6 +20,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ICONS, SIDEBAR_ICON_MAP } from '../../utils/icons';
 import { useTranslation } from '../../hooks/useTranslation';
 import { log } from '../../utils/loggerRenderer';
+import ModalPortal from '../system/ModalPortal';
+import { normalizeWebUrl } from '../../utils/urlUtils';
 
 // Stałe narzędzia specjalne – kolejność zawsze ta sama, nad alfabetyczną listą
 const SPECIAL_TOOLS = [
@@ -46,32 +48,35 @@ function ProfileModal({ profile, categories, onSave, onClose, t }) {
 
   const handleSave = () => {
     if (!name.trim() || !url.trim()) return;
-    let finalUrl = url.trim();
-    if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-      finalUrl = 'https://' + finalUrl;
+    const finalUrl = normalizeWebUrl(url);
+    if (!finalUrl) {
+      window.alert(t('profile_modal.invalid_url'));
+      return;
     }
+    const id = profile?.id || Date.now().toString();
     onSave({
-      id:       profile?.id || Date.now().toString(),
+      id,
       name:     name.trim(),
       url:      finalUrl,
       icon:     icon.trim() || ICONS.DEFAULT,
       category: category.trim(),
-      type:     'webview',
-      favorite: profile?.favorite || false,
-      zoom:     profile?.zoom     || 1,
+      type:      'webview',
+      favorite:  profile?.favorite || false,
+      zoom:      profile?.zoom     || 1,
+      partition: profile?.partition || `persist:profile-${id}`,
       adBlock,
       notifs,
     });
   };
 
   return (
-    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal-box">
+    <ModalPortal onClose={onClose}>
+      <div className="modal-box" onMouseDown={e => e.stopPropagation()}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
           <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
             {isEdit ? t('profile_modal.edit_title') : t('profile_modal.add_title')}
           </h2>
-          <button className="btn-icon" onClick={onClose}>{ICONS.CLOSE}</button>
+          <button type="button" className="btn-icon" onClick={onClose}>{ICONS.CLOSE}</button>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -148,7 +153,7 @@ function ProfileModal({ profile, categories, onSave, onClose, t }) {
           </button>
         </div>
       </div>
-    </div>
+    </ModalPortal>
   );
 }
 
@@ -158,8 +163,8 @@ function CategoryModal({ category, onSave, onClose, t }) {
   const [icon, setIcon] = useState(category?.icon || '📁');
 
   return (
-    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal-box" style={{ minWidth: 320, maxWidth: 400 }}>
+    <ModalPortal onClose={onClose}>
+      <div className="modal-box" style={{ minWidth: 320, maxWidth: 400 }} onMouseDown={e => e.stopPropagation()}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
           <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
             {category ? t('category_modal.edit_title') : t('category_modal.add_title')}
@@ -190,7 +195,7 @@ function CategoryModal({ category, onSave, onClose, t }) {
           </button>
         </div>
       </div>
-    </div>
+    </ModalPortal>
   );
 }
 
@@ -230,16 +235,23 @@ function ContextMenu({ x, y, items, onClose }) {
 // =============================================================================
 // Sidebar – główny komponent
 // =============================================================================
-export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChange }) {
+export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChange, onOpenTaskPanel, onModalOpenChange }) {
   const { t } = useTranslation();
   const [search, setSearch]               = useState('');
   const [categories, setCategories]       = useState([]);  // { id, name, icon }
   const [collapsed, setCollapsed]         = useState({});  // { categoryId: bool }
+  const [toolsCollapsed, setToolsCollapsed] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [editingProfile, setEditingProfile]     = useState(null);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingCategory, setEditingCategory]     = useState(null);
   const [contextMenu, setContextMenu]     = useState(null); // { x, y, items[] }
+
+  const modalOpen = showProfileModal || showCategoryModal;
+
+  useEffect(() => {
+    onModalOpenChange?.(modalOpen);
+  }, [modalOpen, onModalOpenChange]);
 
   // Ładuj kategorie z settings przy starcie
   useEffect(() => {
@@ -261,8 +273,12 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
   // saveProfiles() – zapisuje profile i propaguje zmianę do App
   // ----------------------------------------------------------------
   const saveProfiles = (newProfiles) => {
-    onProfilesChange(newProfiles);
-    window.electronAPI.saveProfiles(newProfiles);
+    const normalized = newProfiles.map((p) => {
+      const url = normalizeWebUrl(p.url);
+      return url ? { ...p, url } : p;
+    });
+    onProfilesChange(normalized);
+    window.electronAPI.saveProfiles(normalized);
   };
 
   // ----------------------------------------------------------------
@@ -291,6 +307,7 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
     }
     saveProfiles(newProfiles);
     setShowProfileModal(false);
+    onSelect({ ...profileData, type: 'webview' });
   };
 
   // ----------------------------------------------------------------
@@ -333,7 +350,7 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
         label: profile.favorite ? t('sidebar.unpin') : t('sidebar.pin'),
         action: () => toggleFavorite(profile.id) },
       '---',
-      { icon: ICONS.TASKS,    label: t('sidebar.open_tasks'),     action: () => {} }, // hook do TaskPanel
+      { icon: ICONS.TASKS,    label: t('sidebar.open_tasks'),     action: () => onOpenTaskPanel?.(profile) },
       '---',
       { icon: ICONS.DELETE,   label: t('sidebar.delete_profile'), action: () => deleteProfile(profile.id), danger: true },
     ];
@@ -365,14 +382,17 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
     return (
       <div key={p.id}
         className={`sidebar-item ${isActive ? 'active' : ''}`}
-        onClick={() => { onSelect(p); log('Sidebar: profile selected:', p.name); }}
+        onClick={() => {
+          onSelect({ ...p, type: p.type || 'webview' });
+          log('Sidebar: profile selected:', p.name);
+        }}
         onContextMenu={e => handleContext(e, p)}
         title={p.url}>
 
         {/* Ikona profilu */}
         {isEmoji
-          ? <span style={{ fontSize: 16, minWidth: 20, textAlign: 'center' }}>{iconStr}</span>
-          : <img src={iconStr} alt="" style={{ width: 18, height: 18, objectFit: 'contain', borderRadius: 3 }}
+          ? <span style={{ fontSize: 16, minWidth: 20, flexShrink: 0, textAlign: 'center' }}>{iconStr}</span>
+          : <img src={iconStr} alt="" style={{ width: 18, height: 18, flexShrink: 0, objectFit: 'contain', borderRadius: 3 }}
               onError={e => { e.target.style.display = 'none'; }} />
         }
 
@@ -472,43 +492,58 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
             );
           })}
 
-        {/* Profile bez kategorii */}
-        {byCategory[''] && (
+        {byCategory['']?.length > 0 && (
           <div>
-            {!Object.keys(byCategory).some(k => k !== '') && (
-              <div className="sidebar-category">{ICONS.FOLDER} {t('sidebar.all_profiles')}</div>
-            )}
+            <div className="sidebar-category">{ICONS.FOLDER} {t('sidebar.all_workspaces') || t('sidebar.all_profiles')}</div>
+            {byCategory[''].map(renderProfile)}
           </div>
         )}
 
         {/* Separator Narzędzia */}
         <div style={{ height: 1, background: 'var(--border)', margin: '10px 4px' }} />
-        <div className="sidebar-category">{ICONS.SETTINGS} {t('sidebar.special')}</div>
+        <div
+          className="sidebar-category"
+          onClick={() => setToolsCollapsed(c => !c)}
+        >
+          <span>{ICONS.SETTINGS}</span>
+          <span style={{ flex: 1 }}>{t('sidebar.special')}</span>
+          <span style={{ fontSize: 10 }}>
+            {toolsCollapsed ? ICONS.CHEVRON_RIGHT : ICONS.CHEVRON_DOWN}
+          </span>
+        </div>
 
-        {/* Główne narzędzia */}
-        {topSpecial.map(tool => {
+        {!toolsCollapsed && topSpecial.map(tool => {
           const icon = ICONS[SIDEBAR_ICON_MAP[tool.id]] || ICONS.DEFAULT;
           const isActive = activeItem?.id === tool.id;
           return (
             <div key={tool.id}
               className={`sidebar-item ${isActive ? 'active' : ''}`}
-              onClick={() => { onSelect({ id: tool.id, type: 'special' }); }}>
-              <span style={{ fontSize: 15 }}>{icon}</span>
-              <span>{t(tool.labelKey)}</span>
+              onClick={() => {
+                onSelect({ id: tool.id, type: 'special' });
+                log('Sidebar: tool selected:', tool.id);
+              }}>
+              <span style={{ fontSize: 15, flexShrink: 0, minWidth: 20, textAlign: 'center' }}>{icon}</span>
+              <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {t(tool.labelKey)}
+              </span>
             </div>
           );
         })}
 
-        {/* Pozostałe narzędzia – alfabetycznie */}
-        {sortedSpecial.map(tool => {
+        {!toolsCollapsed && sortedSpecial.map(tool => {
           const icon = ICONS[SIDEBAR_ICON_MAP[tool.id]] || ICONS.DEFAULT;
           const isActive = activeItem?.id === tool.id;
           return (
             <div key={tool.id}
               className={`sidebar-item ${isActive ? 'active' : ''}`}
-              onClick={() => { onSelect({ id: tool.id, type: 'special' }); }}>
-              <span style={{ fontSize: 15 }}>{icon}</span>
-              <span>{t(tool.labelKey)}</span>
+              onClick={() => {
+                onSelect({ id: tool.id, type: 'special' });
+                log('Sidebar: tool selected:', tool.id);
+              }}>
+              <span style={{ fontSize: 15, flexShrink: 0, minWidth: 20, textAlign: 'center' }}>{icon}</span>
+              <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {t(tool.labelKey)}
+              </span>
             </div>
           );
         })}

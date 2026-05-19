@@ -10,6 +10,7 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import Sidebar from './ui/sidebar/Sidebar';
 import { log, initLogger, setDebugMode } from './utils/loggerRenderer';
+import { normalizeWebUrl } from './utils/urlUtils';
 import { useTranslation } from './hooks/useTranslation';
 
 const WebViewTab = lazy(() => import('./ui/webview/WebViewTab'));
@@ -50,18 +51,31 @@ export default function App() {
   const [currentProject, setCurrentProject] = useState('');
   const [netToast, setNetToast] = useState(null);
   const [netToastType, setNetToastType] = useState('offline');
+  const [sidebarModalOpen, setSidebarModalOpen] = useState(false);
 
   useEffect(() => {
+    import('./ui/help/Help');
+    import('./ui/notepad/Notepad');
+    import('./ui/settings/Settings');
     initLogger().then(() => log('App: logger initialized'));
 
     window.electronAPI.getProfiles().then((p) => {
-      setProfiles(p || []);
-      log('App: profiles loaded', p?.length);
+      const list = (p || []).map((prof) => {
+        const normalized = normalizeWebUrl(prof.url);
+        if (normalized && normalized !== prof.url) {
+          return { ...prof, url: normalized };
+        }
+        return prof;
+      });
+      setProfiles(list);
+      log('App: profiles loaded', list.length);
     });
 
     window.electronAPI.getSettings().then((s) => {
-      setSettings(s || {});
-      applyTheme(s?.theme || 'system');
+      const merged = s || {};
+      setSettings(merged);
+      setDebugMode(merged.debugMode !== false);
+      applyTheme(merged.theme || 'system');
     });
 
     const showToastMsg = (msg, type) => {
@@ -104,7 +118,7 @@ export default function App() {
     const merged = { ...settings, ...patch };
     setSettings(merged);
     await window.electronAPI.saveSettings(patch);
-    setDebugMode(merged.debugMode || false);
+    setDebugMode(merged.debugMode !== false);
     applyTheme(merged.theme || 'system');
   };
 
@@ -125,11 +139,8 @@ export default function App() {
       </Suspense>
     );
 
-    if (activeItem.type === 'webview') {
-      return wrap(WebViewTab, { profile: activeItem, isActive: true });
-    }
-
-    switch (activeItem.id) {
+    if (activeItem.type === 'special') {
+      switch (activeItem.id) {
       case 'notepad':
         return wrap(Notepad);
       case 'projectManager':
@@ -158,22 +169,63 @@ export default function App() {
         return wrap(HistoryLog);
       default:
         return <div style={{ padding: 32 }}>Nieznane narzędzie: {activeItem.id}</div>;
+      }
     }
+
+    if (activeItem.type === 'webview' || activeItem.url) {
+      const profile = activeItem.type === 'webview' ? activeItem : { ...activeItem, type: 'webview' };
+      return wrap(WebViewTab, {
+        profile,
+        isActive: true,
+        suspended: sidebarModalOpen
+      });
+    }
+
+    return <div style={{ padding: 32 }}>Nieznany element: {activeItem.name || activeItem.id}</div>;
   };
+
+  const handleOpenTaskPanel = (profileOrProject) => {
+    const name =
+      typeof profileOrProject === 'string'
+        ? profileOrProject
+        : profileOrProject?.taskProject || profileOrProject?.name || 'default';
+    setCurrentProject(name);
+    setShowTaskPanel(true);
+    log('App: TaskPanel opened for', name);
+  };
+
+  const isWebViewActive =
+    activeItem && (activeItem.type === 'webview' || (activeItem.url && activeItem.type !== 'special'));
+
+  useEffect(() => {
+    document.body.classList.toggle('tools-active', !isWebViewActive);
+    return () => document.body.classList.remove('tools-active');
+  }, [isWebViewActive]);
 
   if (!loaded) return <Spinner />;
 
   return (
-    <div className="flex h-screen" style={{ background: 'var(--bg-primary)' }}>
+    <div className="flex h-screen app-root" style={{ background: 'var(--bg-primary)' }}>
       <Sidebar
         profiles={profiles}
         onSelect={setActiveItem}
         activeItem={activeItem}
         onProfilesChange={setProfiles}
+        onOpenTaskPanel={handleOpenTaskPanel}
+        onModalOpenChange={setSidebarModalOpen}
       />
-      <div className="flex-1 flex flex-col overflow-hidden" style={{ minWidth: 0 }}>
-        {renderContent()}
-      </div>
+      <main
+        className={`main-area flex flex-col overflow-hidden ${isWebViewActive ? 'main-area--webview' : 'main-area--module'}`}
+        style={{ minWidth: 0, flex: 1, minHeight: 0 }}
+      >
+        <div
+          className="module-view"
+          style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}
+          key={activeItem ? `${activeItem.type}-${activeItem.id || activeItem.name}` : 'home'}
+        >
+          {renderContent()}
+        </div>
+      </main>
       <Suspense fallback={null}>
         <TaskPanel
           projectName={currentProject}

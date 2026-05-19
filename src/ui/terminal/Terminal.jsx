@@ -40,6 +40,15 @@ export default function Terminal({ cwd }) {
     }
 
     const id = await window.electronAPI.createTerminal(workDir || cwd);
+    if (!id) {
+      if (outputRef.current) {
+        outputRef.current.textContent =
+          t('terminal.unavailable') ||
+          'Terminal niedostępny (node-pty / Windows ConPTY). Spróbuj ponownie po restarcie aplikacji.';
+      }
+      log('Terminal: create failed — brak id sesji');
+      return;
+    }
     termIdRef.current = id;
     setReady(true);
     log('Terminal: created, id:', id, 'cwd:', workDir || cwd);

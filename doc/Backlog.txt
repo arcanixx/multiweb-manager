@@ -31,6 +31,13 @@ DO-ANALYSIS (wymaga decyzji / researchu przed implementacją)
 BACKLOG — funkcje i usprawnienia
 ================================================================================
 
+Help.jsx — lazy / chunked sekcje
+  - Pierwsze otwarcie Pomocy może blokować UI (duży JSX + locales).
+  - v0.0.3: prefetch chunk + defer mount (requestAnimationFrame).
+  - Docelowo: React.lazy per sekcja (profiles, tools, tasks, faq).
+
+================================================================================
+
 theme.js
   - Schematy kolorów aplikacji (poza CSS variables)
 

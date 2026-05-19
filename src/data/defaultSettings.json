@@ -7,6 +7,10 @@
     "autoUpdate": false,
     "showTooltips": true,
     "enableAnimations": true,
-    "defaultHomeModule": "profiles"
+    "defaultHomeModule": "profiles",
+    "debugMode": true,
+    "categories": [],
+    "collapsedCategories": {},
+    "projects": []
   }
 }
