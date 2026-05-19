@@ -15,7 +15,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { ICONS } from '../../utils/icons';
 import { useTranslation } from '../../hooks/useTranslation';
-import { log } from '../../utils/logger';
+import { log } from '../../utils/loggerRenderer';
 
 export default function Terminal({ cwd }) {
   const { t } = useTranslation();

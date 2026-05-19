@@ -13,10 +13,10 @@
 
 import React, { useState, useCallback } from "react";
 import axios from "axios";
-import { ICONS } from '../../utils/icons";
-import { useTranslation } from '../../hooks/useTranslation";
-import { log, error as logError } from '../../utils/logger";
-import { API_ENDPOINTS } from '../../config";
+import { ICONS } from "../../utils/icons";
+import { useTranslation } from "../../hooks/useTranslation";
+import { log, error as logError } from "../../utils/loggerRenderer";
+import { API_ENDPOINTS } from "../../config";
 
 export default function RemoveBgTool({ apiKey, plan = "free" }) {
   const { t } = useTranslation();

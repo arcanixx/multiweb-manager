@@ -9,7 +9,7 @@
 
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import Sidebar from './ui/sidebar/Sidebar';
-import { log, initLogger, setDebugMode } from './utils/logger';
+import { log, initLogger, setDebugMode } from './utils/loggerRenderer';
 import { useTranslation } from './hooks/useTranslation';
 
 const WebViewTab = lazy(() => import('./ui/webview/WebViewTab'));

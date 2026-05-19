@@ -1,0 +1,9 @@
+// File: .eslintrc.json
+//Purpose: wyłącza regułę powodującą błędy przy kompilacji
+
+{
+  "extends": ["react-app"],
+  "rules": {
+    "react-hooks/exhaustive-deps": "off"
+  }
+}

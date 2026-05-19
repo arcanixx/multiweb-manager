@@ -13,7 +13,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ICONS } from '../../utils/icons';
 import { useTranslation } from '../../hooks/useTranslation';
-import { log, error as logError } from '../../utils/logger';
+import { log, error as logError } from '../../utils/loggerRenderer';
 
 const PRIORITY_COLORS = {
   A: '#ef4444',

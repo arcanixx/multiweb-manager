@@ -18,7 +18,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ICONS } from '../../utils/icons';
 import { useTranslation } from '../../hooks/useTranslation';
-import { log, error as logError } from '../../utils/logger';
+import { log, error as logError } from '../../utils/loggerRenderer';
 
 // Kolory priorytetów jako klasy CSS (zdefiniowane w index.css)
 const PRIORITY_COLORS = {

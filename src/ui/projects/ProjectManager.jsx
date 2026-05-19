@@ -15,7 +15,7 @@
 import React, { useState, useEffect } from 'react';
 import { ICONS } from '../../utils/icons';
 import { useTranslation } from '../../hooks/useTranslation';
-import { log } from '../../utils/logger';
+import { log } from '../../utils/loggerRenderer';
 
 // ─── Modal dodawania projektu ────────────────────────────────────────────────
 function AddProjectModal({ onSave, onClose, t }) {

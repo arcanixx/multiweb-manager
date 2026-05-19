@@ -13,9 +13,9 @@
 // =============================================================================
 
 import React, { useState, useCallback } from "react";
-import { ICONS } from '../../utils/icons";
-import { useTranslation } from '../../hooks/useTranslation";
-import { log } from '../../utils/logger";
+import { ICONS } from "../../utils/icons";
+import { useTranslation } from "../../hooks/useTranslation";
+import { log } from "../../utils/loggerRenderer";
 
 function cartesian(arrays) {
   if (!arrays || arrays.length === 0) return [[]];

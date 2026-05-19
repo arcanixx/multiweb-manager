@@ -12,7 +12,7 @@
 import React, { useState, useEffect } from 'react';
 import { ICONS } from '../../utils/icons';
 import { useTranslation } from '../../hooks/useTranslation';
-import { log, error as logError } from '../../utils/logger';
+import { log, error as logError } from '../../utils/loggerRenderer';
 
 export default function HistoryLog() {
   const { t } = useTranslation();

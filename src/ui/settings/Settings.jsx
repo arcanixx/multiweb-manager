@@ -15,7 +15,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ICONS } from '../../utils/icons';
 import { useTranslation } from '../../hooks/useTranslation';
-import { log, setDebugMode } from '../../utils/logger';
+import { log, setDebugMode } from '../../utils/loggerRenderer';
 import UpdateChecker from '../system/UpdateChecker';
 import SettingsAccount from './SettingsAccount';
 

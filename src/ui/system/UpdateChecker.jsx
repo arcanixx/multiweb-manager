@@ -12,7 +12,7 @@
 import React, { useState, useEffect } from 'react';
 import { ICONS } from '../../utils/icons';
 import { useTranslation } from '../../hooks/useTranslation';
-import { log } from '../../utils/logger';
+import { log } from '../../utils/loggerRenderer';
 
 export default function UpdateChecker() {
   const { t } = useTranslation();

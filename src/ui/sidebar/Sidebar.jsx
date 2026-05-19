@@ -19,7 +19,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ICONS, SIDEBAR_ICON_MAP } from '../../utils/icons';
 import { useTranslation } from '../../hooks/useTranslation';
-import { log } from '../../utils/logger';
+import { log } from '../../utils/loggerRenderer';
 
 // Stałe narzędzia specjalne – kolejność zawsze ta sama, nad alfabetyczną listą
 const SPECIAL_TOOLS = [

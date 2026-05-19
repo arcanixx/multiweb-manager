@@ -23,6 +23,9 @@ import { loadSettings } from "./src/core/settingsStore.js";
 import { logInfo, logError } from "./src/utils/logger.js";
 import { runAllTests } from "./tests/TestRunner.js";
 
+// Wykrycie trybu DeviceID
+const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
+
 // ESM nie ma __dirname — obliczamy ręcznie
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -90,7 +93,11 @@ function createWindow() {
     }
   });
 
-  mainWindow.loadFile("index.html");
+ if (isDev) {
+  mainWindow.loadURL('http://localhost:3000');
+} else {
+  mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
+}
 
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();

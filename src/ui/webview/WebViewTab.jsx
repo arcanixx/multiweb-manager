@@ -11,7 +11,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { ICONS } from '../../utils/icons';
 import { useTranslation } from '../../hooks/useTranslation';
-import { log, logError } from '../../utils/logger';
+import { log, logError } from '../../utils/loggerRenderer';
 import { FEATURES, DEFAULT_SETTINGS } from '../../config';
 
 export default function WebViewTab({ profile, isActive = true }) {
