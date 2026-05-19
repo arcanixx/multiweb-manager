@@ -2,7 +2,7 @@
 // FILE: structure.txt
 // PATH: multiweb-manager/structure.txt
 // VERSION: 0.0.3
-// PURPOSE: Struktura projektu + mapowanie modułów, feature’ów i odpowiedzialności.
+// PURPOSE: Struktura projektu + mapowanie modułów, feature'ów i odpowiedzialności.
 // DEPENDS ON: DevelopersGuide.md
 // FUNCTIONS: brak
 // =============================================================================
@@ -14,6 +14,8 @@
 // - IPC: src/ipc/* + ipcLegacyBridge.js (kanały preload: get-profiles, save-settings, …)
 // - Store: src/core/* (profiles, settings, tasks, projects, history, notes, workspaces)
 // - Ikony kanonicznie: src/data/icons.js (re-export w src/utils/icons.js)
+// - Logger: src/utils/logger.js (implementacja) + src/utils/loggerRenderer.js (re-export wrapper)
+//           komponenty React importują z loggerRenderer, NIE z logger bezpośrednio
 // - Pomoc: helpData.js + helpData_pl.json / helpData_en.json (rozbudowa w toku)
 //
 // =============================================================================
@@ -30,7 +32,7 @@ multiweb-manager/
 ├── config.js
 │   ROLA: Stała konfiguracja aplikacji (domyślne wartości, limity, feature flags).
 │         Przykład: debugMode default, sleepTabsTimeout, historyLimit, removeBg endpoint.
-│   UWAGI: Tu trzymamy rzeczy „stałe”, nie user settings.
+│   UWAGI: Tu trzymamy rzeczy „stałe", nie user settings.
 │
 ├── main.js
 │   ROLA: Główny proces Electron.
@@ -43,17 +45,21 @@ multiweb-manager/
 │     - IPC: settings, profiles, tasks, notepad, history, tools, update checker
 │   DEPENDS: preload.js, electron-store, node-pty, file system, config.js
 │
-├── preload.js
+├── preload.js (lub preload.cjs)
 │   ROLA: Most między rendererem a procesem głównym (contextBridge).
 │         Eksponuje window.electronAPI z bezpiecznymi metodami IPC.
 │   ZASADY:
 │     - Brak bezpośredniego dostępu do ipcRenderer poza exposeInMainWorld.
 │     - Funkcje onX zwracają cleanup (do usuwania listenerów).
 │   DEPENDS: electron (contextBridge, ipcRenderer)
+│   UWAGI: Projekt posiada zarówno preload.js jak i preload.cjs —
+│           aktywny plik wskazany w main.js (BrowserWindow.webPreferences.preload).
 │
 ├── index.html
-│   ROLA: Główny dokument HTML ładowany przez Electron.
-│         Zawiera #root dla Reacta, ładuje src/index.jsx.
+│   ROLA: Główny dokument HTML ładowany przez Electron (BrowserWindow.loadFile).
+│         Zawiera #root dla Reacta.
+│   UWAGI: NIE jest to public/index.html z CRA — projekt używa Electron + Webpack,
+│           nie CRA (react-scripts).
 │
 ├── README.md
 │   ROLA: Ogólny opis projektu, skróty, podstawowa instrukcja uruchomienia.
@@ -61,8 +67,12 @@ multiweb-manager/
 ├── structure.txt
 │   ROLA: Ten plik – mapa struktury projektu i zależności.
 │
+├── Struktura.txt
+│   ROLA: Poprzednia wersja structure.txt (v1) — zachowana jako archiwum.
+│         Zawartość zmergowana do structure.txt v0.0.3.
+│
 └── DevelopersGuide.md
-    ROLA: Szczegółowy przewodnik implementacyjny (architektura, feature’y, zasady).
+    ROLA: Szczegółowy przewodnik implementacyjny (architektura, feature'y, zasady).
 
 ──────────────────────────────────────────────────────────────────────────────
   SRC – KOD RENDERERA (REACT)
@@ -75,7 +85,8 @@ src/
 │   FUNKCJE: App()
 │   DEPENDS: react-router-dom, Sidebar, Settings, TaskPanel, WebViewTab,
 │            Notepad, ProjectManager, AggregatedTasks, Terminal, HistoryLog,
-│            Help, Tools, UpdateChecker, useTranslation, index.css
+│            Help, Tools, UpdateChecker, useTranslation, index.css,
+│            utils/loggerRenderer (initLogger, setDebugMode)
 │
 ├── index.jsx
 │   ROLA: Punkt wejścia React.
@@ -165,7 +176,8 @@ src/
 │   │   │   FUNKCJE: WebViewTab(), handleNavigation(), handleOpenInBrowser(),
 │   │   │            handleCopyUrl(), handleSingleAppMode(), handleSleep(), handleWake()
 │   │   │   DEPENDS: WebViewToolbar, WebViewErrorBar, engine/ipcClient, sleepTabsManager,
-│   │   │            useTranslation, icons.js, Toast
+│   │   │            useTranslation, icons.js, Toast,
+│   │   │            utils/loggerRenderer (logError)
 │   │   │
 │   │   ├── WebViewToolbar.jsx
 │   │   │   ROLA: Toolbar jak w przeglądarce (back, forward, refresh, address bar, copy URL,
@@ -196,7 +208,8 @@ src/
 │   │             Język, debugMode, API keys, timeouty, dark mode, powiadomienia, hotkeys,
 │   │             eksport/import settings, otwieranie folderu logów.
 │   │       FUNKCJE: Settings(), handleSave(), handleReset(), handleExport(), handleImport()
-│   │       DEPENDS: settingsStore, config.js, logger, notificationsManager, useTranslation, Modal, Toast
+│   │       DEPENDS: settingsStore, config.js, utils/loggerRenderer (setDebugMode),
+│   │                notificationsManager, useTranslation, Modal, Toast
 │   │
 │   ├── Help/
 │   │   └── Help.jsx
@@ -206,7 +219,7 @@ src/
 │   │
 │   ├── UpdateChecker/
 │   │   └── UpdateChecker.jsx
-│   │       ROLA: Placeholder update checkera – ikona + toast „Coming soon”.
+│   │       ROLA: Placeholder update checkera – ikona + toast „Coming soon".
 │   │       FUNKCJE: UpdateChecker(), handleClick()
 │   │       DEPENDS: icons.js, Toast, useTranslation
 │   │
@@ -297,7 +310,7 @@ src/
 │       FUNKCJE: loadAppLibrary(), filterApps(), getAppById()
 
 ├── engine/
-│   ROLA: Warstwa „systemowa” – komunikacja z Electronem, sleep tabs, resource monitor, powiadomienia.
+│   ROLA: Warstwa „systemowa" – komunikacja z Electronem, sleep tabs, resource monitor, powiadomienia.
 │
 │   ├── ipcClient.js
 │   │   ROLA: Klient IPC po stronie renderera (wraper na window.electronAPI).
@@ -316,6 +329,31 @@ src/
 │       ROLA: Powiadomienia (toasty + system notifications + opcjonalnie Pushbullet).
 │       FUNKCJE: showToast(type, message), showSystemNotification(title, body), sendPushbullet(payload)
 
+├── ipc/
+│   ROLA: Handlery IPC po stronie main process (rejestrowane w main.js).
+│         Każdy plik odpowiada jednej domenie (settings, profiles, tasks, itp.).
+│   UWAGI: Obecny stan — kanały mogą być częściowo w main.js lub ipcLegacyBridge.js.
+│          Docelowo każda domena w osobnym pliku.
+│
+│   ├── ipcSettings.js
+│   │   ROLA: Handlery IPC dla settings (get-settings, save-settings, reset-settings).
+│   │
+│   ├── ipcProfiles.js
+│   │   ROLA: Handlery IPC dla profili (get-profiles, save-profiles, delete-profile).
+│   │
+│   ├── ipcTasks.js
+│   │   ROLA: Handlery IPC dla zadań (tasks:getAll, tasks:add, tasks:update, tasks:delete).
+│   │
+│   ├── ipcNotepad.js
+│   │   ROLA: Handlery IPC dla notatek (notepad:getAll, notepad:add, notepad:update, notepad:delete).
+│   │
+│   ├── ipcHistory.js
+│   │   ROLA: Handlery IPC dla historii (history:log, history:getAll, history:clear).
+│   │
+│   └── ipcLegacyBridge.js
+│       ROLA: Mostek dla starych kanałów IPC (kompatybilność wsteczna podczas migracji).
+│       UWAGI: Do usunięcia po pełnej migracji do ipc/*.
+
 ├── services/
 │   ROLA: Serwisy do operacji zewnętrznych / I/O.
 │
@@ -328,8 +366,9 @@ src/
 │   │   FUNKCJE: exportToFile(data, path), importFromFile(path)
 │   │
 │   ├── logService.js
-│   │   ROLA: Zapis logów do pliku (userData/logs/app.log).
+│   │   ROLA: Zapis logów do pliku (userData/logs/app.log) — działa TYLKO w main process.
 │   │   FUNKCJE: appendLog(entry), getLogFilePath()
+│   │   UWAGI: Renderer odpytuje o ścieżkę przez IPC (logger:getLogPath), nie importuje bezpośrednio.
 │   │
 │   └── apiService.js
 │       ROLA: Integracje z zewnętrznymi API (remove.bg, Pushbullet, itp.).
@@ -337,9 +376,22 @@ src/
 
 ├── utils/
 │   ├── logger.js
-│   │   ROLA: Logger dla renderera (i ewentualnie wspólny interfejs dla main).
-│   │         Respektuje debugMode (z settings/config).
-│   │   FUNKCJE: logDebug(), logInfo(), logWarn(), logError(), initLogger(), setDebugMode()
+│   │   ROLA: Implementacja loggera – pełne API logowania dla renderera.
+│   │         Respektuje debugMode (z settings przez IPC).
+│   │         Bezpieczny dla webpack/renderer – brak importów Node.js/Electron.
+│   │   FUNKCJE: initLogger(), setDebugMode(), isDebugMode(),
+│   │            log(), warn(), error(),
+│   │            logDebug(), logInfo(), logWarn(), logError(),
+│   │            getLogFilePath() → null (zawsze w rendererze)
+│   │   UWAGI: NIE importuj bezpośrednio w komponentach – używaj loggerRenderer.js.
+│   │
+│   ├── loggerRenderer.js
+│   │   ROLA: Cienki re-export wrapper nad logger.js dla komponentów React.
+│   │         Istnieje po to, żeby można było zmienić implementację loggera
+│   │         bez zmiany importów w komponentach.
+│   │   EKSPORTY: initLogger, setDebugMode, isDebugMode, log, warn, error,
+│   │             logDebug, logInfo, logWarn, logError, getLogFilePath
+│   │   UŻYWANY W: App.jsx, Settings.jsx, WebViewTab.jsx, Sidebar.jsx, …
 │   │
 │   ├── validation.js
 │   │   ROLA: Funkcje walidujące dane (settings, profiles, tasks, API payloads).
@@ -413,7 +465,7 @@ tests/
 │   ROLA: Testy warstwy engine (ipcClient, sleepTabsManager, resourceMonitor, notificationsManager).
 │
 ├── TestRunner_core.js
-│   ROLA: Testy store’ów (settings, profiles, tasks, projects, notepad, history, workspaces, appLibrary).
+│   ROLA: Testy store'ów (settings, profiles, tasks, projects, notepad, history, workspaces, appLibrary).
 │
 ├── TestRunner_settings.js
 │   ROLA: Testy logiki settings (merge, reset, eksport/import).
@@ -466,12 +518,12 @@ tests/
    - app.on('ready') → createWindow()
    - global error handlers (uncaughtException, unhandledRejection)
 
-2. preload.js
+2. preload.js / preload.cjs
    - contextBridge.exposeInMainWorld("electronAPI", { ... })
    - definicje metod IPC (invoke/send/on) z cleanup
 
 3. index.html
-   - ładowany przez BrowserWindow.loadFile("index.html")
+   - ładowany przez BrowserWindow.loadFile("index.html") lub loadURL("http://localhost:3000")
    - zawiera <div id="root"></div>
 
 4. src/index.jsx
@@ -481,39 +533,51 @@ tests/
 
 5. App.jsx
    - layout: Sidebar + router
-   - ładuje główne widoki (TaskPanel, WebViewTab, Notepad, ProjectManager, AggregatedTasks, Terminal, HistoryLog, Settings, Help, Tools)
+   - initLogger() w useEffect (ładuje debugMode z settings)
+   - ładuje główne widoki (TaskPanel, WebViewTab, Notepad, ProjectManager,
+     AggregatedTasks, Terminal, HistoryLog, Settings, Help, Tools)
 
-6. Hooki i store’y
+6. Hooki i store'y
    - useSettings / settingsStore → ładowanie settings z IPC
    - useProfiles / profilesStore → ładowanie profili
    - useTasks / tasksStore → ładowanie zadań
    - itd.
 
 7. Komponenty funkcjonalne
-   - Sidebar, TaskPanel, WebViewTab, Notepad, ProjectManager, AggregatedTasks, Terminal, HistoryLog, Settings, Help, Tools
+   - Sidebar, TaskPanel, WebViewTab, Notepad, ProjectManager, AggregatedTasks,
+     Terminal, HistoryLog, Settings, Help, Tools
 
 ══════════════════════════════════════════════════════════════════════
   ZALEŻNOŚCI MIĘDZY PLIKAMI (graf – uproszczony)
 ══════════════════════════════════════════════════════════════════════
 
 main.js
-  ← preload.js
+  ← preload.js / preload.cjs
       ← window.electronAPI (używany w: ipcClient.js, settingsStore, profilesStore,
                             tasksStore, projectsStore, notepadStore, historyStore,
                             workspacesStore, appLibraryStore, Terminal, WebViewTab)
+
+src/utils/logger.js
+  ← src/utils/loggerRenderer.js (re-export)
+      ← App.jsx (initLogger, setDebugMode)
+      ← Settings.jsx (setDebugMode)
+      ← WebViewTab.jsx (logError)
+      ← Sidebar.jsx (log, logError)
+      ← inne komponenty…
 
 src/index.jsx
   └─ TranslationProvider (useTranslation.js)
        └─ pl.json, en.json
   └─ App.jsx
        ├─ Sidebar.jsx
-       │    └─ icons.js, useTranslation.js, logger.js, profilesStore, workspacesStore,
+       │    └─ icons.js, useTranslation.js, loggerRenderer.js, profilesStore, workspacesStore,
        │       appLibraryStore, searchIndex.js
        ├─ TaskPanel.jsx
        │    └─ tasksStore, projectsStore, Modal, Toast, useTranslation
        ├─ WebViewTab.jsx
        │    └─ ipcClient.js, sleepTabsManager.js, notificationsManager.js,
-       │       WebViewToolbar.jsx, WebViewErrorBar.jsx, useTranslation, icons.js
+       │       WebViewToolbar.jsx, WebViewErrorBar.jsx, useTranslation, icons.js,
+       │       loggerRenderer.js (logError)
        ├─ Notepad.jsx
        │    └─ notepadStore, NotepadTabs.jsx, NotepadEditor.jsx, useTranslation
        ├─ ProjectManager.jsx
@@ -525,17 +589,25 @@ src/index.jsx
        ├─ HistoryLog.jsx
        │    └─ historyStore, useTranslation
        ├─ Settings.jsx
-       │    └─ settingsStore, config.js, logger.js, notificationsManager.js, useTranslation
+       │    └─ settingsStore, config.js, loggerRenderer.js (setDebugMode),
+       │       notificationsManager.js, useTranslation
        ├─ Help.jsx
        │    └─ helpData.js, useTranslation
        └─ Tools/*
             └─ utils (formatters, validation), icons.js, useTranslation
 
-// KONWENCJE GLOBALNE:
-// - Każdy plik ma nagłówek w ustalonym formacie.
+══════════════════════════════════════════════════════════════════════
+  KONWENCJE GLOBALNE
+══════════════════════════════════════════════════════════════════════
+
+// - Każdy plik ma nagłówek w ustalonym formacie (FILE, PATH, VERSION, PURPOSE, DEPENDS ON).
 // - Wszystkie teksty → locales + useTranslation.
 // - Wszystkie ikony → icons.js (ICONS.*).
 // - IPC: zawsze walidacja + try/catch + { ok, data, error }.
 // - Settings: zawsze merge, nie overwrite.
 // - Brak alert()/prompt() – tylko modale + toasty.
 // - Event listenery: zawsze cleanup w useEffect / onX zwraca funkcję usuwającą.
+// - Logger: komponenty React importują TYLKO z utils/loggerRenderer.js,
+//           NIE bezpośrednio z utils/logger.js.
+// - Renderer process: ZAKAZ importowania 'electron', 'fs', 'path', 'child_process'.
+//   Dostęp do Node.js API wyłącznie przez window.electronAPI (preload bridge).
