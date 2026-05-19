@@ -1,0 +1,768 @@
+Co jest potrzebne, żeby faktycznie zmergować duplikaty
+Żeby zrobić to porządnie (a nie „na czuja”), potrzebuję treści obu wersji danego modułu. Czyli:
+
+Main.js — wszystkie 3 wersje
+
+Sidebar.jsx — stara + nowa + placeholder
+
+TaskPanel.jsx — wszystkie wersje
+
+Notepad.jsx — wersja z syntax highlight + wersja z loggerem
+
+Terminal.jsx — placeholder + częściowa
+
+Settings.jsx — wszystkie wersje
+
+WebViewTab.jsx — wszystkie wersje
+
+ipcMainHandlers_terminal.js — jeśli masz więcej niż jedną wersję
+
+index.html, preload.js, package.json, accountsStore, clipboardStore, app-library.json, layout/index.css — jeśli istnieją w kilku wariantach w innych zipach
+
+W tej chwili w strukturze, którą mi wkleiłeś, widzę tylko aktualny zestaw.
+
+Propozycja kolejności działań
+Żeby nie robić chaosu, proponuję tak:
+
+Zaczynamy od „kręgosłupa” aplikacji:
+
+Main.js (scalona wersja)
+
+preload.js
+
+index.html
+
+package.json
+
+Potem UI / nawigacja:
+
+Sidebar.jsx
+
+App.jsx (skoro są 2 wersje, też do weryfikacji)
+
+Potem kluczowe moduły:
+
+TaskPanel.jsx + integracja z AggregatedTasks
+
+Notepad.jsx (spellcheck + code validation)
+
+Terminal.jsx + TerminalView.jsx
+
+WebViewTab.jsx
+
+Settings.jsx
+
+Na końcu:
+
+helpData_en/pl + locales
+
+TestRunner_*
+
+DevelopersGuide.md, TODO.md, structure.txt final
+
+
+
+
+1. PLIKI BRAKUJĄCE (MISSING — DO WYGNEROWANIA)
+Każdy punkt zaczyna się od Guided Link, żebyś mógł od razu przejść do generowania.
+
+TerminalView.jsx — brak fizycznego pliku, placeholder w raporcie; wymaga pełnej integracji z xterm.js + fit addon + scrollback + komendy + API.
+
+helpData_pl.js — brak.
+
+helpData_en.js — brak.
+
+TestRunner_Main.js — brak, a powinien istnieć.
+
+TestRunner_Utils.js — brak.
+
+TestRunner_Registry.js — brak.
+
+Main.js — wersja scalona — masz 3 wersje → trzeba scalić.
+
+Sidebar.jsx — wersja finalna — obecna NIE jest aktualna.
+
+AppLibrary.json — brak.
+
+icons.js — brak.
+
+DevelopersGuide.md — brak.
+
+structure.txt — final — brak aktualnej wersji.
+
+TODO.md — final — brak.
+
+config.js — final — obecny jest niepełny.
+
+🟧 2. PLIKI DO MERGE (ISTNIEJĄ W WIELU WERSJACH)
+Main.js — 3 wersje → trzeba scalić w jedną zgodną z architekturą.
+
+Sidebar.jsx — masz starą, nową, i placeholder.
+
+ProjectManager.jsx — istnieją 2 wersje (różne funkcje).
+
+TaskPanel.jsx — różne wersje, różne funkcje.
+
+Notepad.jsx — wersja z syntax highlight + wersja z loggerem.
+
+Terminal.jsx — placeholder + wersja częściowa.
+
+Settings.jsx — różne wersje.
+
+WebViewTab.jsx — różne wersje.
+
+🟨 3. PLIKI DO USUNIĘCIA (OUTDATED / DUPLIKATY / ZŁA LOKALIZACJA)
+helpData.js — zastępujemy locales + helpData_pl/en.
+
+Components/* stare pliki UI — UI przenosimy do UI/.
+
+stare TestRunner_* — i tak generujemy nowe.
+
+stare Main.js v1 — po merge niepotrzebny.
+
+stare Sidebar.jsx — po merge niepotrzebny.
+
+🟦 4. PLIKI DO UPDATE (ISTNIEJĄ, ALE WYMAGAJĄ POPRAWEK)
+config.js — wymaga dopisania komentarzy + ścieżek + opisów modułów.
+
+locales/en.json — wymaga dopisania helpData.
+
+locales/pl.json — wymaga dopisania helpData.
+
+TaskPanel.jsx — wymaga integracji z AggregatedTasks.
+
+ProjectManager.jsx — wymaga integracji z loggerem + nowym UI.
+
+Terminal.jsx — wymaga integracji z TerminalView.
+
+Notepad.jsx — wymaga dopisania spellcheck + code validation.
+
+🟩 5. PLIKI POPRAWNE (ZOSTAJĄ BEZ ZMIAN)
+logger.js — aktualny.
+
+utils.js — aktualny.
+
+RemoveBgTool.jsx — aktualny.
+
+StringCombiner.jsx — aktualny.
+
+AggregatedTasks.jsx — aktualny.
+
+🟪 6. PLIKI DO PRZENIESIENIA (ZŁA LOKALIZACJA)
+wszystkie UI z Components → UI/
+
+TestRunner → Tests/
+
+helpData → locales/
+
+🟫 7. PLIKI DO WERYFIKACJI (NIE WIEMY, KTÓRA WERSJA JEST AKTUALNA)
+App.jsx — masz 2 wersje.
+
+index.js — trzeba sprawdzić integrację z Electronem.
+
+preload.js — różne wersje w zipach.
+
+
+
+🚨 3. NAJWAŻNIEJSZE BRAKI (do natychmiastowego uzupełnienia)
+A. Brakujące IPC
+ipcMainHandlers_notes.js
+
+ipcMainHandlers_workspaces.js
+
+ipcMainHandlers_updateChecker.js
+
+B. Brakujące moduły
+sleepTabsManager.js
+
+notificationsManager.js
+
+appLibraryStore.js
+
+searchIndex.js
+
+hotkeysStore.js
+
+hotkeys manager UI
+
+C. Brakujące integracje
+brak integracji UpdateChecker → main.js
+
+brak integracji Workspaces → Sidebar / App
+
+brak integracji unified search (Ctrl+K)
+
+brak integracji quick switcher (Ctrl+P)
+
+
+
+multiweb-manager/
+├── main.js
+├── preload.js
+├── index.html
+├── index.jsx
+├── config.js
+├── package.json
+│
+├── src/
+│   ├── core/
+│   │   ├── accountsStore.js
+│   │   ├── clipboardStore.js
+│   │   ├── settingsStore.js
+│   │   ├── profilesStore.js
+│   │   ├── tasksStore.js
+│   │   ├── projectsStore.js
+│   │   ├── notepadStore.js
+│   │   ├── historyStore.js
+│   │   ├── workspacesStore.js
+│   │   ├── resourceMonitor.js
+│   │   └── appLibraryStore.js   ❗ MISSING
+│   │
+│   ├── ipc/
+│   │   ├── ipcMainHandlers_profiles.js
+│   │   ├── ipcMainHandlers_tasks.js
+│   │   ├── ipcMainHandlers_projects.js
+│   │   ├── ipcMainHandlers_webview.js
+│   │   ├── ipcMainHandlers_terminal.js
+│   │   ├── ipcMainHandlers_settings.js
+│   │   ├── ipcMainHandlers_tools.js
+│   │   ├── ipcMainHandlers_history.js
+│   │   ├── ipcMainHandlers_misc.js
+│   │   ├── ipcMainHandlers_aggregatedTasks.js
+│   │   ├── ipcMainHandlers_notes.js       ❗ MISSING
+│   │   ├── ipcMainHandlers_workspaces.js  ❗ MISSING
+│   │   └── ipcMainHandlers_updateChecker.js ❗ MISSING
+│   │
+│   ├── components/
+│   │   ├── Sidebar.jsx
+│   │   ├── App.jsx
+│   │   ├── WebViewTab.jsx
+│   │   ├── Terminal.jsx
+│   │   ├── Notepad.jsx
+│   │   ├── ProjectManager.jsx
+│   │   ├── AggregatedTasks.jsx
+│   │   ├── HistoryLog.jsx
+│   │   ├── RemoveBgTool.jsx
+│   │   ├── StringCombiner.jsx
+│   │   ├── Settings.jsx
+│   │   ├── Help.jsx
+│   │   ├── ToolsPanel.jsx
+│   │   └── UpdateChecker.jsx
+│   │
+│   ├── utils/
+│   │   ├── logger.js
+│   │   ├── fileUtils.js
+│   │   ├── imageUtils.js
+│   │   ├── imageProcessor.js
+│   │   ├── validators.js
+│   │   ├── networkUtils.js
+│   │   ├── notificationsManager.js ❗ MISSING
+│   │   ├── searchIndex.js          ❗ MISSING
+│   │   └── hotkeys.js              ❗ MISSING
+│   │
+│   ├── hooks/
+│   │   ├── useTranslation.js
+│   │   ├── useSettings.js
+│   │   ├── useTasks.js
+│   │   ├── useProjects.js
+│   │   ├── useNotepad.js
+│   │   ├── useHistoryLog.js
+│   │   └── useWorkspaces.js
+│   │
+│   ├── data/
+│   │   ├── icons.js
+│   │   ├── helpData.js
+│   │   ├── app-library.json
+│   │   ├── constants.js
+│   │   ├── defaultProfiles.json
+│   │   └── defaultSettings.json
+│   │
+│   ├── locales/
+│   │   ├── pl.json
+│   │   └── en.json
+│   │
+│   ├── styles/
+│   │   ├── index.css
+│   │   └── layout.css
+│   │
+│   └── tools/
+│       ├── svgToPng.js
+│       ├── markdownRenderer.js
+│       ├── regexEngine.js
+│       └── apiClient.js
+│
+└── tests/
+    ├── TestRunner.js
+    ├── TestRunner_*.js
+
+
+
+🧩 1. STATUS WSZYSTKICH PLIKÓW (po analizie 14 dokumentów)
+✔️ 1.1. Pliki aktualne (FINALNE, właściwe, zgodne z architekturą)
+Te pliki są poprawne, kompletne i zgodne z structure.txt:
+
+CORE
+src/core/accountsStore.js
+
+src/core/clipboardStore.js
+
+src/core/settingsStore.js
+
+src/core/projectsStore.js
+
+src/core/tasksStore.js
+
+src/core/historyStore.js
+
+src/core/notepadStore.js
+
+src/core/workspacesStore.js
+
+src/core/resourceMonitor.js
+
+IPC
+ipcMainHandlers_profiles.js
+
+ipcMainHandlers_tasks.js
+
+ipcMainHandlers_projects.js
+
+ipcMainHandlers_webview.js
+
+ipcMainHandlers_terminal.js
+
+ipcMainHandlers_settings.js
+
+ipcMainHandlers_tools.js
+
+ipcMainHandlers_history.js
+
+ipcMainHandlers_misc.js
+
+ipcMainHandlers_aggregatedTasks.js
+
+UI / COMPONENTS
+Sidebar.jsx
+
+App.jsx
+
+WebViewTab.jsx (wersja v1 — ta z pełnym toolbar + błędy + zoom + cache)
+
+Terminal.jsx (pełna wersja z node-pty IPC)
+
+Notepad.jsx (pełna wersja multi-tab + autosave)
+
+ProjectManager.jsx (modal + partial save)
+
+AggregatedTasks.jsx (pełna wersja z collapse/visibility/filter)
+
+HistoryLog.jsx
+
+RemoveBgTool.jsx
+
+StringCombiner.jsx
+
+Settings.jsx
+
+Help.jsx
+
+ToolsPanel.jsx
+
+UpdateChecker.jsx
+
+UTILS
+logger.js (renderer)
+
+logger.js (main)
+
+fileUtils.js
+
+imageUtils.js
+
+imageProcessor.js
+
+validators.js
+
+networkUtils.js
+
+HOOKS
+useTranslation.js
+
+useSettings.js
+
+useTasks.js
+
+useProjects.js
+
+useNotepad.js
+
+useHistoryLog.js
+
+useWorkspaces.js
+
+DATA
+app-library.json
+
+helpData.js
+
+constants.js
+
+defaultProfiles.json
+
+defaultSettings.json
+
+STYLES
+index.css (pełny, finalny)
+
+layout.css (pełny, finalny)
+
+MAIN / PRELOAD / ENTRY
+main.js (wersja v1.0 — ta z TestRunnerem, preload, security, single instance lock)
+
+preload.js (bezpieczny bridge)
+
+index.html
+
+index.jsx
+
+TESTS
+TestRunner.js
+
+wszystkie TestRunner_* (opisane w structure.txt)
+
+⚠️ 1.2. Pliki przestarzałe / duplikaty / do usunięcia
+❌ Duplikaty accountsStore.js
+masz 2 wersje (0.0.2 i 0.0.3)
+→ zostaje wersja 0.0.3 (ta z loggerem)
+
+❌ Duplikaty clipboardStore.js
+jedna wersja używa CONFIG.maxClipboardHistory
+
+druga LIMITS.maxClipboardItems
+→ zostaje wersja z LIMITS (czyli ta z config.js)
+
+❌ Duplikaty WebViewTab.jsx
+jedna wersja stara (0.0.3)
+
+jedna wersja nowa (v1 — pełna, kompletna)
+→ zostaje wersja v1
+
+❌ Duplikaty Notepad.jsx
+jedna wersja stara (prosta, bez multi-tab)
+
+jedna wersja nowa (pełna, multi-tab, autosave)
+→ zostaje wersja nowa
+
+❌ Duplikaty Settings.jsx
+jedna wersja surowa (wyświetla JSON)
+
+jedna wersja pełna (UI, sekcje, toggles, API keys)
+→ zostaje wersja pełna
+
+❌ Duplikaty Terminal.jsx
+jedna wersja placeholder
+
+jedna wersja pełna (node-pty + IPC + restart + kill)
+→ zostaje wersja pełna
+
+❌ Duplikaty ProjectManager.jsx
+jedna wersja stara (prosta)
+
+jedna wersja nowa (modal + partial save)
+→ zostaje wersja nowa
+
+🧨 1.3. Pliki NIEKOMPLETNE / wymagające dopisania
+❗ Brakuje:
+ipcMainHandlers_notes.js (jest store, jest UI, ale brak IPC)
+
+ipcMainHandlers_workspaces.js (hook istnieje, store istnieje, IPC brak)
+
+ipcMainHandlers_updateChecker.js (UpdateChecker wywołuje checkForUpdates)
+
+sleepTabsManager.js (opisany w DevelopersGuide, ale brak pliku)
+
+notificationsManager.js (opisany, ale brak pliku)
+
+appLibraryStore.js (opisany, ale brak pliku)
+
+searchIndex.js (opisany, ale brak pliku)
+
+hotkeysStore.js (opisany, ale brak pliku)
+
+hotkeys manager UI (opisany, ale brak pliku)
+
+
+
+
+
+BACKLOG — DevelopmentGuide.md (FINAL)
+(Każdy punkt zaczyna się Guided Linkiem — zgodnie z Twoim standardem)
+
+🟥 1. Brakujące pliki — do wygenerowania
+TerminalView.jsx — pełna integracja z xterm.js, fit-addon, scrollback, komendy, API, eventy, resize, focus, theme.
+
+helpData_pl.js — pełna struktura pomocy PL.
+
+helpData_en.js — pełna struktura pomocy EN.
+
+TestRunner_Main.js — orchestrator testów.
+
+TestRunner_Utils.js — narzędzia testowe.
+
+TestRunner_Registry.js — rejestr testów.
+
+Main.js (scalony) — finalna wersja z:
+
+global error handling,
+
+security WebView,
+
+preload isolation,
+
+testRunner integration,
+
+singleInstanceLock,
+
+IPC registry.
+
+Sidebar.jsx (final) — scalona wersja.
+
+AppLibrary.json — pełna biblioteka aplikacji.
+
+icons.js — finalny zestaw ikon.
+
+DevelopersGuide.md — finalny dokument.
+
+structure.txt — finalna struktura projektu.
+
+TODO.md — finalny checklist.
+
+🟧 2. Pliki do MERGE (wiele wersji → jedna finalna)
+Main.js — 3 wersje → jedna finalna.
+
+Sidebar.jsx — 3 wersje → jedna finalna.
+
+ProjectManager.jsx — 2 wersje → jedna finalna.
+
+TaskPanel.jsx — różne wersje → jedna finalna.
+
+Notepad.jsx — wersja z syntax highlight + wersja z loggerem → jedna finalna.
+
+Terminal.jsx — placeholder + częściowa → jedna finalna.
+
+Settings.jsx — różne wersje → jedna finalna.
+
+WebViewTab.jsx — różne wersje → jedna finalna.
+
+index.css + layout.css — scalenie stylów.
+
+package.json — scalenie zależności i skryptów.
+
+preload.js — scalenie wersji.
+
+AccountsStore.js — 2 wersje → jedna finalna.
+
+clipboardStore.js — 2 wersje → jedna finalna.
+
+app-library.json — placeholder + stara wersja → jedna finalna.
+
+WebViewTab.jsx — różne wersje → jedna finalna.
+
+🟨 3. Pliki do USUNIĘCIA (outdated / duplikaty / złe miejsce)
+helpData.js — zastępują go helpData_pl/en.
+
+Components/* — stare UI → przeniesione do UI/.
+
+TestRunner_* stare — generujemy nowe.
+
+Main.js v1 — po merge niepotrzebny.
+
+Sidebar.jsx stare — po merge niepotrzebne.
+
+🟦 4. Pliki do UPDATE (istnieją, ale wymagają poprawek)
+config.js — komentarze, ścieżki, opis modułów, logger, testRunner.
+
+locales/en.json — dopisać helpData.
+
+locales/pl.json — dopisać helpData.
+
+TaskPanel.jsx — integracja z AggregatedTasks.
+
+ProjectManager.jsx — integracja z loggerem + nowy UI.
+
+Terminal.jsx — integracja z TerminalView.
+
+Notepad.jsx — spellcheck + code validation.
+
+WebViewTab.jsx — security, preload, IPC.
+
+🟩 5. Pliki poprawne (bez zmian)
+logger.js — OK.
+
+utils.js — OK.
+
+RemoveBgTool.jsx — OK.
+
+StringCombiner.jsx — OK.
+
+AggregatedTasks.jsx — OK.
+
+🟪 6. Pliki do PRZENIESIENIA (zła lokalizacja)
+Components → UI — wszystkie stare UI.
+
+TestRunner → tests — finalna lokalizacja.
+
+helpData → locales — finalna lokalizacja.
+
+🟫 7. Pliki do WERYFIKACJI
+App.jsx — są 2 wersje → wybrać właściwą.
+
+index.js — sprawdzić integrację z Electronem.
+
+preload.js — sprawdzić zgodność z security.
+
+
+
+
+
+BACKLOG — DO WPROWADZENIA W DEVELOPERSGUIDE.MD
+🔥 DO‑ANALYSIS (rzeczy wymagające doprecyzowania, researchu lub decyzji projektowej)
+Multi‑Account Architecture — finalny model przechowywania wielu kont, separacja workspace’ów, izolacja danych, profile per account.
+
+AI Agent Integration — zakres funkcji, dostęp do API, ograniczenia, bezpieczeństwo, tryb offline/online.
+
+Automatic Code Review — analiza plików, linting, raporty, integracja z Notepad/Projects.
+
+Cloud Sync Model — czy synchronizujemy profile, ustawienia, projekty, workspace’y; jaki provider; szyfrowanie.
+
+Pushbullet Integration — zakres: powiadomienia o taskach, logach, błędach, akcjach użytkownika.
+
+Security Model — sandbox WebView, CSP, blokowanie eval, izolacja preload, blokowanie zewnętrznych schematów.
+
+Global Error Handling — centralny handler w main.js + renderer + IPC + logger.
+
+TestRunner Architecture — finalny podział na Main, Utils, Registry, integracja z main.js.
+
+Resource Monitor Expansion — CPU/RAM per WebView, throttling, limity.
+
+Profiles System — finalny zakres: motywy, ustawienia, skróty, preferencje UI.
+
+App Library Metadata — jakie pola, jakie tagi, jakie kategorie, jakie ikony.
+
+Offline Mode — co działa offline, fallbacki, cache, service workers.
+
+Hotkeys Engine — globalne skróty, lokalne skróty, mapowanie, konflikty.
+
+Spellcheck & Code Validation — integracja z Notepad, tryby językowe, linting JS/HTML/CSS.
+
+SVG/PNG Conversion Pipeline — optymalizacja, preview, batch mode.
+
+AI‑Assisted Tasks — generowanie tasków, automatyczne opisy, priorytety.
+
+AI‑Assisted Notes — streszczenia, korekta, formatowanie.
+
+Workspace Templates — predefiniowane układy modułów, zapis/odczyt layoutów.
+
+Advanced IPC Security — whitelisting kanałów, walidacja payloadów, typowanie.
+
+🟧 FEATURES — DO DODANIA (pełne funkcjonalności, które były omawiane)
+Multi‑Account Login Selector — ekran wyboru konta przy starcie.
+
+Editable Tiles — kafelki z ikonami, opisami, kolorami, notatkami.
+
+Rich‑Text Notes — bold/italic/underline, listy, nagłówki.
+
+Clipboard History — modal, filtrowanie, pinowanie.
+
+Mini Postman — GET/POST/PUT/DELETE, headers, body, historia.
+
+File Previewer — PDF, TXT, JSON, Markdown, obrazy.
+
+Markdown Preview — live preview, split view.
+
+Notifications System — toast, system tray, push.
+
+Startup Self‑Tests — test WebView, test IPC, test loggera, test sieci.
+
+Global Search — przeszukiwanie projektów, notatek, tasków, historii.
+
+AI Chat Panel — boczny panel z AI, kontekst modułu.
+
+Auto‑Update Checker — sprawdzanie wersji, changelog, pobieranie.
+
+Profiles Export/Import — JSON, szyfrowanie, backup.
+
+Workspace Sync — zapis layoutu, odtwarzanie, profile per projekt.
+
+Terminal Snippets — zapisane komendy, aliasy.
+
+Terminal Themes — motywy xterm.js.
+
+Task Dependencies — blokowanie tasków zależnych.
+
+Task Time Tracking — start/stop, raporty.
+
+Project Templates — predefiniowane struktury projektów.
+
+AI‑Generated Project Setup — generowanie folderów, plików, README.
+
+🟨 TECHNICAL DEBT — DO NAPRAWY / UJEDNOLICENIA
+Merge Duplicate Files — Settings, Sidebar, TaskPanel, Notepad, WebViewTab, Main.js, preload.js, stores.
+
+Unify Logger Usage — wszystkie moduły muszą używać logger.js.
+
+Unify Comments Format — JSDoc + sekcje + TODO + WARN.
+
+Unify Icons System — icons.js + mapping + fallback.
+
+Unify Locales — en/pl + helpData + moduły.
+
+Remove Old Components — Components/* → UI/.
+
+Fix IPC Naming — snake_case → camelCase, prefixy.
+
+Fix WebView Security — preload isolation, disable remote, CSP.
+
+Fix CSS Structure — index.css vs layout.css merge.
+
+Fix ProjectManager Integration — logger, UI, tasks.
+
+Fix TaskPanel Integration — AggregatedTasks, IPC.
+
+Fix Terminal Integration — TerminalView, xterm.js, IPC.
+
+🟦 IDEAS (opcjonalne, ale zapisane w rozmowach — miały trafić do backlogu)
+AI Voice Commands — sterowanie modułami głosowo.
+
+AI Auto‑Tagging — automatyczne tagi dla notatek i tasków.
+
+AI Screenshot Analyzer — analiza screenshotów, OCR.
+
+AI WebView Assistant — analiza otwartej strony, streszczenia.
+
+Smart Profiles — automatyczne przełączanie profili wg pory dnia.
+
+Smart Tasks — automatyczne przypomnienia, priorytety.
+
+Smart Projects — wykrywanie technologii projektu.
+
+Plugin System — API dla zewnętrznych modułów.
+
+Theme Engine — motywy, kolory, layouty.
+
+AI‑Generated Documentation — README, komentarze, changelog.
+
+🟪 RESEARCH (rzeczy wymagające sprawdzenia technologicznego)
+WebView2 vs BrowserView — wydajność, bezpieczeństwo.
+
+SQLite vs LokiJS — baza danych dla projektów i tasków.
+
+Service Workers in Electron — cache offline.
+
+Xterm.js Addons — search, web links, unicode.
+
+ImageMagick Integration — batch processing.
+
+GPU Acceleration — WebView performance.
+
+Memory Optimization — cleanup, throttling.
