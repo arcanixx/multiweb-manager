@@ -31,3 +31,5 @@ package-lock.json
 forge.config.js
 .cursorignore
 doc/UI_UX MOCKUP - MWM.docx
+ # stara wersja, obecnie uzywamy poprawnej preload.cjs dla tej architektury
+preload.js
