@@ -1,8 +1,11 @@
 // =============================================================================
 // FILE: icons.js
-// PATH: multiweb-manager/src/data/icons.js
-// VERSION: v0.0.3
+// PATH: src/data/icons.js
+// VERSION: 0.0.3
 // PURPOSE: Centralny rejestr wszystkich ikon używanych w aplikacji.
+//          ZASADA: Żadna ikona nie może być wpisana na twardo w komponencie.
+//          Zawsze używaj ICONS.KLUCZ z tego pliku.
+// DEPENDS ON: brak
 // =============================================================================
 
 export const ICONS = {
@@ -62,6 +65,11 @@ export const ICONS = {
   FULLSCREEN: "⛶",
   TAB_NEW: "＋",
   SCREENSHOT: "📸",
+  // Nowe — WebView extended features
+  SINGLE_APP: "🪟",
+  RESOURCE_MONITOR: "📊",
+  SLEEP: "💤",
+  WAKE: "⚡",
 
   // ─────────────── Kafelki specjalne (Sidebar) ───────────────
   NOTEPAD: "📝",
@@ -77,6 +85,7 @@ export const ICONS = {
   UPDATE: "🔄",
   APPS: "🧩",
   TOOLS: "🛠️",
+  HOTKEYS: "⌨️",
 
   // ─────────────── Motywy / Theme ───────────────
   THEME_LIGHT: "☀️",
@@ -104,6 +113,7 @@ export const ICONS = {
   PREVIEW: "👁️",
   POSTMAN: "📮",
   IMAGE_TOOLS: "🖌️",
+  CLIPBOARD: "📋",
 
   // ─────────────── Status / Sieć ───────────────
   ONLINE: "🟢",
@@ -115,20 +125,28 @@ export const ICONS = {
   DEBUG: "🐛",
   TEST: "🧪",
   TEST_PASS: "✅",
-  TEST_FAIL: "❌"
+  TEST_FAIL: "❌",
+
+  // ─────────────── Modale / Dialogi ───────────────
+  CONFIRM: "❓",
+  ALERT: "🚨",
+  SUCCESS: "✅",
+  ERROR: "❌"
 };
 
-// Mapa: ID specjalnego kafelka → klucz ICONS
+// ---------------------------------------------------------------------------
+// SIDEBAR_ICON_MAP – mapowanie ID kafelka na klucz ICONS
+// ---------------------------------------------------------------------------
 export const SIDEBAR_ICON_MAP = {
-  notepad: "NOTEPAD",
+  notepad:        "NOTEPAD",
   projectManager: "PROJECTMANAGER",
   aggregatedTasks: "AGGREGATEDTASKS",
-  history: "HISTORY",
-  removebg: "REMOVEBG",
+  history:        "HISTORY",
+  removebg:       "REMOVEBG",
   stringCombiner: "STRINGCOMBINER",
-  terminal: "TERMINAL",
-  settings: "SETTINGS",
-  help: "HELP"
+  terminal:       "TERMINAL",
+  settings:       "SETTINGS",
+  help:           "HELP"
 };
 
 // =============================================================================
