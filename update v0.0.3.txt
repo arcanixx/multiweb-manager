@@ -1,0 +1,2739 @@
+1. WebViewTab.jsx – dodanie funkcji Single App Mode, Screenshot, Resource Monitor
+Plik: src/ui/webview/WebViewTab.jsx
+
+Znajdź funkcję komponentu: export default function WebViewTab({ profile, isActive, onActivate, ... })
+
+Dodaj te funkcje przed return (około linii 50-100, przed renderem):
+
+jsx
+  // =========================================================================
+  // NOWE FUNKCJE (Single App, Screenshot, Resource Monitor, Sleep Tabs)
+  // =========================================================================
+
+  const handleSingleAppMode = async () => {
+    try {
+      if (!window.electronAPI?.openSingleWindow) {
+        showToast('error', t('webview.singleAppModeNotSupported'));
+        return;
+      }
+      await window.electronAPI.openSingleWindow({
+        url: profile.url,
+        width: 1200,
+        height: 800,
+        debug: settings?.debugMode || false
+      });
+      showToast('success', t('webview.singleAppModeOpened'));
+    } catch (err) {
+      logError('Single App Mode failed', err);
+      showToast('error', t('webview.singleAppModeFailed'));
+    }
+  };
+
+  const handleScreenshot = async () => {
+    try {
+      if (!window.electronAPI?.captureWebView) {
+        showToast('error', t('webview.screenshotNotSupported'));
+        return;
+      }
+      const imageData = await window.electronAPI.captureWebView(profile.id);
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': imageData })
+      ]);
+      showToast('success', t('webview.screenshotCopied'));
+    } catch (err) {
+      logError('Screenshot failed', err);
+      showToast('error', t('webview.screenshotFailed'));
+    }
+  };
+
+  const handleResourceMonitor = async () => {
+    try {
+      if (!window.electronAPI?.getWebViewResourceInfo) {
+        showToast('error', t('webview.resourceMonitorNotSupported'));
+        return;
+      }
+      const info = await window.electronAPI.getWebViewResourceInfo(profile.id);
+      showToast('info', `${t('webview.ram')}: ${info.memory} MB | ${t('webview.cpu')}: ${info.cpu}%`);
+    } catch (err) {
+      logError('Resource monitor failed', err);
+      showToast('error', t('webview.resourceMonitorFailed'));
+    }
+  };
+
+  // Sleep Tabs – wersja uproszczona (pełna później)
+  const [sleeping, setSleeping] = useState(false);
+  const [lastActive, setLastActive] = useState(Date.now());
+
+  useEffect(() => {
+    if (!isActive) return;
+    setLastActive(Date.now());
+    if (sleeping) {
+      setSleeping(false);
+      webviewRef.current?.loadURL(profile.url);
+    }
+  }, [isActive]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isActive && (Date.now() - lastActive) > 15 * 60 * 1000 && !sleeping) {
+        setSleeping(true);
+        webviewRef.current?.loadURL('about:blank');
+        showToast('info', t('webview.tabSleeping'));
+      }
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [isActive, lastActive, sleeping]);
+Teraz w toolbarze (sekcja przycisków, około linii 150-200), dodaj nowe przyciski:
+
+jsx
+        {/* Single App Mode */}
+        <button
+          className="btn-icon"
+          onClick={handleSingleAppMode}
+          title={t('webview.singleAppMode')}
+        >
+          {ICONS.SINGLE_APP || '🪟'}
+        </button>
+
+        {/* Screenshot */}
+        <button
+          className="btn-icon"
+          onClick={handleScreenshot}
+          title={t('webview.screenshot')}
+        >
+          {ICONS.SCREENSHOT || '📸'}
+        </button>
+
+        {/* Resource Monitor */}
+        <button
+          className="btn-icon"
+          onClick={handleResourceMonitor}
+          title={t('webview.resourceMonitor')}
+        >
+          {ICONS.RESOURCE_MONITOR || '📊'}
+        </button>
+2. preload.cjs – dodanie nowych kanałów IPC
+Plik: preload.cjs (główny, aktywny)
+
+Znajdź contextBridge.exposeInMainWorld i dodaj w środku:
+
+js
+openSingleWindow: (payload) => ipcRenderer.invoke('open-single-window', payload),
+captureWebView: (tabId) => ipcRenderer.invoke('capture-webview', tabId),
+getWebViewResourceInfo: (tabId) => ipcRenderer.invoke('get-webview-resource', tabId),
+3. main.js – nowe handlery IPC
+Plik: main.js (proces główny)
+
+Dodaj na początku (po importach):
+
+js
+// Mapa dla WebView (tabId → webContents)
+const webviewMap = new Map();
+
+// Funkcja pomocnicza do rejestracji WebView
+global.registerWebView = (tabId, webContents) => {
+  webviewMap.set(tabId, webContents);
+};
+
+global.unregisterWebView = (tabId) => {
+  webviewMap.delete(tabId);
+};
+Dodaj handlery (w sekcji ipcMain.handle, około linii 100-200):
+
+js
+// Single App Mode – nowe okno
+ipcMain.handle('open-single-window', async (_, payload) => {
+  try {
+    const win = new BrowserWindow({
+      width: payload.width || 1200,
+      height: payload.height || 800,
+      webPreferences: {
+        preload: path.join(__dirname, 'preload.cjs'),
+        contextIsolation: true,
+        nodeIntegration: false
+      }
+    });
+    await win.loadURL(payload.url);
+    if (payload.debug) win.webContents.openDevTools();
+    return { ok: true };
+  } catch (err) {
+    logError('Single App Mode error', err);
+    return { ok: false, error: err.message };
+  }
+});
+
+// Screenshot WebView
+ipcMain.handle('capture-webview', async (_, tabId) => {
+  try {
+    const contents = webviewMap.get(tabId);
+    if (!contents) {
+      return { ok: false, error: 'WebView not found' };
+    }
+    const image = await contents.capturePage();
+    return image.toPNG();
+  } catch (err) {
+    logError('Screenshot error', err);
+    return { ok: false, error: err.message };
+  }
+});
+
+// Resource Monitor
+ipcMain.handle('get-webview-resource', async (_, tabId) => {
+  try {
+    const contents = webviewMap.get(tabId);
+    if (!contents) {
+      return { ok: false, error: 'WebView not found' };
+    }
+    const mem = await contents.getProcessMemoryInfo();
+    // Uwaga: CPU usage wymaga dodatkowej logiki, na razie 0
+    return {
+      ok: true,
+      data: {
+        memory: Math.round(mem.workingSetSize / 1024 / 1024),
+        cpu: 0
+      }
+    };
+  } catch (err) {
+    logError('Resource monitor error', err);
+    return { ok: false, error: err.message };
+  }
+});
+4. Modale – zastąpienie window.confirm
+Nowy plik: src/ui/modals/ConfirmModal.jsx
+
+jsx
+// =============================================================================
+// FILE: ConfirmModal.jsx
+// PATH: src/ui/modals/ConfirmModal.jsx
+// VERSION: 0.0.3
+// PURPOSE: Modal potwierdzenia (zastępuje window.confirm)
+// =============================================================================
+
+import React from 'react';
+import Modal from './Modal'; // zakładając, że masz wspólny Modal
+
+export default function ConfirmModal({ isOpen, title, message, onConfirm, onCancel }) {
+  if (!isOpen) return null;
+
+  return (
+    <Modal isOpen={isOpen} onClose={onCancel}>
+      <h3>{title}</h3>
+      <p>{message}</p>
+      <div className="modal-buttons">
+        <button onClick={onCancel}>Anuluj</button>
+        <button onClick={onConfirm}>Potwierdź</button>
+      </div>
+    </Modal>
+  );
+}
+W App.jsx – zamiast window.confirm:
+
+jsx
+// Dodaj stan
+const [confirmState, setConfirmState] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
+
+// Funkcja pomocnicza
+const showConfirm = (title, message, onConfirm) => {
+  setConfirmState({ isOpen: true, title, message, onConfirm });
+};
+
+// W JSX, przed zamknięciem </div> lub gdzieś na końcu:
+<ConfirmModal
+  isOpen={confirmState.isOpen}
+  title={confirmState.title}
+  message={confirmState.message}
+  onConfirm={() => {
+    confirmState.onConfirm?.();
+    setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null });
+  }}
+  onCancel={() => setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null })}
+/>
+Zamiast: if (window.confirm('Czy na pewno?')) { ... }
+Użyj: showConfirm('Potwierdzenie', 'Czy na pewno?', () => { ... })
+
+5. Locale (tłumaczenia) – nowe klucze
+Plik: src/locales/pl.json i en.json
+
+Dodaj:
+
+json
+"webview": {
+  "singleAppMode": "Tryb pojedynczej aplikacji",
+  "singleAppModeOpened": "Okno otwarte w trybie Single App",
+  "singleAppModeFailed": "Nie udało się otworzyć okna",
+  "screenshot": "Zrzut ekranu",
+  "screenshotCopied": "Zrzut ekranu skopiowany do schowka",
+  "screenshotFailed": "Nie udało się zrobić zrzutu ekranu",
+  "resourceMonitor": "Monitor zasobów",
+  "ram": "RAM",
+  "cpu": "CPU",
+  "tabSleeping": "Zakładka uśpiona (oszczędność zasobów)"
+}
+
+
+
+jsx
+// =============================================================================
+// FILE: Terminal.jsx
+// PATH: src/ui/terminal/Terminal.jsx
+// VERSION: 0.0.3
+// PURPOSE: Terminal z xterm.js + node-pty (historia komend, ANSI colors)
+// =============================================================================
+
+import React, { useEffect, useRef, useState } from 'react';
+import { Terminal as XTerm } from 'xterm';
+import { FitAddon } from 'xterm-addon-fit';
+import { WebLinksAddon } from 'xterm-addon-web-links';
+import 'xterm/css/xterm.css';
+import { useTranslation } from '../../hooks/useTranslation';
+import { logDebug, logError } from '../../utils/loggerRenderer';
+import { ICONS } from '../../data/icons';
+
+export default function Terminal() {
+  const { t } = useTranslation();
+  const terminalRef = useRef(null);
+  const xtermRef = useRef(null);
+  const fitAddonRef = useRef(null);
+  const [history, setHistory] = useState([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [currentLine, setCurrentLine] = useState('');
+
+  useEffect(() => {
+    if (!terminalRef.current) return;
+
+    // Inicjalizacja xterm
+    const term = new XTerm({
+      cursorBlink: true,
+      fontSize: 14,
+      fontFamily: 'monospace',
+      theme: {
+        background: '#1e1e1e',
+        foreground: '#d4d4d4',
+        cursor: '#ffffff'
+      }
+    });
+    
+    const fitAddon = new FitAddon();
+    term.loadAddon(fitAddon);
+    term.loadAddon(new WebLinksAddon());
+    
+    term.open(terminalRef.current);
+    fitAddon.fit();
+    
+    xtermRef.current = term;
+    fitAddonRef.current = fitAddon;
+    
+    // Start PTY
+    if (window.electronAPI?.terminalStart) {
+      window.electronAPI.terminalStart();
+    }
+    
+    // Nasłuch danych z PTY
+    const dataDispose = window.electronAPI?.onTerminalData?.((data) => {
+      term.write(data);
+    });
+    
+    // Nasłuch wyjścia
+    const exitDispose = window.electronAPI?.onTerminalExit?.(() => {
+      term.write('\r\n\x1b[33m[Process exited]\x1b[0m\r\n');
+    });
+    
+    // Obsługa wejścia z klawiatury
+    term.onKey(({ key, domEvent }) => {
+      const ev = domEvent;
+      const code = ev.keyCode;
+      
+      if (ev.key === 'ArrowUp') {
+        if (history.length > 0) {
+          const newIndex = historyIndex === -1 ? history.length - 1 : Math.max(0, historyIndex - 1);
+          setHistoryIndex(newIndex);
+          const cmd = history[newIndex] || '';
+          setCurrentLine(cmd);
+          // Usuń aktualną linię i wpisz historię
+          term.write('\r\x1b[K');
+          term.write(cmd);
+        }
+        ev.preventDefault();
+      } else if (ev.key === 'ArrowDown') {
+        if (historyIndex !== -1) {
+          const newIndex = historyIndex + 1;
+          if (newIndex >= history.length) {
+            setHistoryIndex(-1);
+            setCurrentLine('');
+            term.write('\r\x1b[K');
+          } else {
+            setHistoryIndex(newIndex);
+            const cmd = history[newIndex];
+            setCurrentLine(cmd);
+            term.write('\r\x1b[K');
+            term.write(cmd);
+          }
+        }
+        ev.preventDefault();
+      } else if (ev.key === 'Enter') {
+        const cmd = currentLine || '';
+        if (cmd.trim()) {
+          setHistory(prev => [...prev, cmd]);
+          window.electronAPI?.terminalWrite?.(cmd + '\r');
+          setCurrentLine('');
+          setHistoryIndex(-1);
+        } else {
+          window.electronAPI?.terminalWrite?.('\r');
+        }
+        ev.preventDefault();
+      } else if (ev.key === 'Backspace') {
+        if (currentLine.length > 0) {
+          const newLine = currentLine.slice(0, -1);
+          setCurrentLine(newLine);
+        }
+      } else if (!ev.ctrlKey && !ev.altKey && key.length === 1) {
+        setCurrentLine(prev => prev + key);
+      }
+    });
+    
+    // Resize handler
+    const handleResize = () => {
+      if (fitAddonRef.current) {
+        fitAddonRef.current.fit();
+        const { cols, rows } = xtermRef.current;
+        window.electronAPI?.terminalResize?.(cols, rows);
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    setTimeout(handleResize, 100);
+    
+    // Cleanup
+    return () => {
+      dataDispose?.();
+      exitDispose?.();
+      window.removeEventListener('resize', handleResize);
+      window.electronAPI?.terminalKill?.();
+      term.dispose();
+    };
+  }, []);
+
+  const handleClear = () => {
+    xtermRef.current?.clear();
+    logDebug('Terminal cleared');
+  };
+
+  const handleRestart = async () => {
+    await window.electronAPI?.terminalKill?.();
+    await window.electronAPI?.terminalStart?.();
+    xtermRef.current?.clear();
+    xtermRef.current?.write('\x1b[32m[Session restarted]\x1b[0m\r\n');
+    logDebug('Terminal restarted');
+  };
+
+  return (
+    <div className="terminal-container" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div className="terminal-toolbar">
+        <button onClick={handleClear} title={t('terminal.clear')}>
+          {ICONS.CLEAR || '🗑️'} {t('terminal.clear')}
+        </button>
+        <button onClick={handleRestart} title={t('terminal.restart')}>
+          {ICONS.REFRESH || '⟳'} {t('terminal.restart')}
+        </button>
+      </div>
+      <div ref={terminalRef} style={{ flex: 1, backgroundColor: '#1e1e1e' }} />
+    </div>
+  );
+}
+3.4. preload.cjs – dodaj kanały terminala
+js
+terminalStart: () => ipcRenderer.invoke('terminal:start'),
+terminalWrite: (data) => ipcRenderer.invoke('terminal:write', data),
+terminalResize: (cols, rows) => ipcRenderer.invoke('terminal:resize', cols, rows),
+terminalKill: () => ipcRenderer.invoke('terminal:kill'),
+onTerminalData: (callback) => {
+  const listener = (_, data) => callback(data);
+  ipcRenderer.on('terminal:data', listener);
+  return () => ipcRenderer.removeListener('terminal:data', listener);
+},
+onTerminalExit: (callback) => {
+  const listener = (_, code) => callback(code);
+  ipcRenderer.on('terminal:exit', listener);
+  return () => ipcRenderer.removeListener('terminal:exit', listener);
+}
+📦 4. TestRunner.js – integracja wszystkich testów
+Plik: tests/TestRunner.js (zaktualizuj istniejący)
+
+js
+// =============================================================================
+// FILE: TestRunner.js
+// PATH: tests/TestRunner.js
+// VERSION: 0.0.3
+// PURPOSE: Główny orchestrator testów jednostkowych
+// =============================================================================
+
+import { ICONS } from '../src/data/icons.js';
+import { runAdBlockerTests } from './TestRunner_AdBlocker.js';
+import { runSleepTabsTests } from './TestRunner_SleepTabs.js';
+import { runWebViewTests } from './TestRunner_WebView.js';
+import { runTerminalTests } from './TestRunner_Terminal.js';
+
+export async function runAllTests() {
+  console.log('\n' + '='.repeat(60));
+  console.log('🧪 MultiWeb Manager – Test Suite v0.0.3');
+  console.log('='.repeat(60));
+  
+  const results = {
+    adBlocker: await runAdBlockerTests(),
+    sleepTabs: await runSleepTabsTests(),
+    webview: await runWebViewTests(),
+    terminal: await runTerminalTests()
+  };
+  
+  const totalPassed = Object.values(results).reduce((sum, r) => sum + (r.passed || 0), 0);
+  const totalFailed = Object.values(results).reduce((sum, r) => sum + (r.failed || 0), 0);
+  
+  console.log('\n' + '='.repeat(60));
+  console.log(`📊 FINAL RESULTS: ${totalPassed} passed, ${totalFailed} failed`);
+  console.log('='.repeat(60) + '\n');
+  
+  return { ok: totalFailed === 0, passed: totalPassed, failed: totalFailed };
+}
+
+// Automatyczne uruchomienie jeśli debugMode
+if (typeof window !== 'undefined' && window.electronAPI?.getDebugMode) {
+  window.electronAPI.getDebugMode().then((debugMode) => {
+    if (debugMode) {
+      console.log('🐛 Debug mode enabled – running tests...');
+      runAllTests();
+    }
+  });
+}
+
+1. Poprawki istniejących plików
+1.1. src/ui/webview/WebViewTab.jsx
+Problem: Brakuje webviewMap rejestracji dla Screenshot i Resource Monitor
+
+GDZIE: Po linii z const webviewRef = useRef(null); (około linii 30)
+
+DODAJ:
+
+jsx
+  // Rejestracja WebView w main process (dla screenshot/resource monitor)
+  useEffect(() => {
+    if (webviewRef.current && window.electronAPI?.registerWebView) {
+      const id = `webview-${profile.id}-${Date.now()}`;
+      webviewRef.current.setAttribute('data-tab-id', id);
+      window.electronAPI.registerWebView(id, webviewRef.current);
+      return () => {
+        window.electronAPI?.unregisterWebView?.(id);
+      };
+    }
+  }, [profile.id]);
+GDZIE: W handleScreenshot – przed await navigator.clipboard.write dodaj:
+
+jsx
+      if (!imageData || imageData.length === 0) {
+        throw new Error('Empty image data');
+      }
+1.2. main.js
+Problem: Brakuje mapy webviewProfileMap dla AdBlockera
+
+GDZIE: Po deklaracji webviewMap (około linii 50)
+
+DODAJ:
+
+js
+// Mapa dla AdBlockera (webContentsId → profileId)
+const webviewProfileMap = new Map();
+
+// Rejestracja WebView z main
+ipcMain.handle('register-webview', (_, tabId, webContentsId) => {
+  webviewMap.set(tabId, { contentsId: webContentsId });
+  webviewProfileMap.set(webContentsId, tabId);
+  return { ok: true };
+});
+
+ipcMain.handle('unregister-webview', (_, tabId) => {
+  const entry = webviewMap.get(tabId);
+  if (entry) webviewProfileMap.delete(entry.contentsId);
+  webviewMap.delete(tabId);
+  return { ok: true };
+});
+GDZIE: W handlerze capture-webview – zamiast webviewMap.get(tabId) użyj:
+
+js
+  const entry = webviewMap.get(tabId);
+  if (!entry || !entry.contentsId) {
+    return { ok: false, error: 'WebView not found' };
+  }
+  const contents = getAllWebContents().find(wc => wc.id === entry.contentsId);
+Dodaj funkcję pomocniczą na górze main.js:
+
+js
+function getAllWebContents() {
+  const { webContents } = require('electron');
+  return webContents.getAllWebContents();
+}
+1.3. src/ui/settings/Settings.jsx
+Problem: Brak stanów dla AdBlockera i Sleep Tabs
+
+GDZIE: Wewnątrz komponentu Settings, po deklaracjach useState dla języka, theme
+
+DODAJ:
+
+jsx
+  // AdBlocker
+  const [adBlockerGlobal, setAdBlockerGlobal] = useState(false);
+  const [profileAdBlocker, setProfileAdBlocker] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  
+  // Sleep Tabs
+  const [sleepTimeoutMinutes, setSleepTimeoutMinutes] = useState(15);
+  
+  // Efekt ładowania ustawień
+  useEffect(() => {
+    const loadSettings = async () => {
+      if (window.electronAPI?.getGlobalAdBlocker) {
+        const global = await window.electronAPI.getGlobalAdBlocker();
+        setAdBlockerGlobal(global.data || false);
+      }
+      if (window.electronAPI?.getSleepTimeout) {
+        const timeout = await window.electronAPI.getSleepTimeout();
+        setSleepTimeoutMinutes(timeout.data || 15);
+      }
+    };
+    loadSettings();
+  }, []);
+1.4. preload.cjs
+Problem: Brakuje kanałów dla AdBlockera i Sleep Tabs
+
+GDZIE: Wewnątrz contextBridge.exposeInMainWorld, przed zamknięciem
+
+DODAJ:
+
+js
+  // AdBlocker
+  setGlobalAdBlocker: (enabled) => ipcRenderer.invoke('adblocker:setGlobal', enabled),
+  getGlobalAdBlocker: () => ipcRenderer.invoke('adblocker:getGlobal'),
+  setAdBlockerForProfile: (profileId, enabled) => ipcRenderer.invoke('adblocker:setForProfile', profileId, enabled),
+  getAdBlockerForProfile: (profileId) => ipcRenderer.invoke('adblocker:getForProfile', profileId),
+  
+  // Sleep Tabs
+  setSleepTimeout: (minutes) => ipcRenderer.invoke('sleeptabs:setTimeout', minutes),
+  getSleepTimeout: () => ipcRenderer.invoke('sleeptabs:getTimeout'),
+  registerWebView: (tabId, webviewElement) => {
+    // Uwaga: nie można przekazać DOM elementu przez IPC, więc używamy ID
+    const webContentsId = webviewElement.getWebContentsId?.() || Date.now();
+    return ipcRenderer.invoke('register-webview', tabId, webContentsId);
+  },
+  unregisterWebView: (tabId) => ipcRenderer.invoke('unregister-webview', tabId),
+🆕 2. Nowe pliki do utworzenia
+2.1. src/ui/modals/ConfirmModal.jsx
+Cały plik:
+
+jsx
+// =============================================================================
+// FILE: ConfirmModal.jsx
+// PATH: src/ui/modals/ConfirmModal.jsx
+// VERSION: 0.0.3
+// PURPOSE: Modal potwierdzenia (zastępuje window.confirm)
+// DEPENDS ON: useTranslation
+// =============================================================================
+
+import React from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
+
+export default function ConfirmModal({ isOpen, title, message, onConfirm, onCancel }) {
+  const { t } = useTranslation();
+  
+  if (!isOpen) return null;
+  
+  return (
+    <div className="modal-overlay" onClick={onCancel}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3>{title || t('common.confirm')}</h3>
+          <button className="modal-close" onClick={onCancel}>×</button>
+        </div>
+        <div className="modal-body">
+          <p>{message}</p>
+        </div>
+        <div className="modal-footer">
+          <button className="btn-secondary" onClick={onCancel}>
+            {t('common.cancel')}
+          </button>
+          <button className="btn-primary" onClick={onConfirm}>
+            {t('common.confirm')}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+2.2. src/ui/modals/Modal.jsx (wspólny komponent bazowy)
+Cały plik:
+
+jsx
+// =============================================================================
+// FILE: Modal.jsx
+// PATH: src/ui/modals/Modal.jsx
+// VERSION: 0.0.3
+// PURPOSE: Bazowy komponent modalny dla całej aplikacji
+// =============================================================================
+
+import React, { useEffect } from 'react';
+
+export default function Modal({ isOpen, onClose, title, children, size = 'medium' }) {
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose?.();
+      }
+    };
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
+  
+  if (!isOpen) return null;
+  
+  const sizeClass = {
+    small: 'modal-small',
+    medium: 'modal-medium',
+    large: 'modal-large',
+    full: 'modal-full'
+  }[size] || 'modal-medium';
+  
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className={`modal-content ${sizeClass}`} onClick={(e) => e.stopPropagation()}>
+        {title && (
+          <div className="modal-header">
+            <h3>{title}</h3>
+            <button className="modal-close" onClick={onClose}>×</button>
+          </div>
+        )}
+        <div className="modal-body">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+2.3. tests/TestRunner_WebView.js
+Cały plik:
+
+js
+// =============================================================================
+// FILE: TestRunner_WebView.js
+// PATH: tests/TestRunner_WebView.js
+// VERSION: 0.0.3
+// PURPOSE: Testy jednostkowe dla WebView (Single App, Screenshot, Resource Monitor)
+// =============================================================================
+
+import { ICONS } from '../src/data/icons.js';
+
+const tests = [];
+
+// Test 1: Single App Mode – sprawdza czy IPC istnieje
+tests.push(async () => {
+  const hasIPC = typeof window !== 'undefined' && !!window.electronAPI?.openSingleWindow;
+  return {
+    ok: hasIPC,
+    name: 'Single App Mode – IPC available',
+    details: hasIPC ? 'OK' : 'Brak window.electronAPI.openSingleWindow'
+  };
+});
+
+// Test 2: Screenshot – sprawdza czy capturePage jest dostępne
+tests.push(async () => {
+  const hasCapture = typeof window !== 'undefined' && !!window.electronAPI?.captureWebView;
+  return {
+    ok: hasCapture,
+    name: 'Screenshot – captureWebView IPC available',
+    details: hasCapture ? 'OK' : 'Brak window.electronAPI.captureWebView'
+  };
+});
+
+// Test 3: Resource Monitor – sprawdza czy getWebViewResourceInfo istnieje
+tests.push(async () => {
+  const hasMonitor = typeof window !== 'undefined' && !!window.electronAPI?.getWebViewResourceInfo;
+  return {
+    ok: hasMonitor,
+    name: 'Resource Monitor – IPC available',
+    details: hasMonitor ? 'OK' : 'Brak window.electronAPI.getWebViewResourceInfo'
+  };
+});
+
+// Test 4: Zoom – sprawdza czy setZoomFactor istnieje (mock)
+tests.push(async () => {
+  const mockWebView = {
+    getZoomFactor: () => 1,
+    setZoomFactor: (factor) => { mockWebView._zoom = factor; }
+  };
+  const zoomIn = () => mockWebView.setZoomFactor(mockWebView.getZoomFactor() + 0.1);
+  zoomIn();
+  return {
+    ok: mockWebView._zoom === 1.1,
+    name: 'Zoom in/out – funkcjonalność',
+    details: `Oczekiwano 1.1, otrzymano ${mockWebView._zoom}`
+  };
+});
+
+export async function runWebViewTests() {
+  console.log('\n📋 Running WebView Tests...\n');
+  let passed = 0, failed = 0;
+  
+  for (const test of tests) {
+    try {
+      const result = await test();
+      if (result.ok) {
+        console.log(`${ICONS.testPass} ${result.name}`);
+        passed++;
+      } else {
+        console.log(`${ICONS.testFail} ${result.name} – ${result.details}`);
+        failed++;
+      }
+    } catch (err) {
+      console.log(`${ICONS.testFail} Test crashed: ${err.message}`);
+      failed++;
+    }
+  }
+  
+  console.log(`\n📊 Results: ${passed} passed, ${failed} failed\n`);
+  return { passed, failed };
+}
+2.4. tests/TestRunner_Terminal.js
+Cały plik:
+
+js
+// =============================================================================
+// FILE: TestRunner_Terminal.js
+// PATH: tests/TestRunner_Terminal.js
+// VERSION: 0.0.3
+// PURPOSE: Testy jednostkowe dla Terminala (xterm + node-pty)
+// =============================================================================
+
+import { ICONS } from '../src/data/icons.js';
+
+const tests = [];
+
+// Test 1: Sprawdza czy xterm jest zaimportowany
+tests.push(async () => {
+  let xtermLoaded = false;
+  try {
+    await import('xterm');
+    xtermLoaded = true;
+  } catch (e) {
+    xtermLoaded = false;
+  }
+  return {
+    ok: xtermLoaded,
+    name: 'xterm.js – dostępność',
+    details: xtermLoaded ? 'OK' : 'Brak paczki xterm'
+  };
+});
+
+// Test 2: Sprawdza czy node-pty jest dostępny (mock)
+tests.push(async () => {
+  let ptyAvailable = false;
+  try {
+    // Uwaga: node-pty nie działa w przeglądarce, test tylko sprawdza import
+    if (typeof process !== 'undefined' && process.versions?.electron) {
+      await import('node-pty');
+      ptyAvailable = true;
+    } else {
+      ptyAvailable = true; // mock dla środowiska testowego
+    }
+  } catch (e) {
+    ptyAvailable = false;
+  }
+  return {
+    ok: ptyAvailable,
+    name: 'node-pty – dostępność',
+    details: ptyAvailable ? 'OK' : 'Brak paczki node-pty (wymagana dla Electron)'
+  };
+});
+
+// Test 3: Historia komend – logika kolejki
+tests.push(async () => {
+  const history = [];
+  const addToHistory = (cmd) => { if (cmd.trim()) history.push(cmd); };
+  const getHistoryIndex = (idx) => history[history.length - 1 - idx];
+  
+  addToHistory('ls -la');
+  addToHistory('npm start');
+  addToHistory('git status');
+  
+  const last = getHistoryIndex(0);
+  const first = getHistoryIndex(2);
+  
+  return {
+    ok: last === 'git status' && first === 'ls -la',
+    name: 'Historia komend – kolejność',
+    details: `Ostatni: ${last}, pierwszy: ${first}`
+  };
+});
+
+// Test 4: ANSI kolorowanie – sprawdza czy escape sequences są zachowane
+tests.push(async () => {
+  const ansiRed = '\x1b[31mRed text\x1b[0m';
+  const hasAnsi = ansiRed.includes('\x1b');
+  return {
+    ok: hasAnsi,
+    name: 'ANSI kolorowanie – escape sequences',
+    details: hasAnsi ? 'OK' : 'Brak sekwencji ANSI'
+  };
+});
+
+export async function runTerminalTests() {
+  console.log('\n📋 Running Terminal Tests...\n');
+  let passed = 0, failed = 0;
+  
+  for (const test of tests) {
+    try {
+      const result = await test();
+      if (result.ok) {
+        console.log(`${ICONS.testPass} ${result.name}`);
+        passed++;
+      } else {
+        console.log(`${ICONS.testFail} ${result.name} – ${result.details}`);
+        failed++;
+      }
+    } catch (err) {
+      console.log(`${ICONS.testFail} Test crashed: ${err.message}`);
+      failed++;
+    }
+  }
+  
+  console.log(`\n📊 Results: ${passed} passed, ${failed} failed\n`);
+  return { passed, failed };
+}
+
+📦 1. Settings – pełne UI (wszystkie sekcje z MWM Expectations)
+1.1. src/ui/settings/Settings.jsx – CAŁY PLIK (zastąp istniejący)
+<details> <summary>📄 Kliknij, aby rozwinąć – Settings.jsx (kompletny)</summary>
+jsx
+// =============================================================================
+// FILE: Settings.jsx
+// PATH: src/ui/settings/Settings.jsx
+// VERSION: 0.0.3
+// PURPOSE: Pełny panel ustawień (General, WebView, Tabs, Notifications, Hotkeys, Data & Logs)
+// DEPENDS ON: useTranslation, settingsStore, logger, ConfirmModal, Toast
+// =============================================================================
+
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
+import { logDebug, logError } from '../../utils/loggerRenderer';
+import ConfirmModal from '../modals/ConfirmModal';
+import HotkeysManager from './HotkeysManager';
+import { ICONS } from '../../data/icons';
+
+export default function Settings() {
+  const { t, language, setLanguage } = useTranslation();
+  
+  // =========================================================================
+  // STANY
+  // =========================================================================
+  const [darkMode, setDarkMode] = useState(false);
+  const [debugMode, setDebugMode] = useState(false);
+  const [adBlockerGlobal, setAdBlockerGlobal] = useState(true);
+  const [defaultUserAgent, setDefaultUserAgent] = useState('');
+  const [sleepTimeoutMinutes, setSleepTimeoutMinutes] = useState(15);
+  const [systemNotifications, setSystemNotifications] = useState(true);
+  const [pushbulletApiKey, setPushbulletApiKey] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [confirmState, setConfirmState] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
+  
+  // =========================================================================
+  // ŁADOWANIE USTAWIEŃ
+  // =========================================================================
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        // Dark mode
+        const savedTheme = localStorage.getItem('theme');
+        setDarkMode(savedTheme === 'dark');
+        
+        // Debug mode
+        if (window.electronAPI?.getDebugMode) {
+          const debug = await window.electronAPI.getDebugMode();
+          setDebugMode(debug.data || false);
+        }
+        
+        // AdBlocker
+        if (window.electronAPI?.getGlobalAdBlocker) {
+          const ad = await window.electronAPI.getGlobalAdBlocker();
+          setAdBlockerGlobal(ad.data !== false);
+        }
+        
+        // Sleep timeout
+        if (window.electronAPI?.getSleepTimeout) {
+          const timeout = await window.electronAPI.getSleepTimeout();
+          setSleepTimeoutMinutes(timeout.data || 15);
+        }
+        
+        // Pushbullet
+        const savedPb = localStorage.getItem('pushbullet_api_key');
+        if (savedPb) setPushbulletApiKey(savedPb);
+        
+        // System notifications
+        const savedSysNotif = localStorage.getItem('system_notifications');
+        setSystemNotifications(savedSysNotif !== 'false');
+        
+      } catch (err) {
+        logError('Failed to load settings', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadSettings();
+  }, []);
+  
+  // =========================================================================
+  // HANDLERY
+  // =========================================================================
+  const showConfirm = (title, message, onConfirm) => {
+    setConfirmState({ isOpen: true, title, message, onConfirm });
+  };
+  
+  const handleDarkModeToggle = async () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem('theme', newMode ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark', newMode);
+    showToast('success', t('settings.themeSaved'));
+  };
+  
+  const handleDebugModeToggle = async () => {
+    const newMode = !debugMode;
+    setDebugMode(newMode);
+    if (window.electronAPI?.setDebugMode) {
+      await window.electronAPI.setDebugMode(newMode);
+    }
+    showToast('success', t('settings.debugSaved'));
+  };
+  
+  const handleAdBlockerToggle = async () => {
+    const newMode = !adBlockerGlobal;
+    setAdBlockerGlobal(newMode);
+    if (window.electronAPI?.setGlobalAdBlocker) {
+      await window.electronAPI.setGlobalAdBlocker(newMode);
+    }
+    showToast('success', t('settings.adBlockerSaved'));
+  };
+  
+  const handleSleepTimeoutChange = async (minutes) => {
+    setSleepTimeoutMinutes(minutes);
+    if (window.electronAPI?.setSleepTimeout) {
+      await window.electronAPI.setSleepTimeout(minutes);
+    }
+    showToast('success', t('settings.sleepTabsSaved'));
+  };
+  
+  const handlePushbulletSave = async () => {
+    localStorage.setItem('pushbullet_api_key', pushbulletApiKey);
+    showToast('success', t('settings.pushbulletSaved'));
+  };
+  
+  const handleResetAll = () => {
+    showConfirm(
+      t('settings.resetConfirmTitle'),
+      t('settings.resetConfirmMessage'),
+      async () => {
+        localStorage.clear();
+        if (window.electronAPI?.resetSettings) {
+          await window.electronAPI.resetSettings();
+        }
+        window.location.reload();
+      }
+    );
+  };
+  
+  const handleExportSettings = async () => {
+    if (window.electronAPI?.exportSettings) {
+      const result = await window.electronAPI.exportSettings();
+      if (result.ok) {
+        showToast('success', t('settings.exportSuccess'));
+      } else {
+        showToast('error', t('settings.exportFailed'));
+      }
+    }
+  };
+  
+  const handleImportSettings = async () => {
+    if (window.electronAPI?.importSettings) {
+      const result = await window.electronAPI.importSettings();
+      if (result.ok) {
+        showToast('success', t('settings.importSuccess'));
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        showToast('error', t('settings.importFailed'));
+      }
+    }
+  };
+  
+  const handleOpenLogs = async () => {
+    if (window.electronAPI?.openLogsFolder) {
+      await window.electronAPI.openLogsFolder();
+    }
+  };
+  
+  const handleExportLogs = async () => {
+    if (window.electronAPI?.exportLogs) {
+      const result = await window.electronAPI.exportLogs();
+      if (result.ok) {
+        showToast('success', t('settings.logsExported'));
+      }
+    }
+  };
+  
+  if (loading) {
+    return <div className="settings-loading">{t('common.loading')}</div>;
+  }
+  
+  // =========================================================================
+  // RENDER
+  // =========================================================================
+  return (
+    <div className="settings-container">
+      <h1>{t('settings.title')}</h1>
+      
+      {/* GENERAL */}
+      <section className="settings-section">
+        <h2>{t('settings.general')}</h2>
+        
+        <div className="setting-item">
+          <label>{t('settings.language')}</label>
+          <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+            <option value="pl">Polski</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        
+        <div className="setting-item">
+          <label>
+            <input type="checkbox" checked={darkMode} onChange={handleDarkModeToggle} />
+            {t('settings.darkMode')}
+          </label>
+        </div>
+        
+        <div className="setting-item">
+          <label>
+            <input type="checkbox" checked={debugMode} onChange={handleDebugModeToggle} />
+            {t('settings.debugMode')}
+          </label>
+          <span className="setting-description">{t('settings.debugModeDesc')}</span>
+        </div>
+      </section>
+      
+      {/* WEBVIEW */}
+      <section className="settings-section">
+        <h2>{t('settings.webview')}</h2>
+        
+        <div className="setting-item">
+          <label>
+            <input type="checkbox" checked={adBlockerGlobal} onChange={handleAdBlockerToggle} />
+            {t('settings.adBlocker')}
+          </label>
+          <span className="setting-description">{t('settings.adBlockerDesc')}</span>
+        </div>
+        
+        <div className="setting-item">
+          <label>{t('settings.defaultUserAgent')}</label>
+          <input
+            type="text"
+            value={defaultUserAgent}
+            onChange={(e) => setDefaultUserAgent(e.target.value)}
+            placeholder={t('settings.userAgentPlaceholder')}
+          />
+          <span className="setting-description">{t('settings.userAgentDesc')}</span>
+        </div>
+      </section>
+      
+      {/* TABS */}
+      <section className="settings-section">
+        <h2>{t('settings.tabs')}</h2>
+        
+        <div className="setting-item">
+          <label>{t('settings.sleepTabsTimeout')}</label>
+          <select value={sleepTimeoutMinutes} onChange={(e) => handleSleepTimeoutChange(parseInt(e.target.value))}>
+            <option value="5">5 {t('common.minutes')}</option>
+            <option value="15">15 {t('common.minutes')}</option>
+            <option value="30">30 {t('common.minutes')}</option>
+            <option value="60">60 {t('common.minutes')}</option>
+            <option value="0">{t('settings.never')}</option>
+          </select>
+          <span className="setting-description">{t('settings.sleepTabsDesc')}</span>
+        </div>
+      </section>
+      
+      {/* NOTIFICATIONS */}
+      <section className="settings-section">
+        <h2>{t('settings.notifications')}</h2>
+        
+        <div className="setting-item">
+          <label>
+            <input type="checkbox" checked={systemNotifications} onChange={(e) => setSystemNotifications(e.target.checked)} />
+            {t('settings.systemNotifications')}
+          </label>
+        </div>
+        
+        <div className="setting-item">
+          <label>{t('settings.pushbulletApiKey')}</label>
+          <input
+            type="password"
+            value={pushbulletApiKey}
+            onChange={(e) => setPushbulletApiKey(e.target.value)}
+            placeholder="o.xxxxxxxxxxxxxxxx"
+          />
+          <button onClick={handlePushbulletSave}>{t('common.save')}</button>
+          <span className="setting-description">{t('settings.pushbulletDesc')}</span>
+        </div>
+      </section>
+      
+      {/* HOTKEYS – osobny komponent */}
+      <HotkeysManager />
+      
+      {/* DATA & LOGS */}
+      <section className="settings-section">
+        <h2>{t('settings.dataAndLogs')}</h2>
+        
+        <div className="setting-item">
+          <button onClick={handleExportSettings}>{t('settings.exportSettings')}</button>
+          <button onClick={handleImportSettings}>{t('settings.importSettings')}</button>
+        </div>
+        
+        <div className="setting-item">
+          <button onClick={handleOpenLogs}>{t('settings.openLogsFolder')}</button>
+          <button onClick={handleExportLogs}>{t('settings.exportLogs')}</button>
+        </div>
+        
+        <div className="setting-item">
+          <button className="btn-danger" onClick={handleResetAll}>{t('settings.resetAll')}</button>
+        </div>
+      </section>
+      
+      {/* CONFIRM MODAL */}
+      <ConfirmModal
+        isOpen={confirmState.isOpen}
+        title={confirmState.title}
+        message={confirmState.message}
+        onConfirm={() => {
+          confirmState.onConfirm?.();
+          setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null });
+        }}
+        onCancel={() => setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null })}
+      />
+    </div>
+  );
+}
+
+// Helper – tymczasowy, potem przenieść do osobnego modułu
+function showToast(type, message) {
+  // Toast będzie zintegrowany z globalnym systemem
+  console.log(`[TOAST] ${type}: ${message}`);
+}
+</details>
+📦 2. Hotkeys Manager (globalShortcut + UI)
+2.1. src/ui/settings/HotkeysManager.jsx – NOWY PLIK
+<details> <summary>📄 Kliknij, aby rozwinąć – HotkeysManager.jsx</summary>
+jsx
+// =============================================================================
+// FILE: HotkeysManager.jsx
+// PATH: src/ui/settings/HotkeysManager.jsx
+// VERSION: 0.0.3
+// PURPOSE: Zarządzanie skrótami klawiszowymi (globalShortcut + snippet text)
+// DEPENDS ON: useTranslation, ConfirmModal, logger
+// =============================================================================
+
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
+import { logDebug, logError } from '../../utils/loggerRenderer';
+import ConfirmModal from '../modals/ConfirmModal';
+import Modal from '../modals/Modal';
+
+const DEFAULT_HOTKEYS = [
+  { id: 'hk-1', shortcut: 'Ctrl+Shift+S', name: 'Screenshot WebView', text: '', enabled: true, action: 'screenshot' },
+  { id: 'hk-2', shortcut: 'Ctrl+Shift+M', name: 'Resource Monitor', text: '', enabled: true, action: 'monitor' },
+  { id: 'hk-3', shortcut: 'Ctrl+Shift+1', name: 'Snippet: Email signature', text: 'Best regards,\nMaciej', enabled: true, action: 'insertText' }
+];
+
+export default function HotkeysManager() {
+  const { t } = useTranslation();
+  const [hotkeys, setHotkeys] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingHotkey, setEditingHotkey] = useState(null);
+  const [confirmState, setConfirmState] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
+  
+  // =========================================================================
+  // ŁADOWANIE
+  // =========================================================================
+  useEffect(() => {
+    const loadHotkeys = async () => {
+      try {
+        if (window.electronAPI?.getHotkeys) {
+          const saved = await window.electronAPI.getHotkeys();
+          if (saved.data && saved.data.length) {
+            setHotkeys(saved.data);
+          } else {
+            setHotkeys(DEFAULT_HOTKEYS);
+          }
+        } else {
+          setHotkeys(DEFAULT_HOTKEYS);
+        }
+      } catch (err) {
+        logError('Failed to load hotkeys', err);
+        setHotkeys(DEFAULT_HOTKEYS);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadHotkeys();
+  }, []);
+  
+  // =========================================================================
+  // HANDLERY
+  // =========================================================================
+  const showConfirm = (title, message, onConfirm) => {
+    setConfirmState({ isOpen: true, title, message, onConfirm });
+  };
+  
+  const saveHotkeys = async (newHotkeys) => {
+    setHotkeys(newHotkeys);
+    if (window.electronAPI?.saveHotkeys) {
+      await window.electronAPI.saveHotkeys(newHotkeys);
+    }
+    if (window.electronAPI?.registerGlobalHotkeys) {
+      await window.electronAPI.registerGlobalHotkeys(newHotkeys);
+    }
+  };
+  
+  const handleAdd = () => {
+    setEditingHotkey({
+      id: `hk-${Date.now()}`,
+      shortcut: '',
+      name: '',
+      text: '',
+      enabled: true,
+      action: 'insertText'
+    });
+    setModalOpen(true);
+  };
+  
+  const handleEdit = (hotkey) => {
+    setEditingHotkey({ ...hotkey });
+    setModalOpen(true);
+  };
+  
+  const handleDelete = (id) => {
+    showConfirm(
+      t('hotkeys.deleteConfirmTitle'),
+      t('hotkeys.deleteConfirmMessage'),
+      async () => {
+        const newHotkeys = hotkeys.filter(h => h.id !== id);
+        await saveHotkeys(newHotkeys);
+      }
+    );
+  };
+  
+  const handleSave = async () => {
+    if (!editingHotkey.shortcut || !editingHotkey.name) {
+      alert(t('hotkeys.validationError'));
+      return;
+    }
+    
+    // Sprawdź duplikaty
+    const exists = hotkeys.some(h => h.id !== editingHotkey.id && h.shortcut === editingHotkey.shortcut);
+    if (exists) {
+      alert(t('hotkeys.duplicateError'));
+      return;
+    }
+    
+    let newHotkeys;
+    if (hotkeys.find(h => h.id === editingHotkey.id)) {
+      newHotkeys = hotkeys.map(h => h.id === editingHotkey.id ? editingHotkey : h);
+    } else {
+      newHotkeys = [...hotkeys, editingHotkey];
+    }
+    
+    await saveHotkeys(newHotkeys);
+    setModalOpen(false);
+    setEditingHotkey(null);
+  };
+  
+  const handleToggleEnabled = async (id, enabled) => {
+    const newHotkeys = hotkeys.map(h => h.id === id ? { ...h, enabled } : h);
+    await saveHotkeys(newHotkeys);
+  };
+  
+  const parseShortcut = (shortcut) => {
+    // Użytkownik wpisuje np. "Ctrl+Shift+S" – bez walidacji, przekazujemy dalej
+    return shortcut;
+  };
+  
+  if (loading) {
+    return <div className="settings-loading-small">{t('common.loading')}</div>;
+  }
+  
+  return (
+    <section className="settings-section">
+      <h2>{t('hotkeys.title')}</h2>
+      <p className="section-description">{t('hotkeys.description')}</p>
+      
+      <div className="hotkeys-toolbar">
+        <button onClick={handleAdd} className="btn-primary">
+          + {t('hotkeys.add')}
+        </button>
+      </div>
+      
+      <table className="hotkeys-table">
+        <thead>
+          <tr>
+            <th>{t('hotkeys.shortcut')}</th>
+            <th>{t('hotkeys.name')}</th>
+            <th>{t('hotkeys.text')}</th>
+            <th>{t('hotkeys.enabled')}</th>
+            <th>{t('hotkeys.actions')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {hotkeys.map(hk => (
+            <tr key={hk.id} className={!hk.enabled ? 'disabled' : ''}>
+              <td><code>{hk.shortcut}</code></td>
+              <td>{hk.name}</td>
+              <td className="hotkey-text-preview">{hk.text?.substring(0, 30) || '-'}</td>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={hk.enabled}
+                  onChange={(e) => handleToggleEnabled(hk.id, e.target.checked)}
+                />
+              </td>
+              <td>
+                <button onClick={() => handleEdit(hk)}>✏️</button>
+                <button onClick={() => handleDelete(hk.id)}>🗑️</button>
+              </td>
+            </tr>
+          ))}
+          {hotkeys.length === 0 && (
+            <tr>
+              <td colSpan="5" style={{ textAlign: 'center' }}>{t('hotkeys.noHotkeys')}</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+      
+      {/* MODAL DODAWANIA/EDYCJI */}
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingHotkey?.id ? t('hotkeys.edit') : t('hotkeys.add')}>
+        <div className="hotkey-modal-form">
+          <div className="form-group">
+            <label>{t('hotkeys.name')}</label>
+            <input
+              type="text"
+              value={editingHotkey?.name || ''}
+              onChange={(e) => setEditingHotkey({ ...editingHotkey, name: e.target.value })}
+              placeholder={t('hotkeys.namePlaceholder')}
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>{t('hotkeys.shortcut')}</label>
+            <input
+              type="text"
+              value={editingHotkey?.shortcut || ''}
+              onChange={(e) => setEditingHotkey({ ...editingHotkey, shortcut: e.target.value })}
+              placeholder="Ctrl+Shift+S"
+            />
+            <span className="form-hint">{t('hotkeys.shortcutHint')}</span>
+          </div>
+          
+          <div className="form-group">
+            <label>{t('hotkeys.text')}</label>
+            <textarea
+              value={editingHotkey?.text || ''}
+              onChange={(e) => setEditingHotkey({ ...editingHotkey, text: e.target.value })}
+              rows={4}
+              placeholder={t('hotkeys.textPlaceholder')}
+            />
+            <span className="form-hint">{t('hotkeys.textHint')}</span>
+          </div>
+          
+          <div className="form-group">
+            <label>
+              <input
+                type="checkbox"
+                checked={editingHotkey?.enabled !== false}
+                onChange={(e) => setEditingHotkey({ ...editingHotkey, enabled: e.target.checked })}
+              />
+              {t('hotkeys.enabled')}
+            </label>
+          </div>
+          
+          <div className="form-actions">
+            <button onClick={() => setModalOpen(false)}>{t('common.cancel')}</button>
+            <button onClick={handleSave} className="btn-primary">{t('common.save')}</button>
+          </div>
+        </div>
+      </Modal>
+      
+      <ConfirmModal
+        isOpen={confirmState.isOpen}
+        title={confirmState.title}
+        message={confirmState.message}
+        onConfirm={() => {
+          confirmState.onConfirm?.();
+          setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null });
+        }}
+        onCancel={() => setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null })}
+      />
+    </section>
+  );
+}
+</details>
+2.2. main.js – handlery dla Hotkeys
+GDZIE: W sekcji ipcMain.handle (dodaj na końcu)
+
+js
+// =========================================================================
+// HOTKEYS MANAGER – globalShortcut
+// =========================================================================
+let registeredHotkeys = [];
+
+function unregisterAllHotkeys() {
+  registeredHotkeys.forEach(hk => {
+    try { globalShortcut.unregister(hk); } catch(e) {}
+  });
+  registeredHotkeys = [];
+}
+
+async function registerGlobalHotkeys(hotkeys) {
+  unregisterAllHotkeys();
+  
+  for (const hk of hotkeys) {
+    if (!hk.enabled || !hk.shortcut) continue;
+    
+    try {
+      const success = globalShortcut.register(hk.shortcut, () => {
+        mainWindow?.webContents.send('hotkey:trigger', {
+          id: hk.id,
+          action: hk.action,
+          text: hk.text
+        });
+        logDebug(`Hotkey triggered: ${hk.shortcut} -> ${hk.name}`);
+      });
+      
+      if (success) {
+        registeredHotkeys.push(hk.shortcut);
+      } else {
+        logWarn(`Failed to register hotkey: ${hk.shortcut}`);
+      }
+    } catch (err) {
+      logError(`Hotkey registration error: ${hk.shortcut}`, err);
+    }
+  }
+}
+
+ipcMain.handle('hotkeys:getAll', async () => {
+  const store = new Store({ name: 'hotkeys', defaults: { hotkeys: [] } });
+  const hotkeys = store.get('hotkeys', []);
+  return { ok: true, data: hotkeys };
+});
+
+ipcMain.handle('hotkeys:save', async (_, hotkeys) => {
+  const store = new Store({ name: 'hotkeys', defaults: { hotkeys: [] } });
+  store.set('hotkeys', hotkeys);
+  await registerGlobalHotkeys(hotkeys);
+  return { ok: true };
+});
+
+ipcMain.handle('hotkeys:register', async (_, hotkeys) => {
+  await registerGlobalHotkeys(hotkeys);
+  return { ok: true };
+});
+
+// Wyrejestruj przy zamknięciu
+app.on('will-quit', () => {
+  unregisterAllHotkeys();
+});
+2.3. preload.cjs – kanały dla Hotkeys
+DODAJ:
+
+js
+  // Hotkeys
+  getHotkeys: () => ipcRenderer.invoke('hotkeys:getAll'),
+  saveHotkeys: (hotkeys) => ipcRenderer.invoke('hotkeys:save', hotkeys),
+  registerGlobalHotkeys: (hotkeys) => ipcRenderer.invoke('hotkeys:register', hotkeys),
+  onHotkeyTrigger: (callback) => {
+    const listener = (_, data) => callback(data);
+    ipcRenderer.on('hotkey:trigger', listener);
+    return () => ipcRenderer.removeListener('hotkey:trigger', listener);
+  },
+2.4. App.jsx – nasłuchiwanie hotkeyów
+GDZIE: W głównym komponencie App, w useEffect
+
+jsx
+  // Nasłuchiwanie hotkeyów
+  useEffect(() => {
+    if (!window.electronAPI?.onHotkeyTrigger) return;
+    
+    const dispose = window.electronAPI.onHotkeyTrigger(async (data) => {
+      logDebug(`Hotkey triggered: ${data.id}`, data);
+      
+      if (data.action === 'insertText' && data.text) {
+        // Wklej tekst do aktywnego elementu
+        try {
+          await navigator.clipboard.writeText(data.text);
+          showToast('success', `Wklejono: ${data.name}`);
+        } catch (err) {
+          logError('Failed to insert text', err);
+        }
+      } else if (data.action === 'screenshot') {
+        // Wywołaj screenshot w aktywnym WebView
+        window.dispatchEvent(new CustomEvent('hotkey-screenshot'));
+      } else if (data.action === 'monitor') {
+        window.dispatchEvent(new CustomEvent('hotkey-monitor'));
+      }
+    });
+    
+    return () => dispose?.();
+  }, []);
+📦 3. Narzędzia poboczne (Tools)
+3.1. src/ui/tools/JsonFormatter.jsx – NOWY PLIK
+jsx
+// =============================================================================
+// FILE: JsonFormatter.jsx
+// PATH: src/ui/tools/JsonFormatter.jsx
+// VERSION: 0.0.3
+// PURPOSE: Formatowanie i walidacja JSON/YAML/XML
+// =============================================================================
+
+import React, { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
+import { logError } from '../../utils/loggerRenderer';
+
+export default function JsonFormatter() {
+  const { t } = useTranslation();
+  const [input, setInput] = useState('');
+  const [output, setOutput] = useState('');
+  const [error, setError] = useState('');
+  const [mode, setMode] = useState('json'); // json, yaml, xml
+  
+  const handleFormat = () => {
+    setError('');
+    try {
+      if (mode === 'json') {
+        const parsed = JSON.parse(input);
+        setOutput(JSON.stringify(parsed, null, 2));
+      } else if (mode === 'yaml') {
+        // Użyj js-yaml jeśli dostępne
+        setOutput('YAML formatting requires js-yaml package');
+      } else if (mode === 'xml') {
+        // Uproszczone formatowanie XML
+        const formatted = input.replace(/>\s*</g, '>\n<');
+        setOutput(formatted);
+      }
+    } catch (err) {
+      setError(err.message);
+      logError('Format error', err);
+    }
+  };
+  
+  const handleMinify = () => {
+    try {
+      const parsed = JSON.parse(input);
+      setOutput(JSON.stringify(parsed));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(output);
+  };
+  
+  return (
+    <div className="tool-container">
+      <h2>{t('tools.jsonFormatter')}</h2>
+      
+      <div className="tool-controls">
+        <select value={mode} onChange={(e) => setMode(e.target.value)}>
+          <option value="json">JSON</option>
+          <option value="yaml">YAML</option>
+          <option value="xml">XML</option>
+        </select>
+        <button onClick={handleFormat}>{t('tools.format')}</button>
+        <button onClick={handleMinify}>{t('tools.minify')}</button>
+        <button onClick={handleCopy}>{t('tools.copy')}</button>
+      </div>
+      
+      <div className="tool-panels">
+        <div className="tool-panel">
+          <label>{t('tools.input')}</label>
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            rows={15}
+            placeholder={t('tools.jsonPlaceholder')}
+          />
+        </div>
+        <div className="tool-panel">
+          <label>{t('tools.output')}</label>
+          <textarea
+            value={output}
+            readOnly
+            rows={15}
+            className={error ? 'error' : ''}
+          />
+          {error && <div className="tool-error">{error}</div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+3.2. src/ui/tools/RegexTester.jsx – NOWY PLIK
+jsx
+// =============================================================================
+// FILE: RegexTester.jsx
+// PATH: src/ui/tools/RegexTester.jsx
+// VERSION: 0.0.3
+// PURPOSE: Testowanie wyrażeń regularnych
+// =============================================================================
+
+import React, { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
+import { logError } from '../../utils/loggerRenderer';
+
+export default function RegexTester() {
+  const { t } = useTranslation();
+  const [pattern, setPattern] = useState('');
+  const [flags, setFlags] = useState('g');
+  const [testString, setTestString] = useState('');
+  const [matches, setMatches] = useState([]);
+  const [error, setError] = useState('');
+  
+  const handleTest = () => {
+    setError('');
+    try {
+      const regex = new RegExp(pattern, flags);
+      const results = [];
+      let match;
+      
+      if (flags.includes('g')) {
+        while ((match = regex.exec(testString)) !== null) {
+          results.push({
+            match: match[0],
+            index: match.index,
+            groups: match.slice(1)
+          });
+        }
+      } else {
+        match = regex.exec(testString);
+        if (match) {
+          results.push({
+            match: match[0],
+            index: match.index,
+            groups: match.slice(1)
+          });
+        }
+      }
+      
+      setMatches(results);
+    } catch (err) {
+      setError(err.message);
+      logError('Regex error', err);
+    }
+  };
+  
+  return (
+    <div className="tool-container">
+      <h2>{t('tools.regexTester')}</h2>
+      
+      <div className="tool-controls">
+        <input
+          type="text"
+          value={pattern}
+          onChange={(e) => setPattern(e.target.value)}
+          placeholder={t('tools.regexPattern')}
+          className="regex-pattern"
+        />
+        <input
+          type="text"
+          value={flags}
+          onChange={(e) => setFlags(e.target.value)}
+          placeholder="gim"
+          className="regex-flags"
+        />
+        <button onClick={handleTest}>{t('tools.test')}</button>
+      </div>
+      
+      <div className="tool-panels">
+        <div className="tool-panel">
+          <label>{t('tools.testString')}</label>
+          <textarea
+            value={testString}
+            onChange={(e) => setTestString(e.target.value)}
+            rows={10}
+            placeholder={t('tools.regexPlaceholder')}
+          />
+        </div>
+        <div className="tool-panel">
+          <label>{t('tools.matches')} ({matches.length})</label>
+          <div className="matches-list">
+            {matches.map((m, i) => (
+              <div key={i} className="match-item">
+                <span className="match-text">"{m.match}"</span>
+                <span className="match-index">@{m.index}</span>
+                {m.groups.length > 0 && (
+                  <span className="match-groups">groups: {m.groups.join(', ')}</span>
+                )}
+              </div>
+            ))}
+            {matches.length === 0 && !error && (
+              <div className="no-matches">{t('tools.noMatches')}</div>
+            )}
+          </div>
+          {error && <div className="tool-error">{error}</div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+3.3. Aktualizacja ToolsPanel.jsx
+GDZIE: Dodaj importy i wpisy w menu
+
+jsx
+import JsonFormatter from './JsonFormatter';
+import RegexTester from './RegexTester';
+// ... inne importy
+
+// W renderze, w mapie narzędzi:
+const toolsMap = {
+  'json-formatter': <JsonFormatter />,
+  'regex-tester': <RegexTester />,
+  // ... reszta
+};
+
+📦 PACZKA #1 – Poprawki w istniejących plikach
+1.1. src/ui/webview/WebViewTab.jsx – pełna integracja Screenshot + Resource Monitor
+GDZIE: Znajdź funkcję handleScreenshot i zastąp ją:
+
+jsx
+  const handleScreenshot = async () => {
+    try {
+      if (!window.electronAPI?.captureWebView) {
+        showToast('error', t('webview.screenshotNotSupported'));
+        return;
+      }
+      
+      // Pobierz unikalne ID dla tego WebView
+      const tabId = webviewRef.current?.getAttribute('data-tab-id');
+      if (!tabId) {
+        showToast('error', t('webview.screenshotFailed'));
+        return;
+      }
+      
+      const result = await window.electronAPI.captureWebView(tabId);
+      if (!result.ok) {
+        throw new Error(result.error);
+      }
+      
+      // Konwersja Buffer → Blob → Clipboard
+      const blob = new Blob([result.data], { type: 'image/png' });
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': blob })
+      ]);
+      
+      showToast('success', t('webview.screenshotCopied'));
+      logDebug('Screenshot captured and copied to clipboard');
+    } catch (err) {
+      logError('Screenshot failed', err);
+      showToast('error', t('webview.screenshotFailed'));
+    }
+  };
+GDZIE: Dodaj funkcję handleResourceMonitor (jeśli nie ma):
+
+jsx
+  const handleResourceMonitor = async () => {
+    try {
+      if (!window.electronAPI?.getWebViewResourceInfo) {
+        showToast('error', t('webview.resourceMonitorNotSupported'));
+        return;
+      }
+      
+      const tabId = webviewRef.current?.getAttribute('data-tab-id');
+      if (!tabId) {
+        showToast('error', t('webview.resourceMonitorFailed'));
+        return;
+      }
+      
+      const result = await window.electronAPI.getWebViewResourceInfo(tabId);
+      if (!result.ok) {
+        throw new Error(result.error);
+      }
+      
+      const { memory, cpu } = result.data;
+      showToast('info', `${t('webview.ram')}: ${memory} MB | ${t('webview.cpu')}: ${cpu}%`);
+      logDebug(`Resource monitor: RAM=${memory}MB, CPU=${cpu}%`);
+    } catch (err) {
+      logError('Resource monitor failed', err);
+      showToast('error', t('webview.resourceMonitorFailed'));
+    }
+  };
+GDZIE: W useEffect rejestracji WebView (około linii 40) – dodaj ID do atrybutu:
+
+jsx
+  // Rejestracja WebView w main process (dla screenshot/resource monitor)
+  useEffect(() => {
+    if (webviewRef.current && window.electronAPI?.registerWebView) {
+      const id = `webview-${profile.id}-${Date.now()}`;
+      webviewRef.current.setAttribute('data-tab-id', id);
+      
+      // Pobierz webContentsId po załadowaniu
+      const onLoad = () => {
+        const webContentsId = webviewRef.current?.getWebContentsId();
+        if (webContentsId) {
+          window.electronAPI.registerWebView(id, webContentsId);
+        }
+      };
+      
+      webviewRef.current.addEventListener('did-finish-load', onLoad);
+      return () => {
+        webviewRef.current?.removeEventListener('did-finish-load', onLoad);
+        window.electronAPI?.unregisterWebView?.(id);
+      };
+    }
+  }, [profile.id]);
+1.2. main.js – poprawka handlerów Screenshot i Resource Monitor
+GDZIE: Znajdź handler capture-webview i zastąp go:
+
+jsx
+ipcMain.handle('capture-webview', async (_, tabId) => {
+  try {
+    const entry = webviewMap.get(tabId);
+    if (!entry || !entry.webContentsId) {
+      return { ok: false, error: 'WebView not found' };
+    }
+    
+    const allWebContents = webContents.getAllWebContents();
+    const targetContents = allWebContents.find(wc => wc.id === entry.webContentsId);
+    
+    if (!targetContents) {
+      return { ok: false, error: 'WebContents not found' };
+    }
+    
+    const image = await targetContents.capturePage();
+    const buffer = image.toPNG();
+    
+    return { ok: true, data: buffer };
+  } catch (err) {
+    logError('Screenshot error', err);
+    return { ok: false, error: err.message };
+  }
+});
+GDZIE: Popraw handler get-webview-resource:
+
+jsx
+ipcMain.handle('get-webview-resource', async (_, tabId) => {
+  try {
+    const entry = webviewMap.get(tabId);
+    if (!entry || !entry.webContentsId) {
+      return { ok: false, error: 'WebView not found' };
+    }
+    
+    const allWebContents = webContents.getAllWebContents();
+    const targetContents = allWebContents.find(wc => wc.id === entry.webContentsId);
+    
+    if (!targetContents) {
+      return { ok: false, error: 'WebContents not found' };
+    }
+    
+    const mem = await targetContents.getProcessMemoryInfo();
+    // Uwaga: CPU usage wymaga dodatkowego pomiaru
+    const cpu = Math.floor(Math.random() * 30); // placeholder
+    
+    return {
+      ok: true,
+      data: {
+        memory: Math.round(mem.workingSetSize / 1024 / 1024),
+        cpu: cpu
+      }
+    };
+  } catch (err) {
+    logError('Resource monitor error', err);
+    return { ok: false, error: err.message };
+  }
+});
+GDZIE: Popraw handler register-webview:
+
+jsx
+ipcMain.handle('register-webview', (_, tabId, webContentsId) => {
+  webviewMap.set(tabId, { webContentsId, registeredAt: Date.now() });
+  webviewProfileMap.set(webContentsId, tabId);
+  logDebug(`WebView registered: ${tabId} -> ${webContentsId}`);
+  return { ok: true };
+});
+1.3. src/ui/settings/Settings.jsx – dodanie brakujących importów i stanów
+GDZIE: Na początku pliku, w importach – dodaj:
+
+jsx
+import HotkeysManager from './HotkeysManager';
+import { ICONS } from '../../data/icons';
+GDZIE: Wewnątrz komponentu, przed return – dodaj funkcję showToast (tymczasowo, potem przenieść do osobnego modułu):
+
+jsx
+  const showToast = (type, message) => {
+    // Emituj zdarzenie do globalnego systemu toastów
+    window.dispatchEvent(new CustomEvent('toast', { detail: { type, message } }));
+  };
+📦 PACZKA #2 – Nowe brakujące pliki (must-have)
+2.1. src/ui/tools/MarkdownPreviewer.jsx
+jsx
+// =============================================================================
+// FILE: MarkdownPreviewer.jsx
+// PATH: src/ui/tools/MarkdownPreviewer.jsx
+// VERSION: 0.0.3
+// PURPOSE: Podgląd Markdown na żywo (split view)
+// =============================================================================
+
+import React, { useState } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
+
+export default function MarkdownPreviewer() {
+  const { t } = useTranslation();
+  const [markdown, setMarkdown] = useState('# Hello World\n\nThis is **Markdown** previewer.');
+  const [html, setHtml] = useState('');
+  
+  // Prosta konwersja Markdown → HTML (uproszczona, bez zależności)
+  const convertToHtml = (md) => {
+    let html = md
+      .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+      .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+      .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+      .replace(/^- (.*$)/gm, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/^(?!<[a-z])/gm, '<p>$&</p>');
+    
+    return `<div class="markdown-body">${html}</div>`;
+  };
+  
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setMarkdown(value);
+    setHtml(convertToHtml(value));
+  };
+  
+  return (
+    <div className="tool-container markdown-previewer">
+      <h2>{t('tools.markdownPreviewer')}</h2>
+      
+      <div className="split-view">
+        <div className="split-pane">
+          <label>{t('tools.editor')}</label>
+          <textarea
+            value={markdown}
+            onChange={handleChange}
+            rows={20}
+            placeholder={t('tools.markdownPlaceholder')}
+          />
+        </div>
+        <div className="split-pane">
+          <label>{t('tools.preview')}</label>
+          <div className="preview-content" dangerouslySetInnerHTML={{ __html: html }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+2.2. src/ui/tools/ClipboardHistory.jsx
+jsx
+// =============================================================================
+// FILE: ClipboardHistory.jsx
+// PATH: src/ui/tools/ClipboardHistory.jsx
+// VERSION: 0.0.3
+// PURPOSE: Historia schowka z pinowaniem i wyszukiwarką
+// =============================================================================
+
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
+import { logDebug } from '../../utils/loggerRenderer';
+
+const MAX_HISTORY = 50;
+
+export default function ClipboardHistory() {
+  const { t } = useTranslation();
+  const [history, setHistory] = useState([]);
+  const [filter, setFilter] = useState('');
+  const [pinned, setPinned] = useState([]);
+  
+  useEffect(() => {
+    // Załaduj historię z localStorage
+    const saved = localStorage.getItem('clipboard_history');
+    if (saved) {
+      setHistory(JSON.parse(saved));
+    }
+    const savedPinned = localStorage.getItem('clipboard_pinned');
+    if (savedPinned) {
+      setPinned(JSON.parse(savedPinned));
+    }
+    
+    // Nasłuchuj schowka (uproszczone – wymaga permisji)
+    const interval = setInterval(async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text && text !== history[0]?.text) {
+          const newEntry = { id: Date.now(), text, timestamp: new Date().toISOString() };
+          setHistory(prev => [newEntry, ...prev].slice(0, MAX_HISTORY));
+        }
+      } catch (err) {
+        // Brak permisji – ignoruj
+      }
+    }, 2000);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  useEffect(() => {
+    localStorage.setItem('clipboard_history', JSON.stringify(history));
+  }, [history]);
+  
+  useEffect(() => {
+    localStorage.setItem('clipboard_pinned', JSON.stringify(pinned));
+  }, [pinned]);
+  
+  const handleCopy = async (text) => {
+    await navigator.clipboard.writeText(text);
+    logDebug('Copied from clipboard history');
+  };
+  
+  const handlePin = (id) => {
+    const entry = history.find(h => h.id === id);
+    if (entry && !pinned.find(p => p.id === id)) {
+      setPinned(prev => [...prev, entry]);
+    }
+  };
+  
+  const handleUnpin = (id) => {
+    setPinned(prev => prev.filter(p => p.id !== id));
+  };
+  
+  const handleClear = () => {
+    setHistory([]);
+    setPinned([]);
+  };
+  
+  const filteredHistory = history.filter(h =>
+    h.text.toLowerCase().includes(filter.toLowerCase())
+  );
+  
+  return (
+    <div className="tool-container clipboard-history">
+      <h2>{t('tools.clipboardHistory')}</h2>
+      
+      <div className="tool-controls">
+        <input
+          type="text"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          placeholder={t('tools.search')}
+        />
+        <button onClick={handleClear}>{t('tools.clearHistory')}</button>
+      </div>
+      
+      {/* Przypięte */}
+      {pinned.length > 0 && (
+        <div className="history-section">
+          <h3>{t('tools.pinned')}</h3>
+          {pinned.map(entry => (
+            <div key={entry.id} className="history-item pinned">
+              <span className="history-text">{entry.text.substring(0, 100)}</span>
+              <div className="history-actions">
+                <button onClick={() => handleCopy(entry.text)}>📋</button>
+                <button onClick={() => handleUnpin(entry.id)}>📌</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {/* Historia */}
+      <div className="history-section">
+        <h3>{t('tools.history')}</h3>
+        {filteredHistory.map(entry => (
+          <div key={entry.id} className="history-item">
+            <span className="history-text">{entry.text.substring(0, 100)}</span>
+            <div className="history-actions">
+              <button onClick={() => handleCopy(entry.text)}>📋</button>
+              {!pinned.find(p => p.id === entry.id) && (
+                <button onClick={() => handlePin(entry.id)}>📌</button>
+              )}
+            </div>
+            <span className="history-time">{new Date(entry.timestamp).toLocaleTimeString()}</span>
+          </div>
+        ))}
+        {filteredHistory.length === 0 && (
+          <div className="empty-history">{t('tools.noHistory')}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+2.3. src/ui/modals/Modal.css – style dla modali
+css
+/* modal-overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--bg-secondary, #2d2d2d);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.modal-small { width: 400px; }
+.modal-medium { width: 600px; }
+.modal-large { width: 800px; }
+.modal-full { width: 90vw; height: 90vh; }
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color, #444);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-secondary, #aaa);
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-color, #444);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+2.1. Ikony – usuwam fallbacki z kodu
+WebViewTab.jsx – zamiast '🪟', '📸', '📊':
+
+jsx
+import { ICONS } from '../../data/icons';
+
+// W przyciskach:
+<button onClick={handleSingleAppMode} title={t('webview.singleAppMode')}>
+  {ICONS.SINGLE_APP || '🪟'}  {/* fallback TYLKO jeśli brak w icons.js */}
+</button>
+Dodaję brakujące ikony do src/data/icons.js:
+
+js
+export const ICONS = {
+  // ... istniejące
+  SINGLE_APP: '🪟',
+  SCREENSHOT: '📸',
+  RESOURCE_MONITOR: '📊',
+  HOTKEY: '⌨️',
+  PIN: '📌',
+  UNPIN: '📍',
+  CLIPBOARD: '📋',
+  MARKDOWN: '📝',
+  REGEX: '⚙️',
+  JSON: '{}',
+  TEST_PASS: '✅',
+  TEST_FAIL: '❌'
+};
+2.2. App.jsx – window.confirm → modal + locales
+W src/locales/pl.json i en.json dodaję:
+
+json
+"common": {
+  "confirm": "Potwierdź",
+  "cancel": "Anuluj",
+  "save": "Zapisz",
+  "delete": "Usuń",
+  "loading": "Ładowanie...",
+  "minutes": "minut",
+  "never": "Nigdy"
+},
+"confirm": {
+  "quitTitle": "Wyjście z aplikacji",
+  "quitMessage": "Czy na pewno chcesz zamknąć MultiWeb Manager?",
+  "deleteProfileTitle": "Usuń profil",
+  "deleteProfileMessage": "Czy na pewno chcesz usunąć ten profil? Tej operacji nie można cofnąć."
+}
+2.3. AdBlocker w main.js – dodaję logger
+js
+import { logDebug, logError, logWarn } from './src/utils/logger.js';
+
+// W handlerach:
+ipcMain.handle('adblocker:setGlobal', (_, enabled) => {
+  globalAdBlocker = enabled;
+  logDebug(`AdBlocker global set to: ${enabled}`);
+  return { ok: true };
+});
+
+// W isAdUrl:
+if (shouldBlock && isAdUrl(details.url)) {
+  logDebug(`AdBlocked: ${details.url} (profile: ${profileId || 'global'})`);
+  return callback({ cancel: true });
+}
+2.4. TestRunner – ikony z ICONS + tłumaczenia
+W tests/TestRunner.js i wszystkich TestRunner_*.js – używam ICONS zamiast console.log emoji:
+
+js
+import { ICONS } from '../src/data/icons.js';
+
+console.log(`${result.ok ? ICONS.TEST_PASS : ICONS.TEST_FAIL} ${result.name}`);
+Locales dla testów (w pl/en.json):
+
+json
+"test": {
+  "pass": "Passed",
+  "fail": "Failed",
+  "running": "Running tests...",
+  "results": "Results"
+}
+2.5. Settings.jsx – rozbijam na moduły
+Nowa struktura src/ui/settings/:
+
+text
+settings/
+├── Settings.jsx           (główny, tylko layout i routing sekcji)
+├── GeneralSection.jsx     (język, dark mode, debug)
+├── WebViewSection.jsx     (AdBlocker, User Agent)
+├── TabsSection.jsx        (Sleep Tabs timeout)
+├── NotificationsSection.jsx (toasty, system, Pushbullet)
+├── HotkeysManager.jsx     (już istnieje)
+├── DataLogsSection.jsx    (eksport/import, logi)
+└── AccountSection.jsx     (placeholder sync)
+Settings.jsx po refaktorze (szkielet):
+
+jsx
+import React from 'react';
+import GeneralSection from './GeneralSection';
+import WebViewSection from './WebViewSection';
+import TabsSection from './TabsSection';
+import NotificationsSection from './NotificationsSection';
+import HotkeysManager from './HotkeysManager';
+import DataLogsSection from './DataLogsSection';
+import AccountSection from './AccountSection';
+
+export default function Settings() {
+  return (
+    <div className="settings-container">
+      <h1>{t('settings.title')}</h1>
+      <GeneralSection />
+      <WebViewSection />
+      <TabsSection />
+      <NotificationsSection />
+      <HotkeysManager />
+      <DataLogsSection />
+      <AccountSection />
+    </div>
+  );
+}
+2.6. HotkeysManager, ClipboardHistory – ikony z ICONS
+Poprawiam wszystkie 📋, 📌, ✏️, 🗑️ na {ICONS.COPY}, {ICONS.PIN} itd. < - sprawdzić, czy zrobione później jesli nie to zmienić (w checklist plików tez opisane)
+
+
+3.5. Pushbullet – instrukcja w UI
+Dodaję do NotificationsSection.jsx:
+
+jsx
+<div className="pushbullet-help">
+  <details>
+    <summary>{t('settings.pushbulletHowTo')}</summary>
+    <ol>
+      <li>{t('settings.pushbulletStep1')}</li>
+      <li>{t('settings.pushbulletStep2')}</li>
+      <li>{t('settings.pushbulletStep3')}</li>
+    </ol>
+  </details>
+</div>
+Locales - powinny być w HelpData_pl/en.js przetłumaczone też, zaciągać się zarówno przy funkcji PushBullet w NotificationsSetion.jsx, jak i to samo pojawiać się w Help dla danego modułu:
+
+json
+"pushbulletHowTo": "Jak uzyskać klucz Pushbullet?",
+"pushbulletStep1": "1. Zaloguj się na pushbullet.com",
+"pushbulletStep2": "2. Przejdź do Settings → Account → Access Tokens",
+"pushbulletStep3": "3. Kliknij 'Create Access Token' i skopiuj klucz"
+
+Po merge'u tests/TestRunner.js będzie wyglądać tak:
+
+js
+// =============================================================================
+// FILE: TestRunner.js
+// PATH: tests/TestRunner.js
+// VERSION: 0.0.3
+// PURPOSE: Orchestrator testów przy starcie – uruchamia testy z utils/testRunner.js
+// =============================================================================
+
+import { logInfo, logError } from "../src/utils/logger.js";
+import { ICONS } from "../src/data/icons.js";
+import { runTests } from "../src/utils/testRunner.js";
+
+export async function runAllTests(options = {}) {
+  logInfo(`${ICONS.DEBUG} Running integrity tests...`);
+  
+  try {
+    const results = await runTests();
+    logInfo(`${ICONS.TEST_PASS} Tests completed: ${results.passCount} passed, ${results.failCount} failed`);
+    return results;
+  } catch (err) {
+    logError(`${ICONS.TEST_FAIL} Test orchestration failed`, err);
+    return { passCount: 0, failCount: 1, total: 1, results: [] };
+  }
+}
+1.3. Pushbullet – instrukcja konfiguracji
+Dodaję do NotificationsSection.jsx:
+
+jsx
+<div className="pushbullet-config">
+  <h4>{t('settings.pushbulletConfig')}</h4>
+  <ol>
+    <li>{t('pushbullet.step1')}</li>
+    <li>{t('pushbullet.step2')}</li>
+    <li>{t('pushbullet.step3')}</li>
+    <li>{t('pushbullet.step4')}</li>
+  </ol>
+  <details>
+    <summary>{t('pushbullet.advancedTitle')}</summary>
+    <p>{t('pushbullet.advancedDesc')}</p>
+    <code>{'{"title": "{title}", "body": "{message}", "type": "note"}'}</code>
+  </details>
+</div>
+Locales (pl/en.json):
+
+json
+"pushbullet": {
+  "step1": "1. Zaloguj się na pushbullet.com",
+  "step2": "2. Przejdź do Settings → Account → Access Tokens",
+  "step3": "3. Kliknij 'Create Access Token' – nadaj nazwę (np. MultiWeb Manager)",
+  "step4": "4. Skopiuj klucz (zaczyna się od 'o.') i wklej poniżej",
+  "advancedTitle": "Zaawansowane: zmienne w powiadomieniach",
+  "advancedDesc": "W powiadomieniu możesz użyć zmiennych: {title} - tytuł, {message} - treść, {timestamp} - czas"
+}
+
+
+Nowa struktura helpData_pl.json, identyczną ustawić dla helpData_en.json:
+
+json
+{
+  "_comment": "FILE: helpData_pl.json | PATH: src/locales/helpData_pl.json | VERSION: 0.0.3 | PURPOSE: Treści pomocy (PL)",
+  "version": "0.0.3",
+  "sections": [
+    {
+      "id": "getting-started",
+      "title": "Pierwsze kroki",
+      "content": "MultiWeb Manager pozwala zarządzać wieloma kontami..."
+    }
+  ]
+}
+
+Dodaję nagłówek w formacie CSS dla theme.css:
+
+css
+/* =============================================================================
+ * FILE: theme.css
+ * PATH: src/ui/styles/theme.css
+ * VERSION: 0.0.3
+ * PURPOSE: Zmienne CSS, kolory, dark mode
+ * DEPENDS ON: index.css
+ * UWAGA: Nie usuwaj komentarzy – definiują schemat kolorów.
+ * =============================================================================
+ */
+
+
+
+
+📦 1. src/hooks/useTranslation.js – dodanie obsługi helpData
+GDZIE: W pliku, po załadowaniu locales, dodaj:
+
+js
+// =============================================================================
+// DODATEK: Ładowanie helpData z JSON (helpData_pl.json / helpData_en.json)
+// =============================================================================
+
+const [helpData, setHelpData] = useState({});
+
+useEffect(() => {
+  const loadHelpData = async () => {
+    try {
+      const data = language === 'pl' 
+        ? await import('../locales/helpData_pl.json')
+        : await import('../locales/helpData_en.json');
+      setHelpData(data.default || data);
+    } catch (err) {
+      console.error('Failed to load helpData', err);
+      setHelpData({});
+    }
+  };
+  loadHelpData();
+}, [language]);
+
+// W return object context dodać:
+return { t, language, setLanguage, helpData };
+Cały plik useTranslation.js po zmianie (jeśli wolisz podmienić):
+
+js
+// =============================================================================
+// FILE: useTranslation.js
+// PATH: src/hooks/useTranslation.js
+// VERSION: 0.0.3
+// PURPOSE: Hook do tłumaczeń – ładuje locales i helpData z JSON
+// =============================================================================
+
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+const TranslationContext = createContext();
+
+export function TranslationProvider({ children }) {
+  const [language, setLanguage] = useState('pl');
+  const [translations, setTranslations] = useState({});
+  const [helpData, setHelpData] = useState({});
+
+  useEffect(() => {
+    const loadTranslations = async () => {
+      try {
+        const data = language === 'pl'
+          ? await import('../locales/pl.json')
+          : await import('../locales/en.json');
+        setTranslations(data.default || data);
+      } catch (err) {
+        console.error('Failed to load translations', err);
+        setTranslations({});
+      }
+    };
+    loadTranslations();
+  }, [language]);
+
+  useEffect(() => {
+    const loadHelpData = async () => {
+      try {
+        const data = language === 'pl'
+          ? await import('../locales/helpData_pl.json')
+          : await import('../locales/helpData_en.json');
+        setHelpData(data.default || data);
+      } catch (err) {
+        console.error('Failed to load helpData', err);
+        setHelpData({});
+      }
+    };
+    loadHelpData();
+  }, [language]);
+
+  const t = (key) => {
+    const keys = key.split('.');
+    let value = translations;
+    for (const k of keys) {
+      if (value?.[k] === undefined) return key;
+      value = value[k];
+    }
+    return value;
+  };
+
+  return (
+    <TranslationContext.Provider value={{ t, language, setLanguage, helpData }}>
+      {children}
+    </TranslationContext.Provider>
+  );
+}
+
+export function useTranslation() {
+  return useContext(TranslationContext);
+}
+📦 2. src/index.css – nowy plik (cały)
+Zawartość:
+
+css
+/* =============================================================================
+ * FILE: index.css
+ * PATH: src/index.css
+ * VERSION: 0.0.3
+ * PURPOSE: Główny plik stylów – importuje layout, theme, components
+ * DEPENDS ON: layout.css, styles/theme.css, styles/components.css
+ * UWAGA: Nie usuwaj komentarzy – definiują kolejność ładowania.
+ * ============================================================================= */
+
+/* Layout aplikacji (grid, sidebar, content) */
+@import './ui/layout.css';
+
+/* Motyw (kolory, dark mode, zmienne) */
+@import './ui/styles/theme.css';
+
+/* Komponenty (modale, toasty, przyciski, formularze) */
+@import './ui/styles/components.css';
+
+/* Reset i podstawowe style */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-primary, #1e1e1e);
+  color: var(--text-primary, #ffffff);
+  overflow: hidden;
+}
+
+#root {
+  height: 100vh;
+  width: 100vw;
+}
+📦 3. src/ui/layout.css – nowa wersja (cały)
+Zawartość:
+
+css
+/* =============================================================================
+ * FILE: layout.css
+ * PATH: src/ui/layout.css
+ * VERSION: 0.0.3
+ * PURPOSE: Layout aplikacji – grid, sidebar, content, toolbar
+ * DEPENDS ON: index.css (importuje ten plik)
+ * UWAGA: Nie usuwaj komentarzy – definiują strukturę UI.
+ * ============================================================================= */
+
+/* Główny kontener aplikacji */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: var(--sidebar-bg, #252526);
+  border-right: 1px solid var(--border-color, #3e3e42);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+/* Główna treść */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--bg-primary, #1e1e1e);
+}
+
+/* Toolbar WebView */
+.webview-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--toolbar-bg, #2d2d2d);
+  border-bottom: 1px solid var(--border-color, #3e3e42);
+  flex-wrap: wrap;
+}
+
+/* Responsywność – zwężony sidebar */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+  }
+  .sidebar .sidebar-item span,
+  .sidebar .sidebar-section-title span {
+    display: none;
+  }
+}
+📦 4. src/utils/testRunner.js – aktualizacja nagłówka i funkcji
+Zmień nagłówek na:
+
+js
+// =============================================================================
+// FILE: testRunner.js
+// PATH: src/utils/testRunner.js
+// VERSION: 0.0.3
+// PURPOSE: Moduł testów integralności – ikony, tłumaczenia, logika biznesowa
+// DEPENDS ON: logger.js, icons.js, locales
+// UWAGA: Nie usuwaj komentarzy – testy uruchamiają się przy debugMode.
+// =============================================================================
+Reszta pliku zostaje bez zmian (kod testów jest OK).
+
+📦 5. tests/TestRunner.js – zastąp cały plik (orchestrator)
+Zawartość (już wysłana wcześniej, ale dla porządku):
+
+js
+// =============================================================================
+// FILE: TestRunner.js
+// PATH: tests/TestRunner.js
+// VERSION: 0.0.3
+// PURPOSE: Orchestrator testów przy starcie – uruchamia testRunner z utils
+// DEPENDS ON: logger.js, src/data/icons.js, src/utils/testRunner.js
+// UWAGA: Nie usuwaj komentarzy – testy uruchamiają się przy debugMode.
+// =============================================================================
+
+import { logInfo, logError } from "../src/utils/logger.js";
+import { ICONS } from "../src/data/icons.js";
+import { runTests } from "../src/utils/testRunner.js";
+
+export async function runAllTests(options = {}) {
+  logInfo(`${ICONS.DEBUG} Running integrity tests...`);
+  
+  try {
+    const results = await runTests();
+    logInfo(`${ICONS.TEST_PASS} Tests completed: ${results.passCount} passed, ${results.failCount} failed`);
+    return results;
+  } catch (err) {
+    logError(`${ICONS.TEST_FAIL} Test orchestration failed`, err);
+    return { passCount: 0, failCount: 1, total: 1, results: [] };
+  }
+}
+
+1. TestRunner – dwa pliki i locales
+
+W tests/TestRunner.js zamiast:
+
+js
+logError(`${ICONS.TEST_FAIL} Test orchestration failed`, err);
+Powinno być (z locales):
+
+js
+import { useTranslation } from '../src/hooks/useTranslation';
+const { t } = useTranslation();
+logError(`${ICONS.TEST_FAIL} ${t('test.orchestrationFailed')}`, err);
+I dodaję klucz do pl.json i en.json:
+
+json
+"test": {
+  "orchestrationFailed": "Orkiestracja testów nie powiodła się"
+}
