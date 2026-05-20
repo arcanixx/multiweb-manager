@@ -122,6 +122,11 @@ npm run electron:dev (dla Electron)
 npm run build  
 npm run electron:build
 
+## Wybór architektury startowej
+React + Electron: od razu planuj modułowość (src/core/, src/ui/, src/engine/).
+Web (HTML/JS/CSS): od razu podział na js/, css/, assets/, lib/.
+Chrome Extension: od razu manifest.json, background/, content/, popup/.
+
 ---
 
 # =============================================================================
@@ -379,7 +384,7 @@ Zawiera wszystkie rzeczy z innych modulów, które mogą być łatwo zmieniane, 
 # =============================================================================
 
 ## 7.1 Utwórz repozytorium
-- z branchami MASTER / DEV / SAT / UAT
+- z branchami MASTER / DEV / SAT / UAT / FEATURE/nazwa-funkcji/wymagania
 
 ## 7.2 Utwórz dokumentację
 - AI_Development_Standards.md  
@@ -418,10 +423,19 @@ npm run dev
 - tooltipy  
 - stany ładowania  
 
+## 7.7 Checklista przed pierwszym commitem
+- Struktura folderów zgodna z structure.txt
+- config.js z stałymi konfiguracyjnymi
+- icons.js z wszystkimi potrzebnymi ikonami
+- locales/pl.json i en.json z podstawowymi kluczami
+- main.js (Electron) lub index.html (web)
+- package.json z poprawnymi skryptami
+- .gitignore (node_modules, dist, build, .env, *.log itp)
+
 ---
 
 # =============================================================================
-# 8. DOBRE PRAKTYKI — UNIWERSALNE
+# 8. DOBRE PRAKTYKI — UNIWERSALNE w celu unikania przyszłych refaktorów
 # =============================================================================
 
 - Każdy moduł ma własny folder.  
@@ -436,7 +450,10 @@ npm run dev
 - Każdy WebView ma cleanup.  
 - Każdy IPC ma walidację.  
 - Każdy błąd ma logger.  
-- Każdy build jest powtarzalny.  
+- Każdy build jest powtarzalny. 
+- Nie mieszaj logiki z UI – core/ i engine/ są od tego.
+- Nie twórz src/components/ – od razu src/ui/[modul]/.
+- Nie używaj alert()/prompt() – od razu modale. 
 
 ---
 
