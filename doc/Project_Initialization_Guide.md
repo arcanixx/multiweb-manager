@@ -1,6 +1,6 @@
 =============================================================================
 FILE: Project_Initialization_Guide.md
-PATH: DOC/Project_Initialization_Guide.md
+PATH: doc/Project_Initialization_Guide.md
 VERSION: 0.0.3
 PURPOSE: Kompletny przewodnik startowy — jak rozpocząć nowy projekt (AI-first)
 DEPENDS ON: AI_Development_Standards.md, DevelopersGuide.md, structure.txt, ModulesOverview.md
@@ -43,7 +43,7 @@ Każdy projekt powinien zaczynać się od następującej struktury:
 │   ├── data/  
 │   ├── locales/  
 │   └── index.js / main.js  
-├── docs/  
+├── doc/  
 │   ├── AI_Development_Standards.md  
 │   ├── DevelopersGuide.md  
 │   ├── Project_Initialization_Guide.md  

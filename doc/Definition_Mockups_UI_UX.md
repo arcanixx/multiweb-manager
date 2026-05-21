@@ -348,7 +348,7 @@ Każde narzędzie ma własny komponent w `src/ui/tools/`.
 - Tooltipy i toasty jako osobne komponenty – bez gradientów, z `border-radius: 8px`
 - Sidebar – ciemne tło, listy bez zbędnych ozdobników
 - WebView toolbar – płaski, kontrastowy
-- Formularze – inputy z zaokrąglonymi rogami, focus na bordero
+- Formularze – inputy z zaokrąglonymi rogami, focus na borderze
 - Modale – rozmiary: `small` (400px), `medium` (600px), `large` (800px)
 - Stany ładowania – neutralny szary spinner
 

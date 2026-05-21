@@ -103,4 +103,3 @@ Wgraj plik .clinerules do roota. Następnie utwórz plik README.md według szabl
 Zbuduj podstawowy szkielet projektu w oparciu o podział na warstwy: core/, ui/, utils/ oraz locales/ (w tym locales/help/). Nie pisz kodu funkcjonalnego, dopóki struktura dokumentów nie będzie gotowa i zatwierdzona!
 ```
 
-```
