@@ -1,7 +1,7 @@
 # =============================================================================
 # FILE: ModulesOverview.md
-# PATH: multiweb-manager/docs/ModulesOverview.md
-# VERSION: v1.0
+# PATH: doc/ModulesOverview.md
+# VERSION: v0.0.3
 # PURPOSE: Ujednolicona lista modułów + opis przeznaczenia dla AI i devów.
 # DEPENDS ON: DevelopersGuide.md, structure.txt
 # =============================================================================
