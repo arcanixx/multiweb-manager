@@ -63,28 +63,29 @@ Każdy projekt powinien zaczynać się od następującej struktury:
 
 ## Główne branche
 
-### MASTER  
+### master  
 - stabilna wersja produkcyjna  
 - tylko merge po pełnych testach  
 - tagi wersji (v1.0.0, v1.1.0, itp.)
 
-### DEV  
+### dev  
 - główny branch developerski  
 - integracja funkcji  
 - testy developerskie
 
-### SAT (System Acceptance Testing)  
+### sat (System Acceptance Testing)  
 - testy systemowe  
 - łączenie wielu funkcji w jedną wersję  
 - przygotowanie do UAT
 
-### UAT (User Acceptance Testing)  
+### uat (User Acceptance Testing)  
 - testy użytkownika  
 - wersje RC (release candidate)
 
 ## Branche funkcjonalne
 
-feature/nazwa-funkcji  
+feature/nazwa-funkcji/
+feature/nazwa-wymagania
 fix/nazwa-poprawki  
 refactor/nazwa-modulu  
 experiment/nazwa-testu  
@@ -384,7 +385,7 @@ Zawiera wszystkie rzeczy z innych modulów, które mogą być łatwo zmieniane, 
 # =============================================================================
 
 ## 7.1 Utwórz repozytorium
-- z branchami MASTER / DEV / SAT / UAT / FEATURE/nazwa-funkcji/wymagania
+- z branchami master / dev / sat / uat / feature/nazwa-funkcji
 
 ## 7.2 Utwórz dokumentację
 - AI_Development_Standards.md  
@@ -425,17 +426,18 @@ npm run dev
 
 ## 7.7 Checklista przed pierwszym commitem
 - Struktura folderów zgodna z structure.txt
-- config.js z stałymi konfiguracyjnymi
-- icons.js z wszystkimi potrzebnymi ikonami
-- locales/pl.json i en.json z podstawowymi kluczami
+- config.js z ustawieniami konfiguracyjnymi
+- icons.js z ikonami aplikacji
+- locales/pl.json i locales/en.json z podstawowymi kluczami
+- locales - osobno od całości, klucze dla fabuły i eventów w grach (lore, events) lub help
 - main.js (Electron) lub index.html (web)
-- package.json z poprawnymi skryptami
-- .gitignore (node_modules, dist, build, .env, *.log itp)
+- package.json z poprawnie skonfigurowanymi skryptami
+- .gitignore z wykluczeniami (node_modules, dist, build, .env, *.log itp.)
 
 ---
 
 # =============================================================================
-# 8. DOBRE PRAKTYKI — UNIWERSALNE w celu unikania przyszłych refaktorów
+# 8. DOBRE PRAKTYKI — UNIWERSALNE
 # =============================================================================
 
 - Każdy moduł ma własny folder.  
@@ -453,7 +455,7 @@ npm run dev
 - Każdy build jest powtarzalny. 
 - Nie mieszaj logiki z UI – core/ i engine/ są od tego.
 - Nie twórz src/components/ – od razu src/ui/[modul]/.
-- Nie używaj alert()/prompt() – od razu modale. 
+- Nie używaj **alertów/promptów** – od razu modale.
 
 ---
 

@@ -467,7 +467,7 @@ js
 // PURPOSE: Główny orchestrator testów jednostkowych
 // =============================================================================
 
-import { ICONS } from '../src/data/icons.js';
+import { ICONS } from '../../../utils/icons.js';
 import { runAdBlockerTests } from './TestRunner_AdBlocker.js';
 import { runSleepTabsTests } from './TestRunner_SleepTabs.js';
 import { runWebViewTests } from './TestRunner_WebView.js';
@@ -732,7 +732,7 @@ js
 // PURPOSE: Testy jednostkowe dla WebView (Single App, Screenshot, Resource Monitor)
 // =============================================================================
 
-import { ICONS } from '../src/data/icons.js';
+import { ICONS } from '../../../utils/icons.js';
 
 const tests = [];
 
@@ -815,7 +815,7 @@ js
 // PURPOSE: Testy jednostkowe dla Terminala (xterm + node-pty)
 // =============================================================================
 
-import { ICONS } from '../src/data/icons.js';
+import { ICONS } from '../../../utils/icons.js';
 
 const tests = [];
 
@@ -2257,7 +2257,7 @@ import { ICONS } from '../../data/icons';
 <button onClick={handleSingleAppMode} title={t('webview.singleAppMode')}>
   {ICONS.SINGLE_APP || '🪟'}  {/* fallback TYLKO jeśli brak w icons.js */}
 </button>
-Dodaję brakujące ikony do src/data/icons.js:
+Dodaję brakujące ikony do ../../utils/icons.js:
 
 js
 export const ICONS = {
@@ -2314,7 +2314,7 @@ if (shouldBlock && isAdUrl(details.url)) {
 W tests/TestRunner.js i wszystkich TestRunner_*.js – używam ICONS zamiast console.log emoji:
 
 js
-import { ICONS } from '../src/data/icons.js';
+import { ICONS } from '../../../utils/icons.js';
 
 console.log(`${result.ok ? ICONS.TEST_PASS : ICONS.TEST_FAIL} ${result.name}`);
 Locales dla testów (w pl/en.json):
@@ -2402,7 +2402,7 @@ js
 // =============================================================================
 
 import { logInfo, logError } from "../src/utils/logger.js";
-import { ICONS } from "../src/data/icons.js";
+import { ICONS } from "../../../utils/icons.js";
 import { runTests } from "../src/utils/testRunner.js";
 
 export async function runAllTests(options = {}) {
@@ -2698,12 +2698,12 @@ js
 // PATH: tests/TestRunner.js
 // VERSION: 0.0.3
 // PURPOSE: Orchestrator testów przy starcie – uruchamia testRunner z utils
-// DEPENDS ON: logger.js, src/data/icons.js, src/utils/testRunner.js
+// DEPENDS ON: logger.js, ../../utils/icons.js, src/utils/testRunner.js
 // UWAGA: Nie usuwaj komentarzy – testy uruchamiają się przy debugMode.
 // =============================================================================
 
 import { logInfo, logError } from "../src/utils/logger.js";
-import { ICONS } from "../src/data/icons.js";
+import { ICONS } from "../../../utils/icons.js";
 import { runTests } from "../src/utils/testRunner.js";
 
 export async function runAllTests(options = {}) {
@@ -3158,7 +3158,7 @@ js
 // DEPENDS ON: ICONS
 // =============================================================================
 
-import { ICONS } from '../src/data/icons.js';
+import { ICONS } from '../../../utils/icons.js';
 
 export async function runTests(moduleName, testFunctions) {
   console.log(`\n${ICONS.TEST} Running ${moduleName} Tests...`);
@@ -3200,7 +3200,7 @@ js
 // UWAGA: Nie usuwaj komentarzy.
 // =============================================================================
 
-import { ICONS } from '../src/data/icons.js';
+import { ICONS } from '../../../utils/icons.js';
 import { logInfo, logError } from '../src/utils/logger.js';
 
 export async function runProfilesTests() {
@@ -3283,7 +3283,7 @@ js
 // UWAGA: Nie usuwaj komentarzy.
 // =============================================================================
 
-import { ICONS } from '../src/data/icons.js';
+import { ICONS } from '../../../utils/icons.js';
 import { logInfo, logError } from '../src/utils/logger.js';
 
 export async function runNotepadTests() {
@@ -3362,7 +3362,7 @@ js
 // UWAGA: Nie usuwaj komentarzy.
 // =============================================================================
 
-import { ICONS } from '../src/data/icons.js';
+import { ICONS } from '../../../utils/icons.js';
 import { logInfo, logError } from '../src/utils/logger.js';
 
 export async function runTasksTests() {
@@ -3448,7 +3448,7 @@ js
 // UWAGA: Nie usuwaj komentarzy.
 // =============================================================================
 
-import { ICONS } from '../src/data/icons.js';
+import { ICONS } from '../../../utils/icons.js';
 import { logInfo, logError } from '../src/utils/logger.js';
 
 export async function runProjectsTests() {
@@ -3529,7 +3529,7 @@ js
 // UWAGA: Nie usuwaj komentarzy.
 // =============================================================================
 
-import { ICONS } from '../src/data/icons.js';
+import { ICONS } from '../../../utils/icons.js';
 import { logInfo, logError } from '../src/utils/logger.js';
 
 export async function runHistoryTests() {
@@ -3609,7 +3609,7 @@ js
 // UWAGA: Nie usuwaj komentarzy.
 // =============================================================================
 
-import { ICONS } from '../src/data/icons.js';
+import { ICONS } from '../../../utils/icons.js';
 import { logInfo, logError } from '../src/utils/logger.js';
 
 export async function runSettingsTests() {
