@@ -1,7 +1,7 @@
 =============================================================================
 FILE: Project_Initialization_Guide.md
-PATH: multiweb-manager/docs/Project_Initialization_Guide.md
-VERSION: 0.0.1
+PATH: DOC/Project_Initialization_Guide.md
+VERSION: 0.0.3
 PURPOSE: Kompletny przewodnik startowy — jak rozpocząć nowy projekt (AI-first)
 DEPENDS ON: AI_Development_Standards.md, DevelopersGuide.md, structure.txt, ModulesOverview.md
 =============================================================================
@@ -84,7 +84,7 @@ Każdy projekt powinien zaczynać się od następującej struktury:
 
 ## Branche funkcjonalne
 
-feature/nazwa-funkcji/
+feature/nazwa-funkcji
 feature/nazwa-wymagania
 fix/nazwa-poprawki  
 refactor/nazwa-modulu  

@@ -467,7 +467,7 @@ js
 // PURPOSE: Główny orchestrator testów jednostkowych
 // =============================================================================
 
-import { ICONS } from '../../../utils/icons.js';
+import { ICONS } from '../src/utils/icons.js';
 import { runAdBlockerTests } from './TestRunner_AdBlocker.js';
 import { runSleepTabsTests } from './TestRunner_SleepTabs.js';
 import { runWebViewTests } from './TestRunner_WebView.js';
@@ -732,7 +732,7 @@ js
 // PURPOSE: Testy jednostkowe dla WebView (Single App, Screenshot, Resource Monitor)
 // =============================================================================
 
-import { ICONS } from '../../../utils/icons.js';
+import { ICONS } from '../src/utils/icons.js';
 
 const tests = [];
 
@@ -815,7 +815,7 @@ js
 // PURPOSE: Testy jednostkowe dla Terminala (xterm + node-pty)
 // =============================================================================
 
-import { ICONS } from '../../../utils/icons.js';
+import { ICONS } from '../src/utils/icons.js';
 
 const tests = [];
 
@@ -1229,6 +1229,16 @@ export default function Settings() {
     </div>
   );
 }
+
+====
+Czy eksport logów powinien być dostępny tylko gdy debugMode = true?
+Dobre pytanie. Zakładam, że tak – bo zwykły użytkownik nie potrzebuje logów testów. Jeśli chcesz, można to dodać jako warunek w DataLogsSection:
+
+jsx
+{debugMode && (
+  <button onClick={handleExportLogs}>{ICONS.EXPORT} {t('settings.exportLogs')}</button>
+)}
+
 
 // Helper – tymczasowy, potem przenieść do osobnego modułu
 function showToast(type, message) {
@@ -2314,7 +2324,7 @@ if (shouldBlock && isAdUrl(details.url)) {
 W tests/TestRunner.js i wszystkich TestRunner_*.js – używam ICONS zamiast console.log emoji:
 
 js
-import { ICONS } from '../../../utils/icons.js';
+import { ICONS } from '../src/utils/icons.js';
 
 console.log(`${result.ok ? ICONS.TEST_PASS : ICONS.TEST_FAIL} ${result.name}`);
 Locales dla testów (w pl/en.json):
@@ -2402,7 +2412,7 @@ js
 // =============================================================================
 
 import { logInfo, logError } from "../src/utils/logger.js";
-import { ICONS } from "../../../utils/icons.js";
+import { ICONS } from "../src/utils/icons.js";
 import { runTests } from "../src/utils/testRunner.js";
 
 export async function runAllTests(options = {}) {
@@ -2703,7 +2713,7 @@ js
 // =============================================================================
 
 import { logInfo, logError } from "../src/utils/logger.js";
-import { ICONS } from "../../../utils/icons.js";
+import { ICONS } from "../src/utils/icons.js";
 import { runTests } from "../src/utils/testRunner.js";
 
 export async function runAllTests(options = {}) {
@@ -3158,7 +3168,7 @@ js
 // DEPENDS ON: ICONS
 // =============================================================================
 
-import { ICONS } from '../../../utils/icons.js';
+import { ICONS } from '../src/utils/icons.js';
 
 export async function runTests(moduleName, testFunctions) {
   console.log(`\n${ICONS.TEST} Running ${moduleName} Tests...`);
@@ -3181,7 +3191,7 @@ export async function runTests(moduleName, testFunctions) {
     }
   }
 
-  console.log(`\n📊 ${moduleName} Tests: ${passed} passed, ${failed} failed\n`);
+  console.log(`\n${ICONS.LOGS} ${moduleName} Tests: ${passed} passed, ${failed} failed\n`);
   return { passed, failed };
 }
 
@@ -3200,7 +3210,7 @@ js
 // UWAGA: Nie usuwaj komentarzy.
 // =============================================================================
 
-import { ICONS } from '../../../utils/icons.js';
+import { ICONS } from '../src/utils/icons.js';
 import { logInfo, logError } from '../src/utils/logger.js';
 
 export async function runProfilesTests() {
@@ -3283,7 +3293,7 @@ js
 // UWAGA: Nie usuwaj komentarzy.
 // =============================================================================
 
-import { ICONS } from '../../../utils/icons.js';
+import { ICONS } from '../src/utils/icons.js';
 import { logInfo, logError } from '../src/utils/logger.js';
 
 export async function runNotepadTests() {
@@ -3362,7 +3372,7 @@ js
 // UWAGA: Nie usuwaj komentarzy.
 // =============================================================================
 
-import { ICONS } from '../../../utils/icons.js';
+import { ICONS } from '../src/utils/icons.js';
 import { logInfo, logError } from '../src/utils/logger.js';
 
 export async function runTasksTests() {
@@ -3448,7 +3458,7 @@ js
 // UWAGA: Nie usuwaj komentarzy.
 // =============================================================================
 
-import { ICONS } from '../../../utils/icons.js';
+import { ICONS } from '../src/utils/icons.js';
 import { logInfo, logError } from '../src/utils/logger.js';
 
 export async function runProjectsTests() {
@@ -3529,7 +3539,7 @@ js
 // UWAGA: Nie usuwaj komentarzy.
 // =============================================================================
 
-import { ICONS } from '../../../utils/icons.js';
+import { ICONS } from '../src/utils/icons.js';
 import { logInfo, logError } from '../src/utils/logger.js';
 
 export async function runHistoryTests() {
@@ -3609,7 +3619,7 @@ js
 // UWAGA: Nie usuwaj komentarzy.
 // =============================================================================
 
-import { ICONS } from '../../../utils/icons.js';
+import { ICONS } from '../src/utils/icons.js';
 import { logInfo, logError } from '../src/utils/logger.js';
 
 export async function runSettingsTests() {
@@ -3772,7 +3782,7 @@ export async function runSleepTabsTests() {
 W Twoim pliku src/ui/tools/ToolsPanel.jsx, na początku dodaj import:
 
 jsx
-import { logDebug } from '../../utils/loggerRenderer';
+import { logDebug } from 'src/utils/loggerRenderer';
 Wewnątrz komponentu, w setActiveTool, dodaj log:
 
 jsx
@@ -3986,11 +3996,11 @@ const tests = [
 export async function runToolsTests() {
   return runTests('Tools', tests);
 }
-✅ 2. Szablony locales – lang.template.json i helpData.template.json
+✅ 2. Szablony locales – lang.template.json i help.template.json
 2.1. src/locales/templates/lang.template.json
 json
 {
-  "_comment": "FILE: lang.template.json | PATH: src/locales/templates/lang.template.json | VERSION: 0.0.3 | PURPOSE: Szablon dla nowego języka (kopiuj, zmień nazwę na [język].json i przetłumacz)",
+  "_comment": "FILE: lang.template.json | PATH: src/locales/templates/lang.template.json | VERSION: #.#.# (aktualna z package.json) | PURPOSE: Szablon dla nowego języka (kopiuj, zmień nazwę na [język].json i przetłumacz). UWAGA: Jeśli dodajesz nowy język, zaktualizuj TestRunner_Locales.js (dodaj plik do LOCALE_FILES) ORAZ w src/utils/translations.js dodaj import nowego języka oraz w src/hooks/useTranslation.js (jeśli używa locales).",
   "version": "0.0.3",
   "app": {
     "name": "MultiWeb Manager",
@@ -4107,10 +4117,10 @@ json
     "loading": "Loading..."
   }
 }
-2.2. src/locales/templates/helpData.template.json
+2.2. src/locales/templates/help.template.json
 json
 {
-  "_comment": "FILE: helpData.template.json | PATH: src/locales/templates/helpData.template.json | VERSION: 0.0.3 | PURPOSE: Szablon dla pomocy w nowym języku (kopiuj, zmień nazwę na helpData_[język].json i przetłumacz)",
+  "_comment": "FILE: help.template.json | PATH: src/locales/templates/help.template.json | VERSION: #.#.# (aktualna z package.jsone) | PURPOSE: Szablon dla pomocy w nowym języku (kopiuj, zmień nazwę na help_[język].json i przetłumacz). UWAGA: Jeśli dodajesz nowy język, zaktualizuj TestRunner_Locales.js (dodaj plik do LOCALE_FILES) ORAZ w src/utils/translations.js – w useEffect dla help, dodaj import help_[język].json.",
   "version": "0.0.3",
   "sections": [
     {
@@ -5262,7 +5272,7 @@ const tests = [
   }
 ];
 
-export async function runToolsTests() {
+	export async function runToolsTests() {
   return runTests('Tools', tests);
 }
 1.8. tests/TestRunner_SleepTabs.js (brakujący)
@@ -5694,20 +5704,20 @@ export function TranslationProvider({ children }) {
     }
   }, []);
 
-  // Ładowanie helpData (z locales/help_pl.json lub help_en.json)
+  // Ładowanie help (z locales/help_pl.json lub help_en.json)
   useEffect(() => {
-    const loadHelpData = async () => {
+    const loadHelp = async () => {
       try {
         const data = locale === 'pl'
           ? await import('../locales/help_pl.json')
           : await import('../locales/help_en.json');
-        setHelpData(data.default || data);
+        setHelp(data.default || data);
       } catch (err) {
-        console.error('Failed to load helpData', err);
-        setHelpData({});
+        console.error('Failed to load help', err);
+        setHelp({});
       }
     };
-    if (loaded) loadHelpData();
+    if (loaded) loadHelp();
   }, [locale, loaded]);
 
   const setLocale = useCallback((lang) => {
@@ -6484,6 +6494,7 @@ SUCCESS: '✅',
 PROCESSING: '⏳',
 CONVERTING: '🔄',
 RESPONSE: '📨',
+LOGS: '📊',
 
 Dopisz do src/locales/pl.json:
 json
@@ -6640,13 +6651,13 @@ css
  * PURPOSE: Zmienne CSS, kolory, dark mode
  * ============================================================================= */
  
- 📄 1. structure.txt – pełna wersja (z opisami)
+ 📄 1. structure.txt – pełna wersja (z opisami) - brakuje opisów jak w oryginalnym pliku w repozytorium, z opisem funkcji itp, do kazdego modulu/pliku w strukturze!
 Plik: doc/structure.txt
 
 text
 // =============================================================================
 // FILE: structure.txt
-// PATH: multiweb-manager/doc/structure.txt
+// PATH: doc/structure.txt
 // VERSION: 0.0.3
 // PURPOSE: Struktura projektu + mapowanie modułów, feature'ów i odpowiedzialności.
 // DEPENDS ON: DevelopersGuide.md
@@ -6658,7 +6669,7 @@ text
 // - IPC: src/ipc/* + główne handlery w main.js (webview, adblocker, hotkeys)
 // - Store: src/core/* (profiles, settings, tasks, projects, history, notes, workspaces, appLibrary)
 // - Tools (backend): src/tools/* (imageUtils, svgToPng, apiClient, regexEngine, markdownRenderer)
-// - Ikony: src/data/icons.js (kanonicznie)
+// - Ikony: src/data/icons.js (kanonicznie) src/utils/icons.js (export, do importowania ikon kanonicznie
 // - Logger: src/utils/logger.js + src/utils/loggerRenderer.js
 // - Pomoc: src/locales/help_pl.json + help_en.json
 //
@@ -7022,11 +7033,13 @@ Testy nie mają hardcoded ikon – używają ICONS.TEST_PASS i ICONS.TEST_FAIL z
 =============================================================================
 Kanoniczne ikony: src/data/icons.js
 
+Export ikony: src/utils/icons.js
+
 Wrapper (opcjonalny): src/utils/icons.js – tylko re-export
 
 TestRunner (silnik): src/utils/testRunner.js
 
-TestRunner (orchestrator): tests/TestRunner.js
+TestRunner (orchestrator): tests/testRunner.js
 
 Store'y: src/core/[nazwa]Store.js
 
@@ -7043,4 +7056,1268 @@ if (isDev) {
 } else {
   mainWindow.loadFile(path.join(__dirname, 'public', 'index.html'));
 }
-index.html w root – tylko przekierowanie lub usunięty.
+index.html w root – tylko przekierowanie lub usunięty.   - plik w root bedzie do skasowania, powinien działać jeden z Public.
+
+
+📦 1. TestRunner_Icons.js
+js
+// =============================================================================
+// FILE: TestRunner_Icons.js
+// PATH: tests/TestRunner_Icons.js
+// VERSION: 0.0.3
+// PURPOSE: Testy integralności ikon (ICONS, SIDEBAR_ICON_MAP)
+// DEPENDS ON: testUtils.js, src/utils/icons.js
+// UWAGA: Jeśli dodasz nową ikonę do icons.js, dodaj ją również do requiredIcons.
+// =============================================================================
+
+import { runTests } from './testUtils.js';
+import { ICONS, SIDEBAR_ICON_MAP } from '../src/utils/icons.js';
+
+const tests = [
+  {
+    name: 'ICONS is object',
+    run: async () => {
+      const isValid = typeof ICONS === 'object' && ICONS !== null;
+      return { ok: isValid, details: isValid ? '' : 'ICONS is not an object' };
+    }
+  },
+  {
+    name: 'Required icons exist',
+    run: async () => {
+      const requiredIcons = [
+        'PLUS', 'EDIT', 'DELETE', 'SAVE', 'CLOSE', 'REFRESH',
+        'NOTEPAD', 'SETTINGS', 'HELP', 'HISTORY', 'TASKS',
+        'PRIORITY_A', 'PRIORITY_B', 'PRIORITY_C', 'PRIORITY_D', 'PRIORITY_E',
+        'DONE', 'COMMENT', 'PIN', 'UNPIN', 'DEFAULT',
+        'THEME_DARK', 'THEME_LIGHT', 'THEME_SYSTEM',
+        'TERMINAL', 'REMOVEBG', 'STRINGCOMBINER', 'PROJECTMANAGER', 'AGGREGATEDTASKS',
+        'UPDATE', 'VERSION', 'DEBUG', 'WARNING', 'INFO', 'SEARCH',
+        'BACK', 'FORWARD', 'ZOOM_IN', 'ZOOM_OUT', 'DEVTOOLS', 'CLEAR_CACHE'
+      ];
+      const missing = requiredIcons.filter(key => !(key in ICONS) || typeof ICONS[key] !== 'string');
+      const ok = missing.length === 0;
+      return { ok, details: ok ? '' : `Missing or invalid: ${missing.join(', ')}` };
+    }
+  },
+  {
+    name: 'No empty icon values',
+    run: async () => {
+      const empty = Object.entries(ICONS).filter(([, v]) => !v || v.trim() === '');
+      const ok = empty.length === 0;
+      return { ok, details: ok ? '' : `Empty icons: ${empty.map(([k]) => k).join(', ')}` };
+    }
+  },
+  {
+    name: 'SIDEBAR_ICON_MAP is valid',
+    run: async () => {
+      const isObject = typeof SIDEBAR_ICON_MAP === 'object';
+      const requiredKeys = ['notepad', 'projectManager', 'removebg', 'stringCombiner', 'terminal', 'settings', 'help'];
+      const missingKeys = requiredKeys.filter(key => !(key in SIDEBAR_ICON_MAP));
+      const invalidPointers = requiredKeys
+        .filter(key => key in SIDEBAR_ICON_MAP)
+        .filter(key => !(SIDEBAR_ICON_MAP[key] in ICONS));
+      const ok = isObject && missingKeys.length === 0 && invalidPointers.length === 0;
+      const details = [];
+      if (!isObject) details.push('SIDEBAR_ICON_MAP is not an object');
+      if (missingKeys.length) details.push(`Missing keys: ${missingKeys.join(', ')}`);
+      if (invalidPointers.length) details.push(`Invalid ICONS references: ${invalidPointers.join(', ')}`);
+      return { ok, details: details.join('; ') };
+    }
+  }
+];
+
+export async function runIconsTests() {
+  return runTests('Icons', tests);
+}
+📦 2. TestRunner_Locales.js
+js
+// =============================================================================
+// FILE: TestRunner_Locales.js
+// PATH: tests/TestRunner_Locales.js
+// VERSION: 0.0.3
+// PURPOSE: Testy integralności plików locales (pl.json, en.json, help_pl.json, help_en.json)
+// DEPENDS ON: testUtils.js
+// UWAGA! Jeśli dodasz nowy język (np. de.json, help_de.json), dodaj go tutaj
+// oraz zaktualizuj szablon w src/locales/templates/
+// =============================================================================
+
+import { runTests } from './testUtils.js';
+
+const LOCALE_FILES = [
+  { path: '../src/locales/pl.json', name: 'pl.json' },
+  { path: '../src/locales/en.json', name: 'en.json' },
+  { path: '../src/locales/help_pl.json', name: 'help_pl.json' },
+  { path: '../src/locales/help_en.json', name: 'help_en.json' }
+];
+
+const REQUIRED_SECTIONS = [
+  'app', 'sidebar', 'notepad', 'projectManager', 'removebg',
+  'stringCombiner', 'terminal', 'settings', 'help', 'webview',
+  'tasks', 'aggregatedTasks', 'history', 'updateChecker', 'notifications',
+  'profile_modal', 'category_modal'
+];
+
+const CRITICAL_KEYS = [
+  ['sidebar', 'add_profile'],
+  ['sidebar', 'favorites'],
+  ['tasks', 'modal_title_add'],
+  ['tasks', 'priority_a'],
+  ['settings', 'theme'],
+  ['history', 'clear'],
+  ['updateChecker', 'coming_soon'],
+  ['notifications', 'offline'],
+  ['notifications', 'online']
+];
+
+const HELP_REQUIRED_FIELDS = ['id', 'title', 'content'];
+
+const tests = [
+  // Test 1: Wszystkie pliki locales ładują się poprawnie
+  {
+    name: 'All locale files load',
+    run: async () => {
+      const results = [];
+      for (const file of LOCALE_FILES) {
+        try {
+          await import(file.path);
+          results.push({ file: file.name, ok: true });
+        } catch (e) {
+          results.push({ file: file.name, ok: false, error: e.message });
+        }
+      }
+      const failed = results.filter(r => !r.ok);
+      const ok = failed.length === 0;
+      const details = ok ? '' : failed.map(f => `${f.file}: ${f.error}`).join('; ');
+      return { ok, details };
+    }
+  },
+  // Test 2: pl.json i en.json mają wymagane sekcje
+  {
+    name: 'pl.json and en.json have required sections',
+    run: async () => {
+      const pl = await import('../src/locales/pl.json');
+      const en = await import('../src/locales/en.json');
+      const missingInPl = REQUIRED_SECTIONS.filter(s => !(s in pl.default));
+      const missingInEn = REQUIRED_SECTIONS.filter(s => !(s in en.default));
+      const ok = missingInPl.length === 0 && missingInEn.length === 0;
+      const details = [];
+      if (missingInPl.length) details.push(`pl.json missing: ${missingInPl.join(', ')}`);
+      if (missingInEn.length) details.push(`en.json missing: ${missingInEn.join(', ')}`);
+      return { ok, details: details.join('; ') };
+    }
+  },
+  // Test 3: Kluczowe klucze istnieją w obu językach
+  {
+    name: 'Critical keys exist in both languages',
+    run: async () => {
+      const pl = await import('../src/locales/pl.json');
+      const en = await import('../src/locales/en.json');
+      const missingInPl = [];
+      const missingInEn = [];
+      for (const [section, key] of CRITICAL_KEYS) {
+        if (!pl.default[section]?.[key]) missingInPl.push(`${section}.${key}`);
+        if (!en.default[section]?.[key]) missingInEn.push(`${section}.${key}`);
+      }
+      const ok = missingInPl.length === 0 && missingInEn.length === 0;
+      const details = [];
+      if (missingInPl.length) details.push(`Missing in pl.json: ${missingInPl.join(', ')}`);
+      if (missingInEn.length) details.push(`Missing in en.json: ${missingInEn.join(', ')}`);
+      return { ok, details: details.join('; ') };
+    }
+  },
+  // Test 4: Spójność kluczy między pl.json a en.json
+  {
+    name: 'Same keys in PL and EN for required sections',
+    run: async () => {
+      const pl = await import('../src/locales/pl.json');
+      const en = await import('../src/locales/en.json');
+      const mismatches = [];
+      for (const section of REQUIRED_SECTIONS) {
+        const plKeys = Object.keys(pl.default[section] || {});
+        const enKeys = Object.keys(en.default[section] || {});
+        const missingInEn = plKeys.filter(k => !enKeys.includes(k));
+        const missingInPl = enKeys.filter(k => !plKeys.includes(k));
+        if (missingInEn.length) mismatches.push(`${section}: missing in EN → ${missingInEn.join(',')}`);
+        if (missingInPl.length) mismatches.push(`${section}: missing in PL → ${missingInPl.join(',')}`);
+      }
+      const ok = mismatches.length === 0;
+      return { ok, details: mismatches.join('; ') };
+    }
+  },
+  // Test 5: help_pl.json i help_en.json mają poprawną strukturę
+  {
+    name: 'Help files have valid structure',
+    run: async () => {
+      const helpPl = await import('../src/locales/help_pl.json');
+      const helpEn = await import('../src/locales/help_en.json');
+      const errors = [];
+      const checkHelp = (data, name) => {
+        if (!data.sections || !Array.isArray(data.sections)) {
+          errors.push(`${name}: missing sections array`);
+          return;
+        }
+        for (let i = 0; i < data.sections.length; i++) {
+          const section = data.sections[i];
+          for (const field of HELP_REQUIRED_FIELDS) {
+            if (!section[field]) {
+              errors.push(`${name}: section ${i} missing "${field}"`);
+            }
+          }
+        }
+      };
+      checkHelp(helpPl.default, 'help_pl.json');
+      checkHelp(helpEn.default, 'help_en.json');
+      const ok = errors.length === 0;
+      return { ok, details: errors.join('; ') };
+    }
+  }
+];
+
+export async function runLocalesTests() {
+  return runTests('Locales', tests);
+}
+📦 3. TestRunner_BusinessLogic.js
+js
+// =============================================================================
+// FILE: TestRunner_BusinessLogic.js
+// PATH: tests/TestRunner_BusinessLogic.js
+// VERSION: 0.0.3
+// PURPOSE: Testy czystych funkcji biznesowych (cartesian, parseSplitChar, sortByPin, normalizeUrl)
+// DEPENDS ON: testUtils.js
+// =============================================================================
+
+import { runTests } from './testUtils.js';
+
+const tests = [
+  // Cartesian product
+  {
+    name: 'cartesian: empty input',
+    run: async () => {
+      const cartesian = (arrays) => {
+        if (!arrays || arrays.length === 0) return [[]];
+        if (arrays.length === 1) return arrays[0].map(v => [v]);
+        return arrays.reduce((acc, arr) => {
+          const result = [];
+          for (const a of acc) for (const b of arr) result.push([...a, b]);
+          return result;
+        }, [[]]);
+      };
+      const result = JSON.stringify(cartesian([]));
+      const ok = result === '[[]]';
+      return { ok, details: ok ? '' : `Expected [[]], got ${result}` };
+    }
+  },
+  {
+    name: 'cartesian: single array',
+    run: async () => {
+      const cartesian = (arrays) => {
+        if (!arrays || arrays.length === 0) return [[]];
+        if (arrays.length === 1) return arrays[0].map(v => [v]);
+        return arrays.reduce((acc, arr) => {
+          const result = [];
+          for (const a of acc) for (const b of arr) result.push([...a, b]);
+          return result;
+        }, [[]]);
+      };
+      const result = JSON.stringify(cartesian([['a', 'b']]));
+      const ok = result === '[["a"],["b"]]';
+      return { ok, details: ok ? '' : `Expected [["a"],["b"]], got ${result}` };
+    }
+  },
+  {
+    name: 'cartesian: 2x2',
+    run: async () => {
+      const cartesian = (arrays) => {
+        if (!arrays || arrays.length === 0) return [[]];
+        if (arrays.length === 1) return arrays[0].map(v => [v]);
+        return arrays.reduce((acc, arr) => {
+          const result = [];
+          for (const a of acc) for (const b of arr) result.push([...a, b]);
+          return result;
+        }, [[]]);
+      };
+      const result = cartesian([['a', 'b'], ['1', '2']]).length;
+      const ok = result === 4;
+      return { ok, details: ok ? '' : `Expected 4, got ${result}` };
+    }
+  },
+  // parseSplitChar
+  {
+    name: 'parseSplitChar: enter → newline',
+    run: async () => {
+      const parseSplitChar = (raw) => {
+        if (raw === '\\n' || raw === 'enter') return '\n';
+        if (raw === '\\t' || raw === 'tab') return '\t';
+        return raw || ' ';
+      };
+      const result = parseSplitChar('enter');
+      const ok = result === '\n';
+      return { ok, details: ok ? '' : `Expected newline, got ${JSON.stringify(result)}` };
+    }
+  },
+  {
+    name: 'parseSplitChar: semicolon → semicolon',
+    run: async () => {
+      const parseSplitChar = (raw) => {
+        if (raw === '\\n' || raw === 'enter') return '\n';
+        if (raw === '\\t' || raw === 'tab') return '\t';
+        return raw || ' ';
+      };
+      const result = parseSplitChar(';');
+      const ok = result === ';';
+      return { ok, details: ok ? '' : `Expected ";", got ${result}` };
+    }
+  },
+  // Priority colors
+  {
+    name: 'Priority colors mapping',
+    run: async () => {
+      const PRIORITY_COLORS = { A: '#ef4444', B: '#f97316', C: '#eab308', D: '#3b82f6', E: '#22c55e' };
+      const ok = PRIORITY_COLORS.A === '#ef4444' && PRIORITY_COLORS.B === '#f97316' &&
+                 PRIORITY_COLORS.C === '#eab308' && PRIORITY_COLORS.D === '#3b82f6' &&
+                 PRIORITY_COLORS.E === '#22c55e';
+      return { ok, details: ok ? '' : 'Priority colors mismatch' };
+    }
+  },
+  // sortByPin
+  {
+    name: 'sortByPin: pinned first',
+    run: async () => {
+      const sortByPin = (list) => [...list].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+      const tasks = [
+        { id: '1', pinned: false },
+        { id: '2', pinned: true },
+        { id: '3', pinned: false }
+      ];
+      const sorted = sortByPin(tasks);
+      const ok = sorted[0].pinned === true;
+      return { ok, details: ok ? '' : 'Pinned item not first' };
+    }
+  },
+  // normalizeUrl
+  {
+    name: 'normalizeUrl: adds https',
+    run: async () => {
+      const normalizeUrl = (url) => {
+        if (!url) return '';
+        const trimmed = url.trim();
+        if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+          return 'https://' + trimmed;
+        }
+        return trimmed;
+      };
+      const result = normalizeUrl('deepseek.com');
+      const ok = result === 'https://deepseek.com';
+      return { ok, details: ok ? '' : `Expected https://deepseek.com, got ${result}` };
+    }
+  },
+  // History slice limit
+  {
+    name: 'History max 100 entries',
+    run: async () => {
+      const history = Array.from({ length: 150 }, (_, i) => ({ id: i }));
+      const sliced = history.slice(0, 100);
+      const ok = sliced.length === 100;
+      return { ok, details: ok ? '' : `Expected 100, got ${sliced.length}` };
+    }
+  }
+];
+
+export async function runBusinessLogicTests() {
+  return runTests('BusinessLogic', tests);
+}
+📦 4. TestRunner_ElectronAPI.js
+js
+// =============================================================================
+// FILE: TestRunner_ElectronAPI.js
+// PATH: tests/TestRunner_ElectronAPI.js
+// VERSION: 0.0.3
+// PURPOSE: Testy dostępności i typu metod window.electronAPI
+// DEPENDS ON: testUtils.js
+// UWAGA: Te testy wymagają działającego preload.cjs i main.js
+// =============================================================================
+
+import { runTests } from './testUtils.js';
+
+const tests = [
+  {
+    name: 'window.electronAPI exists',
+    run: async () => {
+      const api = typeof window !== 'undefined' ? window.electronAPI : null;
+      const ok = !!api;
+      return { ok, details: ok ? '' : 'electronAPI not found' };
+    }
+  },
+  {
+    name: 'electronAPI.getProfiles is function',
+    run: async () => {
+      const api = window.electronAPI;
+      const ok = api && typeof api.getProfiles === 'function';
+      return { ok, details: ok ? '' : 'getProfiles missing or not a function' };
+    }
+  },
+  {
+    name: 'electronAPI.saveProfiles is function',
+    run: async () => {
+      const api = window.electronAPI;
+      const ok = api && typeof api.saveProfiles === 'function';
+      return { ok, details: ok ? '' : 'saveProfiles missing or not a function' };
+    }
+  },
+  {
+    name: 'electronAPI.getSettings is function',
+    run: async () => {
+      const api = window.electronAPI;
+      const ok = api && typeof api.getSettings === 'function';
+      return { ok, details: ok ? '' : 'getSettings missing or not a function' };
+    }
+  },
+  {
+    name: 'electronAPI.saveSettings is function',
+    run: async () => {
+      const api = window.electronAPI;
+      const ok = api && typeof api.saveSettings === 'function';
+      return { ok, details: ok ? '' : 'saveSettings missing or not a function' };
+    }
+  },
+  {
+    name: 'electronAPI.getTasks is function',
+    run: async () => {
+      const api = window.electronAPI;
+      const ok = api && typeof api.getTasks === 'function';
+      return { ok, details: ok ? '' : 'getTasks missing or not a function' };
+    }
+  },
+  {
+    name: 'electronAPI.saveTasks is function',
+    run: async () => {
+      const api = window.electronAPI;
+      const ok = api && typeof api.saveTasks === 'function';
+      return { ok, details: ok ? '' : 'saveTasks missing or not a function' };
+    }
+  },
+  {
+    name: 'electronAPI.getHistory is function',
+    run: async () => {
+      const api = window.electronAPI;
+      const ok = api && typeof api.getHistory === 'function';
+      return { ok, details: ok ? '' : 'getHistory missing or not a function' };
+    }
+  },
+  {
+    name: 'electronAPI.clearHistory is function',
+    run: async () => {
+      const api = window.electronAPI;
+      const ok = api && typeof api.clearHistory === 'function';
+      return { ok, details: ok ? '' : 'clearHistory missing or not a function' };
+    }
+  }
+];
+
+export async function runElectronAPITests() {
+  return runTests('ElectronAPI', tests);
+}
+📦 5. TestRunner_Store.js
+js
+// =============================================================================
+// FILE: TestRunner_Store.js
+// PATH: tests/TestRunner_Store.js
+// VERSION: 0.0.3
+// PURPOSE: Testy struktury danych pobieranych z store (settings, notes, history)
+// DEPENDS ON: testUtils.js
+// UWAGA: Wymaga działającego electronAPI i store.
+// =============================================================================
+
+import { runTests } from './testUtils.js';
+
+const tests = [
+  {
+    name: 'settings is object',
+    run: async () => {
+      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
+      const settings = await window.electronAPI.getSettings().catch(() => null);
+      const ok = settings && typeof settings === 'object';
+      return { ok, details: ok ? '' : 'settings is not an object or null' };
+    }
+  },
+  {
+    name: 'settings has language',
+    run: async () => {
+      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
+      const settings = await window.electronAPI.getSettings().catch(() => ({}));
+      const ok = 'language' in settings;
+      return { ok, details: ok ? '' : 'language key missing in settings' };
+    }
+  },
+  {
+    name: 'settings has theme',
+    run: async () => {
+      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
+      const settings = await window.electronAPI.getSettings().catch(() => ({}));
+      const ok = 'theme' in settings;
+      return { ok, details: ok ? '' : 'theme key missing in settings' };
+    }
+  },
+  {
+    name: 'settings has debugMode',
+    run: async () => {
+      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
+      const settings = await window.electronAPI.getSettings().catch(() => ({}));
+      const ok = 'debugMode' in settings;
+      return { ok, details: ok ? '' : 'debugMode key missing in settings' };
+    }
+  },
+  {
+    name: 'notes is object',
+    run: async () => {
+      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
+      const notes = await window.electronAPI.getNotes().catch(() => null);
+      const ok = notes && typeof notes === 'object';
+      return { ok, details: ok ? '' : 'notes is not an object or null' };
+    }
+  },
+  {
+    name: 'notes has tabs array',
+    run: async () => {
+      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
+      const notes = await window.electronAPI.getNotes().catch(() => ({ tabs: [] }));
+      const ok = Array.isArray(notes.tabs);
+      return { ok, details: ok ? '' : 'notes.tabs is not an array' };
+    }
+  },
+  {
+    name: 'history is array and max 100 entries',
+    run: async () => {
+      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
+      const history = await window.electronAPI.getHistory().catch(() => []);
+      const ok = Array.isArray(history) && history.length <= 100;
+      const details = ok ? '' : `history is ${Array.isArray(history) ? `array with ${history.length} entries` : 'not an array'}`;
+      return { ok, details };
+    }
+  }
+];
+
+export async function runStoreTests() {
+  return runTests('Store', tests);
+}
+📦 6. Integracja z orchestratorem (tests/TestRunner.js)
+Dodaj importy nowych testów i wywołaj je w runAllTests():
+
+js
+// =============================================================================
+// FILE: TestRunner.js
+// PATH: tests/TestRunner.js
+// VERSION: 0.0.3
+// PURPOSE: Orchestrator testów przy starcie – uruchamia wszystkie testRunner_*.js
+// DEPENDS ON: logger.js, src/utils/icons.js
+// UWAGA: Nie usuwaj komentarzy – testy uruchamiają się przy debugMode.
+// =============================================================================
+
+import { logInfo, logError } from '../src/utils/logger.js';
+import { ICONS } from '../src/utils/icons.js';
+
+// Import nowych testów
+import { runIconsTests } from './TestRunner_Icons.js';
+import { runLocalesTests } from './TestRunner_Locales.js';
+import { runBusinessLogicTests } from './TestRunner_BusinessLogic.js';
+import { runElectronAPITests } from './TestRunner_ElectronAPI.js';
+import { runStoreTests } from './TestRunner_Store.js';
+
+// Import istniejących testów (jeśli jeszcze nie zaimportowane)
+import { runProfilesTests } from './TestRunner_Profiles.js';
+import { runNotepadTests } from './TestRunner_Notepad.js';
+import { runTasksTests } from './TestRunner_Tasks.js';
+import { runProjectsTests } from './TestRunner_Projects.js';
+import { runHistoryTests } from './TestRunner_History.js';
+import { runSettingsTests } from './TestRunner_Settings.js';
+import { runToolsTests } from './TestRunner_Tools.js';
+import { runWebViewTests } from './TestRunner_WebView.js';
+import { runTerminalTests } from './TestRunner_Terminal.js';
+import { runSleepTabsTests } from './TestRunner_SleepTabs.js';
+import { runAdBlockerTests } from './TestRunner_AdBlocker.js';
+
+export async function runAllTests(options = {}) {
+  logInfo(`${ICONS.DEBUG} Running integrity tests...`);
+
+  const results = {
+    icons: await runIconsTests(),
+    locales: await runLocalesTests(),
+    businessLogic: await runBusinessLogicTests(),
+    electronAPI: await runElectronAPITests(),
+    store: await runStoreTests(),
+    profiles: await runProfilesTests(),
+    notepad: await runNotepadTests(),
+    tasks: await runTasksTests(),
+    projects: await runProjectsTests(),
+    history: await runHistoryTests(),
+    settings: await runSettingsTests(),
+    tools: await runToolsTests(),
+    webview: await runWebViewTests(),
+    terminal: await runTerminalTests(),
+    sleepTabs: await runSleepTabsTests(),
+    adBlocker: await runAdBlockerTests()
+  };
+
+  const totalPassed = Object.values(results).reduce((sum, r) => sum + (r.passed || 0), 0);
+  const totalFailed = Object.values(results).reduce((sum, r) => sum + (r.failed || 0), 0);
+
+  logInfo(`${ICONS.TEST_PASS} Tests completed: ${totalPassed} passed, ${totalFailed} failed`);
+  return { passed: totalPassed, failed: totalFailed, results };
+}
+
+
+
+=====
+Finalnie, w folderze SRC/UI/UTILS/ obecny testRunner.js zawiera testy wyjęte do zewnetrznych testów w folderze Tests/ - nie mergowac z obecnym, zastąpić przez ostatni SRC/UI/UTILS/testRunner.js z tego pliku podmieniając poprzedni! Następnie zmienić testRunner.js na testRunne_Utils.js, oraz icons.js na icons_Utils.js, zrobić update structure.txt o te zmianę; 
+upewnij się, żę w src/index.jsx są wszystkie oczekiwane importy z nowych plików lub ze zmienioną lokalizacją.
+
+
+
+4.1. config.js – dodajemy flagi
+Dodaj na końcu sekcji DEFAULT_SETTINGS:
+
+js
+export const DEFAULT_SETTINGS = {
+  // ... istniejące ...
+
+  // Logs & user data
+  firstRun: true,                    // pierwsze uruchomienie aplikacji
+  debugMode: true,                  // tryb debug (domyślnie wyłączony)
+  logsEnabled: true,                 // czy logi są włączone (tylko gdy debugMode=true)
+  logsMaxLines: 500,                 // maksymalna liczba linii w pliku test-fails.log
+};
+
+4.2. src/utils/logWriter.js – pełna wersja (z locales, modalem, limitem linii)
+js
+// =============================================================================
+// FILE: logWriter.js
+// PATH: src/utils/logWriter.js
+// VERSION: 0.0.3
+// PURPOSE: Zapis logów testów do pliku (tylko przy failu, gdy debugMode=true i logsEnabled=true).
+//          Sprawdza zgodę użytkownika (firstRun + logsEnabled).
+// DEPENDS ON: logger.js, electronAPI, config.js, useTranslation
+// UWAGA: Nie usuwaj komentarzy.
+// =============================================================================
+
+import { logError } from './logger.js';
+import { DEFAULT_SETTINGS } from '../config.js';
+
+let logsEnabled = false;
+let debugMode = false;
+
+export async function initLogWriter() {
+  try {
+    const settings = await window.electronAPI?.getSettings?.() || DEFAULT_SETTINGS;
+    debugMode = settings.debugMode === true;
+    logsEnabled = settings.logsEnabled === true;
+
+    // Jeśli debugMode jest wyłączony – nie robimy nic
+    if (!debugMode) {
+      logsEnabled = false;
+      return;
+    }
+
+    // Jeśli to pierwsze uruchomienie i jeszcze nie wyraził zgody
+    if (settings.firstRun && !logsEnabled) {
+      const granted = await askForLogPermission();
+      if (granted) {
+        await window.electronAPI?.saveSettings?.({ logsEnabled: true });
+        logsEnabled = true;
+      } else {
+        await window.electronAPI?.saveSettings?.({ logsEnabled: false });
+        logsEnabled = false;
+      }
+      await window.electronAPI?.saveSettings?.({ firstRun: false });
+    }
+  } catch (err) {
+    logError('initLogWriter failed', err);
+    logsEnabled = false;
+  }
+}
+
+async function askForLogPermission() {
+  // Użyjemy modala (ConfirmModal) – tutaj uproszczona wersja
+  return new Promise((resolve) => {
+    const confirmed = window.confirm(t('logs.askForPermission'));
+    resolve(confirmed);
+  });
+}
+
+export async function appendTestFailLog(moduleName, testName, details) {
+  if (!debugMode || !logsEnabled) return;
+
+  try {
+    const result = await window.electronAPI?.appendLogFile?.({
+      level: 'fail',
+      module: moduleName,
+      test: testName,
+      details,
+      timestamp: Date.now()
+    });
+    if (!result || !result.ok) throw new Error(t('logs.unknownError', { error: result?.error || '' }));
+  } catch (err) {
+    logError('appendTestFailLog failed', err);
+  }
+}
+
+export async function getLogsContent() {
+  if (!debugMode || !logsEnabled) return null;
+  try {
+    const result = await window.electronAPI?.getLogsFile?.();
+    if (result?.ok) return result.data;
+    return null;
+  } catch (err) {
+    logError('getLogsContent failed', err);
+    return null;
+  }
+}
+
+export async function clearLogsFile() {
+  if (!debugMode || !logsEnabled) return false;
+  try {
+    const result = await window.electronAPI?.clearLogsFile?.();
+    return result?.ok === true;
+  } catch (err) {
+    logError('clearLogsFile failed', err);
+    return false;
+  }
+}
+
+4.3. main.js – handlery dla logów
+Dodaj na końcu sekcji ipcMain.handle:
+
+js
+ipcMain.handle('append-log-file', async (_, payload) => {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const logsDir = path.join(app.getPath('userData'), 'logs');
+    if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir, { recursive: true });
+    const logFile = path.join(logsDir, 'test-fails.log');
+    const maxLines = 500;
+
+    // Dodaj nową linię
+    const line = `[${new Date(payload.timestamp).toISOString()}] FAIL: ${payload.module} / ${payload.test} – ${payload.details}\n`;
+    fs.appendFileSync(logFile, line, 'utf8');
+
+    // Ogranicz plik do maxLines
+    const content = fs.readFileSync(logFile, 'utf8');
+    const lines = content.split(/\r?\n/).filter(l => l.trim());
+    if (lines.length > maxLines) {
+      const trimmed = lines.slice(-maxLines);
+      fs.writeFileSync(logFile, trimmed.join('\n') + '\n', 'utf8');
+    }
+    return { ok: true };
+  } catch (err) {
+    logError('append-log-file error', err);
+    return { ok: false, error: err.message };
+  }
+});
+
+ipcMain.handle('get-logs-file', async () => {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const logFile = path.join(app.getPath('userData'), 'logs', 'test-fails.log');
+    if (!fs.existsSync(logFile)) return { ok: true, data: '' };
+    const content = fs.readFileSync(logFile, 'utf8');
+    return { ok: true, data: content };
+  } catch (err) {
+    logError('get-logs-file error', err);
+    return { ok: false, error: err.message };
+  }
+});
+
+ipcMain.handle('clear-logs-file', async () => {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const logFile = path.join(app.getPath('userData'), 'logs', 'test-fails.log');
+    if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
+    return { ok: true };
+  } catch (err) {
+    logError('clear-logs-file error', err);
+    return { ok: false, error: err.message };
+  }
+});
+4.4. preload.cjs – nowe kanały
+js
+appendLogFile: (payload) => ipcRenderer.invoke('append-log-file', payload),
+getLogsFile: () => ipcRenderer.invoke('get-logs-file'),
+clearLogsFile: () => ipcRenderer.invoke('clear-logs-file')
+4.5. src/ui/settings/DataLogsSection.jsx – przyciski i modal
+jsx
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
+import { ICONS } from '../../data/icons';
+import Modal from '../modals/Modal';
+
+export default function DataLogsSection() {
+  const { t } = useTranslation();
+  const [logsContent, setLogsContent] = useState('');
+  const [showLogsModal, setShowLogsModal] = useState(false);
+  const [debugMode, setDebugMode] = useState(false);
+  const [logsEnabled, setLogsEnabled] = useState(false);
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      const settings = await window.electronAPI?.getSettings?.() || {};
+      setDebugMode(settings.debugMode === true);
+      setLogsEnabled(settings.logsEnabled === true);
+    };
+    loadSettings();
+  }, []);
+
+  const handleViewLogs = async () => {
+    const content = await window.electronAPI?.getLogsFile?.();
+    if (content?.ok) {
+      setLogsContent(content.data || '');
+      setShowLogsModal(true);
+    }
+  };
+
+  const handleClearLogs = async () => {
+    await window.electronAPI?.clearLogsFile?.();
+    setLogsContent('');
+  };
+
+  const handleToggleLogs = async () => {
+    const newValue = !logsEnabled;
+    setLogsEnabled(newValue);
+    await window.electronAPI?.saveSettings?.({ logsEnabled: newValue });
+  };
+
+  return (
+    <section className="settings-section">
+      <h2>{ICONS.DATA} {t('settings.dataAndLogs')}</h2>
+
+      <div className="setting-item">
+        <label>
+          <input type="checkbox" checked={logsEnabled} onChange={handleToggleLogs} />
+          {ICONS.LOGS} {t('settings.allowLogs')}
+        </label>
+        <span className="setting-description">{t('settings.allowLogsDesc')}</span>
+      </div>
+
+      {logsEnabled && (
+        <div className="setting-item">
+          <button onClick={handleViewLogs}>{ICONS.PREVIEW} {t('settings.viewLogs')}</button>
+          <button onClick={handleClearLogs}>{ICONS.DELETE} {t('settings.clearLogs')}</button>
+        </div>
+      )}
+
+      <Modal isOpen={showLogsModal} onClose={() => setShowLogsModal(false)} title={t('settings.failLogs')}>
+        <div style={{ maxHeight: '60vh', overflowY: 'auto', whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
+          {logsContent || t('settings.noLogs')}
+        </div>
+      </Modal>
+    </section>
+  );
+}
+
+✅ Poprawiona wersja DataLogsSection.jsx (fragment)
+jsx
+export default function DataLogsSection() {
+  const { t } = useTranslation();
+  const [logsContent, setLogsContent] = useState('');
+  const [showLogsModal, setShowLogsModal] = useState(false);
+  const [debugMode, setDebugMode] = useState(false);
+  const [logsEnabled, setLogsEnabled] = useState(false);
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      const settings = await window.electronAPI?.getSettings?.() || {};
+      setDebugMode(settings.debugMode === true);
+      setLogsEnabled(settings.logsEnabled === true);
+    };
+    loadSettings();
+  }, []);
+
+  // ... eksport/import, otwieranie folderu logów itd. (zawsze widoczne)
+
+  // Sekcja logów testów – tylko gdy debugMode = true
+  if (debugMode) {
+    return (
+      <>
+        {/* ... istniejące przyciski eksport/import, reset ... */}
+
+        <div className="setting-item">
+          <label>
+            <input type="checkbox" checked={logsEnabled} onChange={handleToggleLogs} />
+            {ICONS.LOGS} {t('settings.allowLogs')}
+          </label>
+          <span className="setting-description">{t('settings.allowLogsDesc')}</span>
+        </div>
+
+        {logsEnabled && (
+          <div className="setting-item">
+            <button onClick={handleViewLogs}>{ICONS.PREVIEW} {t('settings.viewLogs')}</button>
+            <button onClick={handleClearLogs}>{ICONS.DELETE} {t('settings.clearLogs')}</button>
+          </div>
+        )}
+
+        <Modal isOpen={showLogsModal} onClose={() => setShowLogsModal(false)} title={t('settings.failLogs')}>
+          <div style={{ maxHeight: '60vh', overflowY: 'auto', whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
+            {logsContent || t('settings.noLogs')}
+          </div>
+        </Modal>
+      </>
+    );
+  }
+
+  // Jeśli debugMode = false – tylko podstawowe przyciski Data & Logs
+  return (
+    <>
+      {/* przyciski eksport/import, reset, otwieranie folderu logów */}
+    </>
+  );
+}
+=====
+4.6. Locales – nowe klucze
+pl.json:
+
+json
+"settings": {
+  
+  "allowLogs": "Zapisuj logi testów (tylko przy failu)",
+  "allowLogsDesc": "Logi zapisywane są do pliku test-fails.log (max 500 linii).",
+  "viewLogs": "Pokaż logi",
+  "clearLogs": "Wyczyść logi",
+  "failLogs": "Logi nieudanych testów",
+  "noLogs": "Brak logów (wszystkie testy przeszły pomyślnie lub logowanie wyłączone)."
+}
+"logs": {
+  "askForPermission": "MultiWeb Manager może zapisywać logi błędów testów (tylko gdy test się nie powiedzie). Czy wyrażasz zgodę?",
+  "unknownError": "Nieznany błąd zapisu logu: {{error}}"
+}
+
+
+en.json (odpowiedniki):
+
+json
+"settings": {
+  
+  "allowLogs": "Save test logs (only on failure)",
+  "allowLogsDesc": "Logs are saved to test-fails.log (max 500 lines).",
+  "viewLogs": "Show logs",
+  "clearLogs": "Clear logs",
+  "failLogs": "Failed tests logs",
+  "noLogs": "No logs (all tests passed or logging disabled)."
+}
+"logs": {
+  "askForPermission": "MultiWeb Manager may save test failure logs (only when a test fails). Do you agree?",
+  "unknownError": "Unknown log write error: {{error}}"
+}
+
+======
+4.7. tests/TestRunner.js – inicjalizacja logWritera
+Przed uruchomieniem testów:
+
+js
+import { initLogWriter } from '../src/utils/logWriter.js';
+await initLogWriter();
+
+2. translations.js – przeniesienie z hooks do utils
+Masz absolutną rację. Rozbiliśmy to kiedyś:
+
+src/hooks/useTranslation.js – tylko hook (używa contextu)
+
+src/utils/translations.js – logika ładowania, provider, context
+
+A teraz znowu mam translations.js w hooks/ – to błąd.
+
+Co robimy:
+
+Przenosimy src/hooks/translations.js → src/utils/translations.js
+
+Aktualizujemy import w src/index.jsx (gdzie jest TranslationProvider):
+
+js
+import { TranslationProvider } from './utils/translations.js';
+Aktualizujemy import w src/hooks/useTranslation.js:
+
+js
+import { TranslationContext } from '../utils/translations.js';
+Wszędzie tam, gdzie był import '../hooks/translations' – poprawiamy na '../utils/translations'.
+
+
+
+
+======
+Update structure.txt - same ściezki i ewnetualnie stan faktyczny cokolwiek z wpisów, do merge jako update, jesli cos nowego sie pojawilo (logWriter.js), nie podmianki, wciaz brak opisów modułów
+
+// =============================================================================
+// FILE: structure.txt
+// PATH: doc/structure.txt
+// VERSION: 0.0.3
+// PURPOSE: Struktura projektu + mapowanie modułów, feature'ów i odpowiedzialności.
+// DEPENDS ON: DevelopersGuide.md
+// =============================================================================
+//
+// STAN FAKTYCZNY v0.0.3 (2026-05-21)
+// - UI: src/ui/* (modułowo: sidebar/, webview/, taskpanel/, notepad/, terminal/, settings/, tools/, appLibrary/)
+// - App.jsx importuje wyłącznie z src/ui/
+// - IPC: src/ipc/* + główne handlery w main.js (webview, adblocker, hotkeys)
+// - Store: src/core/* (profiles, settings, tasks, projects, history, notes, workspaces, appLibrary)
+// - Tools (backend): src/tools/* (imageUtils, svgToPng, apiClient, regexEngine, markdownRenderer)
+// - Ikony: src/data/icons.js (kanonicznie)
+// - Logger: src/utils/logger.js + src/utils/loggerRenderer.js
+// - Pomoc: src/locales/help_pl.json + help_en.json
+// - LogWriter: src/utils/logWriter.js (zapis logów testów do userData/logs/test-fails.log)
+//
+// =============================================================================
+
+multiweb-manager/
+├── package.json
+├── package-lock.json
+├── config.js
+├── main.js                           # Główne handlery: webviewMap, capture-webview, open-single-window,
+│                                     # adblocker, hotkeys, single instance lock, startup tests,
+│                                     # append-log-file, get-logs-file, clear-logs-file
+├── preload.cjs                       # Most IPC (contextBridge)
+├── index.html                        # Tylko przekierowanie – właściwy w public/
+├── README.md
+│
+├── public/
+│   └── index.html                    # Główny dokument HTML
+│
+├── src/
+│   ├── App.jsx
+│   ├── index.jsx
+│   ├── index.css                     # Główne style (importuje layout, theme, components)
+│   │
+│   ├── core/                         # Store'y (dane)
+│   │   ├── settingsStore.js
+│   │   ├── profilesStore.js
+│   │   ├── tasksStore.js
+│   │   ├── projectsStore.js
+│   │   ├── notepadStore.js
+│   │   ├── historyStore.js
+│   │   ├── workspacesStore.js
+│   │   ├── appLibraryStore.js
+│   │   └── resourceMonitor.js
+│   │
+│   ├── engine/                       # Silniki
+│   │   ├── sleepTabsManager.js
+│   │   └── notificationsManager.js
+│   │
+│   ├── ipc/                          # Handlery IPC dla store'ów
+│   │   ├── ipcLegacyBridge.js
+│   │   ├── ipcMainHandlers_profiles.js
+│   │   ├── ipcMainHandlers_tasks.js
+│   │   ├── ipcMainHandlers_projects.js
+│   │   ├── ipcMainHandlers_webview.js
+│   │   ├── ipcMainHandlers_terminal.js
+│   │   ├── ipcMainHandlers_settings.js
+│   │   ├── ipcMainHandlers_tools.js
+│   │   ├── ipcMainHandlers_history.js
+│   │   ├── ipcMainHandlers_aggregatedTasks.js
+│   │   ├── ipcMainHandlers_notes.js
+│   │   ├── ipcMainHandlers_workspaces.js
+│   │   └── ipcMainHandlers_misc.js
+│   │
+│   ├── ui/                           # Komponenty React
+│   │   ├── layout.css
+│   │   ├── styles/
+│   │   │   ├── theme.css
+│   │   │   └── components.css
+│   │   │
+│   │   ├── sidebar/
+│   │   │   └── Sidebar.jsx
+│   │   │
+│   │   ├── webview/
+│   │   │   ├── WebViewTab.jsx
+│   │   │   ├── WebViewToolbar.jsx
+│   │   │   └── WebViewErrorBar.jsx
+│   │   │
+│   │   ├── taskpanel/
+│   │   │   ├── TaskPanel.jsx
+│   │   │   ├── TaskModal.jsx
+│   │   │   ├── TaskFilters.jsx
+│   │   │   └── TaskItem.jsx
+│   │   │
+│   │   ├── notepad/
+│   │   │   ├── Notepad.jsx
+│   │   │   ├── NotepadTabs.jsx
+│   │   │   └── NotepadEditor.jsx
+│   │   │
+│   │   ├── projects/
+│   │   │   └── ProjectManager.jsx
+│   │   │
+│   │   ├── tasks/
+│   │   │   └── AggregatedTasks.jsx
+│   │   │
+│   │   ├── terminal/
+│   │   │   └── Terminal.jsx
+│   │   │
+│   │   ├── history/
+│   │   │   └── HistoryLog.jsx
+│   │   │
+│   │   ├── settings/
+│   │   │   ├── Settings.jsx
+│   │   │   ├── GeneralSection.jsx
+│   │   │   ├── WebViewSection.jsx
+│   │   │   ├── TabsSection.jsx
+│   │   │   ├── NotificationsSection.jsx
+│   │   │   ├── DataLogsSection.jsx
+│   │   │   ├── AccountSection.jsx
+│   │   │   └── HotkeysManager.jsx
+│   │   │
+│   │   ├── help/
+│   │   │   └── Help.jsx
+│   │   │
+│   │   ├── system/
+│   │   │   └── UpdateChecker.jsx
+│   │   │
+│   │   ├── tools/
+│   │   │   ├── ToolsPanel.jsx
+│   │   │   ├── RemoveBgTool.jsx
+│   │   │   ├── StringCombiner.jsx
+│   │   │   ├── JsonFormatter.jsx
+│   │   │   ├── RegexTester.jsx
+│   │   │   ├── MarkdownPreviewer.jsx
+│   │   │   ├── ClipboardHistory.jsx
+│   │   │   ├── ImageTools.jsx
+│   │   │   ├── SvgToPngConverter.jsx
+│   │   │   ├── MiniPostman.jsx
+│   │   │   ├── FilePreviewer.jsx
+│   │   │   └── CookieGrabber.jsx
+│   │   │
+│   │   ├── appLibrary/
+│   │   │   └── AppLibraryBrowser.jsx
+│   │   │
+│   │   └── modals/
+│   │       ├── Modal.jsx
+│   │       └── ConfirmModal.jsx
+│   │
+│   ├── utils/
+│   │   ├── logger.js
+│   │   ├── loggerRenderer.js
+│   │   ├── logWriter.js               # NOWY: zapis logów testów (tylko przy failu)
+│   │   ├── translations.js            # PRZENIESIONE z hooks/
+│   │   ├── testRunner.js              # moduł testów integralności
+│   │   ├── imageUtils.js
+│   │   ├── validators.js
+│   │   ├── formatters.js
+│   │   ├── searchIndex.js
+│   │   └── testUtils.js
+│   │
+│   ├── hooks/
+│   │   ├── useTranslation.js          # tylko hook (korzysta z utils/translations.js)
+│   │   ├── useSettings.js
+│   │   ├── useTasks.js
+│   │   ├── useProjects.js
+│   │   ├── useNotepad.js
+│   │   ├── useHistoryLog.js
+│   │   └── useWorkspaces.js
+│   │
+│   ├── data/
+│   │   ├── icons.js
+│   │   ├── app-library.json
+│   │   ├── defaultProfiles.json
+│   │   └── defaultSettings.json
+│   │
+│   ├── locales/
+│   │   ├── pl.json
+│   │   ├── en.json
+│   │   ├── help_pl.json
+│   │   ├── help_en.json
+│   │   └── templates/
+│   │       ├── lang.template.json
+│   │       └── help.template.json
+│   │
+│   ├── styles/ (opcjonalnie, jeśli nie w ui/styles)
+│   │
+│   └── tools/                         # backend narzędzi
+│       ├── apiClient.js
+│       ├── svgToPng.js
+│       ├── regexEngine.js
+│       ├── markdownRenderer.js
+│       └── imageProcessor.js (do usunięcia – duplikat imageUtils.js)
+│
+├── tests/
+│   ├── testUtils.js
+│   ├── TestRunner.js
+│   ├── TestRunner_Icons.js
+│   ├── TestRunner_Locales.js
+│   ├── TestRunner_BusinessLogic.js
+│   ├── TestRunner_ElectronAPI.js
+│   ├── TestRunner_Store.js
+│   ├── TestRunner_Profiles.js
+│   ├── TestRunner_Notepad.js
+│   ├── TestRunner_Tasks.js
+│   ├── TestRunner_Projects.js
+│   ├── TestRunner_History.js
+│   ├── TestRunner_Settings.js
+│   ├── TestRunner_Tools.js
+│   ├── TestRunner_WebView.js
+│   ├── TestRunner_Terminal.js
+│   ├── TestRunner_SleepTabs.js
+│   └── TestRunner_AdBlocker.js
+│
+├── doc/
+│   ├── structure.txt
+│   ├── DevelopersGuide.md
+│   ├── ModulesOverview.md
+│   ├── AI_Development_Standards.md
+│   ├── Project_Initialization_Guide.md
+│   └── requirements.md
+│
+
+
+======
+
+A. doc/DevelopersGuide.md
+Dopisz nową sekcję (gdzieś w rozdziale o testach):
+
+markdown
+## Testy i logi błędów (LogWriter)
+
+LogWriter (`src/utils/logWriter.js`) zapisuje do pliku `test-fails.log` (w `userData/logs/`) tylko te testy, które zakończyły się niepowodzeniem. Działa wyłącznie gdy:
+
+- `settings.debugMode === true`
+- użytkownik wyraził zgodę na zapis logów (pytanie przy pierwszym uruchomieniu z debugMode=true lub przełącznik w Settings)
+
+Plik logów jest ograniczony do 500 linii (nadpisywane od najstarszych). Można go podejrzeć i wyczyścić w Settings → Data & Logs (widoczne tylko gdy debugMode=true).
+
+Handlery IPC:
+
+- `append-log-file` – dopisuje linię do pliku
+- `get-logs-file` – odczytuje zawartość pliku
+- `clear-logs-file` – usuwa plik
+
+Konfiguracja w `config.js`:
+
+- `logsEnabled` – czy logowanie jest włączone (domyślnie false)
+- `logsMaxLines` – maksymalna liczba linii (domyślnie 500)
+
+LogWriter jest inicjalizowany w `TestRunner.js` przed uruchomieniem testów.
+B. doc/AI_Development_Standards.md
+Dopisz (w sekcji o testach):
+
+markdown
+## LogWriter – zapis logów testów
+
+Podczas pisania nowych testów (`TestRunner_*.js`), nie musisz ręcznie zapisywać logów. LogWriter robi to automatycznie, gdy test zakończy się niepowodzeniem.
+
+Pamiętaj jednak:
+
+- Używaj `runTests(moduleName, tests)` z `testUtils.js` – ona wywołuje `appendTestFailLog` przy failu.
+- Nie używaj `console.log` do raportowania błędów – używaj `ICONS` i locales.
+- Klucz `logs.askForPermission` jest używany przy pytaniu o zgodę na zapis logów.
+- Klucz `logs.unknownError` – fallback, gdy błąd nie ma własnego opisu.
+
+Jeśli tworzysz nowe testy, które mogą generować logi – nie musisz dodawać nic specjalnego.
+
+C. doc/Project_Initialization_Guide.md
+Dopisz (w sekcji "Konfiguracja logów"):
+
+markdown
+## Logi testów
+
+Po pierwszym uruchomieniu z `debugMode = true`, aplikacja zapyta o zgodę na zapis logów testów (pliki `test-fails.log` w katalogu `userData/logs/`). Jeśli użytkownik wyrazi zgodę:
+
+- Logi są zapisywane automatycznie przy każdym nieudanym teście.
+- W Settings → Data & Logs pojawia się przełącznik do włączania/wyłączania logów oraz przyciski podglądu i czyszczenia.
+
+Plik logów jest ograniczony do 500 linii (nadpisywane od najstarszych). Nie wymaga ręcznej ingerencji.
