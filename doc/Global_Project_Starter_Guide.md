@@ -93,7 +93,7 @@ Aby uniknąć marnowania tokenów przy ciągłym czytaniu i modyfikacji wielkich
 Gdy zaczynasz nowy projekt, Twoja pierwsza wiadomość do Roo Code / Cline powinna brzmieć:
 ```text
 Cześć! Zaczynamy nowy projekt. Oto nasze globalne standardy. 
-Wgraj plik .clinerules do roota. Następnie utwórz plik README.md według szablonu oraz folder docs/, a w nim zainicjalizuj puste pliki:
+Wgraj plik .clinerules do roota. Następnie utwórz plik README.md według szablonu oraz folder doc/, a w nim zainicjalizuj puste pliki:
 1. structure.txt (architektura i drzewo katalogów)
 2. requirements.md (lista wymagań z ID i statusem BACKLOG)
 3. Definition_Mockups_UI_UX.md (początkowy opis założeń wizualnych interfejsu)

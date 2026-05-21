@@ -1,6 +1,6 @@
 =============================================================================
 FILE: Requirements.md
-PATH: DOC/Requirements.md
+PATH: doc/Requirements.md
 VERSION: 0.0.3
 PURPOSE: Wymagania aplikacji, z aktualnymi statusami
 DEPENDS ON: structure.txt, DevelopersGuide.md, AI_Development_Standards.md

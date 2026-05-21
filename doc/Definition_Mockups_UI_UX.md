@@ -1,6 +1,6 @@
 =============================================================================
 FILE: Definition_Mockups_UI_UX.md
-PATH: DOC/Definition_Mockups_UI_UX.md
+PATH: doc/Definition_Mockups_UI_UX.md
 VERSION: 0.0.3
 PURPOSE: Kompletny opis UI/UX aplikacji MultiWeb Manager v0.0.3 (do Figma)
 DEPENDS ON: structure.txt, DevelopersGuide.md

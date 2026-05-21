@@ -36,7 +36,7 @@
 ## 🧪 Standardy Testowania (Test-Driven AI)
 1. Dla każdego nowego modułu logicznego MUSISZ napisać odpowiadające mu testy jednostkowe/integracyjne w folderze `tests/`.
 2. Przy modyfikacji istniejącego kodu masz obowiązek zaktualizować istniejące testy, aby pokrywały nowe przypadki brzegowe.
-3. **Architektura Testów:** Pamiętaj o rozróżnieniu: `src/utils/testRunner_utils.js` (zarządza środowiskiem uruchomieniowym testów - GDZIE), a `tests/testrunner.js` (zawiera konkretne scenariusze testowe i asercje - CO zrobić). Jeśli pliki mają stare, mylące nazwy, zasugeruj użytkownikowi refaktor nazw na powyższe.
+3. **Architektura Testów:** Pamiętaj o rozróżnieniu: `src/utils/testRunner_utils.js` (zarządza środowiskiem uruchomieniowym testów - GDZIE), a `tests/TestRunner.js` (zawiera konkretne scenariusze testowe i asercje - CO zrobić). Jeśli pliki mają stare, mylące nazwy, zasugeruj użytkownikowi refaktor nazw na powyższe.
 
 ## 📝 Cykl Życia Dokumentacji i UI/UX Mockups
 1. Jeśli wprowadzana funkcjonalność zmienia wygląd lub zachowanie UI/UX, ZAKAZANE jest natychmiastowe nadpisywanie dużego pliku makiet `Definition_Mockups_UI_UX.md`.

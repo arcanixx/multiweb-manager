@@ -1,4 +1,4 @@
- ## 📝 Opis zmian
+## 📝 Opis zmian
 <!-- Opisz krótko, co ta zmiana wprowadza do projektu -->
 
 ## 🛠️ Typ zmiany

@@ -1,6 +1,6 @@
 # =============================================================================
 # FILE: ModulesOverview.md
-# PATH: DOC/ModulesOverview.md
+# PATH: doc/ModulesOverview.md
 # VERSION: v0.0.3
 # PURPOSE: Ujednolicona lista modułów + opis przeznaczenia dla AI i devów.
 # DEPENDS ON: DevelopersGuide.md, structure.txt

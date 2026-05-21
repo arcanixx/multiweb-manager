@@ -88,7 +88,7 @@ multiweb-manager/
 - doc/AI_Development_Standards.md – standardy kodowania dla AI
 - doc/Project_Initialization_Guide.md – jak zacząć nowy projekt
 - doc/ModulesOverview.md – przegląd modułów
-- doc/requirements.md – wymagania (IN_SPRINT / BACKLOG / DONE)
+- doc/Requirements.md – wymagania (IN_SPRINT / BACKLOG / DONE)
 
 ---
 

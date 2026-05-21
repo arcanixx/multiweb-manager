@@ -1,6 +1,6 @@
 =============================================================================
 FILE: AI_Development_Standards.md
-PATH: DOC/AI_Development_Standards.md
+PATH: doc/AI_Development_Standards.md
 VERSION: 0.0.3
 PURPOSE: Standardy tworzenia i modyfikacji kodu dla MultiWeb Manager
 DEPENDS ON: structure.txt, DevelopersGuide.md

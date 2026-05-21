@@ -1,6 +1,6 @@
 =============================================================================
 FILE: DevelopersGuide.md
-PATH: DOC/DevelopersGuide.md
+PATH: doc/DevelopersGuide.md
 VERSION: 0.0.3
 PURPOSE: Kompletny przewodnik developerski MultiWeb Manager — pełna specyfikacja
 DEPENDS ON: structure.txt, ModulesOverview.md
