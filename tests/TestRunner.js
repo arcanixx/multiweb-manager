@@ -10,7 +10,7 @@
 // =============================================================================
 
 import { logInfo, logError } from "../src/utils/logger.js";
-import { ICONS } from "../src/ui/icons.js";
+import { ICONS } from "../src/utils/icons.js";
 
 // ----------------------------------------------------------------
 // Lista testów startowych — dodawaj tutaj kolejne test-runnery
