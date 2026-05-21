@@ -41,7 +41,7 @@
 ## 📝 Cykl Życia Dokumentacji i UI/UX Mockups
 1. Jeśli wprowadzana funkcjonalność zmienia wygląd lub zachowanie UI/UX, ZAKAZANE jest natychmiastowe nadpisywanie dużego pliku makiet `Definition_Mockups_UI_UX.md`.
 2. Zamiast tego, dopisz specyfikację zmian na koniec pliku tymczasowego: `pending_updates_for_Definition_Mockups_UI_UX.md`. Plik ten posłuży do zbiorczego update'u makiet graficznych w przyszłości (np. przed dużym kamieniem milowym).
-3. Po zakończeniu zadania zaktualizuj pliki: `doc/structure.txt` (drzewo plików i zależności) oraz `doc/requirements.md` (zmień statusy zadań).
+3. Po zakończeniu zadania zaktualizuj pliki: `doc/structure.txt` (drzewo plików i zależności) oraz `doc/Requirements.md` (zmień statusy zadań).
 4. Skrócone informacje na temat formatu wymagań w pliku doc/requirements.md: 
   **Struktura pliku** - Każdy moduł powinien mieć własną sekcję adekwatną do miejsca występowania (SETTINGS, SIDEBAR, TOOLSPANEL, TASKSTOOL, WEBVIEW ITP)
 ** [Nazwa Modułu] :**
