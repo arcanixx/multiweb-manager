@@ -11,3 +11,6 @@
 - [ ] Kod kompiluje się lokalnie bez błędów
 - [ ] Roo Code / AI przejrzało kod przed pushem
 - [ ] Sprawdzono działanie na lokalnym środowisku
+
+<!-- Wywołanie CodeRabbita dla gałęzi testowych (SAT/UAT) -->
+@coderabbitai review
