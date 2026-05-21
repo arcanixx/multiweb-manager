@@ -1,7 +1,7 @@
 =============================================================================
 FILE: Project_Initialization_Guide.md
-PATH: multiweb-manager/docs/Project_Initialization_Guide.md
-VERSION: 0.0.1
+PATH: doc/Project_Initialization_Guide.md
+VERSION: 0.0.3
 PURPOSE: Kompletny przewodnik startowy — jak rozpocząć nowy projekt (AI-first)
 DEPENDS ON: AI_Development_Standards.md, DevelopersGuide.md, structure.txt, ModulesOverview.md
 =============================================================================
@@ -43,7 +43,7 @@ Każdy projekt powinien zaczynać się od następującej struktury:
 │   ├── data/  
 │   ├── locales/  
 │   └── index.js / main.js  
-├── docs/  
+├── doc/  
 │   ├── AI_Development_Standards.md  
 │   ├── DevelopersGuide.md  
 │   ├── Project_Initialization_Guide.md  
@@ -63,28 +63,29 @@ Każdy projekt powinien zaczynać się od następującej struktury:
 
 ## Główne branche
 
-### MASTER  
+### master  
 - stabilna wersja produkcyjna  
 - tylko merge po pełnych testach  
 - tagi wersji (v1.0.0, v1.1.0, itp.)
 
-### DEV  
+### dev  
 - główny branch developerski  
 - integracja funkcji  
 - testy developerskie
 
-### SAT (System Acceptance Testing)  
+### sat (System Acceptance Testing)  
 - testy systemowe  
 - łączenie wielu funkcji w jedną wersję  
 - przygotowanie do UAT
 
-### UAT (User Acceptance Testing)  
+### uat (User Acceptance Testing)  
 - testy użytkownika  
 - wersje RC (release candidate)
 
 ## Branche funkcjonalne
 
-feature/nazwa-funkcji  
+feature/nazwa-funkcji
+feature/nazwa-wymagania
 fix/nazwa-poprawki  
 refactor/nazwa-modulu  
 experiment/nazwa-testu  
@@ -121,6 +122,11 @@ npm run electron:dev (dla Electron)
 
 npm run build  
 npm run electron:build
+
+## Wybór architektury startowej
+React + Electron: od razu planuj modułowość (src/core/, src/ui/, src/engine/).
+Web (HTML/JS/CSS): od razu podział na js/, css/, assets/, lib/.
+Chrome Extension: od razu manifest.json, background/, content/, popup/.
 
 ---
 
@@ -379,7 +385,7 @@ Zawiera wszystkie rzeczy z innych modulów, które mogą być łatwo zmieniane, 
 # =============================================================================
 
 ## 7.1 Utwórz repozytorium
-- z branchami MASTER / DEV / SAT / UAT
+- z branchami master / dev / sat / uat / feature/nazwa-funkcji
 
 ## 7.2 Utwórz dokumentację
 - AI_Development_Standards.md  
@@ -418,6 +424,16 @@ npm run dev
 - tooltipy  
 - stany ładowania  
 
+## 7.7 Checklista przed pierwszym commitem
+- Struktura folderów zgodna z structure.txt
+- config.js z ustawieniami konfiguracyjnymi
+- icons.js z ikonami aplikacji
+- locales/pl.json i locales/en.json z podstawowymi kluczami
+- locales - osobno od całości, klucze dla fabuły i eventów w grach (lore, events) lub help
+- main.js (Electron) lub index.html (web)
+- package.json z poprawnie skonfigurowanymi skryptami
+- .gitignore z wykluczeniami (node_modules, dist, build, .env, *.log itp.)
+
 ---
 
 # =============================================================================
@@ -436,7 +452,10 @@ npm run dev
 - Każdy WebView ma cleanup.  
 - Każdy IPC ma walidację.  
 - Każdy błąd ma logger.  
-- Każdy build jest powtarzalny.  
+- Każdy build jest powtarzalny. 
+- Nie mieszaj logiki z UI – core/ i engine/ są od tego.
+- Nie twórz src/components/ – od razu src/ui/[modul]/.
+- Nie używaj **alertów/promptów** – od razu modale.
 
 ---
 
