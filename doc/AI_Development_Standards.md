@@ -1,6 +1,6 @@
 =============================================================================
 FILE: AI_Development_Standards.md
-PATH: multiweb-manager/docs/AI_Development_Standards.md
+PATH: doc/AI_Development_Standards.md
 VERSION: 0.0.3
 PURPOSE: Standardy tworzenia i modyfikacji kodu dla MultiWeb Manager
 DEPENDS ON: structure.txt, DevelopersGuide.md
@@ -173,7 +173,8 @@ export async function runNazwaModuluTests() {
 # 7. REFAKTOR – ROZBIJANIE DUŻYCH PLIKÓW
 # =============================================================================
 
-Jeśli plik > 10 KB i zawiera różne logiki → rozbij na moduły.
+Jeśli plik > 8 KB i/lub zawiera różne logiki → rozbij na moduły. 
+Przykład poniżej dla Settings.
 
 ## Konwencja
 Settings_Engine.js  
@@ -261,6 +262,9 @@ toasts.css
 - Ścieżki od roota
 - Wersja iteracyjna (#.#.#)
 - Komentarzy nie usuwamy
+- Jeżeli dostaniesz plik z poprawkami do merge jako cały plik do podmiany, 
+	upewnij się, że nic ważnego nie znika z poprzedniego, 
+	lub nie jest to okrojona wersja raptem.
 
 ---
 
