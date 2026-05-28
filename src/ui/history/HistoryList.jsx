@@ -11,8 +11,17 @@
 import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
+import { logError, logWarn } from '../../utils/loggerRenderer.js';
+// ─── HistoryList() – komponent wyświetlający listę wpisów historii w formie tabeli
+//   @param {Object} props – właściwości komponentu
+//   @param {Array} props.entries – tablica wpisów historii
+//   @returns {JSX.Element} – renderowana lista lub komunikat o braku historii
 export default function HistoryList({ entries }) {
   const { t } = useContext(TranslationContext);
+
+  // ─── formatTime() – formatuje timestamp do czytelnej daty
+  //   @param {string} iso – timestamp w formacie ISO
+  //   @returns {string} – sformatowana data lub '–' dla pustych wartości
   const formatTime = (iso) => {
     if (!iso) return '–';
     try {
@@ -20,7 +29,11 @@ export default function HistoryList({ entries }) {
         day: '2-digit', month: '2-digit', year: '2-digit',
         hour: '2-digit', minute: '2-digit'
       });
-    } catch { return iso; }
+    } catch (err) {
+      logError('HistoryList.formatTime failed', err);
+      logWarn('Wystąpił błąd podczas formatowania daty');
+      return iso;
+    }
   };
   if (entries.length === 0) {
     return (

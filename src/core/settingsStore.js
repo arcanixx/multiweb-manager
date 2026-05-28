@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Ustawienia użytkownika — merge partial updates, reset do domyślnych.
 // FUNCTIONS: loadSettings, saveSettings, mergeSettings, updateSettings, resetSettings
-// DEPENDS ON: fs, path, url, config.js, persistence.js
+// DEPENDS ON: fs, path, url, config.js, persistence.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -13,8 +13,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { DEFAULT_SETTINGS } from "../config.js";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
+import { logInfo, logError, logWarn } from "../utils/logger.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SETTINGS_FILE = () => getUserDataPath("settings.json");
+// ─── baseDefaults() – ładuje domyślne ustawienia z pliku lub używa DEFAULT_SETTINGS
+//   @returns {Object} – obiekt z domyślnymi ustawieniami
 function baseDefaults() {
   let extra = {};
   try {
@@ -23,8 +26,9 @@ function baseDefaults() {
       "utf8"
     );
     extra = JSON.parse(raw).data || {};
-  } catch {
-    /* fallback only DEFAULT_SETTINGS */
+  } catch (err) {
+    logError('baseDefaults failed', err);
+    logWarn('Nie można załadować domyślnych ustawień – używam DEFAULT_SETTINGS');
   }
   return {
     ...DEFAULT_SETTINGS,
@@ -32,15 +36,36 @@ function baseDefaults() {
     version: "0.0.3"
   };
 }
+// ─── loadSettings() – ładuje ustawienia z pliku lub zwraca domyślne
+//   @returns {Object} – obiekt z ustawieniami
 export function loadSettings() {
-  const stored = readJsonFile(SETTINGS_FILE(), null);
-  if (!stored || typeof stored !== "object") return baseDefaults();
-  return { ...baseDefaults(), ...stored };
+  try {
+    const stored = readJsonFile(SETTINGS_FILE(), null);
+    if (!stored || typeof stored !== "object") return baseDefaults();
+    return { ...baseDefaults(), ...stored };
+  } catch (err) {
+    logError('loadSettings failed', err);
+    logWarn('Nie można załadować ustawień – używam domyślnych');
+    return baseDefaults();
+  }
 }
+// ─── saveSettings() – zapisuje ustawienia do pliku
+//   @param {Object} settings – obiekt ustawień do zapisania
+//   @returns {Object} – zapisany obiekt ustawień
 export function saveSettings(settings) {
-  writeJsonFile(SETTINGS_FILE(), settings);
-  return settings;
+  try {
+    writeJsonFile(SETTINGS_FILE(), settings);
+    logInfo("settingsStore.saveSettings", Object.keys(settings).length);
+    return settings;
+  } catch (err) {
+    logError('saveSettings failed', err);
+    logWarn('Nie można zapisać ustawień');
+    return settings;
+  }
 }
+// ─── mergeSettings() – scala bieżące ustawienia z podanymi zmianami
+//   @param {Object} patch – obiekt z polami do zaktualizowania
+//   @returns {Object} – zaktualizowany obiekt ustawień
 export function mergeSettings(patch) {
   const current = loadSettings();
   const merged = { ...current, ...patch };
@@ -48,10 +73,15 @@ export function mergeSettings(patch) {
   return merged;
 }
 
+// ─── updateSettings() – alias dla mergeSettings
+//   @param {Object} partial – obiekt z polami do zaktualizowania
+//   @returns {Object} – zaktualizowany obiekt ustawień
 export function updateSettings(partial) {
   return mergeSettings(partial);
 }
 
+// ─── resetSettings() – resetuje ustawienia do wartości domyślnych
+//   @returns {Object} – obiekt z domyślnymi ustawieniami
 export function resetSettings() {
   const reset = baseDefaults();
   saveSettings(reset);

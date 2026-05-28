@@ -11,12 +11,41 @@
 import React, { useState, useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
+import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+// ─── ProjectModal() – modal dodawania nowego projektu z walidacją
+//   @param {Object} props – właściwości komponentu
+//   @param {Function} props.onSave – callback zapisu nowego projektu
+//   @param {Function} props.onClose – callback zamknięcia modala
+//   @returns {JSX.Element} – renderowany modal dodawania projektu
 export default function ProjectModal({ onSave, onClose }) {
   const { t } = useContext(TranslationContext);
   const [name, setName] = useState('');
   const [path, setPath] = useState('');
+
+  // ─── handleSave() – obsługa zapisu projektu z walidacją i logowaniem
+  //   @returns {void}
   const handleSave = () => {
-    if (name.trim() && path.trim()) onSave({ name: name.trim(), path: path.trim() });
+    try {
+      if (name.trim() && path.trim()) {
+        logInfo(`ProjectModal: saving project ${name.trim()}`);
+        onSave({ name: name.trim(), path: path.trim() });
+      }
+    } catch (err) {
+      logError('ProjectModal: save failed', err);
+      logWarn('Wystąpił błąd podczas zapisu projektu');
+    }
+  };
+
+  // ─── handleClose() – obsługa zamknięcia modala z logowaniem
+  //   @returns {void}
+  const handleClose = () => {
+    try {
+      logInfo('ProjectModal: closed');
+      onClose?.();
+    } catch (err) {
+      logError('ProjectModal: close failed', err);
+      logWarn('Wystąpił błąd podczas zamykania modala');
+    }
   };
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
@@ -25,7 +54,7 @@ export default function ProjectModal({ onSave, onClose }) {
           <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
             {ICONS.FOLDER_ADD} {t('projectManager.add_project')}
           </h2>
-          <button className="btn-icon" onClick={onClose}>{ICONS.CLOSE}</button>
+        <button className="btn-icon" onClick={handleClose}>{ICONS.CLOSE}</button>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div>
@@ -38,7 +67,7 @@ export default function ProjectModal({ onSave, onClose }) {
           </div>
         </div>
         <div style={{ display: 'flex', gap: 8, marginTop: 18, justifyContent: 'flex-end' }}>
-          <button className="btn btn-secondary" onClick={onClose}>{t('common.cancel')}</button>
+        <button className="btn btn-secondary" onClick={handleClose}>{t('common.cancel')}</button>
           <button className="btn btn-primary" onClick={handleSave} disabled={!name.trim() || !path.trim()}>
             {ICONS.SAVE} {t('common.save')}
           </button>

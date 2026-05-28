@@ -10,12 +10,26 @@
 
 import React, { useEffect, useState, useContext } from "react";
 import { TranslationContext } from '../../utils/translations.js';
+import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+// ─── ClipboardHistoryModal() – modal wyświetlający historię schowka
+//   @param {Object} props – właściwości komponentu
+//   @param {Function} props.onClose – callback zamknięcia modala
+//   @returns {JSX.Element} – renderowany modal historii schowka
 export default function ClipboardHistoryModal({ onClose }) {
   const { t } = useContext(TranslationContext);
   const [history, setHistory] = useState([]);
+
+  // ─── useEffect – ładowanie historii schowka przy montowaniu
   useEffect(() => {
-    const h = window.electronAPI.getClipboardHistory();
-    setHistory(h);
+    try {
+      const h = window.electronAPI.getClipboardHistory();
+      setHistory(h);
+      logInfo(`ClipboardHistoryModal: loaded ${h.length} items`);
+    } catch (err) {
+      logError('ClipboardHistoryModal: failed to load clipboard history', err);
+      logWarn('Nie można załadować historii schowka');
+      setHistory([]);
+    }
   }, []);
   return (
     <div className="modal-overlay">

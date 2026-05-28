@@ -11,10 +11,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
-import { log, logError } from '../../utils/loggerRenderer.js';
+import { log, logError, logInfo, logWarn } from '../../utils/loggerRenderer.js';
 import HistoryFilters from './HistoryFilters';
 import HistoryList from './HistoryList';
 import HistoryExport from './HistoryExport';
+// ─── HistoryLog() – główny komponent historii z filtrowaniem, listą i eksportem
+//   @returns {JSX.Element} – renderowany widok historii
 export default function HistoryLog() {
   const { t } = useContext(TranslationContext);
   const [history, setHistory] = useState([]);
@@ -22,16 +24,22 @@ export default function HistoryLog() {
   const [sortOrder, setSortOrder] = useState('desc');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // ─── loadHistory() – ładuje historię z backendu przez IPC
+  //   @returns {Promise<void>}
   const loadHistory = async () => {
-    setLoading(true);
-    setError(null);
     try {
+      setLoading(true);
+      setError(null);
+
       const data = await window.electronAPI.getHistory();
       setHistory(Array.isArray(data) ? data : []);
       log('HistoryLog: loaded', data?.length || 0, 'entries');
+      logInfo(`HistoryLog: loaded ${data?.length || 0} entries`);
     } catch (err) {
       setError(err.message);
-      logError('HistoryLog: load failed', err.message);
+      logError('HistoryLog: load failed', err);
+      logWarn('Nie można załadować historii');
     } finally {
       setLoading(false);
     }
@@ -45,10 +53,18 @@ export default function HistoryLog() {
   const sorted = [...filtered].sort((a, b) =>
     sortOrder === 'desc' ? b.timestamp - a.timestamp : a.timestamp - b.timestamp
   );
+  // ─── handleClear() – obsługa czyszczenia historii po potwierdzeniu
+  //   @returns {Promise<void>}
   const handleClear = async () => {
-    if (!window.confirm(t('history.clear_confirm'))) return;
-    await window.electronAPI.clearHistory();
-    loadHistory();
+    try {
+      if (!window.confirm(t('history.clear_confirm'))) return;
+      await window.electronAPI.clearHistory();
+      logInfo('HistoryLog: history cleared');
+      await loadHistory();
+    } catch (err) {
+      logError('HistoryLog: clear failed', err);
+      logWarn('Wystąpił błąd podczas czyszczenia historii');
+    }
   };
 
   if (loading) {

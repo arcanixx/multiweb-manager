@@ -11,28 +11,51 @@
 import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
-import { logDebug } from '../../utils/loggerRenderer.js';
+import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+// ─── HistoryExport() – komponent eksportu historii do pliku CSV
+//   @param {Object} props – właściwości komponentu
+//   @param {Array} props.entries – tablica wpisów historii
+//   @returns {JSX.Element} – renderowany przycisk eksportu
 export default function HistoryExport({ entries }) {
   const { t } = useContext(TranslationContext);
+
+  // ─── exportToCSV() – generuje i pobiera plik CSV z historią
+  //   @returns {void}
   const exportToCSV = () => {
-    if (entries.length === 0) return;
-    const headers = ['Timestamp', 'Profile', 'URL'];
-    const rows = entries.map(e => [
-      e.timestamp ? new Date(e.timestamp).toISOString() : '',
-      e.profileName || '',
-      e.url || ''
-    ]);
-    const csv = [headers, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
-    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.href = url;
-    link.setAttribute('download', `history_${new Date().toISOString().slice(0, 19)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    logDebug('History exported to CSV');
+    try {
+      if (entries.length === 0) {
+        logWarn('HistoryExport: no entries to export');
+        return;
+      }
+
+      const headers = ['Timestamp', 'Profile', 'URL'];
+      const rows = entries.map(e => [
+        e.timestamp ? new Date(e.timestamp).toISOString() : '',
+        e.profileName || '',
+        e.url || ''
+      ]);
+
+      const csv = [headers, ...rows]
+        .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+        .join('\n');
+
+      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+
+      link.href = url;
+      link.setAttribute('download', `history_${new Date().toISOString().slice(0, 19)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      logDebug('History exported to CSV');
+      logInfo(`HistoryExport: exported ${entries.length} entries to CSV`);
+    } catch (err) {
+      logError('HistoryExport: failed to export CSV', err);
+      logWarn('Wystąpił błąd podczas eksportu historii');
+    }
   };
   return (
     <div style={{ marginTop: 16, textAlign: 'right' }}>

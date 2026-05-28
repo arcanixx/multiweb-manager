@@ -11,8 +11,56 @@
 import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
+import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+// ─── ProjectList() – lista projektów z przyciskami akcji (zadania, terminal, usuwanie)
+//   @param {Object} props – właściwości komponentu
+//   @param {Array} props.projects – lista projektów
+//   @param {Function} props.onDelete – callback usuwania projektu
+//   @param {Function} props.onOpenTasks – callback otwierania zadań projektu
+//   @param {Function} props.onOpenTerminal – callback otwierania terminala projektu
+//   @returns {JSX.Element} – renderowana lista projektów lub komunikat o braku
 export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTerminal }) {
   const { t } = useContext(TranslationContext);
+
+  // ─── handleDelete() – obsługa usuwania projektu z logowaniem
+  //   @param {string} projectId – identyfikator projektu
+  //   @returns {void}
+  const handleDelete = (projectId) => {
+    try {
+      logInfo(`ProjectList: deleting project ${projectId}`);
+      onDelete?.(projectId);
+    } catch (err) {
+      logError('ProjectList: delete failed', err);
+      logWarn('Wystąpił błąd podczas usuwania projektu');
+    }
+  };
+
+  // ─── handleOpenTasks() – obsługa otwierania zadań projektu z logowaniem
+  //   @param {string} projectName – nazwa projektu
+  //   @returns {void}
+  const handleOpenTasks = (projectName) => {
+    try {
+      logInfo(`ProjectList: opening tasks for ${projectName}`);
+      onOpenTasks?.(projectName);
+    } catch (err) {
+      logError('ProjectList: open tasks failed', err);
+      logWarn('Wystąpił błąd podczas otwierania zadań');
+    }
+  };
+
+  // ─── handleOpenTerminal() – obsługa otwierania terminala projektu z logowaniem
+  //   @param {Object} terminalConfig – konfiguracja terminala
+  //   @returns {void}
+  const handleOpenTerminal = (terminalConfig) => {
+    try {
+      logInfo(`ProjectList: opening terminal for ${terminalConfig.cwd}`);
+      onOpenTerminal?.(terminalConfig);
+    } catch (err) {
+      logError('ProjectList: open terminal failed', err);
+      logWarn('Wystąpił błąd podczas otwierania terminala');
+    }
+  };
+
   if (projects.length === 0) {
     return (
       <div style={{ textAlign: 'center', padding: 48, color: 'var(--text-muted)', fontSize: 14,
@@ -37,13 +85,13 @@ export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTer
             </div>
           </div>
           <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-            <button className="btn btn-secondary" style={{ fontSize: 12 }} onClick={() => onOpenTasks?.(project.name)} title={t('projectManager.open_tasks')}>
+              <button className="btn btn-secondary" style={{ fontSize: 12 }} onClick={() => handleOpenTasks(project.name)} title={t('projectManager.open_tasks')}>
               {ICONS.TASKS} {t('projectManager.open_tasks')}
             </button>
-            <button className="btn btn-secondary" style={{ fontSize: 12 }} onClick={() => onOpenTerminal?.({ id: 'terminal', type: 'special', cwd: project.path })} title={t('projectManager.open_terminal')}>
+              <button className="btn btn-secondary" style={{ fontSize: 12 }} onClick={() => handleOpenTerminal({ id: 'terminal', type: 'special', cwd: project.path })} title={t('projectManager.open_terminal')}>
               {ICONS.TERMINAL} {t('projectManager.open_terminal')}
             </button>
-            <button className="btn-icon" onClick={() => onDelete(project.id)} title={t('projectManager.delete_project')} style={{ color: 'var(--danger)' }}>
+              <button className="btn-icon" onClick={() => handleDelete(project.id)} title={t('projectManager.delete_project')} style={{ color: 'var(--danger)' }}>
               {ICONS.DELETE}
             </button>
           </div>

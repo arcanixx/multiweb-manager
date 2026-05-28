@@ -46,7 +46,6 @@ useEffect(() => {
 useEffect(() => {
   const disposeData = term.onData((data) => pty.write(data));
   const disposeExit = pty.onExit(() => term.write("\r\n[Process exited]\r\n"));
-
   return () => {
     disposeData.dispose();
     disposeExit.dispose();

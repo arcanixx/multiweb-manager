@@ -2,7 +2,7 @@
 // FILE: persistence.js
 // PATH: src/core/persistence.js
 // VERSION: 0.0.3
-// PURPOSE: Wspólny odczyt/zapis plików JSON w userData (store Electron).
+// PURPOSE: Wspólne operacje I/O dla plików JSON – odczyt, zapis i zarządzanie ścieżkami w katalogu userData Electrona.
 // FUNCTIONS: getUserDataPath, readJsonFile, writeJsonFile
 // DEPENDS ON: fs, path, electron, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -11,7 +11,7 @@
 import fs from "fs";
 import path from "path";
 import { app } from "electron";
-import { logError, logInfo, logWarn, logDebug } from "../utils/logger.js";
+import { logError, logInfo } from "../utils/logger.js";
 
 // ─── getUserDataPath() – zwraca ścieżkę do katalogu userData Electrona
 //   @param {...string} segments – segmenty ścieżki do połączenia

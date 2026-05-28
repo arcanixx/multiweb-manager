@@ -10,10 +10,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { TranslationContext } from '../utils/translations.js';
-import { logDebug } from '../../utils/loggerRenderer';
+import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer';
 import { ICONS } from '../../utils/icons';
 import ConfirmModal from '../modals/ConfirmModal';
 import Modal from '../modals/Modal';
+// ─── DataLogsSection() – sekcja zarządzania danymi i logami z eksportem/importem
+//   @returns {JSX.Element} – renderowana sekcja danych i logów
 export default function DataLogsSection() {
   const { t } = React.useContext(TranslationContext);
   const [confirmState, setConfirmState] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
@@ -21,73 +23,157 @@ export default function DataLogsSection() {
   const [showLogsModal, setShowLogsModal] = useState(false);
   const [debugMode, setDebugMode] = useState(false);
   const [logsEnabled, setLogsEnabled] = useState(false);
+
+  // ─── useEffect – ładowanie ustawień przy montowaniu
   useEffect(() => {
     const loadSettings = async () => {
-      const settings = await window.electronAPI?.getSettings?.() || {};
-      setDebugMode(settings.debugMode === true);
-      setLogsEnabled(settings.logsEnabled === true);
+      try {
+        const settings = await window.electronAPI?.getSettings?.() || {};
+        setDebugMode(settings.debugMode === true);
+        setLogsEnabled(settings.logsEnabled === true);
+        logInfo('DataLogsSection: settings loaded');
+      } catch (err) {
+        logError('DataLogsSection: failed to load settings', err);
+        logWarn('Nie można załadować ustawień');
+      }
     };
     loadSettings();
   }, []);
+  // ─── showConfirm() – wyświetla modal potwierdzenia
+  //   @param {string} title – tytuł modala
+  //   @param {string} message – treść komunikatu
+  //   @param {Function} onConfirm – callback potwierdzenia
+  //   @returns {void}
   const showConfirm = (title, message, onConfirm) => {
-    setConfirmState({ isOpen: true, title, message, onConfirm });
+    try {
+      logInfo('DataLogsSection: showing confirm modal');
+      setConfirmState({ isOpen: true, title, message, onConfirm });
+    } catch (err) {
+      logError('DataLogsSection: show confirm failed', err);
+      logWarn('Wystąpił błąd podczas wyświetlania modala potwierdzenia');
+    }
   };
+  // ─── handleExportSettings() – eksportuje ustawienia do pliku
+  //   @returns {Promise<void>}
   const handleExportSettings = async () => {
-    if (window.electronAPI?.exportSettings) {
-      const result = await window.electronAPI.exportSettings();
-      if (result.ok) {
-        logDebug('Settings exported successfully');
+    try {
+      if (window.electronAPI?.exportSettings) {
+        const result = await window.electronAPI.exportSettings();
+        if (result.ok) {
+          logDebug('Settings exported successfully');
+          logInfo('DataLogsSection: settings exported successfully');
+        } else {
+          logError('DataLogsSection: export failed', result.error);
+          logWarn('Nie można wyeksportować ustawień');
+        }
       }
+    } catch (err) {
+      logError('DataLogsSection: export failed', err);
+      logWarn('Wystąpił błąd podczas eksportu ustawień');
     }
   };
+  // ─── handleImportSettings() – importuje ustawienia z pliku
+  //   @returns {Promise<void>}
   const handleImportSettings = async () => {
-    if (window.electronAPI?.importSettings) {
-      const result = await window.electronAPI.importSettings();
-      if (result.ok) {
-        logDebug('Settings imported successfully');
-        setTimeout(() => window.location.reload(), 1000);
+    try {
+      if (window.electronAPI?.importSettings) {
+        const result = await window.electronAPI.importSettings();
+        if (result.ok) {
+          logDebug('Settings imported successfully');
+          logInfo('DataLogsSection: settings imported successfully');
+          setTimeout(() => window.location.reload(), 1000);
+        } else {
+          logError('DataLogsSection: import failed', result.error);
+          logWarn('Nie można zaimportować ustawień');
+        }
       }
+    } catch (err) {
+      logError('DataLogsSection: import failed', err);
+      logWarn('Wystąpił błąd podczas importu ustawień');
     }
   };
 
+  // ─── handleOpenLogs() – otwiera folder z logami
+  //   @returns {Promise<void>}
   const handleOpenLogs = async () => {
-    if (window.electronAPI?.openLogsFolder) {
-      await window.electronAPI.openLogsFolder();
-      logDebug('Logs folder opened');
+    try {
+      if (window.electronAPI?.openLogsFolder) {
+        await window.electronAPI.openLogsFolder();
+        logDebug('Logs folder opened');
+        logInfo('DataLogsSection: logs folder opened');
+      }
+    } catch (err) {
+      logError('DataLogsSection: open logs folder failed', err);
+      logWarn('Wystąpił błąd podczas otwierania folderu z logami');
     }
   };
 
+  // ─── handleResetAll() – resetuje wszystkie ustawienia po potwierdzeniu
+  //   @returns {void}
   const handleResetAll = () => {
     showConfirm(
       t('settings.resetConfirmTitle'),
       t('settings.resetConfirmMessage'),
       async () => {
-        localStorage.clear();
-        if (window.electronAPI?.resetSettings) {
-          await window.electronAPI.resetSettings();
+        try {
+          localStorage.clear();
+          if (window.electronAPI?.resetSettings) {
+            await window.electronAPI.resetSettings();
+          }
+          logInfo('DataLogsSection: all settings reset');
+          window.location.reload();
+        } catch (err) {
+          logError('DataLogsSection: reset failed', err);
+          logWarn('Wystąpił błąd podczas resetowania ustawień');
         }
-        window.location.reload();
       }
     );
   };
 
+  // ─── handleViewLogs() – wyświetla zawartość pliku z logami
+  //   @returns {Promise<void>}
   const handleViewLogs = async () => {
-    const content = await window.electronAPI?.getLogsFile?.();
-    if (content?.ok) {
-      setLogsContent(content.data || '');
-      setShowLogsModal(true);
+    try {
+      const content = await window.electronAPI?.getLogsFile?.();
+      if (content?.ok) {
+        setLogsContent(content.data || '');
+        setShowLogsModal(true);
+        logInfo('DataLogsSection: logs viewed');
+      } else {
+        logError('DataLogsSection: view logs failed', content?.error);
+        logWarn('Nie można wyświetlić logów');
+      }
+    } catch (err) {
+      logError('DataLogsSection: view logs failed', err);
+      logWarn('Wystąpił błąd podczas wyświetlania logów');
     }
   };
 
+  // ─── handleClearLogs() – czyści plik z logami
+  //   @returns {Promise<void>}
   const handleClearLogs = async () => {
-    await window.electronAPI?.clearLogsFile?.();
-    setLogsContent('');
+    try {
+      await window.electronAPI?.clearLogsFile?.();
+      setLogsContent('');
+      logInfo('DataLogsSection: logs cleared');
+    } catch (err) {
+      logError('DataLogsSection: clear logs failed', err);
+      logWarn('Wystąpił błąd podczas czyszczenia logów');
+    }
   };
 
+  // ─── handleToggleLogs() – przełącza włączanie logów
+  //   @returns {Promise<void>}
   const handleToggleLogs = async () => {
-    const newValue = !logsEnabled;
-    setLogsEnabled(newValue);
-    await window.electronAPI?.saveSettings?.({ logsEnabled: newValue });
+    try {
+      const newValue = !logsEnabled;
+      setLogsEnabled(newValue);
+      await window.electronAPI?.saveSettings?.({ logsEnabled: newValue });
+      logInfo(`DataLogsSection: logs ${newValue ? 'enabled' : 'disabled'}`);
+    } catch (err) {
+      logError('DataLogsSection: toggle logs failed', err);
+      logWarn('Wystąpił błąd podczas przełączania logów');
+    }
   };
 
   return (

@@ -3,8 +3,8 @@
 // PATH: src/tools/svgToPng.js
 // VERSION: 0.0.3
 // PURPOSE: Konwersja pliku SVG do PNG przy użyciu sharp svgToPng(svgPath, outputPath, width, height)
-//         odczytuje SVG z dysku, renderuje do PNG o podanych wymiarach
-//         i zapisuje wynik pod outputPath
+//          odczytuje SVG z dysku, renderuje do PNG o podanych wymiarach
+//          i zapisuje wynik pod outputPath
 // FUNCTIONS: svgToPng
 // DEPENDS ON: fs, sharp, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -32,4 +32,3 @@ export async function svgToPng(svgPath, outputPath, width, height) {
     throw err;
   }
 }
-

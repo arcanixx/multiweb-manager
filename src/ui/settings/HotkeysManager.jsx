@@ -10,7 +10,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { TranslationContext } from '../utils/translations.js';
-import { logDebug, logError } from 'src/utils/loggerRenderer';
+import { logDebug, logError, logInfo, logWarn } from 'src/utils/loggerRenderer';
 import ConfirmModal from '../modals/ConfirmModal';
 import Modal from '../modals/Modal';
 const DEFAULT_HOTKEYS = [
@@ -18,6 +18,8 @@ const DEFAULT_HOTKEYS = [
   { id: 'hk-2', shortcut: 'Ctrl+Shift+M', name: 'Resource Monitor', text: '', enabled: true, action: 'monitor' },
   { id: 'hk-3', shortcut: 'Ctrl+Shift+1', name: 'Snippet: Email signature', text: 'Best regards,\nMaciej', enabled: true, action: 'insertText' }
 ];
+// ─── HotkeysManager() – zarządzanie skrótami klawiszowymi z edycją i zapisem
+//   @returns {JSX.Element} – renderowany interfejs menedżera skrótów
 export default function HotkeysManager() {
   const { t } = React.useContext(TranslationContext);
   const [hotkeys, setHotkeys] = useState([]);
@@ -25,8 +27,8 @@ export default function HotkeysManager() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingHotkey, setEditingHotkey] = useState(null);
   const [confirmState, setConfirmState] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
-  // ŁADOWANIE
-  // =========================================================================
+
+  // ─── useEffect – ładowanie skrótów przy montowaniu
   useEffect(() => {
     const loadHotkeys = async () => {
       try {
@@ -34,14 +36,18 @@ export default function HotkeysManager() {
           const saved = await window.electronAPI.getHotkeys();
           if (saved.data && saved.data.length) {
             setHotkeys(saved.data);
+            logInfo('HotkeysManager: loaded hotkeys from storage');
           } else {
             setHotkeys(DEFAULT_HOTKEYS);
+            logInfo('HotkeysManager: using default hotkeys');
           }
         } else {
           setHotkeys(DEFAULT_HOTKEYS);
+          logWarn('HotkeysManager: electronAPI.getHotkeys not available');
         }
       } catch (err) {
-        logError('Failed to load hotkeys', err);
+        logError('HotkeysManager: failed to load hotkeys', err);
+        logWarn('Nie można załadować skrótów klawiszowych');
         setHotkeys(DEFAULT_HOTKEYS);
       } finally {
         setLoading(false);
@@ -50,83 +56,161 @@ export default function HotkeysManager() {
     loadHotkeys();
   }, []);
   
-  // HANDLERY
-  // =========================================================================
+  // ─── showConfirm() – wyświetla modal potwierdzenia
+  //   @param {string} title – tytuł modala
+  //   @param {string} message – treść komunikatu
+  //   @param {Function} onConfirm – callback potwierdzenia
+  //   @returns {void}
   const showConfirm = (title, message, onConfirm) => {
-    setConfirmState({ isOpen: true, title, message, onConfirm });
+    try {
+      logInfo('HotkeysManager: showing confirm modal');
+      setConfirmState({ isOpen: true, title, message, onConfirm });
+    } catch (err) {
+      logError('HotkeysManager: show confirm failed', err);
+      logWarn('Wystąpił błąd podczas wyświetlania modala potwierdzenia');
+    }
   };
   
+  // ─── saveHotkeys() – zapisuje skróty do storage i rejestruje globalnie
+  //   @param {Array} newHotkeys – lista skrótów do zapisu
+  //   @returns {Promise<void>}
   const saveHotkeys = async (newHotkeys) => {
-    setHotkeys(newHotkeys);
-    if (window.electronAPI?.saveHotkeys) {
-      await window.electronAPI.saveHotkeys(newHotkeys);
-    }
-    if (window.electronAPI?.registerGlobalHotkeys) {
-      await window.electronAPI.registerGlobalHotkeys(newHotkeys);
+    try {
+      setHotkeys(newHotkeys);
+      if (window.electronAPI?.saveHotkeys) {
+        await window.electronAPI.saveHotkeys(newHotkeys);
+        logInfo('HotkeysManager: hotkeys saved to storage');
+      }
+      if (window.electronAPI?.registerGlobalHotkeys) {
+        await window.electronAPI.registerGlobalHotkeys(newHotkeys);
+        logInfo('HotkeysManager: global hotkeys registered');
+      }
+    } catch (err) {
+      logError('HotkeysManager: save hotkeys failed', err);
+      logWarn('Wystąpił błąd podczas zapisu skrótów');
+      throw err;
     }
   };
   
+  // ─── handleAdd() – otwiera modal dodawania nowego skrótu
+  //   @returns {void}
   const handleAdd = () => {
-    setEditingHotkey({
-      id: `hk-${Date.now()}`,
-      shortcut: '',
-      name: '',
-      text: '',
-      enabled: true,
-      action: 'insertText'
-    });
-    setModalOpen(true);
+    try {
+      setEditingHotkey({
+        id: `hk-${Date.now()}`,
+        shortcut: '',
+        name: '',
+        text: '',
+        enabled: true,
+        action: 'insertText'
+      });
+      setModalOpen(true);
+      logInfo('HotkeysManager: adding new hotkey');
+    } catch (err) {
+      logError('HotkeysManager: add hotkey failed', err);
+      logWarn('Wystąpił błąd podczas dodawania skrótu');
+    }
   };
   
+  // ─── handleEdit() – otwiera modal edycji skrótu
+  //   @param {Object} hotkey – edytowany skrót
+  //   @returns {void}
   const handleEdit = (hotkey) => {
-    setEditingHotkey({ ...hotkey });
-    setModalOpen(true);
+    try {
+      setEditingHotkey({ ...hotkey });
+      setModalOpen(true);
+      logInfo(`HotkeysManager: editing hotkey ${hotkey.id}`);
+    } catch (err) {
+      logError('HotkeysManager: edit hotkey failed', err);
+      logWarn('Wystąpił błąd podczas edycji skrótu');
+    }
   };
   
+  // ─── handleDelete() – usuwa skrót po potwierdzeniu
+  //   @param {string} id – identyfikator skrótu do usunięcia
+  //   @returns {void}
   const handleDelete = (id) => {
     showConfirm(
       t('hotkeys.deleteConfirmTitle'),
       t('hotkeys.deleteConfirmMessage'),
       async () => {
-        const newHotkeys = hotkeys.filter(h => h.id !== id);
-        await saveHotkeys(newHotkeys);
+        try {
+          const newHotkeys = hotkeys.filter(h => h.id !== id);
+          await saveHotkeys(newHotkeys);
+          logInfo(`HotkeysManager: deleted hotkey ${id}`);
+        } catch (err) {
+          logError('HotkeysManager: delete hotkey failed', err);
+          logWarn('Wystąpił błąd podczas usuwania skrótu');
+        }
       }
     );
   };
   
+  // ─── handleSave() – zapisuje edytowany skrót z walidacją
+  //   @returns {Promise<void>}
   const handleSave = async () => {
-    if (!editingHotkey.shortcut || !editingHotkey.name) {
-      alert(t('hotkeys.validationError'));
-      return;
+    try {
+      if (!editingHotkey.shortcut || !editingHotkey.name) {
+        alert(t('hotkeys.validationError'));
+        logWarn('HotkeysManager: validation failed - missing required fields');
+        return;
+      }
+
+      // Sprawdź duplikaty
+      const exists = hotkeys.some(h => h.id !== editingHotkey.id && h.shortcut === editingHotkey.shortcut);
+      if (exists) {
+        alert(t('hotkeys.duplicateError'));
+        logWarn('HotkeysManager: duplicate shortcut detected');
+        return;
+      }
+
+      let newHotkeys;
+      if (hotkeys.find(h => h.id === editingHotkey.id)) {
+        newHotkeys = hotkeys.map(h => h.id === editingHotkey.id ? editingHotkey : h);
+        logInfo(`HotkeysManager: updated hotkey ${editingHotkey.id}`);
+      } else {
+        newHotkeys = [...hotkeys, editingHotkey];
+        logInfo(`HotkeysManager: added new hotkey ${editingHotkey.id}`);
+      }
+
+      await saveHotkeys(newHotkeys);
+      setModalOpen(false);
+      setEditingHotkey(null);
+    } catch (err) {
+      logError('HotkeysManager: save hotkey failed', err);
+      logWarn('Wystąpił błąd podczas zapisu skrótu');
     }
-    
-    // Sprawdź duplikaty
-    const exists = hotkeys.some(h => h.id !== editingHotkey.id && h.shortcut === editingHotkey.shortcut);
-    if (exists) {
-      alert(t('hotkeys.duplicateError'));
-      return;
-    }
-    
-    let newHotkeys;
-    if (hotkeys.find(h => h.id === editingHotkey.id)) {
-      newHotkeys = hotkeys.map(h => h.id === editingHotkey.id ? editingHotkey : h);
-    } else {
-      newHotkeys = [...hotkeys, editingHotkey];
-    }
-    
-    await saveHotkeys(newHotkeys);
-    setModalOpen(false);
-    setEditingHotkey(null);
   };
   
+  // ─── handleToggleEnabled() – przełącza aktywność skrótu
+  //   @param {string} id – identyfikator skrótu
+  //   @param {boolean} enabled – nowy stan aktywności
+  //   @returns {Promise<void>}
   const handleToggleEnabled = async (id, enabled) => {
-    const newHotkeys = hotkeys.map(h => h.id === id ? { ...h, enabled } : h);
-    await saveHotkeys(newHotkeys);
+    try {
+      const newHotkeys = hotkeys.map(h => h.id === id ? { ...h, enabled } : h);
+      await saveHotkeys(newHotkeys);
+      logInfo(`HotkeysManager: ${enabled ? 'enabled' : 'disabled'} hotkey ${id}`);
+    } catch (err) {
+      logError('HotkeysManager: toggle enabled failed', err);
+      logWarn('Wystąpił błąd podczas przełączania aktywności skrótu');
+    }
   };
   
+  // ─── parseShortcut() – parsowanie skrótu (placeholder dla przyszłej walidacji)
+  //   @param {string} shortcut – skrót w formacie tekstowym
+  //   @returns {string} – sparsowany skrót
   const parseShortcut = (shortcut) => {
-    // Użytkownik wpisuje np. "Ctrl+Shift+S" – bez walidacji, przekazujemy dalej
-    return shortcut;
+    try {
+      // Użytkownik wpisuje np. "Ctrl+Shift+S" – bez walidacji, przekazujemy dalej
+      // W przyszłości można dodać walidację formatu
+      logDebug(`HotkeysManager: parsing shortcut ${shortcut}`);
+      return shortcut;
+    } catch (err) {
+      logError('HotkeysManager: parse shortcut failed', err);
+      logWarn('Wystąpił błąd podczas parsowania skrótu');
+      return '';
+    }
   };
   
   if (loading) {

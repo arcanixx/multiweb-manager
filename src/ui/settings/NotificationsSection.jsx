@@ -10,27 +10,54 @@
 
 import React, { useState, useEffect } from 'react';
 import { TranslationContext } from '../utils/translations.js';
-import { logDebug } from '../../utils/loggerRenderer';
+import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer';
 import { ICONS } from '../../utils/icons';
+// ─── NotificationsSection() – sekcja ustawień powiadomień (systemowe i Pushbullet)
+//   @returns {JSX.Element} – renderowana sekcja powiadomień
 export default function NotificationsSection() {
   const { t } = React.useContext(TranslationContext);
   const [systemNotifications, setSystemNotifications] = useState(true);
   const [pushbulletApiKey, setPushbulletApiKey] = useState('');
+
+  // ─── useEffect – ładowanie ustawień przy montowaniu
   useEffect(() => {
-    const saved = localStorage.getItem('system_notifications');
-    setSystemNotifications(saved !== 'false');
-    const savedPb = localStorage.getItem('pushbullet_api_key');
-    if (savedPb) setPushbulletApiKey(savedPb);
+    try {
+      const saved = localStorage.getItem('system_notifications');
+      setSystemNotifications(saved !== 'false');
+      const savedPb = localStorage.getItem('pushbullet_api_key');
+      if (savedPb) setPushbulletApiKey(savedPb);
+      logInfo('NotificationsSection: settings loaded');
+    } catch (err) {
+      logError('NotificationsSection: failed to load settings', err);
+      logWarn('Nie można załadować ustawień powiadomień');
+    }
   }, []);
+  // ─── handleSystemNotifToggle() – przełącza powiadomienia systemowe
+  //   @param {Event} e – zdarzenie zmiany checkboxa
+  //   @returns {void}
   const handleSystemNotifToggle = (e) => {
-    const enabled = e.target.checked;
-    setSystemNotifications(enabled);
-    localStorage.setItem('system_notifications', enabled);
-    logDebug(`System notifications: ${enabled}`);
+    try {
+      const enabled = e.target.checked;
+      setSystemNotifications(enabled);
+      localStorage.setItem('system_notifications', enabled);
+      logDebug(`System notifications: ${enabled}`);
+      logInfo(`NotificationsSection: system notifications ${enabled ? 'enabled' : 'disabled'}`);
+    } catch (err) {
+      logError('NotificationsSection: system notifications toggle failed', err);
+      logWarn('Wystąpił błąd podczas przełączania powiadomień systemowych');
+    }
   };
+  // ─── handlePushbulletSave() – zapisuje klucz API Pushbullet
+  //   @returns {void}
   const handlePushbulletSave = () => {
-    localStorage.setItem('pushbullet_api_key', pushbulletApiKey);
-    logDebug('Pushbullet API key saved');
+    try {
+      localStorage.setItem('pushbullet_api_key', pushbulletApiKey);
+      logDebug('Pushbullet API key saved');
+      logInfo('NotificationsSection: Pushbullet API key saved');
+    } catch (err) {
+      logError('NotificationsSection: Pushbullet save failed', err);
+      logWarn('Wystąpił błąd podczas zapisu klucza API Pushbullet');
+    }
   };
   return (
     <section className="settings-section">

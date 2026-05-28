@@ -9,22 +9,38 @@
 // =============================================================================
 
 import React, { useEffect } from 'react';
+import { logInfo } from '../utils/loggerRenderer.js';
+// ─── Modal() – bazowy komponent modalny dla całej aplikacji
+//   @param {Object} props – właściwości komponentu
+//   @param {boolean} props.isOpen – czy modal jest widoczny
+//   @param {Function} props.onClose – callback zamknięcia modala
+//   @param {string} props.title – tytuł modala
+//   @param {ReactNode} props.children – zawartość modala
+//   @param {string} props.size – rozmiar modala (small, medium, large, full)
+//   @returns {JSX.Element|null} – renderowany modal lub null
 export default function Modal({ isOpen, onClose, title, children, size = 'medium' }) {
+  // ─── useEffect – obsługa klawisza Escape i blokowanie scrolla
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape' && isOpen) {
+        logInfo('Modal: closed via Escape key');
         onClose?.();
       }
     };
+
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
+      logInfo('Modal: opened');
     }
+
     return () => {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = 'unset';
+      logInfo('Modal: closed');
     };
   }, [isOpen, onClose]);
+
   if (!isOpen) return null;
   const sizeClass = {
     small: 'modal-small',

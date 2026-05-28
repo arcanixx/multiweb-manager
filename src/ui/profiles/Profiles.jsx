@@ -9,15 +9,34 @@
 // =============================================================================
 
 import React, { useEffect, useState } from "react";
+import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+// ─── Profiles() – komponent zarządzania profilami WebView
+//   @returns {JSX.Element} – renderowany interfejs zarządzania profilami
 export function Profiles() {
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // ─── load() – ładuje listę profili z backendu
+  //   @returns {Promise<void>}
   async function load() {
-    setLoading(true);
-    const res = await window.mw.invoke("profiles:getAll");
-    if (res.ok) setProfiles(res.data || []);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const res = await window.mw.invoke("profiles:getAll");
+      if (res.ok) {
+        setProfiles(res.data || []);
+        logInfo(`Profiles: loaded ${res.data?.length || 0} profiles`);
+      } else {
+        logError('Profiles: failed to load', res.error);
+        logWarn('Nie można załadować profili');
+      }
+    } catch (err) {
+      logError('Profiles: load failed', err);
+      logWarn('Wystąpił błąd podczas ładowania profili');
+    } finally {
+      setLoading(false);
+    }
   }
+
   useEffect(() => {
     load();
   }, []);

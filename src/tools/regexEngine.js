@@ -3,7 +3,7 @@
 // PATH: src/tools/regexEngine.js
 // VERSION: 0.0.3
 // PURPOSE: Helper do testowania wyrażeń regularnych testRegex(pattern, flags, text)
-//         zwraca tablicę wszystkich dopasowań z podanego tekstu
+//          zwraca tablicę wszystkich dopasowań z podanego tekstu
 // FUNCTIONS: testRegex
 // DEPENDS ON: logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -22,4 +22,3 @@ export function testRegex(pattern, flags, text) {
     throw err;
   }
 }
-

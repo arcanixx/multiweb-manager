@@ -2,9 +2,7 @@
 // FILE: historyStore.js
 // PATH: src/core/historyStore.js
 // VERSION: 0.0.3
-// PURPOSE: Historia akcji użytkownika (HistoryLog, Sidebar).
-//         Przechowuje odwiedzone URL-e, akcje, błędy.
-//         W przyszłości: eksport/import, synchronizacja między urządzeniami.
+// PURPOSE: Zarządzanie historią akcji użytkownika – odczyt, zapis, dodawanie wpisów, czyszczenie i pobieranie ostatnich wpisów.
 // FUNCTIONS: loadHistory, saveHistory, addHistoryEntry, clearHistory, getRecentHistory
 // DEPENDS ON: config.js, persistence.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -12,8 +10,7 @@
 
 import { LIMITS } from "../config.js";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
-import { logInfo, logError, logWarn, logDebug } from "../utils/logger.js";
-
+import { logInfo, logError } from "../utils/logger.js";
 // Ścieżka do pliku historii w userData – stała (nie funkcja)
 // Uwaga: getUserDataPath jest bezpieczne po app.whenReady()
 let HISTORY_FILE_PATH;
@@ -23,10 +20,9 @@ try {
   logError("historyStore: Failed to get user data path", err);
   HISTORY_FILE_PATH = "history.json"; // Fallback path
 }
-// ----------------------------------------------------------------
-// loadRaw() – wczytuje surowe dane z pliku historii
+// ─── loadRaw() – wczytuje surowe dane z pliku historii
 //   Obsługuje zarówno stary format (tablica) jak i nowy ({ data: [] })
-// ----------------------------------------------------------------
+//   @returns {Array} – tablica wpisów historii
 function loadRaw() {
   try {
     const stored = readJsonFile(HISTORY_FILE_PATH, { version: "0.0.3", data: [] });
@@ -36,9 +32,9 @@ function loadRaw() {
     return [];
   }
 }
-// ----------------------------------------------------------------
-// saveRaw() – zapisuje tablicę wpisów do pliku, przycinając do limitu
-// ----------------------------------------------------------------
+// ─── saveRaw() – zapisuje tablicę wpisów do pliku, przycinając do limitu
+//   @param {Array} entries – tablica wpisów do zapisania
+//   @returns {Array} – przycięta tablica wpisów
 function saveRaw(entries) {
   try {
     const trimmed = entries.slice(0, LIMITS.maxHistoryEntries || 5000);
@@ -49,26 +45,22 @@ function saveRaw(entries) {
     return entries.slice(0, LIMITS.maxHistoryEntries || 5000);
   }
 }
-// ----------------------------------------------------------------
-// loadHistory() – publiczne API: zwraca pełną tablicę wpisów
-// ----------------------------------------------------------------
+// ─── loadHistory() – publiczne API: zwraca pełną tablicę wpisów
+//   @returns {Array} – tablica wpisów historii
 export function loadHistory() {
   return loadRaw();
 }
-// ----------------------------------------------------------------
-// saveHistory() – publiczne API: zapisuje podaną tablicę wpisów
-//   TODO: przyszły use case – eksport/import historii, backup, sync
-//   (na razie nieużywane, ale zachowane dla kompletności API)
-// ----------------------------------------------------------------
+// ─── saveHistory() – publiczne API: zapisuje podaną tablicę wpisów
+//   @param {Array} entries – tablica wpisów do zapisania
+//   @returns {Array} – tablica wpisów po zapisie
 export function saveHistory(entries) {
   if (!Array.isArray(entries)) return [];
   return saveRaw(entries);
 }
 
-// ----------------------------------------------------------------
-// addHistoryEntry() – dodaje nowy wpis na początek listy i zapisuje
-//   entry: { profileName, url, timestamp?, level?, id? }
-// ----------------------------------------------------------------
+// ─── addHistoryEntry() – dodaje nowy wpis na początek listy i zapisuje
+//   @param {Object} entry – obiekt wpisu { profileName, url, timestamp?, level?, id? }
+//   @returns {Array} – zaktualizowana tablica wpisów
 export function addHistoryEntry(entry) {
   const list = loadRaw();
   const row = {
@@ -86,18 +78,16 @@ export function addHistoryEntry(entry) {
   return next;
 }
 
-// ----------------------------------------------------------------
-// clearHistory() – czyści całą historię
-// ----------------------------------------------------------------
+// ─── clearHistory() – czyści całą historię
+//   @returns {Array} – pusta tablica
 export function clearHistory() {
   saveRaw([]);
   return [];
 }
 
-// ----------------------------------------------------------------
-// getRecentHistory() – ostatnie N wpisów (domyślnie 100)
-// ----------------------------------------------------------------
+// ─── getRecentHistory() – ostatnie N wpisów (domyślnie 100)
+//   @param {number} limit – maksymalna liczba wpisów do zwrócenia
+//   @returns {Array} – tablica ostatnich wpisów
 export function getRecentHistory(limit = 100) {
   return loadRaw().slice(0, limit);
 }
-

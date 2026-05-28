@@ -10,10 +10,22 @@
 
 import { useContext } from 'react';
 import { TranslationContext } from '../utils/translations.js';
+import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+// ─── useTranslation() – hook do dostępu do tłumaczeń i helpData
+//   @returns {Object} – obiekt z funkcjami tłumaczenia
+//   @throws {Error} – jeśli użyty poza TranslationProvider
 export function useTranslation() {
-  const ctx = useContext(TranslationContext);
-  if (!ctx) {
-    throw new Error('useTranslation must be used within <TranslationProvider>');
+  try {
+    const ctx = useContext(TranslationContext);
+    if (!ctx) {
+      logError('useTranslation: TranslationContext is null');
+      throw new Error('useTranslation must be used within <TranslationProvider>');
+    }
+    logInfo('useTranslation: context loaded');
+    return ctx;
+  } catch (err) {
+    logError('useTranslation exception', err);
+    logWarn('Wystąpił błąd podczas ładowania kontekstu tłumaczeń');
+    throw err;
   }
-  return ctx;
 }

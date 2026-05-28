@@ -15,11 +15,18 @@ import NotepadTabs from './NotepadTabs';
 import NotepadToolbar from './NotepadToolbar';
 import NotepadFindReplace from './NotepadFindReplace';
 import NotepadStatusBar from './NotepadStatusBar';
+import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+// ─── Notepad() – główny komponent notatnika z zakładkami, paskiem narzędzi i wyszukiwaniem
+//   @returns {JSX.Element} – renderowany interfejs notatnika
 export default function Notepad() {
   const textareaRef = useRef(null);
   const [wordWrap, setWordWrap] = useState(true);
   const [showFind, setShowFind] = useState(false);
+
+  // ─── notepad – hook zarządzający stanem notatnika
   const notepad = useNotepadUI({ textareaRef });
+
+  // ─── findReplace – hook zarządzający funkcjonalnością znajdź/zastąp
   const findReplace = useNotepadFindReplace({
     contentRef: notepad.contentRef,
     textareaRef,
@@ -27,6 +34,30 @@ export default function Notepad() {
     setDirty: notepad.setDirty,
     showToast: notepad.showToast,
   });
+
+  // ─── handleToggleFind() – obsługa przełączania widoczności wyszukiwania
+  //   @returns {void}
+  const handleToggleFind = () => {
+    try {
+      setShowFind(v => !v);
+      logInfo(`Notepad: find panel toggled to ${!showFind}`);
+    } catch (err) {
+      logError('Notepad: toggle find failed', err);
+      logWarn('Wystąpił błąd podczas przełączania wyszukiwania');
+    }
+  };
+
+  // ─── handleToggleWordWrap() – obsługa przełączania zawijania wierszy
+  //   @returns {void}
+  const handleToggleWordWrap = () => {
+    try {
+      setWordWrap(v => !v);
+      logInfo(`Notepad: word wrap toggled to ${!wordWrap}`);
+    } catch (err) {
+      logError('Notepad: toggle word wrap failed', err);
+      logWarn('Wystąpił błąd podczas przełączania zawijania wierszy');
+    }
+  };
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--bg-primary)' }}>
       <NotepadTabs
@@ -38,15 +69,15 @@ export default function Notepad() {
         onRename={notepad.renameTab}
         onAdd={notepad.addTab}
       />
-      <NotepadToolbar
-        onSave={notepad.saveCurrentTab}
-        onSaveAs={notepad.saveToFile}
-        onToggleFind={() => setShowFind(v => !v)}
-        wordWrap={wordWrap}
-        onToggleWordWrap={() => setWordWrap(v => !v)}
-        toast={notepad.toast}
-        dirty={notepad.dirty}
-      />
+        <NotepadToolbar
+          onSave={notepad.saveCurrentTab}
+          onSaveAs={notepad.saveToFile}
+          onToggleFind={handleToggleFind}
+          wordWrap={wordWrap}
+          onToggleWordWrap={handleToggleWordWrap}
+          toast={notepad.toast}
+          dirty={notepad.dirty}
+        />
 
       {showFind && (
         <NotepadFindReplace

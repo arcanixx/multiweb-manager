@@ -11,22 +11,29 @@
 import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { createNewTab, loadNotesFromStorage, saveNotesToStorage } from '../utils/notesStorage.js';
+import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+// ─── useNotepadUI() – hook do zarządzania stanem notatnika
+//   @param {Object} props – obiekt z referencjami
+//   @param {Object} props.textareaRef – referencja do elementu textarea
+//   @returns {Object} – obiekt ze stanem i funkcjami zarządzania notatnikiem
 export function useNotepadUI({ textareaRef }) {
   const { t } = useContext(TranslationContext);
   const [notes, setNotes] = useState({ tabs: [], activeTab: null });
   const [content, setContent] = useState('');
   const [dirty, setDirty] = useState(false);
   const [toast, setToast] = useState('');
+
   // Refy dla autosave — unikamy stale closure w setInterval
   const contentRef = useRef(content);
   const notesRef = useRef(notes);
   useEffect(() => { contentRef.current = content; }, [content]);
   useEffect(() => { notesRef.current = notes; }, [notes]);
+
   // Aktywna zakładka jako obiekt (do NotepadStatusBar i zapisu)
   const activeTabObj = notes.tabs.find(tab => tab.id === notes.activeTab) ?? null;
-  // -------------------------------------------------------------------------
-  // TOAST — wyświetla komunikat przez 2 sekundy
-  // -------------------------------------------------------------------------
+  // ─── showToast() – wyświetla komunikat przez 2 sekundy
+  //   @param {string} msg – komunikat do wyświetlenia
+  //   @returns {void}
   const showToast = useCallback((msg) => {
     setToast(msg);
     setTimeout(() => setToast(''), 2000);
@@ -131,20 +138,33 @@ export function useNotepadUI({ textareaRef }) {
     showToast(t('notepad.saved'));
   }, [showToast, t]);
 
-  // -------------------------------------------------------------------------
-  // ZAPIS DO PLIKU (Save As) — przez electronAPI
-  // -------------------------------------------------------------------------
+  // ─── saveToFile() – zapisuje zawartość do pliku przez electronAPI
+  //   @returns {Promise<void>}
   const saveToFile = useCallback(async () => {
-    if (!window.electronAPI?.saveFile) {
-      showToast(t('notepad.save_as_unavailable'));
-      return;
+    try {
+      if (!window.electronAPI?.saveFile) {
+        logWarn("useNotepadUI.saveToFile: electronAPI.saveFile unavailable");
+        showToast(t('notepad.save_as_unavailable'));
+        return;
+      }
+
+      const result = await window.electronAPI.saveFile({
+        content: contentRef.current,
+        defaultName: activeTabObj?.title ?? 'notatka',
+        filters: [{ name: 'Text Files', extensions: ['txt', 'md'] }],
+      });
+
+      if (result?.ok) {
+        logInfo("useNotepadUI.saveToFile success");
+        showToast(t('notepad.saved_to_file'));
+      } else {
+        logError("useNotepadUI.saveToFile failed", result?.error);
+        logWarn("Nie można zapisać pliku");
+      }
+    } catch (err) {
+      logError("useNotepadUI.saveToFile exception", err);
+      logWarn("Wystąpił błąd podczas zapisu pliku");
     }
-    const result = await window.electronAPI.saveFile({
-      content: contentRef.current,
-      defaultName: activeTabObj?.title ?? 'notatka',
-      filters: [{ name: 'Text Files', extensions: ['txt', 'md'] }],
-    });
-    if (result?.ok) showToast(t('notepad.saved_to_file'));
   }, [activeTabObj, showToast, t]);
 
   // -------------------------------------------------------------------------

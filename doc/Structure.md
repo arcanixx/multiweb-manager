@@ -85,8 +85,13 @@ root/
 │   │                                                   FUNCTIONS: -
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
-│   └── 📄 pending_updates_for_Definition_Mockups_UI_UX.md ❗ <!-- VERSION: 0.0.3 PATH: doc/pending_updates_for_Definition_Mockups_UI_UX.md
-│                                                       PURPOSE: 
+│   └── 📄 pending_updates_for_Definition_Mockups_UI_UX.md <!-- VERSION: 0.0.3 PATH: doc/pending_updates_for_Definition_Mockups_UI_UX.md
+│                                                       PURPOSE: Dokumentacja specyfikacji projektowej - Kolejka
+│                                                                oczekujących zmian UI/UX do scalenia z
+│                                                                Definition_Mockups_UI_UX.md.           AI dopisuje tu
+│                                                                bieżące modyfikacje interfejsu wynikające z nowych
+│                                                                funkcji w trakcie sprintu.           Scalanie zbiorcze
+│                                                                raz na kilkanaście/kilkadziesiąt commitów.
 │                                                       FUNCTIONS: -
 │                                                       DEPENDS ON: -
 │                                                       -->
@@ -120,10 +125,9 @@ root/
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 historyStore.js ❗                   <!-- VERSION: 0.0.3 PATH: src/core/historyStore.js
-│   │   │                                               PURPOSE: Historia akcji użytkownika (HistoryLog, Sidebar).
-│   │   │                                                        Przechowuje odwiedzone URL-e, akcje, błędy. W
-│   │   │                                                        przyszłości: eksport/import, synchronizacja między
-│   │   │                                                        urządzeniami.
+│   │   │                                               PURPOSE: Zarządzanie historią akcji użytkownika – odczyt, zapis,
+│   │   │                                                        dodawanie wpisów, czyszczenie i pobieranie ostatnich
+│   │   │                                                        wpisów.
 │   │   │                                               FUNCTIONS: loadHistory, saveHistory, addHistoryEntry,
 │   │   │                                                          clearHistory, getRecentHistory
 │   │   │                                               DEPENDS ON: config.js, persistence.js, logger.js
@@ -134,8 +138,8 @@ root/
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 persistence.js ❗                    <!-- VERSION: 0.0.3 PATH: src/core/persistence.js
-│   │   │                                               PURPOSE: Wspólny odczyt/zapis plików JSON w userData (store
-│   │   │                                                        Electron).
+│   │   │                                               PURPOSE: Wspólne operacje I/O dla plików JSON – odczyt, zapis i
+│   │   │                                                        zarządzanie ścieżkami w katalogu userData Electrona.
 │   │   │                                               FUNCTIONS: getUserDataPath, readJsonFile, writeJsonFile
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
@@ -155,14 +159,14 @@ root/
 │   │   ├── 📜 resourceMonitor.js ❗                <!-- VERSION: 0.0.3 PATH: src/core/resourceMonitor.js
 │   │   │                                               PURPOSE: Monitor zasobów systemowych
 │   │   │                                               FUNCTIONS: getSystemUsage
-│   │   │                                               DEPENDS ON: os, config.js
+│   │   │                                               DEPENDS ON: os, config.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 settingsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/core/settingsStore.js
 │   │   │                                               PURPOSE: Ustawienia użytkownika — merge partial updates, reset
 │   │   │                                                        do domyślnych.
 │   │   │                                               FUNCTIONS: loadSettings, saveSettings, mergeSettings,
 │   │   │                                                          updateSettings, resetSettings
-│   │   │                                               DEPENDS ON: fs, path, url, config.js, persistence.js
+│   │   │                                               DEPENDS ON: fs, path, url, config.js, persistence.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 tasksStore.js ❗                     <!-- VERSION: 0.0.3 PATH: src/core/tasksStore.js
 │   │   │                                               PURPOSE: Zadania per projekt (TaskPanel, AggregatedTasks).
@@ -219,7 +223,7 @@ root/
 │   │   │                                                        settings/config).
 │   │   │                                               FUNCTIONS: getSleepTimeoutMs, shouldSleepTab, markTabActive,
 │   │   │                                                          getSleepPlaceholderState
-│   │   │                                               DEPENDS ON: config.js
+│   │   │                                               DEPENDS ON: config.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 updateService.js ❗                  <!-- VERSION: 0.0.3 PATH: src/engine/updateService.js
 │   │   │                                               PURPOSE: Placeholder sprawdzania aktualizacji (UpdateChecker UI
@@ -239,7 +243,7 @@ root/
 │   │   │                                                        load() pobiera wszystkie wpisy historii
 │   │   │                                                        (history:getAll)
 │   │   │                                               FUNCTIONS: useHistoryLog
-│   │   │                                               DEPENDS ON: react
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useNotepad.js ❗                     <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepad.js
 │   │   │                                               PURPOSE: Hook do notesStore – lista notatek, dodawanie, edycja,
@@ -249,12 +253,12 @@ root/
 │   │   │                                                        (notes:update) remove(id)       usuwa notatkę
 │   │   │                                                        (notes:delete)
 │   │   │                                               FUNCTIONS: useNotepad
-│   │   │                                               DEPENDS ON: react
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useNotepadFindReplace.js ❗          <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadFindReplace.js
 │   │   │                                               PURPOSE: Hook logiki znajdź/zastąp dla notatnika
 │   │   │                                               FUNCTIONS: useNotepadFindReplace
-│   │   │                                               DEPENDS ON: react, translations.js
+│   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useNotepadUI.js ❗                   <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadUI.js
 │   │   │                                               PURPOSE: Hook zarządzania stanem notatnika – zakładki, autosave,
@@ -1289,11 +1293,6 @@ root/
 │                                                       FUNCTIONS: -
 │                                                       DEPENDS ON: -
 │                                                       -->
-├── 📜 postcss.config.js                           <!-- VERSION: 0.0.3 PATH: postcss.config.js
-│                                                       PURPOSE: 
-│                                                       FUNCTIONS: -
-│                                                       DEPENDS ON: -
-│                                                       -->
 ├── 📜 preload.cjs ❗                               <!-- VERSION: 0.0.3 PATH: preload.cjs
 │                                                       PURPOSE: Eksponuje API Electrona do renderera (React) przez
 │                                                                contextBridge. WAŻNE: Ten plik MUSI być CommonJS
@@ -1303,15 +1302,9 @@ root/
 │                                                       FUNCTIONS: -
 │                                                       DEPENDS ON: -
 │                                                       -->
-├── 📄 readme.md ❗                                 <!-- VERSION: 0.0.3 PATH: readme.md
-│                                                       PURPOSE: Dokumentacja specyfikacji projektowej
-│                                                       FUNCTIONS: Dokumentacja: 14 sekcji głównych
-│                                                       DEPENDS ON: -
-│                                                       -->
-└── 📜 tailwind.config.js                          <!-- VERSION: 0.0.3 PATH: tailwind.config.js
-                                                        PURPOSE: Konfiguracja Tailwind CSS v3 dla warstwy renderera
-                                                                 (React).
-                                                        FUNCTIONS: -
+└── 📄 readme.md ❗                                 <!-- VERSION: 0.0.3 PATH: readme.md
+                                                        PURPOSE: Dokumentacja specyfikacji projektowej
+                                                        FUNCTIONS: Dokumentacja: 14 sekcji głównych
                                                         DEPENDS ON: -
                                                         -->
 <!-- TREE END -->
