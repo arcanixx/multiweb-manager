@@ -41,7 +41,6 @@ useEffect(() => {
   };
 }, []);
 ```
-
 **Terminal cleanup:**
 ```js
 useEffect(() => {

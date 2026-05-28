@@ -1309,7 +1309,8 @@ root/
 │                                                       DEPENDS ON: -
 │                                                       -->
 └── 📜 tailwind.config.js                          <!-- VERSION: 0.0.3 PATH: tailwind.config.js
-                                                        PURPOSE: 
+                                                        PURPOSE: Konfiguracja Tailwind CSS v3 dla warstwy renderera
+                                                                 (React).
                                                         FUNCTIONS: -
                                                         DEPENDS ON: -
                                                         -->
