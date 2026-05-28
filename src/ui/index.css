@@ -9,11 +9,11 @@
  * ============================================================================= */
 
 /* Layout aplikacji (grid, sidebar, content) */
-@import './ui/layout.css';
+@import './layout.css';
 /* Motyw (kolory, dark mode, zmienne) */
-@import './ui/styles/theme.css';
+@import './styles/theme.css';
 /* Komponenty (modale, toasty, przyciski, formularze) */
-@import './ui/styles/components.css';
+@import './styles/components.css';
 /* Reset i podstawowe style */
 * {
   margin: 0;
