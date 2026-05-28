@@ -1727,5 +1727,70 @@
 
 ---
 
+### [Normalizacja modelu danych Sidebara] :
+- **ID:** SIDEBAR_REQ-008
+- **Sekcja:** SIDEBAR / PROFILE MANAGER
+- **Opis:** Normalizacja modelu danych Sidebara. Stworzenie unified item schema: `{ id, type, category, icon, title, favorite, pinned, url, section }`. Typy: `"profile"`, `"tool"`, `"favorite"`, `"app"`. Ujednolicenie profili, narzędzi, ulubionych i aplikacji z App Library w jednej strukturze. Sidebar operuje na jednej liście `sidebarItems`, a nie na wielu osobnych źródłach. Umożliwia to jednolite filtrowanie, wyszukiwanie, drag & drop, pinowanie i kategorie.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Obecnie Sidebar miesza profile, narzędzia i zakładki jako "special case". To się zemści przy rozbudowie kategorii, ulubionych i przeciągania.
+
+---
+
+### [Crash recovery notatnika] :
+- **ID:** NOTEPAD_REQ-005
+- **Sekcja:** NOTEPAD EDITOR
+- **Opis:** Crash recovery notatnika. Autosave co 5 sekund (lub zgodnie z `AUTO_SAVE_INTERVAL`) do osobnego pliku `userData/recovery_notes.json`. Przy starcie aplikacji – sprawdzenie, czy istnieją niezapisane notatki (porównanie `lastSaved` z `recovery`). Jeśli tak – modal: "Wykryto niezapisane notatki. Przywrócić? [Tak] [Nie] [Pokaż różnice]". Po przywróceniu – usunięcie pliku recovery. Integracja z `ARCH_REQ-008` (autosave tylko przy zmianie).
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Bez tego crash aplikacji = utrata notatek, które nie zdążyły się zapisać. Dotyczy: `useNotepad.js`, `NotepadEditor.jsx`, nowy moduł `recoveryManager.js`.
+
+---
+
+### [App State Context] :
+- **ID:** ARCH_REQ-035
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Wprowadzenie warstwy kontekstów React: `AppContext`, `SettingsContext`, `ThemeContext`. Celem jest redukcja props drillingu i bezpośrednich wołań `electronAPI` z komponentów. `AppContext` dostarcza: `loading, error, toast, modal, confirm`. `SettingsContext` dostarcza: `settings, updateSetting, resetSettings`. `ThemeContext` dostarcza: `theme, setTheme, isDark`. Komponenty używają `useContext` zamiast własnych stanów i bezpośrednich IPC.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Obecnie dużo props drillingu i wielokrotne wołanie `window.electronAPI.invoke` w komponentach. Utrudnia to testy, refaktor i dodawanie nowych funkcji.
+
+---
+
+### [CSP i sanityzacja URLi] :
+- **ID:** ARCH_REQ-036
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Implementacja Content Security Policy (CSP) w `index.html`. Polityka: `default-src 'self'; img-src * data:; script-src 'self'; style-src 'self' 'unsafe-inline';`. Dodatkowo: sanityzacja URLi wprowadzanych przez użytkownika (pasek adresu, profil). Whitelist dozwolonych protokołów: `http:`, `https:`, `file:`. Blokada `javascript:`, `data:`, `vbscript:` URLi. W `WebViewTab.jsx` – walidacja URL przed załadowaniem.
+- **Status:** BACKLOG
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.5
+- **Komentarz:** Użytkownik może wpisać `javascript:alert('XSS')` w pasku adresu – bez CSP i sanityzacji to się wykona. Dotyczy: `index.html`, `WebViewTab.jsx`, `urlSanitizer.js`.
+
+---
+
+### [Profile health monitoring] :
+- **ID:** SIDEBAR_REQ-009
+- **Sekcja:** SIDEBAR / PROFILE MANAGER
+- **Opis:** Profile health monitoring. Dla każdego profilu przechowywane w `profilesStore` dodatkowe pola: `lastOnlineCheck` (timestamp), `online` (boolean), `lastLoadSuccess` (timestamp), `loadErrors` (liczba błędów od ostatniego sukcesu). W main.js handler IPC `profile:checkHealth` wykonuje HEAD request do URL profilu (timeout 5s) i aktualizuje status. W Sidebar – ikona statusu (zielona = online, żółta = wolno/niestabilne, czerwona = offline/błędy). Tooltip: "Online: 2s | Ostatnie błędy: 3". Sprawdzanie co 5 minut dla aktywnych profili.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Użytkownik nie wie, czy strona działa, czy to WebView się zawiesił. Health monitoring daje szybką diagnozę.
+
+---
+
+### [Szyfrowanie wrażliwych danych] :
+- **ID:** ARCH_REQ-037
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** System szyfrowania wrażliwych danych. Wykorzystanie `electron.safeStorage` (jeśli dostępny) lub `crypto` z hashem (master password od użytkownika). Szyfrowane dane: klucze API (Pushbullet, RemoveBG), notatki (opcjonalnie, toggle w Settings), taski (opcjonalnie, toggle w Settings). Backup eksportowany jako `backup_encrypted.json` (zamiast jawnego JSON). Przy imporcie – pytanie o hasło. Integracja z `SETTINGS_REQ-003` (eksport/import ustawień). Nie szyfrujemy: profili WebView (brak loginów), cookies i sesji (bezpieczna partycja Electrona), historii, logów, ustawień UI.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Bez szyfrowania backup zawiera wszystkie notatki i taski w czystym tekście – ryzyko przy udostępnianiu lub chmurze. Dotyczy: `backupManager.js`, `settingsStore.js`, `encryptionUtils.js`.
+
+---
 
 *Koniec dokumentu wymagań — wersja 0.0.3*

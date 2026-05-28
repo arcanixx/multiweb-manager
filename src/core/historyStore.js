@@ -12,10 +12,17 @@
 
 import { LIMITS } from "../config.js";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
-import { logInfo, logError } from "../utils/logger.js";
+import { logInfo, logError, logWarn, logDebug } from "../utils/logger.js";
+
 // Ścieżka do pliku historii w userData – stała (nie funkcja)
 // Uwaga: getUserDataPath jest bezpieczne po app.whenReady()
-const HISTORY_FILE_PATH = getUserDataPath("history.json");
+let HISTORY_FILE_PATH;
+try {
+  HISTORY_FILE_PATH = getUserDataPath("history.json");
+} catch (err) {
+  logError("historyStore: Failed to get user data path", err);
+  HISTORY_FILE_PATH = "history.json"; // Fallback path
+}
 // ----------------------------------------------------------------
 // loadRaw() – wczytuje surowe dane z pliku historii
 //   Obsługuje zarówno stary format (tablica) jak i nowy ({ data: [] })
@@ -33,9 +40,14 @@ function loadRaw() {
 // saveRaw() – zapisuje tablicę wpisów do pliku, przycinając do limitu
 // ----------------------------------------------------------------
 function saveRaw(entries) {
-  const trimmed = entries.slice(0, LIMITS.maxHistoryEntries || 5000);
-  writeJsonFile(HISTORY_FILE_PATH, { version: "0.0.3", data: trimmed });
-  return trimmed;
+  try {
+    const trimmed = entries.slice(0, LIMITS.maxHistoryEntries || 5000);
+    writeJsonFile(HISTORY_FILE_PATH, { version: "0.0.3", data: trimmed });
+    return trimmed;
+  } catch (err) {
+    logError("historyStore.saveRaw failed", err);
+    return entries.slice(0, LIMITS.maxHistoryEntries || 5000);
+  }
 }
 // ----------------------------------------------------------------
 // loadHistory() – publiczne API: zwraca pełną tablicę wpisów
@@ -89,6 +101,3 @@ export function getRecentHistory(limit = 100) {
   return loadRaw().slice(0, limit);
 }
 
-// =============================================================================
-// END OF FILE
-// =============================================================================
