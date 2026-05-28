@@ -9,6 +9,8 @@
 // =============================================================================
 
 import sharp from "sharp";
+import { logInfo, logError, logWarn, logDebug } from './logger.js';
+
 // ----------------------------------------------------------------
 // resizeImage() – zmienia rozmiar obrazu do podanych wymiarów
 // ----------------------------------------------------------------
@@ -30,4 +32,3 @@ export async function compressJpeg(inputPath, quality, outputPath) {
   await sharp(inputPath).jpeg({ quality }).toFile(outputPath);
   return outputPath;
 }
-

@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState, useEffect, useContext } from 'react';
+import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { log } from '../../utils/loggerRenderer.js';
@@ -20,6 +21,7 @@ import SidebarCategory from './SidebarCategory';
 import SidebarProfileItem from './SidebarProfileItem';
 import SidebarTools from './SidebarTools';
 import SidebarWorkspaces from './SidebarWorkspaces';
+
 export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChange, onOpenTaskPanel, onModalOpenChange }) {
   const { t } = useContext(TranslationContext);
   const [search, setSearch] = useState('');

@@ -12,6 +12,7 @@ import React, { useState, useEffect } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
+
 export default function TabsSection() {
   const { t } = React.useContext(TranslationContext);
   const [sleepTimeoutMinutes, setSleepTimeoutMinutes] = useState(15);

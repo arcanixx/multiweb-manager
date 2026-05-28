@@ -9,6 +9,8 @@
 // =============================================================================
 
 import fs from "fs";
+import { logInfo, logError, logWarn, logDebug } from './logger.js';
+
 // ----------------------------------------------------------------
 // readJsonSafe() – odczytuje JSON z pliku, zwraca fallback przy błędzie
 // ----------------------------------------------------------------
@@ -28,4 +30,3 @@ export function writeJsonSafe(filePath, data) {
   const json = JSON.stringify(data, null, 2);
   fs.writeFileSync(filePath, json, "utf8");
 }
-

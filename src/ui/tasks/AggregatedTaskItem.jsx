@@ -9,8 +9,10 @@
 // =============================================================================
 
 import React, { useContext } from 'react';
+import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
+
 const PRIORITY_COLORS = { A: '#ef4444', B: '#f97316', C: '#eab308', D: '#3b82f6', E: '#22c55e' };
 export default function AggregatedTaskItem({ task, section }) {
   const { t } = useContext(TranslationContext);

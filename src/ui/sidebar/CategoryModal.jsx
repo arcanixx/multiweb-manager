@@ -9,9 +9,11 @@
 // =============================================================================
 
 import React, { useState, useContext } from 'react';
+import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import ModalPortal from '../system/ModalPortal';
+
 export default function CategoryModal({ category, onSave, onClose }) {
   const { t } = useContext(TranslationContext);
   const [name, setName] = useState(category?.name || '');

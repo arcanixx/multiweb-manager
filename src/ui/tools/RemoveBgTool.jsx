@@ -14,6 +14,7 @@ import { ICONS } from "../../utils/icons";
 import { TranslationContext } from '../utils/translations.js';
 import { log, error as logError } from "../../utils/loggerRenderer";
 import { API_ENDPOINTS } from "../../config";
+
 export default function RemoveBgTool({ apiKey, plan = "free" }) {
   const { t } = React.useContext(TranslationContext);
   const MAX_FILES = plan === "pro" ? 120 : 30;
@@ -414,6 +415,4 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
   );
 }
 
-// =============================================================================
-// END OF FILE
-// =============================================================================
+=============================================================================

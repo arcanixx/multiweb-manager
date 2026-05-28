@@ -9,9 +9,11 @@
 // =============================================================================
 
 import React, { useState, useContext } from 'react';
+import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import TaskItem from './TaskItem';
+
 export default function TaskSection({ title, iconColor, tasks, onMoveToDone, onMoveToBacklog, onMoveToActive, onPin, onDelete, onEdit, onOpenComment, section }) {
   const { t } = useContext(TranslationContext);
   const [collapsed, setCollapsed] = useState(false);

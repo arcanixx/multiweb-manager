@@ -13,6 +13,7 @@ import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
 import { resizeImage, convertImage, compressJpeg } from 'src/utils/imageUtils';
+
 export default function ImageTools() {
   const { t } = React.useContext(TranslationContext);
   const [inputFile, setInputFile] = useState(null);

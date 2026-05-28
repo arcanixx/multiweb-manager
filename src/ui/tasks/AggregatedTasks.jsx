@@ -14,6 +14,7 @@ import { ICONS } from '../../utils/icons.js';
 import { log, logError } from '../../utils/loggerRenderer.js';
 import AggregatedProjectSection from './AggregatedProjectSection';
 import AggregatedTaskItem from './AggregatedTaskItem';
+
 export default function AggregatedTasks() {
   const { t } = useContext(TranslationContext);
   const [allData, setAllData] = useState({});

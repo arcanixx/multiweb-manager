@@ -9,8 +9,10 @@
 // =============================================================================
 
 import React, { useContext } from 'react';
+import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
+
 export default function CommentModal({ task, onClose }) {
   const { t } = useContext(TranslationContext);
   return (

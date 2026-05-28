@@ -12,6 +12,9 @@ import React, { useState, useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+
+
+
 // ─── ProjectModal() – modal dodawania nowego projektu z walidacją
 //   @param {Object} props – właściwości komponentu
 //   @param {Function} props.onSave – callback zapisu nowego projektu
@@ -21,6 +24,8 @@ export default function ProjectModal({ onSave, onClose }) {
   const { t } = useContext(TranslationContext);
   const [name, setName] = useState('');
   const [path, setPath] = useState('');
+
+  
 
   // ─── handleSave() – obsługa zapisu projektu z walidacją i logowaniem
   //   @returns {void}
@@ -35,6 +40,8 @@ export default function ProjectModal({ onSave, onClose }) {
       logWarn('Wystąpił błąd podczas zapisu projektu');
     }
   };
+
+  
 
   // ─── handleClose() – obsługa zamknięcia modala z logowaniem
   //   @returns {void}

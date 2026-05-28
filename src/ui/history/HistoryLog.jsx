@@ -15,6 +15,9 @@ import { log, logError, logInfo, logWarn } from '../../utils/loggerRenderer.js';
 import HistoryFilters from './HistoryFilters';
 import HistoryList from './HistoryList';
 import HistoryExport from './HistoryExport';
+
+
+
 // ─── HistoryLog() – główny komponent historii z filtrowaniem, listą i eksportem
 //   @returns {JSX.Element} – renderowany widok historii
 export default function HistoryLog() {
@@ -24,6 +27,8 @@ export default function HistoryLog() {
   const [sortOrder, setSortOrder] = useState('desc');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  
 
   // ─── loadHistory() – ładuje historię z backendu przez IPC
   //   @returns {Promise<void>}
@@ -53,6 +58,7 @@ export default function HistoryLog() {
   const sorted = [...filtered].sort((a, b) =>
     sortOrder === 'desc' ? b.timestamp - a.timestamp : a.timestamp - b.timestamp
   );
+  
   // ─── handleClear() – obsługa czyszczenia historii po potwierdzeniu
   //   @returns {Promise<void>}
   const handleClear = async () => {

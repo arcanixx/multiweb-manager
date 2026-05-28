@@ -14,6 +14,9 @@ import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer
 import { ICONS } from '../../utils/icons';
 import ConfirmModal from '../modals/ConfirmModal';
 import Modal from '../modals/Modal';
+
+
+
 // ─── DataLogsSection() – sekcja zarządzania danymi i logami z eksportem/importem
 //   @returns {JSX.Element} – renderowana sekcja danych i logów
 export default function DataLogsSection() {
@@ -23,6 +26,8 @@ export default function DataLogsSection() {
   const [showLogsModal, setShowLogsModal] = useState(false);
   const [debugMode, setDebugMode] = useState(false);
   const [logsEnabled, setLogsEnabled] = useState(false);
+
+  
 
   // ─── useEffect – ładowanie ustawień przy montowaniu
   useEffect(() => {
@@ -39,6 +44,7 @@ export default function DataLogsSection() {
     };
     loadSettings();
   }, []);
+  
   // ─── showConfirm() – wyświetla modal potwierdzenia
   //   @param {string} title – tytuł modala
   //   @param {string} message – treść komunikatu
@@ -53,6 +59,7 @@ export default function DataLogsSection() {
       logWarn('Wystąpił błąd podczas wyświetlania modala potwierdzenia');
     }
   };
+  
   // ─── handleExportSettings() – eksportuje ustawienia do pliku
   //   @returns {Promise<void>}
   const handleExportSettings = async () => {
@@ -72,6 +79,7 @@ export default function DataLogsSection() {
       logWarn('Wystąpił błąd podczas eksportu ustawień');
     }
   };
+  
   // ─── handleImportSettings() – importuje ustawienia z pliku
   //   @returns {Promise<void>}
   const handleImportSettings = async () => {
@@ -93,6 +101,8 @@ export default function DataLogsSection() {
     }
   };
 
+  
+
   // ─── handleOpenLogs() – otwiera folder z logami
   //   @returns {Promise<void>}
   const handleOpenLogs = async () => {
@@ -107,6 +117,8 @@ export default function DataLogsSection() {
       logWarn('Wystąpił błąd podczas otwierania folderu z logami');
     }
   };
+
+  
 
   // ─── handleResetAll() – resetuje wszystkie ustawienia po potwierdzeniu
   //   @returns {void}
@@ -130,6 +142,8 @@ export default function DataLogsSection() {
     );
   };
 
+  
+
   // ─── handleViewLogs() – wyświetla zawartość pliku z logami
   //   @returns {Promise<void>}
   const handleViewLogs = async () => {
@@ -149,6 +163,8 @@ export default function DataLogsSection() {
     }
   };
 
+  
+
   // ─── handleClearLogs() – czyści plik z logami
   //   @returns {Promise<void>}
   const handleClearLogs = async () => {
@@ -161,6 +177,8 @@ export default function DataLogsSection() {
       logWarn('Wystąpił błąd podczas czyszczenia logów');
     }
   };
+
+  
 
   // ─── handleToggleLogs() – przełącza włączanie logów
   //   @returns {Promise<void>}

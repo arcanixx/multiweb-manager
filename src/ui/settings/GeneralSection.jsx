@@ -12,6 +12,9 @@ import React, { useState, useEffect } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logInfo, logError, logWarn } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
+
+
+
 // ─── GeneralSection() – sekcja ustawień ogólnych (język, tryb ciemny, debug)
 //   @returns {JSX.Element} – renderowana sekcja ustawień ogólnych
 export default function GeneralSection() {
@@ -20,6 +23,8 @@ export default function GeneralSection() {
     return localStorage.getItem('theme') === 'dark';
   });
   const [debugMode, setDebugMode] = useState(false);
+
+  
 
   // ─── useEffect – ładowanie trybu debug przy montowaniu
   useEffect(() => {
@@ -37,6 +42,7 @@ export default function GeneralSection() {
     };
     loadDebugMode();
   }, []);
+  
   // ─── handleDarkModeToggle() – przełącza tryb ciemny
   //   @returns {void}
   const handleDarkModeToggle = () => {
@@ -52,6 +58,7 @@ export default function GeneralSection() {
       logWarn('Wystąpił błąd podczas przełączania trybu ciemnego');
     }
   };
+  
   // ─── handleDebugModeToggle() – przełącza tryb debug
   //   @returns {Promise<void>}
   const handleDebugModeToggle = async () => {
@@ -68,6 +75,7 @@ export default function GeneralSection() {
       logWarn('Wystąpił błąd podczas przełączania trybu debug');
     }
   };
+  
   // ─── handleLanguageChange() – zmienia język interfejsu
   //   @param {Event} e – zdarzenie zmiany selecta
   //   @returns {void}

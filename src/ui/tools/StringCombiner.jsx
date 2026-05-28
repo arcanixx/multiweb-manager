@@ -9,9 +9,11 @@
 // =============================================================================
 
 import React, { useState, useCallback } from "react";
+import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { ICONS } from "../../utils/icons";
 import { TranslationContext } from '../utils/translations.js';
 import { log } from "../../utils/loggerRenderer";
+
 function cartesian(arrays) {
   if (!arrays || arrays.length === 0) return [[]];
   if (arrays.length === 1) return arrays[0].map(v => [v]);

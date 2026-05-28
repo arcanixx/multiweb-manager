@@ -11,7 +11,9 @@
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
 import { loadSettings, mergeSettings } from "./settingsStore.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
+
 const PROJECTS_FILE = () => getUserDataPath("projects.json");
+
 // ─── loadProjects() – ładuje projekty z pliku lub z ustawień
 //   @returns {Array} – tablica projektów
 export function loadProjects() {
@@ -27,6 +29,7 @@ export function loadProjects() {
     return [];
   }
 }
+
 // ─── saveProjects() – zapisuje projekty do pliku i synchronizuje z ustawieniami
 //   @param {Array} projects – tablica projektów do zapisania
 //   @returns {Array} – zapisana tablica projektów
@@ -42,6 +45,7 @@ export function saveProjects(projects) {
     return projects;
   }
 }
+
 // ─── createProject() – dodaje nowy projekt
 //   @param {Object} project – obiekt projektu do dodania
 //   @returns {Array} – zaktualizowana tablica projektów
@@ -49,6 +53,7 @@ export function createProject(project) {
   const list = [...loadProjects(), project];
   return saveProjects(list);
 }
+
 // ─── updateProject() – aktualizuje istniejący projekt
 //   @param {string} id – identyfikator projektu
 //   @param {Object} patch – obiekt z polami do zaktualizowania
@@ -59,12 +64,14 @@ export function updateProject(id, patch) {
   );
   return saveProjects(list);
 }
+
 // ─── archiveProject() – archiwizuje projekt
 //   @param {string} id – identyfikator projektu do zarchiwizowania
 //   @returns {Array} – zaktualizowana tablica projektów
 export function archiveProject(id) {
   return updateProject(id, { status: "archived", archivedAt: Date.now() });
 }
+
 // ─── deleteProject() – usuwa projekt po ID
 //   @param {string} id – identyfikator projektu do usunięcia
 //   @returns {Array} – zaktualizowana tablica projektów

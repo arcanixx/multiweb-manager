@@ -9,6 +9,7 @@
 // =============================================================================
 
 import { logDebug } from "./logger.js";
+
 export function buildSearchIndex({ profiles = [], projects = [], tasks = [], notes = [] }) {
   return {
     profiles: profiles.map((p) => ({

@@ -13,9 +13,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
+
 import { DEFAULT_PROFILE_CATEGORY } from 'src/config.js'; // Obecnie profil domyślny, moduł jest placeholderem, do użycia w VERSION 0.0.4
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROFILES_FILE = () => getUserDataPath("profiles.json");
+
 // ─── defaultProfiles() – ładuje domyślne profile z pliku JSON
 //   @returns {Array} – tablica domyślnych profili
 function defaultProfiles() {
@@ -31,6 +33,7 @@ function defaultProfiles() {
     return [];
   }
 }
+
 // ─── loadProfiles() – ładuje profile z pliku lub zwraca domyślne
 //   @returns {Array} – tablica profili
 export function loadProfiles() {
@@ -41,6 +44,7 @@ export function loadProfiles() {
   if (defaults.length) saveProfiles(defaults);
   return defaults;
 }
+
 // ─── saveProfiles() – zapisuje profile do pliku
 //   @param {Array} profiles – tablica profili do zapisania
 //   @returns {Array} – zapisana tablica profili
@@ -49,6 +53,7 @@ export function saveProfiles(profiles) {
   logInfo("profilesStore.saveProfiles", profiles.length);
   return profiles;
 }
+
 // ─── createProfile() – dodaje nowy profil
 //   @param {Object} profile – obiekt profilu do dodania
 //   @returns {Array} – zaktualizowana tablica profili
@@ -58,6 +63,7 @@ export function createProfile(profile) {
   saveProfiles(next);
   return next;
 }
+
 // ─── updateProfile() – aktualizuje istniejący profil
 //   @param {string} id – identyfikator profilu
 //   @param {Object} patch – obiekt z polami do zaktualizowania
@@ -68,6 +74,8 @@ export function updateProfile(id, patch) {
   saveProfiles(next);
   return next;
 }
+
+
 
 // ─── deleteProfile() – usuwa profil po ID
 //   @param {string} id – identyfikator profilu do usunięcia

@@ -13,6 +13,7 @@ import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
 import { apiRequest } from 'src/tools/apiClient';
+
 export default function MiniPostman() {
   const { t } = React.useContext(TranslationContext);
   const [method, setMethod] = useState('GET');

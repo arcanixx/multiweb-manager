@@ -14,6 +14,7 @@ import { TranslationContext } from '../../utils/translations.js';
 import { log, logDebug, logError } from '../../utils/loggerRenderer';
 import { normalizeWebUrl } from '../../utils/urlUtils';
 import { FEATURES, DEFAULT_SETTINGS } from '../../config';
+
 export default function WebViewTab({ profile, isActive = true, suspended = false }) {
   const { t } = useContext(TranslationContext);
   const webviewRef = useRef(null);

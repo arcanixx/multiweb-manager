@@ -12,6 +12,9 @@ import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+
+
+
 // ─── NotepadTabs() – pasek zakładek notatnika z obsługą przełączania i zamykania
 //   @param {Object} props – właściwości komponentu
 //   @param {Array} props.tabs – lista zakładek
@@ -24,6 +27,8 @@ import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 //   @returns {JSX.Element} – renderowany pasek zakładek
 export default function NotepadTabs({ tabs, activeId, dirty, onSwitch, onClose, onRename, onAdd }) {
   const { t } = useContext(TranslationContext);
+
+  
 
   // ─── handleRename() – obsługa zmiany nazwy zakładki przez prompt
   //   @param {string} tabId – identyfikator zakładki

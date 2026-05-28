@@ -13,6 +13,7 @@ import { TranslationContext } from '../utils/translations.js';
 import { logDebug } from '../../utils/loggerRenderer';
 import { ICONS } from '../../utils/icons';
 import { CLIPBOARD_HISTORY_MAX } from '../../../config.js';
+
 export default function ClipboardHistory() {
   const { t } = React.useContext(TranslationContext);
   const [history, setHistory] = useState([]);

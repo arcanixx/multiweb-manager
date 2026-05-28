@@ -13,6 +13,7 @@ import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
 import { svgToPng } from 'src/tools/svgToPng';
+
 export default function SvgToPngConverter() {
   const { t } = React.useContext(TranslationContext);
   const [inputFile, setInputFile] = useState(null);
@@ -119,5 +120,3 @@ export default function SvgToPngConverter() {
     </div>
   );
 }
-
-

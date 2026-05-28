@@ -12,6 +12,9 @@ import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+
+
+
 // ─── ProjectList() – lista projektów z przyciskami akcji (zadania, terminal, usuwanie)
 //   @param {Object} props – właściwości komponentu
 //   @param {Array} props.projects – lista projektów
@@ -21,6 +24,8 @@ import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 //   @returns {JSX.Element} – renderowana lista projektów lub komunikat o braku
 export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTerminal }) {
   const { t } = useContext(TranslationContext);
+
+  
 
   // ─── handleDelete() – obsługa usuwania projektu z logowaniem
   //   @param {string} projectId – identyfikator projektu
@@ -35,6 +40,8 @@ export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTer
     }
   };
 
+  
+
   // ─── handleOpenTasks() – obsługa otwierania zadań projektu z logowaniem
   //   @param {string} projectName – nazwa projektu
   //   @returns {void}
@@ -47,6 +54,8 @@ export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTer
       logWarn('Wystąpił błąd podczas otwierania zadań');
     }
   };
+
+  
 
   // ─── handleOpenTerminal() – obsługa otwierania terminala projektu z logowaniem
   //   @param {Object} terminalConfig – konfiguracja terminala

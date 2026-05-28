@@ -10,11 +10,16 @@
 
 import { useEffect, useState } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+
+
+
 // ─── useSettings() – hook do zarządzania ustawieniami
 //   @returns {Object} – obiekt z settings, loading i funkcjami CRUD
 export function useSettings() {
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  
 
   // ─── load() – ładuje ustawienia z backendu
   //   @returns {Promise<void>}
@@ -36,6 +41,8 @@ export function useSettings() {
       setLoading(false);
     }
   }
+
+  
 
   // ─── save() – zapisuje zmiany w ustawieniach
   //   @param {Object} patch – obiekt z polami do zaktualizowania
@@ -64,4 +71,3 @@ export function useSettings() {
 
   return { settings, loading, reloadSettings: load, saveSettings: save };
 }
-

@@ -16,6 +16,9 @@ import NotepadToolbar from './NotepadToolbar';
 import NotepadFindReplace from './NotepadFindReplace';
 import NotepadStatusBar from './NotepadStatusBar';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+
+
+
 // ─── Notepad() – główny komponent notatnika z zakładkami, paskiem narzędzi i wyszukiwaniem
 //   @returns {JSX.Element} – renderowany interfejs notatnika
 export default function Notepad() {
@@ -23,8 +26,12 @@ export default function Notepad() {
   const [wordWrap, setWordWrap] = useState(true);
   const [showFind, setShowFind] = useState(false);
 
+  
+
   // ─── notepad – hook zarządzający stanem notatnika
   const notepad = useNotepadUI({ textareaRef });
+
+  
 
   // ─── findReplace – hook zarządzający funkcjonalnością znajdź/zastąp
   const findReplace = useNotepadFindReplace({
@@ -34,6 +41,8 @@ export default function Notepad() {
     setDirty: notepad.setDirty,
     showToast: notepad.showToast,
   });
+
+  
 
   // ─── handleToggleFind() – obsługa przełączania widoczności wyszukiwania
   //   @returns {void}
@@ -46,6 +55,8 @@ export default function Notepad() {
       logWarn('Wystąpił błąd podczas przełączania wyszukiwania');
     }
   };
+
+  
 
   // ─── handleToggleWordWrap() – obsługa przełączania zawijania wierszy
   //   @returns {void}

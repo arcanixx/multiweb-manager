@@ -9,9 +9,11 @@
 // =============================================================================
 
 import React, { useContext } from 'react';
+import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import AggregatedTaskItem from './AggregatedTaskItem';
+
 export default function AggregatedProjectSection({ project, taskData, hidden, collapsed, onToggleVisibility, onToggleCollapse }) {
   const { t } = useContext(TranslationContext);
   const active = taskData.active || [];

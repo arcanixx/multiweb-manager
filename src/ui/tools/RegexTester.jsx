@@ -12,6 +12,7 @@ import React, { useState } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { logError } from 'src/utils/loggerRenderer';
 import { testRegex } from 'src/tools/regexEngine';
+
 export default function RegexTester() {
   const { t } = React.useContext(TranslationContext);
   const [pattern, setPattern] = useState('');

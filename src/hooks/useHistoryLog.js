@@ -10,11 +10,15 @@
 
 import { useEffect, useState } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+
+
+
 // ─── useHistoryLog() – hook do zarządzania historią akcji użytkownika
 //   @returns {Object} – obiekt z entries, loading i reloadHistory
 export function useHistoryLog() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
+  
   // ─── load() – ładuje wszystkie wpisy historii z backendu
   //   @returns {Promise<void>}
   async function load() {

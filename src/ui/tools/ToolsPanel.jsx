@@ -23,6 +23,7 @@ import SvgToPngConverter from "./SvgToPngConverter";
 import MiniPostman from "./MiniPostman";
 import FilePreviewer from "./FilePreviewer";
 import CookieGrabber from "./CookieGrabber";
+
 export default function ToolsPanel({ removeBgApiKey, plan = "free", activeWebViewId }) {
   const { t } = useContext(TranslationContext);
   const [activeTool, setActiveTool] = useState("removebg");

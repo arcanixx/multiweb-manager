@@ -9,7 +9,9 @@
 // =============================================================================
 
 import React, { useEffect } from 'react';
+import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { createPortal } from 'react-dom';
+
 export default function ModalPortal({ children, onClose }) {
   useEffect(() => {
     document.body.classList.add('modal-open');

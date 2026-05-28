@@ -9,6 +9,7 @@
 // =============================================================================
 
 import { logInfo } from "./logger.js";
+
 let toastHandler = null;
 export function registerToastHandler(fn) {
   toastHandler = fn;

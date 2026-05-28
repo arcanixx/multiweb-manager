@@ -11,7 +11,10 @@
 import fs from "fs";
 import path from "path";
 import { app } from "electron";
+
 import { logError, logInfo } from "../utils/logger.js";
+
+
 
 // ─── getUserDataPath() – zwraca ścieżkę do katalogu userData Electrona
 //   @param {...string} segments – segmenty ścieżki do połączenia
@@ -25,6 +28,7 @@ export function getUserDataPath(...segments) {
     return path.join("userData", ...segments);
   }
 }
+
 // ─── readJsonFile() – odczytuje i parsuje plik JSON z fallbackiem
 //   @param {string} filePath – ścieżka do pliku JSON
 //   @param {any} fallback – wartość zwracana w przypadku błędu
@@ -38,6 +42,7 @@ export function readJsonFile(filePath, fallback) {
     return fallback;
   }
 }
+
 // ─── writeJsonFile() – zapisuje dane jako sformatowany JSON
 //   @param {string} filePath – ścieżka docelowego pliku JSON
 //   @param {any} data – dane do zapisania (zostaną zserializowane)

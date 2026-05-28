@@ -9,10 +9,12 @@
 // =============================================================================
 
 import React, { useState, useContext } from 'react';
+import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { normalizeWebUrl } from '../../utils/urlUtils.js';
 import ModalPortal from '../system/ModalPortal';
+
 export default function ProfileModal({ profile, categories, onSave, onClose }) {
   const { t } = useContext(TranslationContext);
   const [name, setName] = useState(profile?.name || '');

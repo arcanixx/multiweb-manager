@@ -11,6 +11,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import { TranslationContext } from '../../utils/translations.js';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+
+
+
 // ─── ClipboardHistoryModal() – modal wyświetlający historię schowka
 //   @param {Object} props – właściwości komponentu
 //   @param {Function} props.onClose – callback zamknięcia modala
@@ -18,6 +21,8 @@ import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 export default function ClipboardHistoryModal({ onClose }) {
   const { t } = useContext(TranslationContext);
   const [history, setHistory] = useState([]);
+
+  
 
   // ─── useEffect – ładowanie historii schowka przy montowaniu
   useEffect(() => {
@@ -50,4 +55,3 @@ export default function ClipboardHistoryModal({ onClose }) {
     </div>
   );
 }
-

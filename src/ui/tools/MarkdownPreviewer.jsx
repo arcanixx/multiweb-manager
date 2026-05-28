@@ -9,7 +9,9 @@
 // =============================================================================
 
 import React, { useState } from 'react';
+import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../utils/translations.js';
+
 export default function MarkdownPreviewer() {
   const { t } = React.useContext(TranslationContext);
   const [markdown, setMarkdown] = useState('# Hello World\n\nThis is **Markdown** previewer.');

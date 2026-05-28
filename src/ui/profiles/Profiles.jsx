@@ -10,11 +10,16 @@
 
 import React, { useEffect, useState } from "react";
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+
+
+
 // ─── Profiles() – komponent zarządzania profilami WebView
 //   @returns {JSX.Element} – renderowany interfejs zarządzania profilami
 export function Profiles() {
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  
 
   // ─── load() – ładuje listę profili z backendu
   //   @returns {Promise<void>}
@@ -60,4 +65,3 @@ export function Profiles() {
     </div>
   );
 }
-

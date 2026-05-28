@@ -15,6 +15,7 @@ import ConfirmModal from './ui/modals/ConfirmModal';
 import { log, initLogger, setDebugMode, logDebug, logError } from './utils/loggerRenderer';
 import { normalizeWebUrl } from './utils/urlUtils';
 import { TranslationContext } from './utils/translations.js';
+
 const WebViewTab = lazy(() => import('./ui/webview/WebViewTab'));
 const Notepad = lazy(() => import('./ui/notepad/Notepad'));
 const ProjectManager = lazy(() => import('./ui/projects/ProjectManager'));

@@ -11,6 +11,9 @@
 import React from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
+
+
+
 // ─── ConfirmModal() – modal potwierdzenia zastępujący window.confirm
 //   @param {Object} props – właściwości komponentu
 //   @param {boolean} props.isOpen – czy modal jest widoczny
@@ -21,6 +24,8 @@ import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
 //   @returns {JSX.Element|null} – renderowany modal lub null
 export default function ConfirmModal({ isOpen, title, message, onConfirm, onCancel }) {
   const { t } = React.useContext(TranslationContext);
+
+  
 
   // ─── handleConfirm() – obsługa potwierdzenia z logowaniem
   //   @returns {void}
@@ -33,6 +38,8 @@ export default function ConfirmModal({ isOpen, title, message, onConfirm, onCanc
       logWarn('Wystąpił błąd podczas potwierdzania');
     }
   };
+
+  
 
   // ─── handleCancel() – obsługa anulowania z logowaniem
   //   @returns {void}
@@ -69,4 +76,3 @@ export default function ConfirmModal({ isOpen, title, message, onConfirm, onCanc
     </div>
   );
 }
-

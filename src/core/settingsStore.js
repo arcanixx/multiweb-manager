@@ -14,8 +14,10 @@ import { fileURLToPath } from "url";
 import { DEFAULT_SETTINGS } from "../config.js";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SETTINGS_FILE = () => getUserDataPath("settings.json");
+
 // ─── baseDefaults() – ładuje domyślne ustawienia z pliku lub używa DEFAULT_SETTINGS
 //   @returns {Object} – obiekt z domyślnymi ustawieniami
 function baseDefaults() {
@@ -36,6 +38,7 @@ function baseDefaults() {
     version: "0.0.3"
   };
 }
+
 // ─── loadSettings() – ładuje ustawienia z pliku lub zwraca domyślne
 //   @returns {Object} – obiekt z ustawieniami
 export function loadSettings() {
@@ -49,6 +52,7 @@ export function loadSettings() {
     return baseDefaults();
   }
 }
+
 // ─── saveSettings() – zapisuje ustawienia do pliku
 //   @param {Object} settings – obiekt ustawień do zapisania
 //   @returns {Object} – zapisany obiekt ustawień
@@ -63,6 +67,7 @@ export function saveSettings(settings) {
     return settings;
   }
 }
+
 // ─── mergeSettings() – scala bieżące ustawienia z podanymi zmianami
 //   @param {Object} patch – obiekt z polami do zaktualizowania
 //   @returns {Object} – zaktualizowany obiekt ustawień
@@ -73,12 +78,16 @@ export function mergeSettings(patch) {
   return merged;
 }
 
+
+
 // ─── updateSettings() – alias dla mergeSettings
 //   @param {Object} partial – obiekt z polami do zaktualizowania
 //   @returns {Object} – zaktualizowany obiekt ustawień
 export function updateSettings(partial) {
   return mergeSettings(partial);
 }
+
+
 
 // ─── resetSettings() – resetuje ustawienia do wartości domyślnych
 //   @returns {Object} – obiekt z domyślnymi ustawieniami

@@ -12,10 +12,15 @@ import React from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { ICONS } from 'src/utils/icons';
 import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
+
+
+
 // ─── AccountSection() – sekcja konta użytkownika z placeholderem dla przyszłej synchronizacji
 //   @returns {JSX.Element} – renderowana sekcja konta
 export default function AccountSection() {
   const { t } = React.useContext(TranslationContext);
+
+  
 
   // ─── handleSignInClick() – obsługa kliknięcia przycisku logowania (placeholder)
   //   @returns {void}
@@ -28,6 +33,8 @@ export default function AccountSection() {
       logWarn('Wystąpił błąd podczas obsługi przycisku logowania');
     }
   };
+
+  
 
   // ─── handleSyncClick() – obsługa kliknięcia przycisku synchronizacji (placeholder)
   //   @returns {void}

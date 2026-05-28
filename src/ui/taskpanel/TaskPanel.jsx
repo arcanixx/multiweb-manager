@@ -15,6 +15,7 @@ import { log, logError } from '../../utils/loggerRenderer.js';
 import TaskModal from './TaskModal';
 import CommentModal from './CommentModal';
 import TaskSection from './TaskSection';
+
 export default function TaskPanel({ projectName, onClose, visible, availableProjects }) {
   const { t } = useContext(TranslationContext);
   const [tasks, setTasks] = useState({ active: [], backlog: [], done: [] });

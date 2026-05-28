@@ -11,6 +11,7 @@
 import { LIMITS } from "../config.js";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
 import { logInfo, logError } from "../utils/logger.js";
+
 // Ścieżka do pliku historii w userData – stała (nie funkcja)
 // Uwaga: getUserDataPath jest bezpieczne po app.whenReady()
 let HISTORY_FILE_PATH;
@@ -20,6 +21,7 @@ try {
   logError("historyStore: Failed to get user data path", err);
   HISTORY_FILE_PATH = "history.json"; // Fallback path
 }
+
 // ─── loadRaw() – wczytuje surowe dane z pliku historii
 //   Obsługuje zarówno stary format (tablica) jak i nowy ({ data: [] })
 //   @returns {Array} – tablica wpisów historii
@@ -32,6 +34,7 @@ function loadRaw() {
     return [];
   }
 }
+
 // ─── saveRaw() – zapisuje tablicę wpisów do pliku, przycinając do limitu
 //   @param {Array} entries – tablica wpisów do zapisania
 //   @returns {Array} – przycięta tablica wpisów
@@ -45,11 +48,13 @@ function saveRaw(entries) {
     return entries.slice(0, LIMITS.maxHistoryEntries || 5000);
   }
 }
+
 // ─── loadHistory() – publiczne API: zwraca pełną tablicę wpisów
 //   @returns {Array} – tablica wpisów historii
 export function loadHistory() {
   return loadRaw();
 }
+
 // ─── saveHistory() – publiczne API: zapisuje podaną tablicę wpisów
 //   @param {Array} entries – tablica wpisów do zapisania
 //   @returns {Array} – tablica wpisów po zapisie
@@ -57,6 +62,8 @@ export function saveHistory(entries) {
   if (!Array.isArray(entries)) return [];
   return saveRaw(entries);
 }
+
+
 
 // ─── addHistoryEntry() – dodaje nowy wpis na początek listy i zapisuje
 //   @param {Object} entry – obiekt wpisu { profileName, url, timestamp?, level?, id? }
@@ -78,12 +85,16 @@ export function addHistoryEntry(entry) {
   return next;
 }
 
+
+
 // ─── clearHistory() – czyści całą historię
 //   @returns {Array} – pusta tablica
 export function clearHistory() {
   saveRaw([]);
   return [];
 }
+
+
 
 // ─── getRecentHistory() – ostatnie N wpisów (domyślnie 100)
 //   @param {number} limit – maksymalna liczba wpisów do zwrócenia

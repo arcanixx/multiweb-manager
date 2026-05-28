@@ -10,11 +10,15 @@
 
 import { useEffect, useState } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+
+
+
 // ─── useNotepad() – hook do zarządzania notatkami
 //   @returns {Object} – obiekt z notes, loading i funkcjami CRUD
 export function useNotepad() {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
+  
   // ─── load() – ładuje wszystkie notatki z backendu
   //   @returns {Promise<void>}
   async function load() {
@@ -35,6 +39,7 @@ export function useNotepad() {
       setLoading(false);
     }
   }
+  
   // ─── add() – dodaje nową notatkę
   //   @param {Object} note – obiekt notatki
   //   @returns {Promise<Object>} – wynik operacji
@@ -55,6 +60,8 @@ export function useNotepad() {
       return { ok: false, error: err.message };
     }
   }
+
+  
 
   // ─── update() – aktualizuje istniejącą notatkę
   //   @param {string} id – identyfikator notatki
@@ -77,6 +84,8 @@ export function useNotepad() {
       return { ok: false, error: err.message };
     }
   }
+
+  
 
   // ─── remove() – usuwa notatkę
   //   @param {string} id – identyfikator notatki

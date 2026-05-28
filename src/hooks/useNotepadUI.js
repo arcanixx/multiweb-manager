@@ -12,6 +12,9 @@ import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { createNewTab, loadNotesFromStorage, saveNotesToStorage } from '../utils/notesStorage.js';
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+
+
+
 // ─── useNotepadUI() – hook do zarządzania stanem notatnika
 //   @param {Object} props – obiekt z referencjami
 //   @param {Object} props.textareaRef – referencja do elementu textarea
@@ -31,6 +34,7 @@ export function useNotepadUI({ textareaRef }) {
 
   // Aktywna zakładka jako obiekt (do NotepadStatusBar i zapisu)
   const activeTabObj = notes.tabs.find(tab => tab.id === notes.activeTab) ?? null;
+  
   // ─── showToast() – wyświetla komunikat przez 2 sekundy
   //   @param {string} msg – komunikat do wyświetlenia
   //   @returns {void}
@@ -137,6 +141,8 @@ export function useNotepadUI({ textareaRef }) {
     setDirty(false);
     showToast(t('notepad.saved'));
   }, [showToast, t]);
+
+  
 
   // ─── saveToFile() – zapisuje zawartość do pliku przez electronAPI
   //   @returns {Promise<void>}

@@ -14,6 +14,9 @@ import { ICONS } from '../../utils/icons.js';
 import { log, logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 import ProjectModal from './ProjectModal';
 import ProjectList from './ProjectList';
+
+
+
 // ─── ProjectManager() – główny menedżer projektów z listą, dodawaniem i usuwaniem
 //   @param {Object} props – właściwości komponentu
 //   @param {Function} props.onOpenTasks – callback otwierania zadań projektu
@@ -24,6 +27,8 @@ export default function ProjectManager({ onOpenTasks, onOpenTerminal }) {
   const [projects, setProjects] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  
 
   // ─── useEffect – ładowanie projektów przy montowaniu
   useEffect(() => {
@@ -45,6 +50,7 @@ export default function ProjectManager({ onOpenTasks, onOpenTerminal }) {
       setLoading(false);
     }
   }, []);
+  
   // ─── saveProjects() – zapisuje listę projektów do ustawień
   //   @param {Array} newProjects – nowa lista projektów
   //   @returns {Promise<void>}
@@ -60,6 +66,7 @@ export default function ProjectManager({ onOpenTasks, onOpenTerminal }) {
       throw err;
     }
   };
+  
   // ─── addProject() – dodaje nowy projekt do listy
   //   @param {Object} projectData – dane nowego projektu
   //   @param {string} projectData.name – nazwa projektu
@@ -77,6 +84,7 @@ export default function ProjectManager({ onOpenTasks, onOpenTerminal }) {
       logWarn('Wystąpił błąd podczas dodawania projektu');
     }
   };
+  
   // ─── deleteProject() – usuwa projekt z listy po potwierdzeniu
   //   @param {string} projectId – identyfikator projektu do usunięcia
   //   @returns {Promise<void>}

@@ -10,11 +10,16 @@
 
 import { useEffect, useState } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+
+
+
 // ─── useTasks() – hook do zarządzania zadaniami
 //   @returns {Object} – obiekt z tasks, loading i funkcjami CRUD
 export function useTasks() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  
 
   // ─── load() – ładuje wszystkie zadania z backendu
   //   @returns {Promise<void>}
@@ -37,6 +42,8 @@ export function useTasks() {
     }
   }
 
+  
+
   // ─── add() – dodaje nowe zadanie
   //   @param {Object} task – obiekt zadania
   //   @returns {Promise<Object>} – wynik operacji
@@ -57,6 +64,8 @@ export function useTasks() {
       return { ok: false, error: err.message };
     }
   }
+
+  
 
   // ─── update() – aktualizuje istniejące zadanie
   //   @param {string} id – identyfikator zadania
@@ -79,6 +88,8 @@ export function useTasks() {
       return { ok: false, error: err.message };
     }
   }
+
+  
 
   // ─── remove() – usuwa zadanie
   //   @param {string} id – identyfikator zadania
@@ -107,4 +118,3 @@ export function useTasks() {
 
   return { tasks, loading, reloadTasks: load, addTask: add, updateTask: update, deleteTask: remove };
 }
-

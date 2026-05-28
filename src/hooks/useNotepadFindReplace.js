@@ -11,6 +11,9 @@
 import { useState, useCallback, useContext } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+
+
+
 // ─── useNotepadFindReplace() – hook do funkcjonalności znajdź/zastąp w notatniku
 //   @param {Object} props – obiekt z referencjami i funkcjami
 //   @param {Object} props.contentRef – referencja do treści notatnika
@@ -24,6 +27,7 @@ export function useNotepadFindReplace({ contentRef, textareaRef, setContent, set
   const [findText, setFindText] = useState('');
   const [replaceText, setReplaceText] = useState('');
   const [findCount, setFindCount] = useState(0);
+  
   // ─── handleFind() – wyszukuje tekst i ustawia kursor na pierwsze trafienie
   //   @returns {void}
   const handleFind = useCallback(() => {
@@ -49,6 +53,8 @@ export function useNotepadFindReplace({ contentRef, textareaRef, setContent, set
       logWarn("Wystąpił błąd podczas wyszukiwania tekstu");
     }
   }, [findText, contentRef, textareaRef]);
+
+  
 
   // ─── handleReplace() – zastępuje wszystkie wystąpienia szukanego tekstu
   //   @returns {void}

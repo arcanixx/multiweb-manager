@@ -12,6 +12,9 @@ import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+
+
+
 // ─── HistoryFilters() – komponent filtrów historii (poziom, sortowanie, czyszczenie)
 //   @param {Object} props – właściwości komponentu
 //   @param {string} props.filterLevel – bieżący poziom filtru
@@ -23,6 +26,8 @@ import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 //   @returns {JSX.Element} – renderowany komponent filtrów
 export default function HistoryFilters({ filterLevel, onFilterChange, sortOrder, onSortChange, onClear, hasEntries }) {
   const { t } = useContext(TranslationContext);
+
+  
 
   // ─── handleFilterChange() – obsługa zmiany poziomu filtru
   //   @param {Event} e – zdarzenie zmiany selecta
@@ -37,6 +42,8 @@ export default function HistoryFilters({ filterLevel, onFilterChange, sortOrder,
     }
   };
 
+  
+
   // ─── handleSortChange() – obsługa zmiany porządku sortowania
   //   @param {Event} e – zdarzenie zmiany selecta
   //   @returns {void}
@@ -49,6 +56,8 @@ export default function HistoryFilters({ filterLevel, onFilterChange, sortOrder,
       logWarn('Wystąpił błąd podczas zmiany sortowania');
     }
   };
+
+  
 
   // ─── handleClear() – obsługa czyszczenia historii
   //   @returns {void}

@@ -12,6 +12,7 @@ import React, { useState } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
+
 export default function CookieGrabber({ activeWebViewId }) {
   const { t } = React.useContext(TranslationContext);
   const [cookies, setCookies] = useState([]);

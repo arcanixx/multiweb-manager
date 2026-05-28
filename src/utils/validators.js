@@ -24,4 +24,3 @@ export function ensureObject(value, name) {
     throw new Error(`${name}_INVALID`);
   }
 }
-

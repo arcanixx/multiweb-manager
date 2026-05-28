@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React from 'react';
+import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import GeneralSection from './GeneralSection';
 import WebViewSection from './WebViewSection';
 import TabsSection from './TabsSection';
@@ -17,6 +18,7 @@ import HotkeysManager from './HotkeysManager';
 import DataLogsSection from './DataLogsSection';
 import AccountSection from './AccountSection';
 import { TranslationContext } from '../utils/translations.js';
+
 export default function Settings() {
   const { t } = React.useContext(TranslationContext);
   return (
@@ -32,4 +34,3 @@ export default function Settings() {
     </div>
   );
 }
-

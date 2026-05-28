@@ -12,12 +12,17 @@ import React, { useState, useEffect } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer';
 import { ICONS } from '../../utils/icons';
+
+
+
 // ─── NotificationsSection() – sekcja ustawień powiadomień (systemowe i Pushbullet)
 //   @returns {JSX.Element} – renderowana sekcja powiadomień
 export default function NotificationsSection() {
   const { t } = React.useContext(TranslationContext);
   const [systemNotifications, setSystemNotifications] = useState(true);
   const [pushbulletApiKey, setPushbulletApiKey] = useState('');
+
+  
 
   // ─── useEffect – ładowanie ustawień przy montowaniu
   useEffect(() => {
@@ -32,6 +37,7 @@ export default function NotificationsSection() {
       logWarn('Nie można załadować ustawień powiadomień');
     }
   }, []);
+  
   // ─── handleSystemNotifToggle() – przełącza powiadomienia systemowe
   //   @param {Event} e – zdarzenie zmiany checkboxa
   //   @returns {void}
@@ -47,6 +53,7 @@ export default function NotificationsSection() {
       logWarn('Wystąpił błąd podczas przełączania powiadomień systemowych');
     }
   };
+  
   // ─── handlePushbulletSave() – zapisuje klucz API Pushbullet
   //   @returns {void}
   const handlePushbulletSave = () => {

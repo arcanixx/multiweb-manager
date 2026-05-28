@@ -11,7 +11,9 @@
 import fs from "fs";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
+
 const TASKS_DIR = () => getUserDataPath("tasks");
+
 // ─── taskFile() – generuje bezpieczną ścieżkę do pliku zadań dla projektu
 //   @param {string} projectName – nazwa projektu
 //   @returns {string} – ścieżka do pliku JSON
@@ -19,9 +21,11 @@ function taskFile(projectName) {
   const safe = String(projectName || "default").replace(/[^\w.-]+/g, "_");
   return `${TASKS_DIR()}/${safe}.json`;
 }
+
 // ─── EMPTY_SECTIONS() – zwraca pusty szablon sekcji zadań
 //   @returns {Object} – obiekt z pustymi tablicami dla active, backlog, done
 const EMPTY_SECTIONS = () => ({ active: [], backlog: [], done: [] });
+
 // ─── loadTasksSections() – ładuje sekcje zadań dla projektu
 //   @param {string} projectName – nazwa projektu
 //   @returns {Object} – obiekt z sekcjami active, backlog, done
@@ -44,6 +48,7 @@ export function loadTasksSections(projectName) {
     return EMPTY_SECTIONS();
   }
 }
+
 // ─── loadTasksByProject() – ładuje wszystkie zadania dla projektu jako płaską listę
 //   @param {string} projectName – nazwa projektu
 //   @returns {Array} – tablica zadań
@@ -51,6 +56,7 @@ export function loadTasksByProject(projectName) {
   const sections = loadTasksSections(projectName);
   return [...sections.active, ...sections.backlog, ...sections.done];
 }
+
 // ─── saveTasksForProject() – zapisuje zadania dla projektu
 //   @param {string} projectName – nazwa projektu
 //   @param {Object} payload – dane zadań do zapisania
@@ -75,6 +81,8 @@ export function saveTasksForProject(projectName, payload) {
   }
 }
 
+
+
 // ─── loadAllTasksGrouped() – ładuje wszystkie zadania pogrupowane po projektach
 //   @returns {Object} – obiekt z projektami jako kluczami i sekcjami jako wartościami
 export function loadAllTasksGrouped() {
@@ -94,6 +102,8 @@ export function loadAllTasksGrouped() {
     return {};
   }
 }
+
+
 
 // ─── loadTasks() – ładuje wszystkie zadania jako płaską listę z metadanymi
 //   @returns {Array} – tablica zadań z dodatkowymi polami projectName i section

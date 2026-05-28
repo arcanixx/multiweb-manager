@@ -11,6 +11,9 @@
 import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { logError, logWarn } from '../../utils/loggerRenderer.js';
+
+
+
 // ─── NotepadStatusBar() – pasek statusu notatnika z informacjami o dokumencie
 //   @param {Object} props – właściwości komponentu
 //   @param {string} props.title – tytuł dokumentu
@@ -20,13 +23,19 @@ import { logError, logWarn } from '../../utils/loggerRenderer.js';
 export default function NotepadStatusBar({ title, content, lastSaved }) {
   const { t } = useContext(TranslationContext);
 
+  
+
   // ─── lines – oblicza liczbę wierszy w dokumencie
   //   @returns {number} – liczba wierszy
   const lines = content ? content.split('\n').length : 0;
 
+  
+
   // ─── chars – oblicza liczbę znaków w dokumencie
   //   @returns {number} – liczba znaków
   const chars = content ? content.length : 0;
+
+  
 
   // ─── formatTime() – formatuje timestamp do czytelnej godziny
   //   @param {number} timestamp – timestamp do sformatowania

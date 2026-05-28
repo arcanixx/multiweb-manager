@@ -12,6 +12,9 @@ import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+
+
+
 // ─── NotepadFindReplace() – panel znajdź/zastąp w notatniku
 //   @param {Object} props – właściwości komponentu
 //   @param {string} props.findText – bieżący tekst do wyszukania
@@ -26,6 +29,8 @@ import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 export default function NotepadFindReplace({ findText, onFindTextChange, replaceText, onReplaceTextChange, onFind, onReplace, findCount, onClose }) {
   const { t } = useContext(TranslationContext);
 
+  
+
   // ─── handleFind() – obsługa wyszukiwania z logowaniem
   //   @returns {void}
   const handleFind = () => {
@@ -38,6 +43,8 @@ export default function NotepadFindReplace({ findText, onFindTextChange, replace
     }
   };
 
+  
+
   // ─── handleReplace() – obsługa zastępowania z logowaniem
   //   @returns {void}
   const handleReplace = () => {
@@ -49,6 +56,8 @@ export default function NotepadFindReplace({ findText, onFindTextChange, replace
       logWarn('Wystąpił błąd podczas zastępowania');
     }
   };
+
+  
 
   // ─── handleClose() – obsługa zamknięcia panelu z logowaniem
   //   @returns {void}
@@ -86,4 +95,3 @@ export default function NotepadFindReplace({ findText, onFindTextChange, replace
     </div>
   );
 }
-

@@ -10,6 +10,7 @@
 
 import { logError } from './logger.js';
 import { DEFAULT_SETTINGS } from '../config.js';
+
 let logsEnabled = false;
 let debugMode = false;
 export async function initLogWriter() {
@@ -85,4 +86,3 @@ export async function clearLogsFile() {
     return false;
   }
 }
-

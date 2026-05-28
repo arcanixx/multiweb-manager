@@ -10,11 +10,16 @@
 
 import { useEffect, useState } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+
+
+
 // ─── useProjects() – hook do zarządzania projektami
 //   @returns {Object} – obiekt z projects, loading i funkcjami CRUD
 export function useProjects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  
 
   // ─── load() – ładuje wszystkie projekty z backendu
   //   @returns {Promise<void>}
@@ -37,6 +42,8 @@ export function useProjects() {
     }
   }
 
+  
+
   // ─── add() – dodaje nowy projekt
   //   @param {Object} project – obiekt projektu
   //   @returns {Promise<Object>} – wynik operacji
@@ -57,6 +64,8 @@ export function useProjects() {
       return { ok: false, error: err.message };
     }
   }
+
+  
 
   // ─── update() – aktualizuje istniejący projekt
   //   @param {string} id – identyfikator projektu
@@ -79,6 +88,8 @@ export function useProjects() {
       return { ok: false, error: err.message };
     }
   }
+
+  
 
   // ─── remove() – usuwa projekt
   //   @param {string} id – identyfikator projektu
@@ -107,4 +118,3 @@ export function useProjects() {
 
   return { projects, loading, reloadProjects: load, addProject: add, updateProject: update, deleteProject: remove };
 }
-

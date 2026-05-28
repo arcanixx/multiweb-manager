@@ -9,6 +9,8 @@
 // =============================================================================
 
 import { useEffect, useState } from "react";
+import { logInfo, logError, logWarn, logDebug } from '../utils/logger.js';
+
 export function useWorkspaces() {
   const [workspaces, setWorkspaces] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,4 +35,3 @@ export function useWorkspaces() {
   }, []);
   return { workspaces, loading, reloadWorkspaces: load, saveWorkspace: save, deleteWorkspace: remove };
 }
-

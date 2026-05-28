@@ -19,9 +19,11 @@ import { runAllTests } from "./tests/TestRunner.js";
 import { initAdBlocker } from './src/engine/adBlocker.js';
 import { unregisterAllHotkeys } from './src/engine/hotkeysManager.js';
 import { setMainWindow } from './src/engine/hotkeysManager.js';
+
 // DYNAMICZNY LOADER HANDLERÓW (IPC)
 // =============================================================================
 import { loadAllIpcHandlers } from './src/loaders/ipcLoader.js';
+
 // =============================================================================
 // KONFIGURACJA PODSTAWOWA
 // =============================================================================
@@ -169,6 +171,4 @@ process.on("uncaughtException", (err) => logError("uncaughtException", err));
 process.on("unhandledRejection", (reason) => logError("unhandledRejection", reason));
 
 
-// =============================================================================
-// END OF FILE
-// =============================================================================
+=============================================================================

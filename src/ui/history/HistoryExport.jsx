@@ -12,12 +12,17 @@ import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+
+
+
 // ─── HistoryExport() – komponent eksportu historii do pliku CSV
 //   @param {Object} props – właściwości komponentu
 //   @param {Array} props.entries – tablica wpisów historii
 //   @returns {JSX.Element} – renderowany przycisk eksportu
 export default function HistoryExport({ entries }) {
   const { t } = useContext(TranslationContext);
+
+  
 
   // ─── exportToCSV() – generuje i pobiera plik CSV z historią
   //   @returns {void}

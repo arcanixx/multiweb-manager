@@ -13,6 +13,7 @@ import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
 import { renderMarkdown } from 'src/tools/markdownRenderer';
+
 export default function FilePreviewer() {
   const { t } = React.useContext(TranslationContext);
   const [file, setFile] = useState(null);
@@ -126,4 +127,3 @@ export default function FilePreviewer() {
     </div>
   );
 }
-

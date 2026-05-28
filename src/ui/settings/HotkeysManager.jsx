@@ -13,11 +13,13 @@ import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError, logInfo, logWarn } from 'src/utils/loggerRenderer';
 import ConfirmModal from '../modals/ConfirmModal';
 import Modal from '../modals/Modal';
+
 const DEFAULT_HOTKEYS = [
   { id: 'hk-1', shortcut: 'Ctrl+Shift+S', name: 'Screenshot WebView', text: '', enabled: true, action: 'screenshot' },
   { id: 'hk-2', shortcut: 'Ctrl+Shift+M', name: 'Resource Monitor', text: '', enabled: true, action: 'monitor' },
   { id: 'hk-3', shortcut: 'Ctrl+Shift+1', name: 'Snippet: Email signature', text: 'Best regards,\nMaciej', enabled: true, action: 'insertText' }
 ];
+
 // ─── HotkeysManager() – zarządzanie skrótami klawiszowymi z edycją i zapisem
 //   @returns {JSX.Element} – renderowany interfejs menedżera skrótów
 export default function HotkeysManager() {
@@ -27,6 +29,8 @@ export default function HotkeysManager() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingHotkey, setEditingHotkey] = useState(null);
   const [confirmState, setConfirmState] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
+
+  
 
   // ─── useEffect – ładowanie skrótów przy montowaniu
   useEffect(() => {
@@ -56,6 +60,8 @@ export default function HotkeysManager() {
     loadHotkeys();
   }, []);
   
+  
+  
   // ─── showConfirm() – wyświetla modal potwierdzenia
   //   @param {string} title – tytuł modala
   //   @param {string} message – treść komunikatu
@@ -70,6 +76,8 @@ export default function HotkeysManager() {
       logWarn('Wystąpił błąd podczas wyświetlania modala potwierdzenia');
     }
   };
+  
+  
   
   // ─── saveHotkeys() – zapisuje skróty do storage i rejestruje globalnie
   //   @param {Array} newHotkeys – lista skrótów do zapisu
@@ -92,6 +100,8 @@ export default function HotkeysManager() {
     }
   };
   
+  
+  
   // ─── handleAdd() – otwiera modal dodawania nowego skrótu
   //   @returns {void}
   const handleAdd = () => {
@@ -112,6 +122,8 @@ export default function HotkeysManager() {
     }
   };
   
+  
+  
   // ─── handleEdit() – otwiera modal edycji skrótu
   //   @param {Object} hotkey – edytowany skrót
   //   @returns {void}
@@ -125,6 +137,8 @@ export default function HotkeysManager() {
       logWarn('Wystąpił błąd podczas edycji skrótu');
     }
   };
+  
+  
   
   // ─── handleDelete() – usuwa skrót po potwierdzeniu
   //   @param {string} id – identyfikator skrótu do usunięcia
@@ -145,6 +159,8 @@ export default function HotkeysManager() {
       }
     );
   };
+  
+  
   
   // ─── handleSave() – zapisuje edytowany skrót z walidacją
   //   @returns {Promise<void>}
@@ -182,6 +198,8 @@ export default function HotkeysManager() {
     }
   };
   
+  
+  
   // ─── handleToggleEnabled() – przełącza aktywność skrótu
   //   @param {string} id – identyfikator skrótu
   //   @param {boolean} enabled – nowy stan aktywności
@@ -196,6 +214,8 @@ export default function HotkeysManager() {
       logWarn('Wystąpił błąd podczas przełączania aktywności skrótu');
     }
   };
+  
+  
   
   // ─── parseShortcut() – parsowanie skrótu (placeholder dla przyszłej walidacji)
   //   @param {string} shortcut – skrót w formacie tekstowym

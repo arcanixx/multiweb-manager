@@ -11,6 +11,7 @@
 import React, { useState } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { logError } from 'src/utils/loggerRenderer';
+
 export default function JsonFormatter() {
   const { t } = React.useContext(TranslationContext);
   const [input, setInput] = useState('');
@@ -87,4 +88,3 @@ export default function JsonFormatter() {
     </div>
   );
 }
-

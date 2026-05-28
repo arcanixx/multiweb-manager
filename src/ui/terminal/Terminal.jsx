@@ -16,6 +16,7 @@ import 'xterm/css/xterm.css';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
+
 export default function Terminal() {
   const { t } = React.useContext(TranslationContext);
   const terminalRef = useRef(null);

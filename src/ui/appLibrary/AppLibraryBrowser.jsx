@@ -12,7 +12,9 @@ import React, { useState, useEffect } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError, logInfo, logWarn } from '../../utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
+
 import { loadAppLibrary, searchAppLibrary, getAppsByCategory } from 'src/core/appLibraryStore'; // getAppsByCategory to helper do filtrowania aplikacji po kategorii, loadAppLibrary i searchAppLibrary to funkcje do pobierania danych z appLibraryStore
+
 // ─── AppLibraryBrowser() – komponent przeglądarki aplikacji z kategoriami i wyszukiwarką
 //   @param {Object} props – właściwości komponentu
 //   @param {Function} props.onAddProfile – callback dodawania profilu
@@ -24,6 +26,7 @@ export default function AppLibraryBrowser({ onAddProfile }) {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
+  
   // ─── useEffect – ładowanie biblioteki aplikacji przy montowaniu
   useEffect(() => {
     try {
@@ -38,6 +41,7 @@ export default function AppLibraryBrowser({ onAddProfile }) {
       setLoading(false);
     }
   }, []);
+  
   // ─── useEffect – wyszukiwanie aplikacji przy zmianie zapytania
   useEffect(() => {
     if (searchQuery.trim()) {
@@ -55,6 +59,7 @@ export default function AppLibraryBrowser({ onAddProfile }) {
       setSearchResults([]);
     }
   }, [searchQuery]);
+  
   // ─── handleCategoryClick() – obsługa kliknięcia kategorii
   //   @param {string} categoryId – identyfikator kategorii
   //   @returns {void}
