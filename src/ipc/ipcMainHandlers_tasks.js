@@ -3,8 +3,9 @@
 // PATH: src/ipc/ipcMainHandlers_tasks.js
 // VERSION: 0.0.3
 // PURPOSE: IPC namespaced dla zadań (ui/taskpanel).
-// FUNCTIONS: tasks:getAll, tasks:add, tasks:update, tasks:delete
-// DEPENDS ON: tasksStore.js, logger.js
+// FUNCTIONS: ipc:tasks:getAll, ipc:tasks:saveSections
+// DEPENDS ON: electron, tasksStore.js, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain } from "electron";
@@ -14,7 +15,6 @@ import {
   loadAllTasksGrouped
 } from "../core/tasksStore.js";
 import { logError } from "../utils/logger.js";
-
 ipcMain.handle("tasks:getAll", async (_, projectName) => {
   try {
     if (projectName) {
@@ -26,7 +26,6 @@ ipcMain.handle("tasks:getAll", async (_, projectName) => {
     return { ok: false, error: err.message };
   }
 });
-
 ipcMain.handle("tasks:saveSections", async (_, { projectName, sections }) => {
   try {
     saveTasksForProject(projectName, { tasks: sections });

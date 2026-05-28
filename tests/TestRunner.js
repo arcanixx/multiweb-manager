@@ -2,66 +2,32 @@
 // FILE: TestRunner.js
 // PATH: tests/TestRunner.js
 // VERSION: 0.0.3
-// PURPOSE: Orchestrator testów przy starcie (debugMode + FEATURES.startupTests).
-//          Uruchamia zarejestrowane testy i loguje wyniki.
+// PURPOSE: Orchestrator testów – uruchamia wszystkie TestRunner_*.js
 // FUNCTIONS: runAllTests
-// DEPENDS ON: logger.js, src/data/icons.js
-// UWAGA: Nie usuwaj komentarzy — opisują przeznaczenie funkcji i sekcji.
+// DEPENDS ON: logger.js, icons.js, logWriter.js, testsLoader.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { logInfo, logError } from "../src/utils/logger.js";
-import { ICONS } from "src/utils/icons.js";
-
-// ----------------------------------------------------------------
-// Lista testów startowych — dodawaj tutaj kolejne test-runnery
-// ----------------------------------------------------------------
-const tests = [
-  {
-    name: "config load",
-    run: async () => {
-      const { DEFAULT_SETTINGS } = await import("../src/config.js");
-      // Weryfikuje, że konfiguracja domyślna jest dostępna i ma wymagane klucze
-      return !!DEFAULT_SETTINGS?.language && !!DEFAULT_SETTINGS?.theme;
-    }
-  },
-  {
-    name: "icons registry",
-    run: async () => {
-      // Weryfikuje, że rejestr ikon zawiera kluczowe wpisy
-      return !!ICONS.TEST_PASS && !!ICONS.TEST_FAIL && !!ICONS.SETTINGS;
-    }
-  }
-];
-
-// ----------------------------------------------------------------
-// runAllTests() – uruchamia wszystkie testy i zwraca podsumowanie
-//   options.logToFile  – czy logować do pliku (przyszłość)
-//   options.verbose    – czy logować każdy test
-// ----------------------------------------------------------------
+import { logInfo, logError } from '../src/utils/logger.js';
+import { ICONS } from '../src/utils/icons.js';
+import { initLogWriter } from '../src/utils/logWriter.js';
+// Import wszystkich testów loaderem
+import { loadAndRunAllTests } from '../src/loaders/testsLoader.js';
 export async function runAllTests(options = {}) {
-  let passed = 0;
-  let failed = 0;
-
-  for (const t of tests) {
-    try {
-      const ok = await t.run();
-      const result = { ok: !!ok, name: t.name };
-
-      // TEST_PASS = ✅, TEST_FAIL = ❌ z icons.js
-      logInfo(`${result.ok ? ICONS.TEST_PASS : ICONS.TEST_FAIL} ${result.name}`);
-
-      if (result.ok) passed++;
-      else failed++;
-    } catch (err) {
-      logError(`${ICONS.TEST_FAIL} ${t.name}`, err);
-      failed++;
+  // Inicjalizacja logWritera (tylko raz)
+  await initLogWriter();
+  logInfo(`${ICONS.DEBUG} Running tests via loader...`);
+  const { passed, failed, results } = await loadAndRunAllTests(options);
+  logInfo(`${ICONS.TEST_PASS} Tests completed: ${passed} passed, ${failed} failed`);
+  return { passed, failed, results };
+};
+// Automatyczne uruchomienie jeśli debugMode
+if (typeof window !== 'undefined' && window.electronAPI?.getDebugMode) {
+  window.electronAPI.getDebugMode().then((debugMode) => {
+    if (debugMode) {
+      logInfo('🐛 Debug mode enabled – running tests...');
+      runAllTests();
     }
-  }
-
-  logInfo(`Tests: ${passed} passed, ${failed} failed`);
-  return { passed, failed, skipped: false };
+  });
 }
 
-// =============================================================================
-// END OF FILE
-// =============================================================================

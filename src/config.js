@@ -3,35 +3,29 @@
 // PATH: src/config.js
 // VERSION: 0.0.3
 // PURPOSE: Centralna konfiguracja aplikacji – feature flags, API endpoints,
-//          domyślne ustawienia, język, zoom UI.
-//          Centralna konfiguracja aplikacji:
-//          - feature flagi
-//          - domyślne ustawienia
-//          - limity, ścieżki, tryby
-//          - wartości techniczne dla WebView, Tools, Settings, Sidebar, Terminal
-//          Używane zarówno w main (Electron), jak i w renderer (React).
+// FUNCTIONS: isFeatureEnabled, isToolEnabled, getDefaultSetting, getLimit
+// DEPENDS ON: -
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 // Środowisko aplikacji
 export const APP_ENV = process.env.NODE_ENV || "production";
-
 // Globalny debug (fallback, jeśli store nie istnieje)
 export const DEBUG_DEFAULT = true;
-
-
+// =============================================================================
+// JĘZYKI – lista dostępnych języków w aplikacji
+// =============================================================================
+export const LANGUAGES = ['pl', 'en'];   // tu dodasz kolejne: 'de', 'fr', itp.
 // -----------------------------------------------------------------------------
 // I18N / LANGUAGE
 // -----------------------------------------------------------------------------
-
 // Domyślny język aplikacji.
 // Używany przy pierwszym uruchomieniu oraz jako fallback,
 // jeśli nie uda się odczytać ustawień użytkownika.
 export const DEFAULT_LANGUAGE = "pl";
-
 // -----------------------------------------------------------------------------
 // UI ZOOM
 // -----------------------------------------------------------------------------
-
 // Konfiguracja powiększenia UI.
 // - DEFAULT: startowa wartość (np. 0.9 = 90%)
 // - MIN/MAX: zakres dopuszczalnych wartości
@@ -42,6 +36,17 @@ export const UI_ZOOM = {
   MAX: 1.5,
   STEP: 0.1
 };
+// =============================================================================
+// DODATKOWE STAŁE KONFIGURACYJNE (używane przez różne moduły)
+// =============================================================================
+export const CLIPBOARD_HISTORY_MAX = 50;
+export const SLEEP_TABS_TIMEOUT_DEFAULT = 15 * 60 * 1000; // 15 minut
+export const MAX_LAST_USED_PROFILES = 10;
+export const RESOURCE_WARN_AT = 70;
+export const RESOURCE_CRITICAL_AT = 90;
+export const CPU_WARN_AT = 50;
+export const CPU_CRITICAL_AT = 80;
+export const DEFAULT_PROFILE_CATEGORY = "AI";
 
 // =============================================================================
 // FEATURE FLAGS — włączanie/wyłączanie modułów
@@ -119,9 +124,12 @@ export const LIMITS = {
 // =============================================================================
 
 export const DEFAULT_SETTINGS = {
-  language: "pl",                 // 'pl' | 'en'
+  language: DEFAULT_LANGUAGE,                 // 'pl' | 'en'
   theme: "dark",                  // 'dark' | 'light' | 'system'
   debugMode: DEBUG_DEFAULT,
+  firstRun: true,
+  logsEnabled: false,
+  logsMaxLines: 500,
 
   // WebView
   sleepTabsTimeout: 15 * 60 * 1000, // 15 minut

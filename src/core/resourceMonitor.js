@@ -3,18 +3,16 @@
 // PATH: src/core/resourceMonitor.js
 // VERSION: 0.0.3
 // PURPOSE: Monitor zasobów systemowych
-//          - CPU
-//          - RAM
-//          - progi ostrzeżeń (warnAt, criticalAt)
+// FUNCTIONS: getSystemUsage
+// DEPENDS ON: os, config.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import os from "os";
 import { DEFAULT_SETTINGS } from "../config.js";
-
 // ---------------------------------------------------------------------------
 // Publiczne API
 // ---------------------------------------------------------------------------
-
 /**
  * Zwraca aktualny poziom użycia CPU i RAM (w procentach)
  * oraz progi ostrzeżeń z DEFAULT_SETTINGS.resourceMonitor.
@@ -29,13 +27,11 @@ export function getSystemUsage() {
       const total = Object.values(cpu.times).reduce((a, b) => a + b, 0);
       return acc + (1 - cpu.times.idle / total);
     }, 0) / cpus.length;
-
   // --- RAM ---
   const totalMem = os.totalmem();
   const freeMem  = os.freemem();
   const usedMem  = totalMem - freeMem;
   const ramPercent = (usedMem / totalMem) * 100;
-
   return {
     cpuPercent: Math.round(cpuLoad * 100),
     ramPercent:  Math.round(ramPercent),
@@ -44,6 +40,3 @@ export function getSystemUsage() {
   };
 }
 
-// =============================================================================
-// END OF FILE
-// =============================================================================

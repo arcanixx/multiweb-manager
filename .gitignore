@@ -27,12 +27,13 @@ Thumbs.db
 
 # Other
 txt/
+doc/scripts
+doc/prompts
 package-lock.json
 forge.config.js
 .cursorignore
-doc/UI_UX MOCKUP - MWM.docx
-# stara wersja, obecnie uzywamy poprawnej preload.cjs dla tej architektury
-preload.js
-preload.js
 .roo/mcp.json
-doc/Requirements_raw.md
+*.py
+*.bat
+src/ipc/ipcMainHandlers_terminal.js
+update/to_check_0.0.3.txt

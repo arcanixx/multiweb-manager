@@ -1,8 +1,17 @@
+/* =============================================================================
+ * FILE: components.css
+ * PATH: src/ui/styles/components.css
+ * VERSION: 0.0.3
+ * PURPOSE: Zbiór stylów CSS aplikacji
+ * FUNCTIONS: -
+ * DEPENDS ON: -
+ * UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+ * ============================================================================= */
+
 /* ─── Reset i base ─── */
 * {
   box-sizing: border-box;
 }
-
 body {
   margin: 0;
   padding: 0;
@@ -12,9 +21,9 @@ body {
   font-size: 14px;
   line-height: 1.5;
   overflow: hidden;
+  -webkit-user-select: none;
   user-select: none; /* Zapobiega niezamierzonemu zaznaczaniu tekstu w Electron */
 }
-
 /* Pozwól na zaznaczanie tekstu w obszarach treści */
 textarea,
 input,
@@ -23,17 +32,15 @@ select,
 .form-select,
 .modal-box,
 .selectable {
-  user-select: text;
   -webkit-user-select: text;
+  user-select: text;
   pointer-events: auto;
 }
-
 /* Electron: natywny webview nad HTML — ukryj przy modalu */
 body.modal-open webview {
   visibility: hidden !important;
   pointer-events: none !important;
 }
-
 body.tools-active webview {
   display: none !important;
   visibility: hidden !important;

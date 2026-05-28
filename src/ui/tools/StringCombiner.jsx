@@ -1,22 +1,17 @@
 // =============================================================================
 // FILE: StringCombiner.jsx
-// PATH: src/components/StringCombiner.jsx
+// PATH: src/ui/tools/StringCombiner.jsx
 // VERSION: 0.0.3
 // PURPOSE: Generator kombinacji stringów. Podajesz tekst bazowy, znak podziału
-//          i N zmiennych (każda z listą wartości). Generator produkuje macierz
-//          wszystkich kombinacji – każda combo w osobnym bloku.
-//          NAPRAWIONE: cartesian obsługuje 0 zmiennych, prawidłowa obsługa
-//          znaku 'enter' jako podziału.
-// DEPENDS ON: icons.js, useTranslation.js, logger.js
-// FUNCTIONS: generate, cartesian, addVariable, removeVariable,
-//            copyResult, clearAllicons.js, useTranslation.js, logger.js
+// FUNCTIONS: StringCombiner
+// DEPENDS ON: react, icons, translations.js, loggerRenderer
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useState, useCallback } from "react";
 import { ICONS } from "../../utils/icons";
-import { useTranslation } from "../../hooks/useTranslation";
+import { TranslationContext } from '../utils/translations.js';
 import { log } from "../../utils/loggerRenderer";
-
 function cartesian(arrays) {
   if (!arrays || arrays.length === 0) return [[]];
   if (arrays.length === 1) return arrays[0].map(v => [v]);
@@ -30,17 +25,14 @@ function cartesian(arrays) {
     return result;
   }, [[]]);
 }
-
 function parseSplitChar(raw) {
   if (raw === "\\n" || raw === "enter" || raw === "newline") return "\n";
   if (raw === "\\t" || raw === "tab") return "\t";
   if (raw === "space" || raw === " ") return " ";
   return raw || " ";
 }
-
 export default function StringCombiner() {
-  const { t } = useTranslation();
-
+  const { t } = React.useContext(TranslationContext);
   const [baseText, setBaseText] = useState("");
   const [splitChar, setSplitChar] = useState(" ");
   const [variables, setVariables] = useState([
@@ -49,10 +41,8 @@ export default function StringCombiner() {
   const [result, setResult] = useState("");
   const [count, setCount] = useState(0);
   const [copied, setCopied] = useState(false);
-
   const generate = useCallback(() => {
     const sep = parseSplitChar(splitChar);
-
     const validVars = variables
       .map(v => ({
         ...v,

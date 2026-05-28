@@ -1,9 +1,27 @@
 {
+  "_comment": "FILE: pl.json | PATH: src/locales/pl.json | VERSION: 0.0.3 | PURPOSE: Tłumaczenia polskie | FUNCTIONS: - | DEPENDS ON: - | UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.",
   "app": {
     "name": "MultiWeb Manager",
     "loading": "Ładowanie...",
-    "close_confirm": "Czy na pewno chcesz zamknąć aplikację?",
-    "unsaved_notes": "Notatki zostaną automatycznie zapisane."
+    "close_confirm_title": "Potwierdzenie zamknięcia",
+    "close_confirm_message": "Czy na pewno chcesz zamknąć aplikację? Wszystkie niezapisane zmiany zostaną utracone.",
+    "welcome_title": "MultiWeb Manager",
+    "welcome_subtitle": "Wybierz profil lub narzędzie z lewego panelu"
+  },
+  "common": {
+    "confirm": "Potwierdź",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "delete": "Usuń",
+    "loading": "Ładowanie...",
+    "minutes": "minut",
+    "never": "Nigdy"
+  },
+  "confirm": {
+    "quitTitle": "Wyjście z aplikacji",
+    "quitMessage": "Czy na pewno chcesz zamknąć MultiWeb Manager?",
+    "deleteProfileTitle": "Usuń profil",
+    "deleteProfileMessage": "Czy na pewno chcesz usunąć ten profil? Tej operacji nie można cofnąć."
   },
   "sidebar": {
     "add_profile": "Dodaj workspace",
@@ -34,7 +52,7 @@
     "category_label": "Kategoria",
     "category_placeholder": "np. DeepSeek",
     "icon_label": "Ikona (emoji lub URL)",
-    "icon_placeholder": "🌐 lub URL do ikony",
+    "icon_placeholder": "Domyślna lub URL do ikony serwisu",
     "ad_blocker_label": "Blokuj reklamy",
     "notifications_label": "Powiadomienia",
     "save": "Zapisz",
@@ -65,7 +83,9 @@
     "replace_placeholder": "Zastąp...",
     "find_replace": "Znajdź i zastąp",
     "word_wrap": "Zawijanie wierszy",
-    "line_numbers": "Numery wierszy"
+    "line_numbers": "Numery wierszy",
+    "chars": "Znaki",
+    "lines": "Wiersze"
   },
   "projectManager": {
     "title": "Menedżer projektów",
@@ -92,22 +112,27 @@
     "done": "Zakończono! Pobrano {count} plików.",
     "error_file": "Błąd dla pliku {name}: {error}",
     "clear": "Wyczyść listę",
-    "plan_label": "Plan: {plan}"
+    "plan_label": "Plan: {plan}",
+    "errors_short": "bł."
   },
   "stringCombiner": {
     "title": "Łączenie stringów",
     "subtitle": "Generuje macierz kombinacji wartości z podanymi zmiennymi",
     "base_text": "Tekst główny (baza)",
     "split_char": "Znak podziału (spacja, ; , enter...)",
+    "split_char_placeholder": "np. ; / , space enter \\n",
+    "split_char_hint": "enter = ↵, space = spacja, \\n = nowa linia, \\t = tabulator",
     "variable_name": "Nazwa zmiennej {n}",
     "variable_values": "Wartości (oddziel przecinkami)",
+    "variable_values_placeholder": "np. wartość1, wartość2, wartość3",
     "add_variable": "Dodaj zmienną",
     "remove_variable": "Usuń zmienną",
     "generate": "Generuj kombinacje",
     "copy_result": "Kopiuj wynik",
     "copied": "Skopiowano!",
     "result_count": "Wyników: {count}",
-    "clear": "Wyczyść"
+    "clear": "Wyczyść",
+    "result_label": "Wynik ({count})"
   },
   "terminal": {
     "title": "Terminal",
@@ -116,7 +141,9 @@
     "admin_note": "Wymaga uprawnień systemowych",
     "new_tab": "Nowa karta terminala",
     "close_tab": "Zamknij kartę",
-    "restart": "Uruchom ponownie"
+    "restart": "Uruchom ponownie",
+    "clear": "Wyczyść",
+    "unavailable": "Terminal niedostępny (node-pty / Windows ConPTY). Spróbuj ponownie po restarcie aplikacji."
   },
   "settings": {
     "title": "Ustawienia",
@@ -125,6 +152,7 @@
     "section_network": "Sieć i prywatność",
     "section_tools": "Narzędzia",
     "section_advanced": "Zaawansowane",
+    "section_account": "Konto",
     "downloads_path": "Ścieżka pobierania",
     "removebg_api_key": "Klucz API remove.bg",
     "removebg_plan": "Plan remove.bg",
@@ -137,6 +165,7 @@
     "theme_dark": "Ciemny",
     "use_system_theme": "Użyj motywu systemowego",
     "debug_mode": "Tryb DEBUG (logi w konsoli)",
+    "debugModeDesc": "Włącz tryb debug (logi, testy przy starcie)",
     "ad_blocker_global": "Globalny bloker reklam",
     "notifications_global": "Powiadomienia globalne",
     "save": "Zapisz ustawienia",
@@ -145,7 +174,42 @@
     "version_label": "Wersja aplikacji",
     "backup_label": "Kopia zapasowa",
     "backup_now": "Zrób kopię teraz",
-    "backup_done": "Kopia zapisana"
+    "backup_done": "Kopia zapisana",
+    "general": "Ogólne",
+    "webview": "WebView",
+    "tabs": "Zakładki",
+    "notifications": "Powiadomienia",
+    "dataAndLogs": "Dane i logi",
+    "adBlocker": "Bloker reklam",
+    "adBlockerDesc": "Blokuj reklamy we wszystkich profilach (można zmienić per profil)",
+    "defaultUserAgent": "Domyślny User Agent",
+    "userAgentPlaceholder": "np. Mozilla/5.0...",
+    "userAgentDesc": "Pozostaw puste, aby użyć domyślnego",
+    "sleepTabsTimeout": "Czas uśpienia zakładki",
+    "sleepTabsDesc": "Czas bezczynności przed uśpieniem zakładki",
+    "systemNotifications": "Powiadomienia systemowe",
+    "systemNotificationsDesc": "Wyświetlaj powiadomienia z systemu",
+    "exportSettings": "Eksportuj ustawienia",
+    "importSettings": "Importuj ustawienia",
+    "openLogsFolder": "Otwórz folder logów",
+    "resetAll": "Resetuj wszystkie ustawienia",
+    "resetConfirmTitle": "Reset ustawień",
+    "resetConfirmMessage": "Czy na pewno chcesz zresetować wszystkie ustawienia? Tej operacji nie można cofnąć.",
+    "exportSuccess": "Ustawienia wyeksportowane pomyślnie",
+    "exportFailed": "Nie udało się wyeksportować ustawień",
+    "importSuccess": "Ustawienia zaimportowane pomyślnie",
+    "importFailed": "Nie udało się zaimportować ustawień",
+    "logsExported": "Logi wyeksportowane pomyślnie",
+    "allowLogs": "Zapisuj logi testów (tylko przy failu)",
+    "allowLogsDesc": "Logi zapisywane są do pliku test-fails.log (max 500 linii).",
+    "viewLogs": "Pokaż logi",
+    "clearLogs": "Wyczyść logi",
+    "failLogs": "Logi nieudanych testów",
+    "noLogs": "Brak logów (wszystkie testy przeszły pomyślnie lub logowanie wyłączone).",
+    "account_placeholder": "Synchronizacja profili i ustawień między urządzeniami — w przygotowaniu (v0.0.4+).",
+    "sign_in": "Zaloguj się",
+    "sync_now": "Synchronizuj",
+    "coming_soon": "Wkrótce"
   },
   "help": {
     "title": "Pomoc",
@@ -193,7 +257,21 @@
     "invalid_url": "Nieprawidłowy adres URL workspace",
     "invalid_url_hint": "Użyj pełnego adresu z domeną, np. https://google.pl. Edytuj workspace z menu PPM.",
     "paused_for_modal": "Podgląd wstrzymany (otwarty modal)",
-    "save_selection": "Zapisz zaznaczenie do pliku"
+    "save_selection": "Zapisz zaznaczenie do pliku",
+    "singleAppMode": "Tryb pojedynczej aplikacji",
+    "singleAppModeOpened": "Okno otwarte w trybie Single App",
+    "singleAppModeFailed": "Nie udało się otworzyć okna",
+    "screenshot": "Zrzut ekranu",
+    "screenshotCopied": "Zrzut ekranu skopiowany do schowka",
+    "screenshotFailed": "Nie udało się zrobić zrzutu ekranu",
+    "resourceMonitor": "Monitor zasobów",
+    "ram": "RAM",
+    "cpu": "CPU",
+    "tabSleeping": "Zakładka uśpiona (oszczędność zasobów)",
+    "sleeping": "Zakładka uśpiona",
+    "wakeUp": "Obudź",
+    "copyUrl": "Kopiuj URL",
+    "openExternal": "Otwórz w przeglądarce"
   },
   "tasks": {
     "title": "Zadania",
@@ -270,5 +348,127 @@
     "saved": "Zapisano",
     "error": "Błąd: {message}",
     "coming_soon": "Wkrótce dostępne! ❤️"
+  },
+  "test": {
+    "orchestrationFailed": "Orkiestracja testów nie powiodła się",
+    "pass": "Passed",
+    "fail": "Failed",
+    "running": "Running tests...",
+    "results": "Results"
+  },
+  "pushbullet": {
+    "pushbulletApiKey": "Klucz API Pushbullet",
+    "pushbulletDesc": "Wprowadź klucz API Pushbullet, aby otrzymywać powiadomienia na telefon",
+    "pushbulletHowTo": "Jak uzyskać klucz Pushbullet?",
+    "pushbulletStep1": "1. Zaloguj się na pushbullet.com",
+    "pushbulletStep2": "2. Przejdź do Settings → Account → Access Tokens",
+    "pushbulletStep3": "3. Kliknij 'Create Access Token' i skopiuj klucz",
+    "step1": "1. Zaloguj się na pushbullet.com",
+    "step2": "2. Przejdź do Settings → Account → Access Tokens",
+    "step3": "3. Kliknij 'Create Access Token' – nadaj nazwę (np. MultiWeb Manager)",
+    "step4": "4. Skopiuj klucz (zaczyna się od 'o.') i wklej poniżej",
+    "advancedTitle": "Zaawansowane: zmienne w powiadomieniach",
+    "advancedDesc": "W powiadomieniu możesz użyć zmiennych: {title} - tytuł, {message} - treść, {timestamp} - czas",
+    "pushbulletSaved": "Klucz Pushbullet zapisany"
+  },
+  "logs": {
+    "askForPermission": "MultiWeb Manager może zapisywać logi błędów testów (tylko gdy test się nie powiedzie). Czy wyrażasz zgodę?",
+    "unknownError": "Nieznany błąd zapisu logu: {{error}}"
+  },
+  "cookieGrabber": {
+    "title": "Cookie Grabber",
+    "grab": "Pobierz ciasteczka",
+    "copyAll": "Kopiuj wszystkie",
+    "exportJson": "Eksportuj JSON",
+    "name": "Nazwa",
+    "value": "Wartość",
+    "domain": "Domena",
+    "path": "Ścieżka",
+    "expires": "Wygasa",
+    "actions": "Akcje",
+    "noActiveWebView": "Brak aktywnego WebView – otwórz najpierw jakiś profil",
+    "noCookies": "Brak ciasteczek do wyświetlenia"
+  },
+  "imageTools": {
+    "title": "Narzędzia obrazów",
+    "dropOrClick": "Przeciągnij i upuść obraz lub kliknij",
+    "invalidFile": "Nieprawidłowy plik – zaakceptowano tylko obrazy",
+    "noFile": "Nie wybrano pliku",
+    "operation": "Operacja",
+    "resize": "Zmień rozmiar",
+    "convert": "Konwertuj format",
+    "compress": "Kompresuj",
+    "dimensions": "Wymiary",
+    "format": "Format",
+    "quality": "Jakość",
+    "process": "Przetwórz",
+    "processing": "Przetwarzanie...",
+    "processed": "Obraz przetworzony pomyślnie",
+    "download": "Pobierz wynik"
+  },
+  "svgToPng": {
+    "title": "SVG → PNG Converter",
+    "dropOrClick": "Przeciągnij i upuść plik SVG lub kliknij",
+    "invalidFile": "Nieprawidłowy plik – zaakceptowano tylko .svg",
+    "noFile": "Nie wybrano pliku SVG",
+    "width": "Szerokość (px)",
+    "height": "Wysokość (px)",
+    "convert": "Konwertuj",
+    "converting": "Konwersja...",
+    "converted": "Plik SVG został pomyślnie przekonwertowany na PNG"
+  },
+  "filePreviewer": {
+    "title": "Podgląd plików",
+    "dropOrClick": "Przeciągnij i upuść plik lub kliknij",
+    "cannotReadFile": "Nie można odczytać pliku",
+    "noFileLoaded": "Brak załadowanego pliku",
+    "preview": "Podgląd",
+    "raw": "RAW"
+  },
+  "miniPostman": {
+    "title": "Mini Postman",
+    "enterUrl": "Wprowadź URL",
+    "send": "Wyślij",
+    "headers": "Nagłówki (JSON)",
+    "body": "Body",
+    "bodyPlaceholder": "Treść żądania (JSON, tekst, itp.)",
+    "invalidHeaders": "Nieprawidłowe nagłówki JSON",
+    "response": "Odpowiedź",
+    "status": "Status"
+  },
+  "appLibrary": {
+    "title": "Biblioteka aplikacji",
+    "searchPlaceholder": "Szukaj aplikacji...",
+    "searchResults": "Wyniki wyszukiwania",
+    "add": "Dodaj",
+    "noResults": "Nie znaleziono aplikacji",
+    "loading": "Ładowanie biblioteki..."
+  },
+  "tools": {
+    "removebg": "Remove.bg",
+    "stringCombiner": "Łączenie stringów",
+    "jsonFormatter": "JSON Formatter",
+    "regexTester": "Regex Tester",
+    "markdownPreviewer": "Markdown Previewer",
+    "clipboardHistory": "Clipboard History",
+    "imageTools": "Image Tools",
+    "svgToPng": "SVG → PNG",
+    "miniPostman": "Mini Postman",
+    "filePreviewer": "File Previewer",
+    "cookieGrabber": "Cookie Grabber",
+    "search": "Szukaj...",
+    "clearHistory": "Wyczyść historię",
+    "pinned": "Przypięte",
+    "history": "Historia",
+    "noHistory": "Brak historii schowka",
+    "format": "Formatuj",
+    "minify": "Minifikuj",
+    "validate": "Waliduj",
+    "copy": "Kopiuj",
+    "test": "Testuj",
+    "matches": "Dopasowania",
+    "noMatches": "Brak dopasowań",
+    "editor": "Edytor",
+    "preview": "Podgląd"
   }
 }

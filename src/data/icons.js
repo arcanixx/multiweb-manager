@@ -3,9 +3,9 @@
 // PATH: src/data/icons.js
 // VERSION: 0.0.3
 // PURPOSE: Centralny rejestr wszystkich ikon używanych w aplikacji.
-//          ZASADA: Żadna ikona nie może być wpisana na twardo w komponencie.
-//          Zawsze używaj ICONS.KLUCZ z tego pliku.
-// DEPENDS ON: brak
+// FUNCTIONS: -
+// DEPENDS ON: -
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 export const ICONS = {
@@ -42,7 +42,6 @@ export const ICONS = {
   LOCK: "🔒",
   UNLOCK: "🔓",
   DEFAULT: "🌐",
-
   // ─────────────── Nawigacja / UI ───────────────
   CHEVRON_DOWN: "▼",
   CHEVRON_UP: "▲",
@@ -66,7 +65,7 @@ export const ICONS = {
   TAB_NEW: "＋",
   SCREENSHOT: "📸",
   // Nowe — WebView extended features
-  SINGLE_APP: "🪟",
+  SINGLE_APP: "🖥",
   RESOURCE_MONITOR: "📊",
   SLEEP: "💤",
   WAKE: "⚡",
@@ -131,7 +130,20 @@ export const ICONS = {
   CONFIRM: "❓",
   ALERT: "🚨",
   SUCCESS: "✅",
-  ERROR: "❌"
+  ERROR: "❌",
+  
+  // Różne ikony z nowych modułów
+  JSON: '{}',
+  HOTKEY: '⌨️',
+  COOKIE: '🍪',
+  API: '🔌',
+  RAW: '📄',
+  UPLOAD: '📤',
+  PROCESSING: '⏳',
+  CONVERTING: '🔄',
+  RESPONSE: '📨',
+  LOGS: '📊'
+
 };
 
 // ---------------------------------------------------------------------------

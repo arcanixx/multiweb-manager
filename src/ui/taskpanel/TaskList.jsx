@@ -3,13 +3,14 @@
 // PATH: src/ui/taskpanel/TaskList.jsx
 // VERSION: 0.0.3
 // PURPOSE: Lista zadań – grupowanie po statusie, sortowanie po priorytecie,
-//          filtrowanie, i18n, integracja z TaskDetails i TaskEditor
+// FUNCTIONS: TaskList
+// DEPENDS ON: react, constants.js, translations.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useState } from "react";
 import { TASK_PRIORITIES, TASK_STATUS } from "../../constants.js";
-import { t } from "../../locales/locale.js";
-
+import { TranslationContext } from '../utils/translations.js';
 // ---------------------------------------------------------------------------
 // TaskList
 // Props:
@@ -17,16 +18,14 @@ import { t } from "../../locales/locale.js";
 //   onOpenDetails  – callback otwierający TaskDetails dla zadania
 //   onOpenEditor   – callback otwierający TaskEditor (null = nowe zadanie)
 // ---------------------------------------------------------------------------
-
 export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
+  const { t } = React.useContext(TranslationContext);
   const [filter, setFilter] = useState("all");
-
   /** Sortuje zadania według priorytetu A → E. */
   function sortByPriority(list) {
     const order = ["A", "B", "C", "D", "E"];
     return [...list].sort((a, b) => order.indexOf(a.priority) - order.indexOf(b.priority));
   }
-
   // Grupowanie zadań po statusie z uwzględnieniem aktywnego filtra priorytetu
   const grouped = {
     [TASK_STATUS.TODO]:        [],
@@ -34,18 +33,15 @@ export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
     [TASK_STATUS.BLOCKED]:     [],
     [TASK_STATUS.DONE]:        []
   };
-
   tasks.forEach(task => {
     if (filter !== "all" && task.priority !== filter) return;
     if (!grouped[task.status]) return;
     grouped[task.status].push(task);
   });
-
   // Sortowanie każdej grupy po priorytecie
   Object.keys(grouped).forEach(status => {
     grouped[status] = sortByPriority(grouped[status]);
   });
-
   // ---------------------------------------------------------------------------
   // Helper – renderuje pojedynczą sekcję statusu
   // ---------------------------------------------------------------------------

@@ -3,11 +3,13 @@
 // PATH: src/constants.js
 // VERSION: 0.0.3
 // PURPOSE: Application-wide constants and enums (tasks, app categories, etc.)
+// FUNCTIONS: -
+// DEPENDS ON: -
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 // Priorytety zadań
 export const TASK_PRIORITIES = ["A", "B", "C", "D", "E"];
-
 // Statusy zadań
 export const TASK_STATUS = {
   TODO: "todo",
@@ -15,7 +17,6 @@ export const TASK_STATUS = {
   DONE: "done",
   BLOCKED: "blocked"
 };
-
 // Kategorie aplikacji — mapa ID → label (angielski opis techniczny)
 export const APP_CATEGORIES_MAP = {
   AI: "Artificial Intelligence",
@@ -43,16 +44,10 @@ export const APP_CATEGORIES_MAP = {
   ZOHO: "Zoho Suite",
   OTHER: "Other"
 };
-
 // Kategorie aplikacji — lista ID
 export const APP_CATEGORIES_LIST = Object.keys(APP_CATEGORIES_MAP);
-
 // Kategorie aplikacji — tablica z id + kluczem do i18n
 export const APP_CATEGORIES = APP_CATEGORIES_LIST.map(id => ({
   id,
   labelKey: `apps.category.${id}`
 }));
-
-// =============================================================================
-// END OF FILE
-// =============================================================================

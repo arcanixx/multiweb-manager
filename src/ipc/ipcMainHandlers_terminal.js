@@ -1,46 +1,36 @@
 // =============================================================================
 // FILE: ipcMainHandlers_terminal.js
 // PATH: src/ipc/ipcMainHandlers_terminal.js
-// VERSION: v1.0
-// PURPOSE: IPC dla Terminala (node-pty + xterm.js)
-//          - tworzenie sesji
-//          - wysyłanie danych
-//          - odbieranie danych
-//          - zamykanie sesji
-//          - restart
-//          - cleanup
+// VERSION: 0.0.3
+// PURPOSE: IPC dla Terminala (node-pty + xterm.js) tworzenie sesji wysyłanie danych odbieranie danych zamykanie sesji restart cleanup
+// FUNCTIONS: ipc:terminal:create, ipc:terminal:write, ipc:terminal:resize, ipc:terminal:getBuffer, ipc:terminal:kill, ipc:terminal:restart
+// DEPENDS ON: electron, logger.js, node-pty, os
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain } from "electron";
 import { logError } from "../utils/logger.js";
 import pty from "node-pty";
 import os from "os";
-
 // =============================================================================
 // GLOBAL STORAGE
 // =============================================================================
-
 const terminals = {};
 const terminalBuffers = {};
-
 // =============================================================================
 // HELPER: create shell command per OS
 // =============================================================================
-
 function getDefaultShell() {
   if (os.platform() === "win32") return "powershell.exe";
   if (os.platform() === "darwin") return "zsh";
   return "bash";
 }
-
 // =============================================================================
 // CREATE TERMINAL SESSION
 // =============================================================================
-
 ipcMain.handle("terminal:create", async (_, { cwd }) => {
   try {
     const shell = getDefaultShell();
-
     const ptyProcess = pty.spawn(shell, [], {
       name: "xterm-color",
       cols: 120,
@@ -48,12 +38,9 @@ ipcMain.handle("terminal:create", async (_, { cwd }) => {
       cwd: cwd || process.cwd(),
       env: process.env
     });
-
     const terminalId = String(ptyProcess.pid);
-
     terminals[terminalId] = ptyProcess;
     terminalBuffers[terminalId] = [];
-
     ptyProcess.onData((data) => {
       terminalBuffers[terminalId].push(data);
       if (terminalBuffers[terminalId].length > 2000) {

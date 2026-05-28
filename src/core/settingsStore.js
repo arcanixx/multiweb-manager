@@ -3,8 +3,9 @@
 // PATH: src/core/settingsStore.js
 // VERSION: 0.0.3
 // PURPOSE: Ustawienia użytkownika — merge partial updates, reset do domyślnych.
-// FUNCTIONS: loadSettings, saveSettings, mergeSettings, resetSettings, updateSettings
-// DEPENDS ON: persistence.js, config.js (DEFAULT_SETTINGS), defaultSettings.json
+// FUNCTIONS: loadSettings, saveSettings, mergeSettings, updateSettings, resetSettings
+// DEPENDS ON: fs, path, url, config.js, persistence.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import fs from "fs";
@@ -12,10 +13,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { DEFAULT_SETTINGS } from "../config.js";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SETTINGS_FILE = () => getUserDataPath("settings.json");
-
 function baseDefaults() {
   let extra = {};
   try {
@@ -33,18 +32,15 @@ function baseDefaults() {
     version: "0.0.3"
   };
 }
-
 export function loadSettings() {
   const stored = readJsonFile(SETTINGS_FILE(), null);
   if (!stored || typeof stored !== "object") return baseDefaults();
   return { ...baseDefaults(), ...stored };
 }
-
 export function saveSettings(settings) {
   writeJsonFile(SETTINGS_FILE(), settings);
   return settings;
 }
-
 export function mergeSettings(patch) {
   const current = loadSettings();
   const merged = { ...current, ...patch };

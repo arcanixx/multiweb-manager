@@ -1,34 +1,27 @@
 // =============================================================================
 // FILE: RemoveBgTool.jsx
-// PATH: src/components/RemoveBgTool.jsx
+// PATH: src/ui/tools/RemoveBgTool.jsx
 // VERSION: 0.0.3
 // PURPOSE: Narzędzie do masowego usuwania tła ze zdjęć przez API remove.bg.
-//          - Plan free: max 30 plików, obniżona rozdzielczość.
-//          - Plan pro: max 120 plików, pełna rozdzielczość.
-//          - Drag & drop lub klik do wybrania plików.
-//          - Progress per plik, błędy per plik, podsumowanie.
-// DEPENDS ON: axios, icons.js, useTranslation.js, logger.js, config.js (endpoint)
-// FUNCTIONS: handleDrop, handleFileSelect, processImages, removeFile, clearList
+// FUNCTIONS: RemoveBgTool
+// DEPENDS ON: react, axios, icons, translations.js, loggerRenderer, config
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { ICONS } from "../../utils/icons";
-import { useTranslation } from "../../hooks/useTranslation";
+import { TranslationContext } from '../utils/translations.js';
 import { log, error as logError } from "../../utils/loggerRenderer";
 import { API_ENDPOINTS } from "../../config";
-
 export default function RemoveBgTool({ apiKey, plan = "free" }) {
-  const { t } = useTranslation();
-
+  const { t } = React.useContext(TranslationContext);
   const MAX_FILES = plan === "pro" ? 120 : 30;
-
   const [files, setFiles] = useState([]); // { file, status, error }
   const [processing, setProcessing] = useState(false);
   const [done, setDone] = useState(0);
   const [errors, setErrors] = useState(0);
   const [dragging, setDragging] = useState(false);
-
   const addFiles = useCallback(
     newFiles => {
       const all = [
@@ -37,13 +30,11 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
           .filter(f => f.type.startsWith("image/"))
           .map(f => ({ file: f, status: "pending", error: null }))
       ].slice(0, MAX_FILES);
-
       setFiles(all);
       log(`RemoveBg: ${all.length} files queued`);
     },
     [files]
   );
-
   const handleDrop = useCallback(
     e => {
       e.preventDefault();
@@ -53,7 +44,6 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
     },
     [addFiles]
   );
-
   const handleFileSelect = e => {
     addFiles(Array.from(e.target.files));
     e.target.value = "";

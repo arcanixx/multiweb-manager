@@ -1,4 +1,5 @@
 {
+  "_comment": "FILE: app-library.json | PATH: src/data/app-library.json | VERSION: 0.0.3 | PURPOSE: Plik danych / tłumaczeń | FUNCTIONS: - | DEPENDS ON: - | UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.",
   "categories": [
     {
       "id": "AI",
@@ -42,7 +43,6 @@
         }
       ]
     },
-
     {
       "id": "DEV",
       "label": "Development",
@@ -85,7 +85,6 @@
         }
       ]
     },
-
     {
       "id": "PRODUCTIVITY",
       "label": "Productivity",
@@ -128,7 +127,6 @@
         }
       ]
     },
-
     {
       "id": "SOCIAL",
       "label": "Social",
@@ -162,7 +160,6 @@
         }
       ]
     },
-
     {
       "id": "MEDIA",
       "label": "Media",

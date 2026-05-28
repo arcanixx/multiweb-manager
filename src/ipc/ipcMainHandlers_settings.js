@@ -2,15 +2,10 @@
 // FILE: ipcMainHandlers_settings.js
 // PATH: src/ipc/ipcMainHandlers_settings.js
 // VERSION: 0.0.3
-// PURPOSE: IPC handlers dla Settings.
-//          - settings:get        – pobiera aktualne ustawienia
-//          - settings:update     – aktualizuje (merge patch, nie nadpisuje)
-//          - settings:reset      – reset do DEFAULT_SETTINGS
-//          - settings:export     – eksport do pliku JSON
-//          - settings:import     – import z pliku JSON (merge)
-//          - settings:getDefaults – zwraca DEFAULT_SETTINGS z config.js
-// DEPENDS ON: electron (ipcMain), fs, path, logger.js,
-//             core/settingsStore.js, config.js (DEFAULT_SETTINGS)
+// PURPOSE: IPC handlers dla Settings. settings:get        – pobiera aktualne ustawienia settings:update     – aktualizuje (merge patch, nie nadpisuje) settings:reset      – reset do DEFAULT_SETTINGS settings:export     – eksport do pliku JSON settings:import     – import z pliku JSON (merge) settings:getDefaults – zwraca DEFAULT_SETTINGS z config.js
+// FUNCTIONS: ipc:settings:get, ipc:settings:update, ipc:settings:reset, ipc:settings:export, ipc:settings:import, ipc:settings:getDefaults
+// DEPENDS ON: electron, fs, logger.js, settingsStore.js, config.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain } from "electron";
@@ -23,7 +18,6 @@ import {
   mergeSettings
 } from "../core/settingsStore.js";
 import { DEFAULT_SETTINGS } from "../../config.js";
-
 // ----------------------------------------------------------------
 // settings:get – zwraca aktualne ustawienia z settingsStore
 // ----------------------------------------------------------------
@@ -36,7 +30,6 @@ ipcMain.handle("settings:get", async () => {
     return { ok: false, error: err.message };
   }
 });
-
 // ----------------------------------------------------------------
 // settings:update – merge patch z istniejącymi settings (nie nadpisuje!)
 //   patch: Partial<Settings> – tylko zmieniane klucze

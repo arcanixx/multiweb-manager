@@ -1,59 +1,223 @@
 ﻿# Instrukcje dla Agenta AI
 
-# 🤖 MULTIWEB MANAGER - SYSTEM ARCHITEKTURY I JAKOŚCI AI
+# 🤖 MULTIWEB MANAGER — System Architektury i Jakości AI
+
+---
 
 ## 📌 Rygorystyczne Zasady Edycji Plików (ZAKAZ NADPISYWANIA)
+
 1. **ZAKAZ generowania kodu od zera dla istniejących plików.** Jeśli modyfikujesz duży plik (np. `config.js`, `main.js`), nanieś tylko niezbędne poprawki. ZAKAZ usuwania istniejących komentarzy, sekcji lub dokumentacji wewnątrz kodu.
-2. **Zachowanie Kontekstu Konfiguracyjnego:** Plik `config.js` zawiera stałe wartości aplikacji (np. `CLIPBOARD_HISTORY_MAX`, `RESOURCE_WARN_AT`). Przy edycji konfiguracji, ZAWSZE stosuj metodę merge, nigdy nie nadpisuj całego obiektu.
+
+2. **Zachowanie Kontekstu Konfiguracyjnego:** Plik `config.js` zawiera stałe wartości aplikacji (np. `CLIPBOARD_HISTORY_MAX`, `RESOURCE_WARN_AT`). Przy edycji konfiguracji ZAWSZE stosuj metodę merge — nigdy nie nadpisuj całego obiektu.
+
 3. **Aktywny Preload Bridge:** Jedynym aktywnym plikiem pomostu jest `preload.cjs`. Plik `preload.js` jest wyłączony i znajduje się w `.gitignore`. Nie sugeruj zmian w `preload.js`.
 
+---
 
 ## ⚙️ Weryfikacja Wersji i Nagłówki Plików
-1. **Dynamiczna Wersja:** ZAWSZE sprawdź aktualną wersję aplikacji w `package.json` przed modyfikacją lub utworzeniem pliku. Jeśli jej tam nie ma, SPYTAJ użytkownika o wersję w formacie #.#.#. ZAKAZ wpisywania wersji na sztywno z pamięci cache.
-2. **Nagłówek Pliku:** Każdy plik *.js, *.cjs, *.jsx musi zaczynać się od poniższego bloku (uzupełnij dynamicznie):
-   ```js
-   // FILE: [nazwa_pliku]
-   // PATH: [sciezka_od_root]
-   // VERSION: [aktualna_wersja_z_package_json]
-   // PURPOSE: [krotki_opis_odpowiedzialnosci]
-   // DEPENDS ON: [zaleznosci_pliku]
-   ```
+
+### Dynamiczna Wersja
+
+ZAWSZE sprawdź aktualną wersję aplikacji w `package.json` przed modyfikacją lub utworzeniem pliku. Jeśli jej tam nie ma, SPYTAJ użytkownika o wersję w formacie `#.#.#`. ZAKAZ wpisywania wersji na sztywno z pamięci cache.
+
+### Nagłówek Pliku
+
+Każdy plik `*.js`, `*.cjs`, `*.jsx` musi zaczynać się od poniższego bloku (uzupełnij dynamicznie):
+
+```js
+// =============================================================================
+// FILE:       [nazwa_pliku]
+// PATH:       [sciezka_od_root]
+// VERSION:    [aktualna_wersja_z_package_json]
+// PURPOSE:    [krotki_opis_odpowiedzialnosci]
+// FUNCTIONS:  [lista_funkcji_eksportowanych]
+// DEPENDS ON: [lista_zaleznosci]
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+// =============================================================================
+```
+
+### Automatyczna Walidacja Nagłówków (`build_structure.py`)
+
+Przed każdym pull requestem uruchamiany jest skrypt `build_structure.py --fix`, który:
+
+- Aktualizuje `VERSION` na wartość z `package.json`
+- Aktualizuje `PATH` i `FILE` na podstawie rzeczywistej lokalizacji
+- Wyciąga `FUNCTIONS` z eksportów w kodzie
+- Wyciąga `DEPENDS ON` z importów (normalizuje nazwy — bez ścieżek)
+- Ujednolica `UWAGA` do standardowego tekstu
+
+### Zasady dla AI
+
+| Pole | Akcja |
+|---|---|
+| `PURPOSE` | Edytuj ręcznie przy każdej zmianie odpowiedzialności pliku |
+| `VERSION`, `FILE`, `PATH`, `FUNCTIONS`, `DEPENDS ON`, `UWAGA` | **NIE MODYFIKUJ RĘCZNIE** — zostaną nadpisane przez skrypt |
+
+- Kolejność pól w nagłówku jest **STAŁA**: `FILE` → `PATH` → `VERSION` → `PURPOSE` → `FUNCTIONS` → `DEPENDS ON` → `UWAGA`
+- Dodatkowe uwagi umieszczaj **POD** blokiem nagłówka, nie wewnątrz
+- Weryfikacja `VERSION`: ZAWSZE pobieraj aktualną wersję z `package.json`. Jeśli plik nie istnieje lub nie zawiera wersji — SPYTAJ użytkownika. ZAKAZ wpisywania wersji na sztywno z pamięci cache.
+
+---
 
 ## 🛠️ Stack Technologiczny i Bezpieczeństwo IPC
-- **Main Process:** Node.js v22 LTS, Electron v34.3.0, node-pty (terminal), chokidar (watcher).
-- **Renderer Process:** React 18, React Router v6, Tailwind CSS v3, xterm.js (terminal widok).
-- **Bezpieczeństwo:** Całkowity zakaz importu 'electron', 'fs', 'path', 'child_process' w folderze `src/*`. Komunikacja z Node.js WYŁĄCZNIE przez `window.electronAPI` zdefiniowane w `preload.cjs`.
 
-## 📊 Standardy Kodu, Debugowanie i Obsługa Błędów
-1. **System Logowania (BEZWZGLĘDNY ZAKAZ DUBLOWANIA):** Aplikacja posiada scentralizowany system logów w procesie renderera (React). Zakaz pisania własnych loggerów od zera.
-   - **W komponentach React (`*.jsx`):** ZAWSZE importuj metody logowania WYŁĄCZNIE ze skróconego wrappera: `src/utils/loggerRenderer.js`.
-   - **W czystych skryptach pomocniczych (`*.js`):** Używaj bezpośrednio `src/utils/logger.js`.
-   - **Konwencja Nazewnictwa:** Zamiast chaotycznych aliasów, wymuszaj stosowanie standardowych, ujednoliconych metod deweloperskich: `logDebug(...)`, `logInfo(...)`, `logWarn(...)` oraz `logError(...)`. Przed użyciem jakiejkolwiek metody, sprawdź jej obecność w pliku `loggerRenderer.js`.
-2. **Zakaz Natywnych Okien:** Absolutny zakaz używania `alert()`, `confirm()` oraz `prompt()`. Zamiast nich wywołuj dedykowane modale React z `src/ui/modals/`, system toastów lub tooltipy.
-3. **Zasada No Hardcoded & Lokalizacja:** Wszystkie teksty interfejsu muszą korzystać z hooka `useTranslation`. Pamiętaj, że aplikacja posiada osobne pliki tłumaczeń dla sekcji pomocy: `src/locales/help_pl.json` oraz `src/locales/help_en.json`. Po każdej zmianie funkcji powiązanej z pomocą, zaktualizuj te pliki, przy aktualizacji innych funkcji w aplikacji, pliki src/locales/help_pl i src/locales/help_en. (oraz w obu przypadkach inne języki, jeśli zostaną dodane do locales)
-4. **Zasada Importu Ikon:** Wszystkie ikony importuj WYŁĄCZNIE z pliku fasady `src/utils/icons.js` (reexport z `src/data/icons.js`). Zakaz bezpośredniego sięgania do `src/data/icons.js`.
+| Warstwa | Technologie |
+|---|---|
+| **Main Process** | Node.js v22 LTS, Electron v34.3.0, node-pty (terminal), chokidar (watcher) |
+| **Renderer Process** | React 18, React Router v6, Tailwind CSS v3, xterm.js (terminal widok) |
+
+**Bezpieczeństwo:** Całkowity zakaz importu `electron`, `fs`, `path`, `child_process` w folderze `src/*`. Komunikacja z Node.js **WYŁĄCZNIE** przez `window.electronAPI` zdefiniowane w `preload.cjs`.
+
+---
+
+## 📊 System Logowania (BEZWZGLĘDNY ZAKAZ DUBLOWANIA)
+
+Aplikacja posiada scentralizowany system logów w procesie renderera (React). Zakaz pisania własnych loggerów od zera.
+
+| Kontekst | Import |
+|---|---|
+| Komponenty React (`*.jsx`) | ZAWSZE importuj **wyłącznie** z `src/utils/loggerRenderer.js` |
+| Czyste skrypty pomocnicze (`*.js`) | Używaj bezpośrednio `src/utils/logger.js` |
+
+**Konwencja Nazewnictwa:** Stosuj standardowe, ujednolicone metody: `logDebug()`, `logInfo()`, `logWarn()`, `logError()`. Przed użyciem jakiejkolwiek metody sprawdź jej obecność w `loggerRenderer.js` lub `logger.js`.
+
+### LogWriter — automatyczny zapis logów testów
+
+Testy używają `runTests(moduleName, tests)` z `testUtils.js`, która automatycznie:
+
+- Loguje rozpoczęcie testów
+- Przy failu wywołuje `appendTestFailLog` (zapis do `userData/logs/test-fails.log`)
+- Podsumowuje wyniki
+
+Nie wymaga ręcznej ingerencji w testy.
+
+**Warunki zapisu logów:**
+
+- `settings.debugMode === true`
+- użytkownik wyraził zgodę (lub przełącznik w Settings włączony)
+
+Plik logów ograniczony do **500 linii** (FIFO).
+
+---
 
 ## 🧪 Standardy Testowania (Test-Driven AI)
-1. Dla każdego nowego modułu logicznego MUSISZ napisać odpowiadające mu testy jednostkowe/integracyjne w folderze `tests/`.
-2. Przy modyfikacji istniejącego kodu masz obowiązek zaktualizować istniejące testy, aby pokrywały nowe przypadki brzegowe.
-3. **Architektura Testów:** Pamiętaj o rozróżnieniu: `src/utils/testRunner_utils.js` (zarządza środowiskiem uruchomieniowym testów - GDZIE), a `tests/TestRunner.js` (zawiera konkretne scenariusze testowe i asercje - CO zrobić). Jeśli pliki mają stare, mylące nazwy, zasugeruj użytkownikowi refaktor nazw na powyższe.
+
+- Dla każdego nowego modułu logicznego **MUSISZ** napisać odpowiadające mu testy jednostkowe/integracyjne w folderze `tests/`.
+- Przy modyfikacji istniejącego kodu masz **obowiązek** zaktualizować istniejące testy, aby pokrywały nowe przypadki brzegowe.
+
+### Dynamiczne ładowanie testów (`testsLoader.js`)
+
+- Plik `src/loaders/testsLoader.js` automatycznie wykrywa i uruchamia wszystkie `TestRunner_*.js` z folderu `tests/`
+- Nie trzeba ręcznie importować testów w `TestRunner.js`
+- Nowy test = nowy plik `TestRunner_Nazwa.js` z eksportowaną funkcją `runNazwaTests()`
+
+### Format testu
+
+```js
+import { runTests } from './testUtils.js';
+
+const tests = [
+  { name: 'Nazwa testu', run: async () => ({ ok: true, details: '' }) }
+];
+
+export async function runNazwaTests() {
+  return runTests('NazwaModulu', tests);
+}
+```
+
+Testy nie mają hardcoded ikon — używają `ICONS.TEST_PASS` i `ICONS.TEST_FAIL` z `icons.js`.
+
+---
+
+## 🔌 Dynamiczne ładowanie handlerów IPC (`ipcLoader.js`)
+
+- Plik `src/loaders/ipcLoader.js` automatycznie ładuje wszystkie `ipcMainHandlers_*.js` z folderu `src/ipc/`
+- Nie trzeba ręcznie importować handlerów w `main.js`
+- Nowy handler = nowy plik `ipcMainHandlers_nazwa.js`
+- Handlery rejestrują się przez side-effect przy imporcie
+
+---
 
 ## 📝 Cykl Życia Dokumentacji i UI/UX Mockups
-1. Jeśli wprowadzana funkcjonalność zmienia wygląd lub zachowanie UI/UX, ZAKAZANE jest natychmiastowe nadpisywanie dużego pliku makiet `Definition_Mockups_UI_UX.md`.
-2. Zamiast tego, dopisz specyfikację zmian na koniec pliku tymczasowego: `pending_updates_for_Definition_Mockups_UI_UX.md`. Plik ten posłuży do zbiorczego update'u makiet graficznych w przyszłości (np. przed dużym kamieniem milowym).
-3. Po zakończeniu zadania zaktualizuj pliki: `doc/structure.txt` (drzewo plików i zależności) oraz `doc/Requirements.md` (zmień statusy zadań).
-4. Skrócone informacje na temat formatu wymagań w pliku doc/requirements.md: 
-  **Struktura pliku** - Każdy moduł powinien mieć własną sekcję adekwatną do miejsca występowania (SETTINGS, SIDEBAR, TOOLSPANEL, TASKSTOOL, WEBVIEW ITP)
-** [Nazwa Modułu] :**
-	- ID: unikalny identyfikator wymagania, nawiązujący też do modułu np. (SETTINGS_REQ-001, SETTINGS_REQ-002, ...)
-	- Opis: pełny opis wymagania
-	- Status: IN_SPRINT / BLOCKED / BACKLOG / DONE
-	- Priorytet: CRITICAL / MAJOR / MINOR
-	- Version (opcjonalnie): wersja aplikacji, w której wymaganie ma być dostępne
-	- Komentarz: dodatkowe informacje, powody blokady, zależności, cokolwiek użytecznego
+
+Jeśli wprowadzana funkcjonalność zmienia wygląd lub zachowanie UI/UX, **ZAKAZANE** jest natychmiastowe nadpisywanie dużego pliku makiet `Definition_Mockups_UI_UX.md`.
+
+Zamiast tego dopisz specyfikację zmian na koniec pliku tymczasowego: `pending_updates_for_Definition_Mockups_UI_UX.md`. Plik ten posłuży do zbiorczego update'u makiet graficznych w przyszłości (np. przed dużym kamieniem milowym).
+
+### Format wpisu
+
+```md
+## [YYYY-MM-DD] Nazwa zmiany
+- **Plik:** src/ui/komponent/Plik.jsx
+- **Opis:** co się zmieniło
+- **Nowe zachowanie:** ...
+- **Wpływ na inne komponenty:** ...
+```
+
+Powiadom o pliku tymczasowym, że zostało coś dodane.
+
+### Po zakończeniu zadania zaktualizuj pliki
+
+- `doc/Structure.md` — drzewo plików, kolejność importów i zależności
+- `doc/Requirements.md` — zmień statusy zadań
+
+---
 
 ## 📜 Zasady Generowania Kodu
-1. **Nie rób automatycznych commitów.** Zmodyfikuj pliki i pozwól użytkownikowi przejrzeć zmiany lokalnie.
-2. Pisz czysty kod w języku polskim (komentarze, nazwy zmiennych i funkcji). W czacie z użytkownikiem rozmawiaj po polsku.
-3. Zanim zmodyfikujesz plik konfiguracyjny (np. package.json), upewnij się, że wersje bibliotek są ze sobą kompatybilne.
-4. Jeśli naprawiasz błąd, najpierw opisz przyczynę, a dopiero potem proponuj kod.
+
+- Nie rób automatycznych commitów. Zmodyfikuj pliki i pozwól użytkownikowi przejrzeć zmiany lokalnie.
+- Pisz czysty kod w języku polskim (komentarze, nazwy zmiennych i funkcji). W czacie z użytkownikiem rozmawiaj po polsku.
+- Zanim zmodyfikujesz plik konfiguracyjny (np. `package.json`), upewnij się, że wersje bibliotek są ze sobą kompatybilne.
+- Jeśli naprawiasz błąd, najpierw opisz przyczynę, a dopiero potem proponuj kod.
+- Jeżeli konieczne są jakieś uaktualnienia z importami zarówno nowego kodu/modułu, jak i eksportowaniem go gdzieś — napisz krótki raport z tego, co prawdopodobnie trzeba zrobić, adekwatnie do sposobu użycia w aplikacji. Nie rób zmian samemu, chyba że jest to konkretnie napisane w instrukcji.
+
+---
+
+## 🚫 Zakazy (BEZWZGLĘDNIE)
+
+### Zakaz Natywnych Okien
+
+Absolutny zakaz używania `alert()`, `confirm()` oraz `prompt()`. Zamiast nich wywołuj dedykowane modale React z `src/ui/modals/`, system toastów lub tooltipy.
+
+### Zasada No Hardcoded & Lokalizacja
+
+Wszystkie teksty interfejsu muszą korzystać z kontekstu `locales` — `TranslationContext` z `translations.js`. Aplikacja posiada osobne pliki tłumaczeń dla sekcji pomocy:
+
+- `src/locales/help_pl.json`
+- `src/locales/help_en.json`
+
+Po każdej zmianie funkcji powiązanej z pomocą zaktualizuj te pliki.
+
+**Przykład inicjalizacji:**
+
+```js
+import { TranslationContext } from '../utils/translations.js';
+const { t } = React.useContext(TranslationContext);
+```
+
+### Zasada Importu Ikon
+
+Wszystkie ikony importuj **WYŁĄCZNIE** z pliku fasady `src/utils/icons.js` (reeksport z `src/data/icons.js`). Zakaz bezpośredniego sięgania do `src/data/icons.js`.
+
+---
+
+## 📋 Podsumowanie — czego pilnować przed wysłaniem odpowiedzi
+
+- [ ] Nagłówki plików mają poprawną kolejność pól
+- [ ] `PURPOSE` jest uzupełnione (jeśli plik był modyfikowany)
+- [ ] Brak `alert()`, `confirm()`, `prompt()` w kodzie
+- [ ] Brak hardcoded tekstów (wszystko przez `t('...')`)
+- [ ] Brak hardcoded ikon (wszystko przez `ICONS.NAZWA`)
+- [ ] Importy używają re-eksportów (`utils/icons.js`, nie `data/icons.js`)
+- [ ] Komunikacja z Node.js tylko przez `window.electronAPI`
+- [ ] Event listenery mają cleanup w `return()`
+- [ ] IPC handlery mają walidację + `try/catch` + `{ ok, data, error }`
+- [ ] Nowe funkcje mają testy w `tests/TestRunner_*.js`
+- [ ] Zmiany UI są dopisane do `pending_updates_for_Definition_Mockups_UI_UX.md` (nie do głównego pliku)
+- [ ] Nie robisz automatycznych commitów
+
+---
+
+<!-- =============================================================================
+KONIEC INSTRUKCJI
+============================================================================= -->

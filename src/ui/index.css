@@ -1,11 +1,40 @@
-/* FILE: index.css | PATH: src/ui/index.css | VERSION: 0.0.3 */
+/* =============================================================================
+ * FILE: index.css
+ * PATH: src/ui/index.css
+ * VERSION: 0.0.3
+ * PURPOSE: Główny plik stylów – importuje layout, theme, components
+ * FUNCTIONS: -
+ * DEPENDS ON: -
+ * UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+ * ============================================================================= */
+
+/* Layout aplikacji (grid, sidebar, content) */
+@import './ui/layout.css';
+/* Motyw (kolory, dark mode, zmienne) */
+@import './ui/styles/theme.css';
+/* Komponenty (modale, toasty, przyciski, formularze) */
+@import './ui/styles/components.css';
+/* Reset i podstawowe style */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-primary, #1e1e1e);
+  color: var(--text-primary, #ffffff);
+  overflow: hidden;
+}
+#root {
+  height: 100vh;
+  width: 100vw;
+}
+/* Tailwind (jeśli używane) */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import './styles/theme.css';
-@import './styles/components.css';
-@import './layout.css';
-
+/* Toasty */
 .toast-success { background: var(--success); color: #fff; border: none; }
 .toast-error { background: var(--danger); color: #fff; border: none; }
 .toast-warning { background: var(--warning); color: #1e293b; border: none; }

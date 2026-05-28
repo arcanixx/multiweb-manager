@@ -5,10 +5,10 @@
 // PURPOSE: Unified search (Ctrl+K) — indeks profili, projektów, zadań, notatek.
 // FUNCTIONS: buildSearchIndex, searchAll
 // DEPENDS ON: logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { logDebug } from "./logger.js";
-
 export function buildSearchIndex({ profiles = [], projects = [], tasks = [], notes = [] }) {
   return {
     profiles: profiles.map((p) => ({
@@ -37,11 +37,9 @@ export function buildSearchIndex({ profiles = [], projects = [], tasks = [], not
     }))
   };
 }
-
 function match(text, q) {
   return String(text || "").toLowerCase().includes(q);
 }
-
 export function searchAll(index, query) {
   const q = String(query || "").toLowerCase().trim();
   if (!q) return { profiles: [], projects: [], tasks: [], notes: [] };

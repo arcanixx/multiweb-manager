@@ -3,21 +3,19 @@
 // PATH: src/core/notesStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie notatkami użytkownika
-//          - integracja z Notepad.jsx
-//          - zapis, edycja, usuwanie
+// FUNCTIONS: getAllNotes, addNote, updateNote, deleteNote
+// DEPENDS ON: fs, path, electron, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import fs from "fs";
 import path from "path";
 import { app } from "electron";
 import { logInfo, logError } from "../utils/logger.js";
-
 const NOTES_FILE = path.join(app.getPath("userData"), "notes.json");
-
 // ---------------------------------------------------------------------------
 // Wewnętrzne helpers – odczyt / zapis pliku JSON
 // ---------------------------------------------------------------------------
-
 function loadStore() {
   try {
     if (!fs.existsSync(NOTES_FILE)) {
@@ -29,7 +27,6 @@ function loadStore() {
     return { version: "0.0.3", data: [] };
   }
 }
-
 function saveStore(store) {
   try {
     fs.writeFileSync(NOTES_FILE, JSON.stringify(store, null, 2), "utf8");
@@ -39,16 +36,13 @@ function saveStore(store) {
     return false;
   }
 }
-
 // ---------------------------------------------------------------------------
 // Publiczne API
 // ---------------------------------------------------------------------------
-
 /** Zwraca listę wszystkich notatek. */
 export function getAllNotes() {
   return loadStore().data;
 }
-
 /** Dodaje nową notatkę i zapisuje plik. */
 export function addNote(note) {
   const store = loadStore();

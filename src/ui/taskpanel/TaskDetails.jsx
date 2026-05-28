@@ -3,13 +3,14 @@
 // PATH: src/ui/taskpanel/TaskDetails.jsx
 // VERSION: 0.0.3
 // PURPOSE: Szczegóły zadania – pełny widok, zmiana statusu,
-//          zmiana priorytetu, edycja
+// FUNCTIONS: TaskDetails
+// DEPENDS ON: react, constants.js, translations.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useState } from "react";
 import { TASK_PRIORITIES, TASK_STATUS } from "../../constants.js";
-import { t } from "../../locales/locale.js";
-
+import { TranslationContext } from '../utils/translations.js';
 // ---------------------------------------------------------------------------
 // TaskDetails
 // Props:
@@ -17,30 +18,25 @@ import { t } from "../../locales/locale.js";
 //   onBack  – callback powrotu do listy
 //   onEdit  – callback otwarcia edytora dla tego zadania
 // ---------------------------------------------------------------------------
-
 export default function TaskDetails({ task, onBack, onEdit }) {
+  const { t } = React.useContext(TranslationContext);
   const [local, setLocal] = useState(task);
-
   /** Wysyła patch do IPC i aktualizuje lokalny stan. */
   async function updateField(field, value) {
     const res = await window.electronAPI.invoke("tasks:update", {
       id: local.id,
       patch: { [field]: value }
     });
-
     if (res?.ok) {
       setLocal({ ...local, [field]: value });
     }
   }
-
   return (
     <div className="taskdetails">
       <button className="btn btn-secondary" onClick={onBack}>
         {t("tasks.details.back")}
       </button>
-
       <h2>{local.title}</h2>
-
       {/* Zmiana statusu zadania */}
       <div className="taskdetails-section">
         <label>{t("tasks.details.status")}</label>

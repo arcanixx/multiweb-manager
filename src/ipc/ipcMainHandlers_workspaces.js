@@ -3,8 +3,9 @@
 // PATH: src/ipc/ipcMainHandlers_workspaces.js
 // VERSION: 0.0.3
 // PURPOSE: IPC dla workspace (Sidebar, useWorkspaces).
-// FUNCTIONS: workspaces:getAll, workspaces:save
-// DEPENDS ON: workspacesStore.js, logger.js
+// FUNCTIONS: ipc:workspaces:getAll, ipc:workspaces:save
+// DEPENDS ON: electron, workspacesStore.js, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain } from "electron";
@@ -13,7 +14,6 @@ import {
   saveWorkspaces
 } from "../core/workspacesStore.js";
 import { logError } from "../utils/logger.js";
-
 ipcMain.handle("workspaces:getAll", async () => {
   try {
     return { ok: true, data: getAllWorkspaces() };
@@ -22,7 +22,6 @@ ipcMain.handle("workspaces:getAll", async () => {
     return { ok: false, error: err.message };
   }
 });
-
 ipcMain.handle("workspaces:save", async (_, workspaces) => {
   try {
     if (!Array.isArray(workspaces)) {

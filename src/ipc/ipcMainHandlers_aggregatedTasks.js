@@ -3,19 +3,15 @@
 // PATH: src/ipc/ipcMainHandlers_aggregatedTasks.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla widoku zbiorczego zadań.
-//          - aggregatedTasks:getAll  – wszystkie taski z enrichedProjectName
-//          - aggregatedTasks:filter  – filtrowanie po status i/lub priority
-//          - aggregatedTasks:sort    – sortowanie po "priority" lub "date"
-//          Każdy task wzbogacony o projectName z projectsStore.
-// DEPENDS ON: electron (ipcMain), logger.js,
-//             core/tasksStore.js, core/projectsStore.js
+// FUNCTIONS: ipc:aggregatedTasks:getAll, ipc:aggregatedTasks:filter, ipc:aggregatedTasks:sort
+// DEPENDS ON: electron, tasksStore.js, projectsStore.js, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain } from "electron";
 import { loadTasks } from "../core/tasksStore.js";
 import { loadProjects } from "../core/projectsStore.js";
 import { logError } from "../utils/logger.js";
-
 // ----------------------------------------------------------------
 // enrich() – helper: dodaje projectName do każdego taska
 // ----------------------------------------------------------------
@@ -28,7 +24,6 @@ function enrich(tasks, projects) {
     };
   });
 }
-
 // ----------------------------------------------------------------
 // aggregatedTasks:getAll – zwraca wszystkie taski z projectName
 // ----------------------------------------------------------------
@@ -42,7 +37,6 @@ ipcMain.handle("aggregatedTasks:getAll", async () => {
     return { ok: false, error: err.message };
   }
 });
-
 // ----------------------------------------------------------------
 // aggregatedTasks:filter – filtruje po status i/lub priority
 //   { status?: string, priority?: string }
@@ -51,7 +45,6 @@ ipcMain.handle("aggregatedTasks:filter", async (_, { status, priority }) => {
   try {
     const tasks    = loadTasks();
     const projects = loadProjects();
-
     let filtered = tasks;
     if (status)   filtered = filtered.filter((t) => t.status === status);
     if (priority) filtered = filtered.filter((t) => t.priority === priority);

@@ -3,21 +3,20 @@
 // PATH: src/ui/notepad/ClipboardHistoryModal.jsx
 // VERSION: 0.0.3
 // PURPOSE: Modal historii schowka – integracja z clipboardStore, i18n
-//          - useEffect pobiera historię schowka przez window.electronAPI.getClipboardHistory()
-//          - wyświetla listę wpisów; przycisk zamknięcia wywołuje props.onClose
+// FUNCTIONS: ClipboardHistoryModal
+// DEPENDS ON: react, translations.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useEffect, useState } from "react";
-import { t } from "../../locales/locale.js";
-
+import React, { useEffect, useState, useContext } from "react";
+import { TranslationContext } from '../../utils/translations.js';
 export default function ClipboardHistoryModal({ onClose }) {
+  const { t } = useContext(TranslationContext);
   const [history, setHistory] = useState([]);
-
   useEffect(() => {
     const h = window.electronAPI.getClipboardHistory();
     setHistory(h);
   }, []);
-
   return (
     <div className="modal-overlay">
       <div className="modal-box">
@@ -38,6 +37,3 @@ export default function ClipboardHistoryModal({ onClose }) {
   );
 }
 
-// =============================================================================
-// END OF FILE
-// =============================================================================

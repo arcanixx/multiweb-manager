@@ -3,9 +3,9 @@
 // PATH: src/utils/networkUtils.js
 // VERSION: 0.0.3
 // PURPOSE: Simple network helpers.
-//          - pingUrl(url) – sprawdza dostępność URL (HEAD request)
-//            Zwraca true gdy odpowiedź OK, false lub rzuca przy błędzie sieci.
-// DEPENDS ON: fetch (Node 18+ / Electron)
+// FUNCTIONS: pingUrl
+// DEPENDS ON: -
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 // ----------------------------------------------------------------
@@ -17,6 +17,3 @@ export async function pingUrl(url) {
   return res.ok;
 }
 
-// =============================================================================
-// END OF FILE
-// =============================================================================

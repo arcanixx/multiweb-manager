@@ -3,47 +3,50 @@
 // PATH: src/core/historyStore.js
 // VERSION: 0.0.3
 // PURPOSE: Historia akcji użytkownika (HistoryLog, Sidebar).
-//          Przechowuje ostatnie wpisy wizyt profili + akcji w pliku history.json.
+//         Przechowuje odwiedzone URL-e, akcje, błędy.
+//         W przyszłości: eksport/import, synchronizacja między urządzeniami.
 // FUNCTIONS: loadHistory, saveHistory, addHistoryEntry, clearHistory, getRecentHistory
-// DEPENDS ON: persistence.js, config.js (LIMITS), logger.js
-// UWAGA: Nie usuwaj komentarzy — opisują przeznaczenie funkcji i sekcji.
+// DEPENDS ON: config.js, persistence.js, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { LIMITS } from "../config.js";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
-import { logInfo } from "../utils/logger.js";
-
-// Ścieżka do pliku historii w userData
-const HISTORY_FILE = () => getUserDataPath("history.json");
-
+import { logInfo, logError } from "../utils/logger.js";
+// Ścieżka do pliku historii w userData – stała (nie funkcja)
+// Uwaga: getUserDataPath jest bezpieczne po app.whenReady()
+const HISTORY_FILE_PATH = getUserDataPath("history.json");
 // ----------------------------------------------------------------
 // loadRaw() – wczytuje surowe dane z pliku historii
 //   Obsługuje zarówno stary format (tablica) jak i nowy ({ data: [] })
 // ----------------------------------------------------------------
 function loadRaw() {
-  const stored = readJsonFile(HISTORY_FILE(), { version: "0.0.3", data: [] });
-  return Array.isArray(stored) ? stored : stored.data || [];
+  try {
+    const stored = readJsonFile(HISTORY_FILE_PATH, { version: "0.0.3", data: [] });
+    return Array.isArray(stored) ? stored : stored.data || [];
+  } catch (err) {
+    logError("historyStore.loadRaw failed", err);
+    return [];
+  }
 }
-
 // ----------------------------------------------------------------
 // saveRaw() – zapisuje tablicę wpisów do pliku, przycinając do limitu
 // ----------------------------------------------------------------
 function saveRaw(entries) {
   const trimmed = entries.slice(0, LIMITS.maxHistoryEntries || 5000);
-  writeJsonFile(HISTORY_FILE(), { version: "0.0.3", data: trimmed });
+  writeJsonFile(HISTORY_FILE_PATH, { version: "0.0.3", data: trimmed });
   return trimmed;
 }
-
 // ----------------------------------------------------------------
 // loadHistory() – publiczne API: zwraca pełną tablicę wpisów
 // ----------------------------------------------------------------
 export function loadHistory() {
   return loadRaw();
 }
-
 // ----------------------------------------------------------------
 // saveHistory() – publiczne API: zapisuje podaną tablicę wpisów
-//   Wymagane przez ipcMainHandlers_history.js
+//   TODO: przyszły use case – eksport/import historii, backup, sync
+//   (na razie nieużywane, ale zachowane dla kompletności API)
 // ----------------------------------------------------------------
 export function saveHistory(entries) {
   if (!Array.isArray(entries)) return [];

@@ -1,7 +1,11 @@
 // =============================================================================
 // FILE: urlUtils.js
+// PATH: src/utils/urlUtils.js
+// VERSION: 0.0.3
 // PURPOSE: Normalizacja URL dla WebView — zawsze pelny adres z https://.
-//          Bez tego Electron traktuje "agfgadfg" jako sciezke wzgledna -> localhost:3000/agfgadfg (431).
+// FUNCTIONS: normalizeWebUrl, isValidWebUrl
+// DEPENDS ON: -
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 /**
@@ -12,11 +16,9 @@ export function normalizeWebUrl(raw) {
   if (raw == null || typeof raw !== 'string') return null;
   let u = raw.trim();
   if (!u) return null;
-
   if (!/^https?:\/\//i.test(u)) {
     u = `https://${u}`;
   }
-
   try {
     const parsed = new URL(u);
     const host = parsed.hostname;
@@ -29,7 +31,6 @@ export function normalizeWebUrl(raw) {
     return null;
   }
 }
-
 export function isValidWebUrl(raw) {
   return normalizeWebUrl(raw) !== null;
 }

@@ -3,8 +3,9 @@
 // PATH: src/ipc/ipcMainHandlers_notes.js
 // VERSION: 0.0.3
 // PURPOSE: IPC dla notatek (Notepad, hooks useNotepad).
-// FUNCTIONS: notes:getAll, notes:add, notes:update, notes:delete
-// DEPENDS ON: notesStore.js, logger.js
+// FUNCTIONS: ipc:notes:getAll, ipc:notes:add, ipc:notes:update, ipc:notes:delete
+// DEPENDS ON: electron, notesStore.js, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain } from "electron";
@@ -15,7 +16,6 @@ import {
   deleteNote
 } from "../core/notesStore.js";
 import { logError } from "../utils/logger.js";
-
 ipcMain.handle("notes:getAll", async () => {
   try {
     return { ok: true, data: getAllNotes() };
@@ -24,7 +24,6 @@ ipcMain.handle("notes:getAll", async () => {
     return { ok: false, error: err.message };
   }
 });
-
 ipcMain.handle("notes:add", async (_, note) => {
   try {
     return { ok: true, data: addNote(note) };
@@ -33,7 +32,6 @@ ipcMain.handle("notes:add", async (_, note) => {
     return { ok: false, error: err.message };
   }
 });
-
 ipcMain.handle("notes:update", async (_, { id, patch }) => {
   try {
     return { ok: true, data: updateNote(id, patch) };
@@ -42,7 +40,6 @@ ipcMain.handle("notes:update", async (_, { id, patch }) => {
     return { ok: false, error: err.message };
   }
 });
-
 ipcMain.handle("notes:delete", async (_, id) => {
   try {
     deleteNote(id);

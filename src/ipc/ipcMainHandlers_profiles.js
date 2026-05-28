@@ -1,14 +1,11 @@
 // =============================================================================
 // FILE: ipcMainHandlers_profiles.js
 // PATH: src/ipc/ipcMainHandlers_profiles.js
-// VERSION: v1.0
-// PURPOSE: IPC dla profili (Sidebar / Profile Manager / App Library)
-//          - pobieranie profili
-//          - zapisywanie profili
-//          - edycja profili
-//          - usuwanie profili
-//          - ostatnio używane
-//          - walidacja danych
+// VERSION: 0.0.3
+// PURPOSE: IPC dla profili (Sidebar / Profile Manager / App Library) pobieranie profili zapisywanie profili edycja profili usuwanie profili ostatnio używane walidacja danych
+// FUNCTIONS: ipc:profiles:getAll, ipc:profiles:create, ipc:profiles:update, ipc:profiles:delete, ipc:profiles:touch
+// DEPENDS ON: electron, profilesStore.js, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain } from "electron";
@@ -20,11 +17,9 @@ import {
   createProfile
 } from "../core/profilesStore.js";
 import { logError } from "../utils/logger.js";
-
 // =============================================================================
 // VALIDATION HELPERS
 // =============================================================================
-
 function validateProfile(p) {
   if (!p) throw new Error("PROFILE_EMPTY");
   if (!p.id || typeof p.id !== "string") throw new Error("PROFILE_INVALID_ID");
@@ -33,11 +28,9 @@ function validateProfile(p) {
   if (!p.category || typeof p.category !== "string") throw new Error("PROFILE_INVALID_CATEGORY");
   return true;
 }
-
 // =============================================================================
 // IPC HANDLERS
 // =============================================================================
-
 // Pobiera wszystkie profile
 ipcMain.handle("profiles:getAll", async () => {
   try {
@@ -48,7 +41,6 @@ ipcMain.handle("profiles:getAll", async () => {
     return { ok: false, error: err.message };
   }
 });
-
 // Tworzy nowy profil
 ipcMain.handle("profiles:create", async (_, payload) => {
   try {

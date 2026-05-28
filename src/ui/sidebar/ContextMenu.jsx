@@ -1,0 +1,40 @@
+// =============================================================================
+// FILE: ContextMenu.jsx
+// PATH: src/ui/sidebar/ContextMenu.jsx
+// VERSION: 0.0.3
+// PURPOSE: Menu kontekstowe (PPM) dla profilu
+// FUNCTIONS: ContextMenu
+// DEPENDS ON: react, translations.js, icons.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+// =============================================================================
+
+import React, { useRef, useEffect, useContext } from 'react';
+import { TranslationContext } from '../../utils/translations.js';
+import { ICONS } from '../../utils/icons.js';
+export default function ContextMenu({ x, y, items, onClose }) {
+  const { t } = useContext(TranslationContext);
+  const ref = useRef();
+  useEffect(() => {
+    const close = (e) => { if (ref.current && !ref.current.contains(e.target)) onClose(); };
+    document.addEventListener('mousedown', close);
+    return () => document.removeEventListener('mousedown', close);
+  }, [onClose]);
+  return (
+    <div ref={ref} style={{
+      position: 'fixed', left: x, top: y, zIndex: 2000,
+      background: 'var(--bg-card)', border: '1px solid var(--border)',
+      borderRadius: 8, boxShadow: 'var(--shadow-md)', minWidth: 160,
+      padding: '4px 0', fontSize: 13
+    }}>
+      {items.map((item, i) => item === '---' ? <div key={i} style={{ height: 1, background: 'var(--border)', margin: '4px 0' }} /> : (
+        <div key={i}
+          style={{ padding: '6px 14px', cursor: 'pointer', color: item.danger ? 'var(--danger)' : 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 8 }}
+          onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-hover)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+          onClick={() => { item.action(); onClose(); }}>
+          {item.icon} {item.label}
+        </div>
+      ))}
+    </div>
+  );
+}

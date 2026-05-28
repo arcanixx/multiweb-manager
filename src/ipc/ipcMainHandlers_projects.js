@@ -1,11 +1,11 @@
 // =============================================================================
 // FILE: ipcMainHandlers_projects.js
 // PATH: src/ipc/ipcMainHandlers_projects.js
-// VERSION: v1.0
-// PURPOSE: IPC dla Project Manager
-//          - CRUD projektów
-//          - archiwizacja
-//          - integracja z AggregatedTasks
+// VERSION: 0.0.3
+// PURPOSE: IPC dla Project Manager settings:get        – pobiera aktualne ustawienia settings:update     – aktualizuje (merge patch, nie nadpisuje) settings:reset      – reset do DEFAULT_SETTINGS settings:export     – eksport do pliku JSON settings:import     – import z pliku JSON (merge) settings:getDefaults – zwraca DEFAULT_SETTINGS z config.js
+// FUNCTIONS: ipc:projects:getAll, ipc:projects:getWithTasks, ipc:projects:create, ipc:projects:update, ipc:projects:archive, ipc:projects:delete
+// DEPENDS ON: electron, projectsStore.js, tasksStore.js, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain } from "electron";
@@ -17,25 +17,20 @@ import {
   deleteProject,
   archiveProject
 } from "../core/projectsStore.js";
-
 import { loadTasksByProject } from "../core/tasksStore.js";
 import { logError } from "../utils/logger.js";
-
 // =============================================================================
 // VALIDATION
 // =============================================================================
-
 function validateProject(p) {
   if (!p) throw new Error("PROJECT_EMPTY");
   if (!p.id || typeof p.id !== "string") throw new Error("PROJECT_INVALID_ID");
   if (!p.name || typeof p.name !== "string") throw new Error("PROJECT_INVALID_NAME");
   return true;
 }
-
 // =============================================================================
 // IPC HANDLERS
 // =============================================================================
-
 // Pobiera wszystkie projekty
 ipcMain.handle("projects:getAll", async () => {
   try {
@@ -46,12 +41,10 @@ ipcMain.handle("projects:getAll", async () => {
     return { ok: false, error: err.message };
   }
 });
-
 // Pobiera projekt + jego zadania
 ipcMain.handle("projects:getWithTasks", async (_, projectId) => {
   try {
     if (!projectId) throw new Error("PROJECT_ID_REQUIRED");
-
     const projects = loadProjects();
     const project = projects.find((p) => p.id === projectId);
     if (!project) throw new Error("PROJECT_NOT_FOUND");

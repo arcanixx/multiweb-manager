@@ -1,0 +1,46 @@
+{
+  "_comment": "FILE: help.template.json | PATH: src/locales/templates/help.template.json | VERSION: 0.0.3 | PURPOSE: Szablon dla pomocy w nowym języku (kopiuj, zmień nazwę na help_[język].json i przetłumacz). PAMIĘTAJ: Jeśli dodajesz nowy język, zaktualizuj TestRunner_Locales.js (dodaj plik do LOCALE_FILES) ORAZ w src/utils/translations.js – w useEffect dla help, dodaj import help_[język].json. | FUNCTIONS: - | DEPENDS ON: - | UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.",
+  "version": "0.0.3",
+  "sections": [
+    {
+      "id": "getting-started",
+      "title": "Getting Started",
+      "content": "MultiWeb Manager lets you manage multiple web accounts, tasks, projects, and developer tools in one place.\n\nOn the left is the Sidebar – navigation center. On the right is the main workspace (WebView, Notepad, TaskPanel, etc.)."
+    },
+    {
+      "id": "sidebar",
+      "title": "Sidebar & Profiles",
+      "content": "Sidebar contains:\n- profile search bar,\n- categories (AI, Dev, Design, Productivity, Special),\n- profile list,\n- recently used,\n- Tools,\n- App Library,\n- Settings,\n- Help.\n\nEach profile is a separate app opened in WebView. You can add, edit, delete, drag & drop, and pin to favorites."
+    },
+    {
+      "id": "webview",
+      "title": "WebView & Browser",
+      "content": "WebView has a full toolbar:\n- Back / Forward / Refresh\n- Address bar (readonly/editable)\n- Copy URL / Open in browser\n- Zoom +/-\n- DevTools\n- Clear cache\n- Screenshot\n- Single App Mode\n- Resource Monitor\n\nAdditional: Sleep Tabs, AdBlocker (global + per profile)."
+    },
+    {
+      "id": "notepad",
+      "title": "Notepad",
+      "content": "Notepad works like a tabbed editor:\n- multiple tabs,\n- rename (double click),\n- autosave every 5 seconds (only when content changes),\n- plain text mode,\n- syntax highlighting (planned),\n- rich text (planned)."
+    },
+    {
+      "id": "tasks",
+      "title": "TaskPanel & Tasks",
+      "content": "TaskPanel allows:\n- add/edit tasks (modal),\n- priorities A–E (colors),\n- filtering and search,\n- mark as done,\n- assign to projects,\n- due date.\n\nAggregatedTasks groups tasks by project with collapse/hide options."
+    },
+    {
+      "id": "terminal",
+      "title": "Terminal",
+      "content": "Terminal based on node-pty + xterm.js:\n- full command support,\n- ANSI coloring,\n- command history (up/down arrows),\n- session restart,\n- clear screen."
+    },
+    {
+      "id": "settings",
+      "title": "Settings",
+      "content": "Settings sections:\n- General (language, theme, debug)\n- WebView (AdBlocker, User Agent)\n- Tabs (Sleep Tabs timeout)\n- Notifications (toasts, system, Pushbullet)\n- Hotkeys\n- Data & Logs (export/import, logs folder, reset)\n- Account (placeholder – future sync)"
+    },
+    {
+      "id": "faq",
+      "title": "FAQ",
+      "content": "**Can I open the app on a second monitor?**\nYes – use Single App Mode in WebView.\n\n**Can I disable AdBlocker for a single profile?**\nYes – in the profile edit modal.\n\n**Can I export my settings?**\nYes – in Settings → Data & Logs → Export settings.\n\n**Can I change the theme?**\nYes – in Settings → General → Dark Mode."
+    }
+  ]
+}

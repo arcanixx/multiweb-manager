@@ -1,32 +1,64 @@
 /* =============================================================================
-FILE: layout.css
-PATH: src/ui/layout.css
-VERSION: v1.0
-PURPOSE: Layout aplikacji MultiWeb Manager
-         - sidebar
-         - main area
-         - moduły
-         - listy
-         - badge
-         - placeholdery
-         - layout kontenerów
-DEPENDENCY: index.css (zmienne + tailwind)
-============================================================================= */
+ * FILE: layout.css
+ * PATH: src/ui/layout.css
+ * VERSION: 0.0.3
+ * PURPOSE: Layout aplikacji – grid, sidebar, content, toolbar
+ * FUNCTIONS: -
+ * DEPENDS ON: -
+ * UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+ * ============================================================================= */
+
+/* Główny kontener aplikacji */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: var(--sidebar-bg, #252526);
+  border-right: 1px solid var(--border-color, #3e3e42);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+  width: var(--sidebar-width);
+  padding: 12px;
+  box-sizing: border-box;
+}
+/* Główna treść */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--bg-primary, #1e1e1e);
+}
+/* Toolbar WebView */
+.webview-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--toolbar-bg, #2d2d2d);
+  border-bottom: 1px solid var(--border-color, #3e3e42);
+  flex-wrap: wrap;
+}
+/* Responsywność – zwężony sidebar */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+  }
+  .sidebar .sidebar-item span,
+  .sidebar .sidebar-section-title span {
+    display: none;
+  }
+}
 
 .app-root {
   display: flex;
   width: 100%;
   height: 100%;
-}
-
-.sidebar {
-  width: var(--sidebar-width);
-  background: var(--bg-sidebar);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  box-sizing: border-box;
 }
 
 .sidebar-logo {

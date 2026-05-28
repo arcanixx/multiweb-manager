@@ -4,7 +4,8 @@
 // VERSION: 0.0.3
 // PURPOSE: CRUD profili (Sidebar, WebView, App Library).
 // FUNCTIONS: loadProfiles, saveProfiles, createProfile, updateProfile, deleteProfile
-// DEPENDS ON: persistence.js, defaultProfiles.json, logger.js
+// DEPENDS ON: fs, path, url, persistence.js, logger.js, src
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import fs from "fs";
@@ -12,10 +13,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
 import { logInfo } from "../utils/logger.js";
-
+import { DEFAULT_PROFILE_CATEGORY } from 'src/config.js'; // Obecnie profil domyślny, moduł jest placeholderem, do użycia w VERSION 0.0.4
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROFILES_FILE = () => getUserDataPath("profiles.json");
-
 function defaultProfiles() {
   try {
     const raw = fs.readFileSync(
@@ -27,7 +27,6 @@ function defaultProfiles() {
     return [];
   }
 }
-
 export function loadProfiles() {
   const stored = readJsonFile(PROFILES_FILE(), null);
   if (Array.isArray(stored)) return stored;
@@ -36,20 +35,17 @@ export function loadProfiles() {
   if (defaults.length) saveProfiles(defaults);
   return defaults;
 }
-
 export function saveProfiles(profiles) {
   writeJsonFile(PROFILES_FILE(), { version: "0.0.3", data: profiles });
   logInfo("profilesStore.saveProfiles", profiles.length);
   return profiles;
 }
-
 export function createProfile(profile) {
   const list = loadProfiles();
   const next = [...list, profile];
   saveProfiles(next);
   return next;
 }
-
 export function updateProfile(id, patch) {
   const list = loadProfiles();
   const next = list.map((p) => (p.id === id ? { ...p, ...patch } : p));

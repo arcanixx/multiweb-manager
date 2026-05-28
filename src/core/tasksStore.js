@@ -3,23 +3,20 @@
 // PATH: src/core/tasksStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zadania per projekt (TaskPanel, AggregatedTasks).
-// FUNCTIONS: loadTasksByProject, saveTasksForProject, loadAllTasksGrouped
-// DEPENDS ON: persistence.js, logger.js
+// FUNCTIONS: loadTasksSections, loadTasksByProject, saveTasksForProject, loadAllTasksGrouped, loadTasks
+// DEPENDS ON: fs, persistence.js, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import fs from "fs";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
 import { logInfo } from "../utils/logger.js";
-
 const TASKS_DIR = () => getUserDataPath("tasks");
-
 function taskFile(projectName) {
   const safe = String(projectName || "default").replace(/[^\w.-]+/g, "_");
   return `${TASKS_DIR()}/${safe}.json`;
 }
-
 const EMPTY_SECTIONS = () => ({ active: [], backlog: [], done: [] });
-
 export function loadTasksSections(projectName) {
   const data = readJsonFile(taskFile(projectName), null);
   if (!data?.tasks) return EMPTY_SECTIONS();
@@ -33,12 +30,10 @@ export function loadTasksSections(projectName) {
     done: t.done || []
   };
 }
-
 export function loadTasksByProject(projectName) {
   const sections = loadTasksSections(projectName);
   return [...sections.active, ...sections.backlog, ...sections.done];
 }
-
 export function saveTasksForProject(projectName, payload) {
   const body =
     payload?.tasks && typeof payload.tasks === "object"

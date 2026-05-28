@@ -1,0 +1,30 @@
+// =============================================================================
+// FILE: ipcMainHandlers_svgToPng.js
+// PATH: src/ipc/ipcMainHandlers_svgToPng.js
+// VERSION: 0.0.3
+// PURPOSE: IPC handler konwersji SVG → PNG przez sharp
+// FUNCTIONS: ipc:tools:svgToPng
+// DEPENDS ON: electron, fs, logger.js, sharpLoader.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+// =============================================================================
+
+import { ipcMain } from 'electron';
+import fs from 'fs';
+import { logError } from '../utils/logger.js';
+import { loadSharp } from '../utils/sharpLoader.js';
+// ─── ipc:tools:svgToPng – konwertuje plik SVG na PNG o podanych wymiarach
+//   Oczekuje: { svgPath, outputPath, width, height }
+//   Zwraca: { ok: boolean, data?: string, error?: string }
+ipcMain.handle('tools:svgToPng', async (_, { svgPath, outputPath, width, height }) => {
+  try {
+    const sharp = await loadSharp();
+    if (!sharp) return { ok: false, error: 'SHARP_MODULE_MISSING' };
+    const svg = fs.readFileSync(svgPath, 'utf8');
+    const png = await sharp(Buffer.from(svg)).resize(width, height).png().toBuffer();
+    fs.writeFileSync(outputPath, png);
+    return { ok: true, data: outputPath };
+  } catch (err) {
+    logError('tools:svgToPng failed', err);
+    return { ok: false, error: err.message };
+  }
+});

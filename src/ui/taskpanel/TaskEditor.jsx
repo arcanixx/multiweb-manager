@@ -3,13 +3,14 @@
 // PATH: src/ui/taskpanel/TaskEditor.jsx
 // VERSION: 0.0.3
 // PURPOSE: Modal dodawania/edycji zadania – walidacja, zapis,
-//          integracja z IPC
+// FUNCTIONS: TaskEditor
+// DEPENDS ON: react, constants.js, translations.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useState } from "react";
 import { TASK_PRIORITIES, TASK_STATUS } from "../../constants.js";
-import { t } from "../../locales/locale.js";
-
+import { TranslationContext } from '../utils/translations.js';
 // ---------------------------------------------------------------------------
 // TaskEditor
 // Props:
@@ -17,10 +18,9 @@ import { t } from "../../locales/locale.js";
 //   onCancel  – callback anulowania
 //   onSaved   – callback po pomyślnym zapisie
 // ---------------------------------------------------------------------------
-
 export default function TaskEditor({ task, onCancel, onSaved }) {
+  const { t } = React.useContext(TranslationContext);
   const isEdit = !!task;
-
   const [form, setForm] = useState(
     task || {
       title: "",
@@ -29,24 +29,19 @@ export default function TaskEditor({ task, onCancel, onSaved }) {
       status: TASK_STATUS.TODO
     }
   );
-
   /** Aktualizuje pojedyncze pole formularza. */
   function update(field, value) {
     setForm({ ...form, [field]: value });
   }
-
   /** Waliduje i zapisuje zadanie przez IPC (tasks:add lub tasks:update). */
   async function save() {
     if (!form.title.trim()) {
       window.showToast("error", t("tasks.editor.error.titleRequired"));
       return;
     }
-
     const channel = isEdit ? "tasks:update" : "tasks:add";
     const payload  = isEdit ? { id: task.id, patch: form } : form;
-
     const res = await window.electronAPI.invoke(channel, payload);
-
     if (res?.ok) {
       window.showToast("success", t("tasks.editor.saved"));
       onSaved();

@@ -3,10 +3,9 @@
 // PATH: src/utils/validators.js
 // VERSION: 0.0.3
 // PURPOSE: Common validation helpers used across IPC handlers and stores.
-//          - ensureString(value, name) – rzuca błąd gdy nie string lub pusty
-//          - ensureObject(value, name) – rzuca błąd gdy nie obiekt lub null
-//          Konwencja błędów: "${name}_INVALID" (łatwe do catch w handlerach)
+// FUNCTIONS: ensureString, ensureObject
 // DEPENDS ON: -
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 // ----------------------------------------------------------------
@@ -17,7 +16,6 @@ export function ensureString(value, name) {
     throw new Error(`${name}_INVALID`);
   }
 }
-
 // ----------------------------------------------------------------
 // ensureObject() – waliduje, że value jest niepustym obiektem
 // ----------------------------------------------------------------
@@ -27,6 +25,3 @@ export function ensureObject(value, name) {
   }
 }
 
-// =============================================================================
-// END OF FILE
-// =============================================================================

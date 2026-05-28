@@ -3,19 +3,18 @@
 // PATH: src/core/persistence.js
 // VERSION: 0.0.3
 // PURPOSE: Wspólny odczyt/zapis plików JSON w userData (store Electron).
-// FUNCTIONS: readJsonFile, writeJsonFile, getUserDataPath
-// DEPENDS ON: fs, path, electron (app), logger.js
+// FUNCTIONS: getUserDataPath, readJsonFile, writeJsonFile
+// DEPENDS ON: fs, path, electron, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import fs from "fs";
 import path from "path";
 import { app } from "electron";
 import { logError } from "../utils/logger.js";
-
 export function getUserDataPath(...segments) {
   return path.join(app.getPath("userData"), ...segments);
 }
-
 export function readJsonFile(filePath, fallback) {
   try {
     if (!fs.existsSync(filePath)) return fallback;
@@ -25,7 +24,6 @@ export function readJsonFile(filePath, fallback) {
     return fallback;
   }
 }
-
 export function writeJsonFile(filePath, data) {
   try {
     fs.mkdirSync(path.dirname(filePath), { recursive: true });

@@ -1,219 +1,286 @@
-=============================================================================
-FILE: Requirements.md
-PATH: doc/Requirements.md
-VERSION: 0.0.3
-PURPOSE: Wymagania aplikacji z aktualnymi statusami, priorytetami i komentarzami
-DEPENDS ON: structure.txt, DevelopersGuide.md, AI_Development_Standards.md
-=============================================================================
+<!-- =============================================================================
+ FILE: Requirements.md
+ PATH: doc/Requirements.md
+ VERSION: 0.0.3
+ PURPOSE: Dokumentacja specyfikacji projektowej - Wymagania aplikacji z aktualnymi statusami, priorytetami i komentarzami
+ FUNCTIONS: Dokumentacja: 17 sekcji głównych
+ DEPENDS ON: -
+ UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+ ============================================================================= -->
 
+---
 # 📋 MULTIWEB MANAGER — WYMAGANIA SYSTEMOWE
-
-> Wersja dokumentu: 0.0.3 | Ostatnia aktualizacja: 2026-05-22
-> Format: ID | Opis | Status | Priorytet | Version | Komentarz
-
+> Wersja dokumentu: 0.0.3 | Ostatnia aktualizacja: 2026-05-26
+> Format: ID | Sekcja | Opis | Status | Priorytet | Version | Komentarz
 ---
-
+## ## ACTIVE (AKTYWNE ZADANIA)
+---
 ## 📦 ARCHITEKTURA I STABILNOŚĆ
-
 > Fundament całej aplikacji. Wymagania dotyczące stabilności, bezpieczeństwa IPC, zarządzania pamięcią i architektury kodu.
-
 ---
-
 ### [Cleanup Event Listenerów] :
-
 - **ID:** ARCH_REQ-001
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
 - **Opis:** Cleanup event listenerów w komponentach WebViewTab, Terminal i App.jsx. Każdy `useEffect` dodający event listener musi zwracać funkcję cleanup (`removeEventListener`). W WebViewTab.jsx — eventy WebView (`did-finish-load`, `console-message`) muszą być usuwane przy unmount. W Terminal.jsx — xterm i pty muszą być dispose'owane (`onData.dispose()`, `onExit.dispose()`, `pty.kill()`, `term.dispose()`). W preload.cjs — funkcje `onX` muszą zwracać cleanup: `return () => ipcRenderer.removeListener(...)`.
 - **Status:** IN_SPRINT
 - **Priorytet:** CRITICAL
 - **Version:** 0.0.3
 - **Komentarz:** Brak cleanup → memory leak, crash, duplikacja eventów, rosnący RAM. Dotyczy plików: `WebViewTab.jsx`, `Terminal.jsx`, `App.jsx`, `preload.cjs`. Szukaj wszystkich `addEventListener`, `on(...)`, `xterm.onData`, `ipcRenderer.on` i dodaj cleanup.
-
 ---
-
 ### [Walidacja Danych w IPC] :
-
 - **ID:** ARCH_REQ-002
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
 - **Opis:** Każdy handler IPC w `main.js` / `ipcMainHandlers.js` musi walidować typy i strukturę przychodzącego payloadu przed przetworzeniem. Walidacja: `if (!payload || typeof payload !== "object") return { ok: false, error: "INVALID_PAYLOAD" }`. Walidacja pól settings (np. `language` musi być stringiem), profilu (wymagane `id` i `url` jako string), tasków (musi być tablicą).
 - **Status:** IN_SPRINT
 - **Priorytet:** CRITICAL
 - **Version:** 0.0.3
 - **Komentarz:** Renderer może wysłać null, "string", {}, błędne typy → korupcja danych w Electron Store. Nigdy nie zakładaj, że renderer wysyła poprawne dane. Dotyczy: `main.js`, `ipcMainHandlers.js`, wszystkich store'ów korzystających z IPC.
-
 ---
-
 ### [Try/Catch w Handlerach IPC] :
-
 - **ID:** ARCH_REQ-003
-- **Opis:** Każdy handler IPC musi być opakowany w blok `try/catch`. Przy błędzie zwracać `{ ok: false, error: err.message || "UNKNOWN_ERROR" }`. Wszystkie operacje I/O (fs, store, API) muszą być w try/catch. Przykład: `ipcMain.handle("save-settings", async (event, payload) => { try { ... return { ok: true, data: merged }; } catch (err) { logError(...); return { ok: false, error: ... }; } })`.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Każdy handler IPC musi być opakowany w blok `try/catch`. Przy błędzie zwracać `{ ok: false, error: err.message || "UNKNOWN_ERROR" }`. Wszystkie operacje I/O (fs, store, API) muszą być w try/catch.
 - **Status:** IN_SPRINT
 - **Priorytet:** CRITICAL
 - **Version:** 0.0.3
-- **Komentarz:** Bez try/catch błąd zapisu → renderer dostaje `undefined` → UI nie wie, co się stało. Dotyczy: `main.js`, `ipcMainHandlers.js`.
-
+- **Komentarz:** Bez try/catch błąd zapisu → renderer dostaje `undefined` → UI nie wie, co się stało.
 ---
-
 ### [Single Instance Lock] :
-
 - **ID:** ARCH_REQ-004
-- **Opis:** Implementacja `app.requestSingleInstanceLock()` na górze `main.js`. Jeśli aplikacja nie uzyska blokady — `app.quit()` i `process.exit(0)`. Obsługa zdarzenia `second-instance`: przywrócenie i fokus na istniejącym oknie (`mainWindow.restore()` + `mainWindow.focus()`).
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Implementacja `app.requestSingleInstanceLock()` na górze `main.js`. Jeśli aplikacja nie uzyska blokady — `app.quit()` i `process.exit(0)`. Obsługa zdarzenia `second-instance`: przywrócenie i fokus na istniejącym oknie.
 - **Status:** IN_SPRINT
 - **Priorytet:** CRITICAL
 - **Version:** 0.0.3
-- **Komentarz:** Bez blokady użytkownik może odpalić kilka instancji → store się psuje. Musi działać na Windows/Mac/Linux. Dotyczy: `main.js`.
+- **Komentarz:** Bez blokady użytkownik może odpalić kilka instancji → store się psuje.
 
 ---
 
 ### [Globalne Handlery Błędów] :
 
 - **ID:** ARCH_REQ-005
-- **Opis:** Dodanie globalnych handlerów błędów w `main.js`: `process.on("uncaughtException", ...)` oraz `process.on("unhandledRejection", ...)`. Oba muszą wywoływać `logError(...)` zapisujący do pliku logów. Nie wolno ignorować błędów.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Dodanie globalnych handlerów błędów w `main.js`: `process.on("uncaughtException", ...)` oraz `process.on("unhandledRejection", ...)`. Oba muszą wywoływać `logError(...)` zapisujący do pliku logów.
 - **Status:** IN_SPRINT
 - **Priorytet:** CRITICAL
 - **Version:** 0.0.3
-- **Komentarz:** Brak obsługi błędów → aplikacja wywala się bez logów. `logError` musi zapisywać do pliku logów (nie tylko konsola). Dotyczy: `main.js`.
+- **Komentarz:** Brak obsługi błędów → aplikacja wywala się bez logów.
 
 ---
 
 ### [Merge Settings (nie Overwrite)] :
 
 - **ID:** ARCH_REQ-006
-- **Opis:** Funkcja `updateSettings(partial)` w `settingsStore.js` musi stosować merge: `const merged = { ...current, ...partial }`. Nigdy nie nadpisywać całego obiektu settings jednym polem. Wszystkie miejsca wywołujące `saveSettings` muszą używać `updateSettings`.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Funkcja `updateSettings(partial)` w `settingsStore.js` musi stosować merge: `const merged = { ...current, ...partial }`. Nigdy nie nadpisywać całego obiektu settings jednym polem.
 - **Status:** IN_SPRINT
 - **Priorytet:** CRITICAL
 - **Version:** 0.0.3
-- **Komentarz:** `saveSettings({ projects: [...] })` nadpisuje CAŁE settings → tracisz język, debugMode, API key itd. Dotyczy: `src/core/settingsStore.js` i wszystkich miejsc wywołujących `saveSettings`.
+- **Komentarz:** `saveSettings({ projects: [...] })` nadpisuje CAŁE settings → tracisz język, debugMode, API key itd.
 
 ---
 
 ### [Trwały Zapis Profili] :
 
 - **ID:** ARCH_REQ-007
-- **Opis:** Każda zmiana profili (dodanie, edycja, usunięcie) musi kończyć się wywołaniem `saveProfiles(nextProfiles)` przez IPC → main → electron-store. Funkcja `handleProfilesChange(nextProfiles)` powinna: `setProfiles(nextProfiles)` + `saveProfiles(nextProfiles)`.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Każda zmiana profili (dodanie, edycja, usunięcie) musi kończyć się wywołaniem `saveProfiles(nextProfiles)` przez IPC → main → electron-store.
 - **Status:** IN_SPRINT
 - **Priorytet:** CRITICAL
 - **Version:** 0.0.3
-- **Komentarz:** Profil dodany → nie zapisany → znika po restarcie. Dotyczy: `Sidebar.jsx`, `profilesStore.js`.
+- **Komentarz:** Profil dodany → nie zapisany → znika po restarcie.
 
 ---
 
 ### [Autosave Notepad tylko przy Zmianie] :
 
 - **ID:** ARCH_REQ-008
-- **Opis:** Autosave notatnika co 5 sekund, ale tylko gdy `content !== lastSaved`. Implementacja przez `setInterval` w `useEffect` z porównaniem stanu. Po zapisie aktualizować `lastSaved`. Cleanup: `return () => clearInterval(interval)`.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Autosave notatnika co 5 sekund, ale tylko gdy `content !== lastSaved`. Cleanup: `return () => clearInterval(interval)`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Zapis co 5s nawet bez zmian → lag, I/O spam. Dotyczy: `Notepad.jsx`, `notepadStore.js`.
+- **Komentarz:** Zapis co 5s nawet bez zmian → lag, I/O spam.
 
 ---
 
 ### [Logger z Zapisem do Pliku i Eksportem] :
 
 - **ID:** ARCH_REQ-009
-- **Opis:** System logowania musi zapisywać do pliku `userData/logs/app.log`. Funkcja `logError(msg, meta)` wywołuje `appendLogToFile({ level: "error", msg, meta, ts: Date.now() })`. W Settings — przycisk eksportu logów: zapisuje `app.log` do wybranej lokalizacji przez dialog systemowy.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** System logowania musi zapisywać do pliku `userData/logs/app.log`. W Settings — przycisk eksportu logów.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** DebugMode loguje tylko do konsoli — niewystarczające. Logi muszą być w `userData/logs/app.log`. Dotyczy: `src/utils/logger.js`, `src/services/logService.js`, `Settings.jsx`.
+- **Komentarz:** DebugMode loguje tylko do konsoli — niewystarczające.
 
 ---
 
 ### [Osobny Plik config.js] :
 
 - **ID:** ARCH_REQ-010
-- **Opis:** Wydzielenie stałych konfiguracyjnych do osobnego pliku `config.js`. Struktura: `export const CONFIG = { debugMode: false, sleepTabsTimeout: 15 * 60 * 1000, historyLimit: 200, removeBg: { endpoint: "...", apiKey: "" } }`. Settings = dane użytkownika (zmienne). Config = stałe aplikacji (niezmienne w runtime).
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Wydzielenie stałych konfiguracyjnych do osobnego pliku `config.js`. Settings = dane użytkownika (zmienne). Config = stałe aplikacji (niezmienne w runtime).
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Settings zawiera rzeczy, które powinny być stałe → bałagan architektoniczny. Dotyczy: `config.js`.
+- **Komentarz:** Settings zawiera rzeczy, które powinny być stałe → bałagan architektoniczny.
 
 ---
 
 ### [WebView Błędy bez alert()] :
 
 - **ID:** ARCH_REQ-011
-- **Opis:** Zastąpienie wszystkich `alert()` w `WebViewTab.jsx` komponentem `WebViewErrorBar`. Komponent wyświetla komunikat błędu inline z przyciskiem „Reload". Przykład: `{error && <WebViewErrorBar message={t("webview.error.network")} onReload={handleReload} />}`.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Zastąpienie wszystkich `alert()` w `WebViewTab.jsx` komponentem `WebViewErrorBar` inline z przyciskiem „Reload".
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Alerty są brzydkie i blokujące. Dotyczy: `WebViewTab.jsx`, `WebViewErrorBar.jsx`.
+- **Komentarz:** Alerty są brzydkie i blokujące.
 
 ---
 
 ### [Zastąpienie alert/prompt Modalami] :
 
 - **ID:** ARCH_REQ-012
-- **Opis:** Absolutny zakaz używania `alert()`, `confirm()`, `prompt()`. Stworzyć `Modal.jsx` i używać go do: Add/Edit Task, Add/Edit Profile, Add/Edit Project, Confirm Delete. Wszystkie dotychczasowe wywołania natywnych okien zastąpić dedykowanymi modalami React.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Absolutny zakaz używania `alert()`, `confirm()`, `prompt()`. Stworzyć `Modal.jsx` i używać go do: Add/Edit Task, Add/Edit Profile, Add/Edit Project, Confirm Delete.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Prompty są archaiczne i blokujące. Dotyczy: `UI/Modal.jsx` i wszystkich komponentów używających `alert/prompt`.
+- **Komentarz:** Prompty są archaiczne i blokujące.
 
 ---
 
 ### [Cleanup Listenerów online/offline] :
 
 - **ID:** ARCH_REQ-013
-- **Opis:** W `App.jsx` — eventy `online`/`offline` muszą mieć cleanup w `useEffect`. Wzorzec: `window.addEventListener("online", onOnline)` + `return () => window.removeEventListener("online", onOnline)`.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** W `App.jsx` — eventy `online`/`offline` muszą mieć cleanup w `useEffect`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Brak cleanup → memory leak przy remount komponentu. Dotyczy: `App.jsx`.
+- **Komentarz:** Brak cleanup → memory leak przy remount komponentu.
 
 ---
 
 ### [System Powiadomień (Toast + System Notifications)] :
 
 - **ID:** ARCH_REQ-014
-- **Opis:** Globalny system powiadomień: toasty (success/error/info/warning) w `UI/ToastContainer.jsx` oraz systemowe powiadomienia OS (`new Notification(...)`). Toggle włączenia/wyłączenia systemu powiadomień w Settings.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Globalny system powiadomień: toasty (success/error/info/warning) w `UI/ToastContainer.jsx` oraz systemowe powiadomienia OS (`new Notification(...)`). Toggle w Settings.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `UI/ToastContainer.jsx`, `notificationsManager.js`, `Settings.jsx`.
+- **Komentarz:** Dotyczy: `UI/ToastContainer.jsx`, `notificationsManager.js`.
 
 ---
 
 ### [Pushbullet API] :
 
 - **ID:** ARCH_REQ-015
-- **Opis:** Integracja z Pushbullet API. Użytkownik podaje API key w Settings. Możliwość wysyłania powiadomień z nazwą kafelka/profilu.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Integracja z Pushbullet API. Użytkownik podaje API key w Settings. Możliwość wysyłania powiadomień.
 - **Status:** IN_SPRINT
 - **Priorytet:** MINOR
 - **Version:** 0.0.3
-- **Komentarz:** Nice-to-have. Dotyczy: `apiService.js`, `Settings.jsx`.
+- **Komentarz:** Nice-to-have.
 
 ---
 
 ### [Spellcheck i Walidacja Kodu w Notatniku] :
 
 - **ID:** ARCH_REQ-016
-- **Opis:** Implementacja CodeMirror lub Monaco Editor w `NotepadEditor.jsx`. Tryby: JS, Python, HTML, CSS, XML. Spellcheck PL/EN zależny od języka systemu.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Implementacja CodeMirror lub Monaco Editor. Tryby: JS, Python, HTML, CSS, XML. Spellcheck PL/EN zależny od języka systemu.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `NotepadEditor.jsx`. Szczegóły implementacji w NOTEPAD_REQ-001.
+- **Komentarz:** Notepad jest plain text → nie nadaje się do kodu.
 
 ---
 
-### [Voice Agent / AI Agent] :
+### [Global Error Boundary] :
 
 - **ID:** ARCH_REQ-017
-- **Opis:** Integracja z Web Speech API i lokalnym LLM. Komponent `VoiceAgent.jsx` + serwis `aiAgentService.js`.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Globalny Error Boundary w React (`src/ui/system/ErrorBoundary.jsx`). Owiń `App` w `<ErrorBoundary>`. Przy błędzie renderuje fallback UI.
 - **Status:** IN_SPRINT
-- **Priorytet:** MINOR
+- **Priorytet:** CRITICAL
 - **Version:** 0.0.3
-- **Komentarz:** DO-ANALYSIS — nie implementować bez decyzji użytkownika. Wymaga analizy dostępnych lokalnych modeli LLM.
+- **Komentarz:** Bez tego jeden błąd w komponencie rozwala cały renderer.
 
 ---
 
-### [Automatyczne Code Review] :
+### [Centralny Storage Manager] :
 
 - **ID:** ARCH_REQ-018
-- **Opis:** Narzędzie do automatycznego code review: wysyłanie kodu do AI, analiza i sugestie. Komponent `Tools/CodeReview.jsx`.
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Centralny wrapper storage (`src/utils/storage.js`). API: `storage.loadSettings()`, `storage.saveSettings()`, `storage.loadProfiles()`, `storage.saveProfiles()`. Komponenty NIE wywołują bezpośrednio `electronAPI`.
 - **Status:** IN_SPRINT
-- **Priorytet:** MINOR
+- **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** DO-ANALYSIS — nie implementować bez decyzji użytkownika. Wymaga wyboru modelu AI i polityki prywatności.
+- **Komentarz:** Uprości testy, refactor, pozwoli dodać sync/backup/cache/retry.
+
+---
+
+### [Command System / Palette] :
+
+- **ID:** ARCH_REQ-019
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** System komend (`src/core/commandRegistry.js`). Rejestracja: `registerCommand({ id, name, shortcut, action })`. Globalna palette (`Ctrl+K` lub `Ctrl+P`).
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Podstawa pod automatyzację, plugin system, szybkie akcje.
+
+---
+
+### [Session Restore] :
+
+- **ID:** ARCH_REQ-020
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Po restarcie aplikacji – przywróć ostatnio otwarte profile i zakładki. Zapisywane w `sessionStore.json`.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** UX – użytkownik nie chce tracić sesji.
+
+---
+
+### [Safe Mode] :
+
+- **ID:** ARCH_REQ-021
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Uruchomienie aplikacji z flagą `--safe-mode`. Wyłącza: WebView, pluginy, cache, hotkeys, sleep tabs. Uruchamia minimalny UI.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Krytyczne przy awariach.
+
+---
+
+### [Queue System] :
+
+- **ID:** ARCH_REQ-022
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Globalny system kolejek (`src/utils/queueManager.js`). Obsługa: RemoveBG, backup, import, export, batch image processing.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Uniknięcie blokowania UI przy długich operacjach.
+
+---
+
+### [Resource Monitor – UI i Toasty] :
+
+- **ID:** ARCH_REQ-023
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** UI dla Resource Monitor – przycisk w toolbarze WebView. Po kliknięciu: toast z RAM/CPU. Ostrzeżenia gdy zużycie > 70% (warn) i > 90% (critical). Wykorzystuje `DEFAULT_SETTINGS.resourceMonitor = { warnAt: 70, criticalAt: 90 }`.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Handler IPC istnieje, brakuje UI i toastów.
 
 ---
 
@@ -226,81 +293,76 @@ DEPENDS ON: structure.txt, DevelopersGuide.md, AI_Development_Standards.md
 ### [App Library — Biblioteka Gotowych Aplikacji] :
 
 - **ID:** SIDEBAR_REQ-001
-- **Opis:** Stworzenie biblioteki gotowych aplikacji w pliku `src/data/app-library.json`. Struktura: kategorie (AI, Dev, Design, Productivity, Special) z listą aplikacji. Każda aplikacja: `{ id, name, url, icon, isPinned, isDefault, isFavorite }`. Store `appLibraryStore.js` z funkcjami `loadAppLibrary()` i `filterApps(query)`. W Sidebar — sekcja „App Library" z komponentem `AppLibraryItem`. Funkcja `handleAddFromLibrary(app)` tworzy nowy profil z UUID i zapisuje przez `saveProfiles()`. Toast po dodaniu. Jeśli profil o tym URL już istnieje → toast „Profil już istnieje".
+- **Sekcja:** SIDEBAR / PROFILE MANAGER
+- **Opis:** Stworzenie biblioteki gotowych aplikacji w pliku `src/data/app-library.json`. Struktura: kategorie (AI, Dev, Design, Productivity, Special) z listą aplikacji. W Sidebar — sekcja „App Library". Funkcja `handleAddFromLibrary(app)` tworzy nowy profil.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Użytkownik musi ręcznie wpisywać URL profilu → wolne, niewygodne. App Library jest statyczna — nie zapisujemy jej do store. Dodawanie profilu = tworzenie nowego obiektu w profilesStore. Każdy app musi mieć ikonę w `icons.js`. Jeśli App Library ma 200+ pozycji → dodać paginację lub lazy load. Dotyczy: `src/data/app-library.json` (NOWY), `src/core/appLibraryStore.js` (NOWY), `Sidebar.jsx`, `SidebarSection.jsx`, `AppLibraryItem.jsx` (NOWY).
+- **Komentarz:** App Library jest statyczna. Dodawanie profilu = tworzenie nowego obiektu w profilesStore.
 
 ---
 
 ### [Filtrowanie Profili — Search Bar] :
 
 - **ID:** SIDEBAR_REQ-002
-- **Opis:** Komponent `SidebarSearch.jsx` z polem input filtrującym profile w czasie rzeczywistym. Filtrowanie po `name`, `url`, `label`. Jeśli lista pusta → komunikat „Brak wyników". Jeśli query = "" → pełna lista. Tłumaczenie: `sidebar.searchPlaceholder`.
+- **Sekcja:** SIDEBAR / PROFILE MANAGER
+- **Opis:** Komponent `SidebarSearch.jsx` z polem input filtrującym profile w czasie rzeczywistym po `name`, `url`, `label`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Sidebar może mieć 50+ profili → trudno znaleźć właściwy. Sidebar ma: search bar, highlight wyników, rozwijanie sekcji gdzie są wyniki. Dotyczy: `Sidebar.jsx`, `SidebarSearch.jsx` (NOWY), `profilesStore.js`.
+- **Komentarz:** Sidebar może mieć 50+ profili → trudno znaleźć właściwy.
 
 ---
 
 ### [Kategorie Profili] :
 
 - **ID:** SIDEBAR_REQ-003
-- **Opis:** Dodanie pola `category` do profilu: `"AI" | "Dev" | "Design" | "Productivity" | "Special"`. Grupowanie profili w Sidebar według kategorii przez `SidebarSection`. Jeśli kategoria pusta → nie renderuj sekcji. Walidacja kategorii przy zapisie profilu. Tłumaczenia kategorii w locales.
+- **Sekcja:** SIDEBAR / PROFILE MANAGER
+- **Opis:** Dodanie pola `category` do profilu. Grupowanie profili w Sidebar według kategorii przez `SidebarSection`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Profile są w jednej liście → chaos. Sidebar staje się uporządkowany jak w Rambox/WebCatalog. Dotyczy: `profilesStore.js`, `Sidebar.jsx`, `SidebarSection.jsx`.
+- **Komentarz:** Profile są w jednej liście → chaos.
 
 ---
 
 ### [Ostatnio Używane Profile] :
 
 - **ID:** SIDEBAR_REQ-004
-- **Opis:** Dodanie pola `lastUsedAt` do profilu. Aktualizacja `lastUsedAt: Date.now()` przy każdym otwarciu profilu. Sekcja „Last used" w Sidebar: 10 ostatnio używanych profili posortowanych malejąco po `lastUsedAt`.
+- **Sekcja:** SIDEBAR / PROFILE MANAGER
+- **Opis:** Dodanie pola `lastUsedAt` do profilu. Sekcja „Last used" w Sidebar: 10 ostatnio używanych profili.
 - **Status:** IN_SPRINT
 - **Priorytet:** MINOR
 - **Version:** 0.0.3
-- **Komentarz:** Szybki dostęp do ostatnio używanych aplikacji. Dotyczy: `profilesStore.js`, `Sidebar.jsx`.
+- **Komentarz:** Szybki dostęp do ostatnio używanych aplikacji.
 
 ---
 
 ### [Drag & Drop Profili] :
 
 - **ID:** SIDEBAR_REQ-005
-- **Opis:** Implementacja HTML5 drag & drop dla profili w Sidebar. Atrybuty `draggable`, `onDragStart`, `onDrop` na elementach listy. Funkcja `reorderProfiles(targetId)` przelicza kolejność i wywołuje `saveProfiles()`. Drag & drop musi działać między kategoriami.
+- **Sekcja:** SIDEBAR / PROFILE MANAGER
+- **Opis:** Implementacja HTML5 drag & drop dla profili w Sidebar. Funkcja `reorderProfiles(targetId)`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Pełna personalizacja Sidebaru. Po zmianie kolejności → `saveProfiles()`. Dotyczy: `Sidebar.jsx`, `profilesStore.js`.
+- **Komentarz:** Pełna personalizacja Sidebaru.
 
 ---
 
 ### [Edycja Profilu — Modal] :
 
 - **ID:** SIDEBAR_REQ-006
-- **Opis:** Komponent `ProfileModal.jsx` z polami: Name, URL, Category, Label (tooltip), Notes (rich text), User Agent, adBlocker (per profil — override globalnego), pinned (czy na górze listy), kolor/ikona (opcjonalnie). Przycisk „Edit" w `SidebarProfileItem`. Po zapisaniu: `updateProfile(id, patch)` + `saveProfiles()` + toast. Walidacja URL. Usunięcie wszystkich `prompt()` z kodu.
+- **Sekcja:** SIDEBAR / PROFILE MANAGER
+- **Opis:** Komponent `ProfileModal.jsx` z polami: Name, URL, Category, Label, Notes, User Agent, adBlocker, pinned. Walidacja URL.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** AdBlocker musi mieć toggle per profil (globalny + per-profil override). Logika: jeśli `profile.adBlocker !== undefined` → użyj `profile.adBlocker`, else → użyj `settings.adBlocker`. Dotyczy: `SidebarProfileItem.jsx`, `ProfileModal.jsx` (NOWY), `profilesStore.js`.
+- **Komentarz:** AdBlocker per profil override.
 
 ---
 
-### [Multi-Account Login] :
-
-- **ID:** SIDEBAR_REQ-007
-- **Opis:** Każdy profil ma własny `partition` w WebView. Możliwość kopiowania cookies między partycjami.
-- **Status:** IN_SPRINT
-- **Priorytet:** MINOR
-- **Version:** 0.0.3
-- **Komentarz:** DO-ANALYSIS — nie implementować bez decyzji użytkownika. Dotyczy: `profilesStore.js`, `WebViewTab.jsx`.
-
----
-
-## 🌐 WEBVIEW
+## 🌐 WEBVIEW MANAGER
 
 > Wymagania dotyczące widoku WebView: toolbar, tile view, user agent, adblocker, screenshot, single app mode, resource monitor.
 
@@ -309,81 +371,100 @@ DEPENDS ON: structure.txt, DevelopersGuide.md, AI_Development_Standards.md
 ### [Toolbar WebView jak w Przeglądarce] :
 
 - **ID:** WEBVIEW_REQ-001
-- **Opis:** Komponent `WebViewToolbar.jsx` z przyciskami: Back, Forward, Refresh, Address Bar (readonly, z togglem na edytowalny w Settings), Copy URL, Open External, Zoom In, Zoom Out, DevTools, Clear Cache, Screenshot. Toolbar jest w pełni kontrolowany przez `WebViewTab` — `WebViewToolbar` tylko wywołuje callbacki. Każdy przycisk ma tooltip z opisem i skrótem klawiszowym. Skróty: `Ctrl+L` — fokus na address bar, `Ctrl+R` — reload, `Alt+←/→` — back/forward. Jeśli WebView nie załadowany → disable przyciski. Jeśli URL = `about:blank` → ukryj copy/open external.
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Komponent `WebViewToolbar.jsx` z przyciskami: Back, Forward, Refresh, Address Bar, Copy URL, Open External, Zoom, DevTools, Clear Cache, Screenshot. Skróty: `Ctrl+L`, `Ctrl+R`, `Alt+←/→`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Obecny toolbar jest minimalny. Brakuje podstawowych funkcji przeglądarkowych. Dotyczy: `WebViewTab.jsx`, `WebViewToolbar.jsx`, `icons.js`, locales.
+- **Komentarz:** Obecny toolbar jest minimalny.
 
 ---
 
 ### [Tile View — Wiele WebView Obok Siebie] :
 
 - **ID:** WEBVIEW_REQ-002
-- **Opis:** Tryb tile view: 2–3 WebView obok siebie w gridzie. Przycisk toggle w toolbarze. Komponent `WebViewTileView.jsx` renderuje wiele `WebViewTab` w trybie tile (bez sidebaru i dużego toolbaru). Tile view to tryb alternatywny, nie zastępuje normalnego widoku.
-- **Status:** IN_SPRINT
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Tryb tile view: 2–3 WebView obok siebie w gridzie. Przycisk toggle w toolbarze. Komponent `WebViewTileView.jsx`.
+- **Status:** BACKLOG
 - **Priorytet:** MINOR
-- **Version:** 0.0.3
-- **Komentarz:** Multitasking jak w Rambox. Dotyczy: `WebViewTab.jsx`, `WebViewTileView.jsx` (NOWY), `icons.js`.
+- **Version:** 0.0.4
+- **Komentarz:** FEATURES.tileView = true w config.js, ale komponent nie istnieje.
 
 ---
 
 ### [Custom User Agent per Profil] :
 
 - **ID:** WEBVIEW_REQ-003
-- **Opis:** Pole `userAgent` w profilu. Input w `ProfileModal.jsx`. W `WebViewTab.jsx`: `<webview useragent={profile.userAgent || undefined} src={profile.url} />`. Jeśli `userAgent` pusty lub whitespace → użyj domyślnego. Walidacja: trim i sprawdzenie czy nie jest pustym stringiem.
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Pole `userAgent` w profilu. Input w `ProfileModal.jsx`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Niektóre strony wymagają UA (mobilne wersje, starsze strony). Dotyczy: `profilesStore.js`, `ProfileModal.jsx`, `WebViewTab.jsx`.
+- **Komentarz:** Niektóre strony wymagają UA (mobilne wersje).
 
 ---
 
 ### [AdBlocker — Toggle Globalny i per Profil] :
 
 - **ID:** WEBVIEW_REQ-004
-- **Opis:** Implementacja AdBlockera w `main.js` przez `session.defaultSession.webRequest.onBeforeRequest`. Funkcja `isAdUrl(url)` sprawdza regex: `/doubleclick|adservice|googlesyndication/`. Globalny toggle w Settings. Per-profil override: jeśli `profile.adBlocker !== undefined` → użyj `profile.adBlocker`, else → użyj `settings.adBlocker`. Zmiana ustawienia wymaga restartu WebView.
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Implementacja AdBlockera w `main.js` przez `session.defaultSession.webRequest.onBeforeRequest`. Funkcja `isAdUrl(url)` sprawdza regex. Zmiana wymaga restartu WebView.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Masz flagę adBlocker, ale brak implementacji. Dotyczy: `main.js`, `settingsStore.js`, `Settings.jsx`, `ProfileModal.jsx`.
+- **Komentarz:** Globalny toggle w Settings + per-profile override.
 
 ---
 
 ### [Screenshot Aktywnego WebView] :
 
 - **ID:** WEBVIEW_REQ-005
-- **Opis:** Przycisk „Screenshot" w toolbarze WebView. Po kliknięciu: WebView robi screenshot przez API `capturePage()`, zapisuje PNG do schowka, toast: „Zrzut ekranu skopiowany do schowka". Opcjonalnie: zapis do pliku, otwarcie folderu Screenshots.
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Przycisk „Screenshot" w toolbarze WebView. API `capturePage()`, zapis PNG do schowka, toast potwierdzenia.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Nowy feature. Dotyczy: `WebViewTab.jsx`, `WebViewToolbar.jsx`, `main.js` (handler IPC dla capturePage).
+- **Komentarz:** Przycisk istnieje w toolbarze.
 
 ---
 
 ### [Single App Mode — Osobne Okno Electron] :
 
 - **ID:** WEBVIEW_REQ-006
-- **Opis:** Przycisk w toolbarze WebView otwierający profil w osobnym oknie Electron. Po zamknięciu okna — powrót do normalnego widoku. Idealne na drugi monitor.
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Przycisk w toolbarze WebView otwierający profil w osobnym oknie Electron. Po zamknięciu okna — powrót.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Nowy feature. Dotyczy: `WebViewTab.jsx`, `WebViewToolbar.jsx`, `main.js` (tworzenie nowego BrowserWindow).
+- **Komentarz:** Idealne na drugi monitor.
 
 ---
 
-### [Resource Monitor WebView] :
+### [Resource Monitor WebView – Handler] :
 
 - **ID:** WEBVIEW_REQ-007
-- **Opis:** Przycisk „Resource Monitor" w toolbarze WebView. Po kliknięciu: toast z aktualnym zużyciem RAM/CPU WebView. Dane pobierane z `webContents.getProcessMemoryInfo()`.
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Handler IPC dla Resource Monitor. Dane pobierane z `webContents.getProcessMemoryInfo()`. **Handler istnieje, UI brakuje** (patrz ARCH_REQ-023).
 - **Status:** IN_SPRINT
 - **Priorytet:** MINOR
 - **Version:** 0.0.3
-- **Komentarz:** Nowy feature. Dotyczy: `WebViewTab.jsx`, `WebViewToolbar.jsx`, `main.js` (handler IPC).
+- **Komentarz:** Część ARCH_REQ-023.
 
 ---
 
-## 📝 NOTEPAD
+### [Sleep Tabs — Uśpienie Nieaktywnych Kafelków] :
+
+- **ID:** WEBVIEW_REQ-008
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Jeśli profil nie jest aktywny przez X minut → WebView `loadURL("about:blank")`. Przy aktywacji → wybudzenie. Placeholder „Tab is sleeping". Konfiguracja w `config.js` i Settings.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Sprawdzanie co 60 sekund przez `setInterval` z cleanup.
+
+---
+
+## 📝 NOTEPAD EDITOR
 
 > Wymagania dotyczące notatnika: syntax highlight, spellcheck, rich text.
 
@@ -392,37 +473,40 @@ DEPENDS ON: structure.txt, DevelopersGuide.md, AI_Development_Standards.md
 ### [Syntax Highlight — CodeMirror/Monaco] :
 
 - **ID:** NOTEPAD_REQ-001
-- **Opis:** Implementacja CodeMirror lub Monaco Editor w `NotepadEditor.jsx`. Tryby: JS, Python, HTML, CSS, XML. Syntax highlight aktywuje się gdy `note.mode === "code"`. Dodanie pola `language` w notatce. Ciemny motyw edytora.
-- **Status:** IN_SPRINT
+- **Sekcja:** NOTEPAD EDITOR
+- **Opis:** Implementacja CodeMirror lub Monaco Editor. Tryby: JS, Python, HTML, CSS, XML. Syntax highlight gdy `note.mode === "code"`.
+- **Status:** BACKLOG
 - **Priorytet:** MAJOR
-- **Version:** 0.0.3
-- **Komentarz:** Notepad jest plain text → nie nadaje się do kodu. Dotyczy: `NotepadEditor.jsx`, `notepadStore.js`.
+- **Version:** 0.0.4
+- **Komentarz:** FEATURES.syntaxHighlight = true w config.js, ale brak implementacji.
 
 ---
 
 ### [Spellcheck w Notatniku] :
 
 - **ID:** NOTEPAD_REQ-002
-- **Opis:** W trybie plain/rich text: `<textarea spellCheck={settings.spellcheck} />`. Spellcheck PL/EN zależy od języka systemu. Toggle w Settings.
+- **Sekcja:** NOTEPAD EDITOR
+- **Opis:** W trybie plain/rich text: `<textarea spellCheck={settings.spellcheck} />`. Toggle w Settings.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `NotepadEditor.jsx`, `Settings.jsx`.
+- **Komentarz:** Spellcheck PL/EN zależny od języka systemu.
 
 ---
 
 ### [Rich Text Notatki] :
 
 - **ID:** NOTEPAD_REQ-003
-- **Opis:** Tryb rich text w notatniku: bold, italic, underline, listy, linki. Komponent `RichTextEditor` z `onChange`. Przełączanie między trybami: plain text / rich text / code.
-- **Status:** IN_SPRINT
+- **Sekcja:** NOTEPAD EDITOR
+- **Opis:** Tryb rich text: bold, italic, underline, listy, linki. Przełączanie między trybami.
+- **Status:** BACKLOG
 - **Priorytet:** MAJOR
-- **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `NotepadEditor.jsx`, `Notepad.jsx`.
+- **Version:** 0.0.4
+- **Komentarz:** FEATURES.richText = true w config.js, ale brak implementacji.
 
 ---
 
-## ✅ TASKSVIEW / TASKPANEL
+## ✅ TASKPANEL / AGGREGATEDTASKS
 
 > Wymagania dotyczące panelu zadań: filtrowanie, wyszukiwanie, rich text w opisach, modal dodawania/edycji.
 
@@ -431,48 +515,52 @@ DEPENDS ON: structure.txt, DevelopersGuide.md, AI_Development_Standards.md
 ### [Filtrowanie Zadań po Priorytecie] :
 
 - **ID:** TASKS_REQ-001
-- **Opis:** Filtrowanie zadań po priorytecie (A/B/C/D/E) w `TaskPanel.jsx`. Komponent `TaskFilters.jsx` z dropdownem priorytetów. Logika: `tasks.filter(t => filters.priority ? t.priority === filters.priority : true)`. Kolory priorytetów muszą być spójne w całej aplikacji.
+- **Sekcja:** TASKPANEL / AGGREGATEDTASKS
+- **Opis:** Filtrowanie zadań po priorytecie (A/B/C/D/E) w `TaskPanel.jsx`. Komponent `TaskFilters.jsx` z dropdownem.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `TaskPanel.jsx`, `TaskFilters.jsx`.
+- **Komentarz:** Kolory priorytetów spójne w całej aplikacji.
 
 ---
 
 ### [Wyszukiwarka Zadań] :
 
 - **ID:** TASKS_REQ-002
-- **Opis:** Wyszukiwanie zadań w czasie rzeczywistym po `title` i `description`. Logika: `tasks.filter(t => t.title.toLowerCase().includes(query) || t.description.toLowerCase().includes(query))`.
+- **Sekcja:** TASKPANEL / AGGREGATEDTASKS
+- **Opis:** Wyszukiwanie zadań w czasie rzeczywistym po `title` i `description`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `TaskPanel.jsx`, `TaskFilters.jsx`.
+- **Komentarz:** Case-insensitive.
 
 ---
 
 ### [Rich Text w Opisach Zadań] :
 
 - **ID:** TASKS_REQ-003
-- **Opis:** Rich text editor w polu `description` w `TaskModal.jsx`. Opis zadania może być HTML/Markdown. Zapisywany w store jako string.
+- **Sekcja:** TASKPANEL / AGGREGATEDTASKS
+- **Opis:** Rich text editor w polu `description` w `TaskModal.jsx`. Opis jako HTML/Markdown.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `TaskModal.jsx`, `tasksStore.js`.
+- **Komentarz:** Zapisywany w store jako string.
 
 ---
 
 ### [Modal Add/Edit Task] :
 
 - **ID:** TASKS_REQ-004
-- **Opis:** Komponent `TaskModal.jsx` z polami: tytuł (wymagany), opis (rich text), priorytet (A–E, dropdown), status (Backlog/Active/Done, dropdown), projekt, deadline, tagi. Walidacja: tytuł nie może być pusty → komunikat błędu. Usunięcie wszystkich `prompt()` związanych z zadaniami. W `TaskPanel.jsx`: `handleAddTask()`, `handleEditTask(task)`, `handleSaveTask(task)` — rozróżnienie create/update po obecności `task.id`.
+- **Sekcja:** TASKPANEL / AGGREGATEDTASKS
+- **Opis:** Komponent `TaskModal.jsx` z polami: tytuł (wymagany), opis, priorytet (dropdown), status (Backlog/Active/Done, dropdown), projekt, deadline, tagi.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Priorytet i status muszą być wybierane z dropdownów, nie wpisywane ręcznie. Dotyczy: `TaskModal.jsx`, `TaskPanel.jsx`, `tasksStore.js`.
+- **Komentarz:** Usunięcie wszystkich `prompt()` związanych z zadaniami.
 
 ---
 
-## 💻 TERMINAL
+## 💻 TERMINAL CONSOLE
 
 > Wymagania dotyczące terminala: cleanup listenerów, historia komend, kolorowanie ANSI.
 
@@ -481,94 +569,102 @@ DEPENDS ON: structure.txt, DevelopersGuide.md, AI_Development_Standards.md
 ### [Cleanup Listenerów IPC Terminala] :
 
 - **ID:** TERMINAL_REQ-001
-- **Opis:** W `preload.cjs` funkcje `onTerminalData` i `onTerminalExit` muszą zwracać funkcję cleanup: `return () => ipcRenderer.removeListener(...)`. W `Terminal.jsx` — `useEffect` musi dispose'ować oba listenery i zabijać `ptyProcess` przy unmount. Po zamknięciu Terminala nie może zostać żaden listener IPC ani żywy `ptyProcess`.
+- **Sekcja:** TERMINAL CONSOLE
+- **Opis:** W `preload.cjs` funkcje `onTerminalData` i `onTerminalExit` muszą zwracać cleanup. W `Terminal.jsx` dispose'ować listenery i zabijać `ptyProcess`.
 - **Status:** IN_SPRINT
 - **Priorytet:** CRITICAL
 - **Version:** 0.0.3
-- **Komentarz:** Terminal dodaje listenery IPC, ale ich nie usuwa. Każde otwarcie terminala dokłada kolejne subskrypcje → memory leak, duplikowane eventy, rosnący RAM. Dotyczy: `Terminal.jsx`, `preload.cjs`, `main.js`.
+- **Komentarz:** Każde otwarcie terminala dokłada kolejne subskrypcje → memory leak.
 
 ---
 
 ### [Historia Komend Terminala] :
 
 - **ID:** TERMINAL_REQ-002
-- **Opis:** Historia komend per sesja (nie zapisywana do store). Stan: `history[]` i `historyIndex`. Przy wysyłaniu komendy: dodaj do `history`, reset `historyIndex = -1`. Obsługa strzałek ArrowUp/ArrowDown przez `term.onKey`. Helper `replaceCurrentLine(cmd)` czyści aktualną linię i wpisuje tekst z historii.
+- **Sekcja:** TERMINAL CONSOLE
+- **Opis:** Historia komend per sesja. Obsługa strzałek ArrowUp/ArrowDown przez `term.onKey`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MINOR
 - **Version:** 0.0.3
-- **Komentarz:** Brak historii komend (strzałka w górę/dół) — standard w terminalach. Dotyczy: `Terminal.jsx`, opcjonalnie `terminalStore.js`.
+- **Komentarz:** Standard w terminalach.
 
 ---
 
 ### [Kolorowanie Outputu ANSI] :
 
 - **ID:** TERMINAL_REQ-003
-- **Opis:** xterm.js obsługuje ANSI kolorowanie natywnie. Konfiguracja: `new Terminal({ convertEol: true, theme: { background: "#000000" } })`. Załadowanie addonów: `FitAddon`, `WebLinksAddon`. Upewnić się, że `ptyProcess` nie stripuje sekwencji ANSI.
+- **Sekcja:** TERMINAL CONSOLE
+- **Opis:** xterm.js obsługuje ANSI natywnie. Addony: `FitAddon`, `WebLinksAddon`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MINOR
 - **Version:** 0.0.3
-- **Komentarz:** Brak kolorowania ANSI → logi i output są mniej czytelne. Nie trzeba ręcznie parsować kolorów. Dotyczy: `Terminal.jsx`.
+- **Komentarz:** Nie trzeba ręcznie parsować kolorów.
 
 ---
 
-## ⚙️ SETTINGS
+## ⚙️ SETTINGS PANEL
 
-> Wymagania dotyczące panelu ustawień: hotkeys, dark mode, eksport/import, logi, konto użytkownika.
+> Wymagania dotyczące panelu ustawień: hotkeys, dark mode, eksport/import, logi.
 
 ---
 
 ### [Hotkeys Manager — Custom Skróty i Snippety] :
 
 - **ID:** SETTINGS_REQ-001
-- **Opis:** Moduł `SettingsHotkeys.jsx` z tabelą hotkeys (Add/Edit/Delete przez modale). Struktura hotkey: `{ id, shortcut, name, text, enabled }`. Store `hotkeysStore.js` z `loadHotkeys()` i `saveHotkeys(list)`. W `main.js`: `registerHotkeys()` rejestruje skróty przez `globalShortcut.register`. W `preload.cjs`: `onHotkeyTrigger` zwraca cleanup. W `App.jsx`: `useEffect` nasłuchuje `onHotkeyTrigger` i wywołuje `window.electronAPI.insertText(hk.text)`. Walidacja skrótu: unikalny, poprawny format. Toggle włączenia/wyłączenia całego systemu hotkeys w Settings.
+- **Sekcja:** SETTINGS PANEL
+- **Opis:** Moduł `SettingsHotkeys.jsx` z tabelą hotkeys. Store `hotkeysStore.js`. Rejestracja przez `globalShortcut`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Brak możliwości definiowania własnych skrótów wklejających tekst (snippety, podpisy, szablony). `insertText` po stronie main może używać robotjs/native input lub ograniczyć się do wklejania w obrębie aplikacji. Dotyczy: `SettingsHotkeys.jsx` (NOWY), `hotkeysStore.js` (NOWY), `main.js`, `preload.cjs`.
+- **Komentarz:** Snippety tekstowe do automatycznego wklejania.
 
 ---
 
 ### [Dark Mode] :
 
 - **ID:** SETTINGS_REQ-002
-- **Opis:** Ustawienie `settings.theme = "light" | "dark" | "system"`. W `App.jsx`: `useEffect` dodaje/usuwa klasę `dark` na `document.documentElement` w zależności od ustawienia. Tryb `system` używa `window.matchMedia("(prefers-color-scheme: dark)")`. Dark mode musi obejmować: Sidebar, WebViewTab toolbar, TaskPanel, Notepad, Settings. Kolory priorytetów, toastów, tooltipów muszą mieć wersje dark.
+- **Sekcja:** SETTINGS PANEL
+- **Opis:** Ustawienie `settings.theme = "light" | "dark" | "system"`. Klasa `dark` na `document.documentElement`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Brak dark mode w aplikacji devowej to grzech. Dotyczy: `SettingsAppearance.jsx`, `index.css`/Tailwind config, `App.jsx`.
+- **Komentarz:** Dark mode to grzech w aplikacji devowej.
 
 ---
 
 ### [Eksport/Import Ustawień] :
 
 - **ID:** SETTINGS_REQ-003
-- **Opis:** Eksport do JSON: `{ version, exportedAt, settings, profiles, tasks, notes }`. Handler IPC `settings:export` — dialog zapisu pliku, `fs.writeFileSync`. Handler IPC `settings:import` — dialog otwarcia pliku, `JSON.parse`, walidacja wersji i struktury, modal z podsumowaniem (ile profili, tasków, itp.) przed nadpisaniem. Nie nadpisywać wszystkiego bez pytania.
+- **Sekcja:** SETTINGS PANEL
+- **Opis:** Eksport do JSON: `{ version, exportedAt, settings, profiles, tasks, notes }`. Import z walidacją i modalem potwierdzenia.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Brak możliwości backupu ustawień, profili, notatek, tasków. Bezpieczny backup i migracja między maszynami. Dotyczy: `SettingsBackup.jsx` (NOWY), `settingsStore.js`, `preload.cjs`, `main.js`.
+- **Komentarz:** Backup i migracja między maszynami.
 
 ---
 
 ### [Logi Dostępne z Settings] :
 
 - **ID:** SETTINGS_REQ-004
-- **Opis:** Przycisk „Otwórz folder logów" w `SettingsDebug.jsx`. Handler IPC `logs:openFolder` wywołuje `shell.openPath(getLogsDir())`. Folder logów: `userData/logs`. Nie pokazywać ścieżki w UI — tylko otwierać systemowy eksplorator.
+- **Sekcja:** SETTINGS PANEL
+- **Opis:** Przycisk „Otwórz folder logów" w `SettingsDebug.jsx`. Handler IPC `logs:openFolder`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Logi są, ale użytkownik nie ma łatwego dostępu. Dotyczy: `SettingsDebug.jsx`, `logService.js`, `main.js`.
+- **Komentarz:** Logi są, ale użytkownik nie ma łatwego dostępu.
 
 ---
 
-### [Konto Użytkownika i Sync w Chmurze] :
+### [Przycisk Czyszczenia Logów] :
 
 - **ID:** SETTINGS_REQ-005
-- **Opis:** Logowanie e-mail + hasło / OAuth. Sync profili, settings, notatek, tasków z backendem (np. Supabase/Firebase). Rozwiązywanie konfliktów (last write wins / merge).
+- **Sekcja:** SETTINGS PANEL
+- **Opis:** Przycisk „Wyczyść logi" w `SettingsDebug.jsx`. Usuwa pliki w `userData/logs/` (oprócz aktualnego).
 - **Status:** IN_SPRINT
 - **Priorytet:** MINOR
 - **Version:** 0.0.3
-- **Komentarz:** DO-ANALYSIS — nie implementować bez decyzji o backendzie. Wymaga osobnego projektu serwerowego. Dotyczy: `AuthService.js` (NOWY), `CloudSyncService.js` (NOWY), `SettingsAccount.jsx` (NOWY).
+- **Komentarz:** Zarządzanie przestrzenią dyskową.
 
 ---
 
@@ -581,103 +677,112 @@ DEPENDS ON: structure.txt, DevelopersGuide.md, AI_Development_Standards.md
 ### [JSON/YAML/XML Formatter] :
 
 - **ID:** TOOLS_REQ-001
-- **Opis:** Narzędzie `Tools/JsonYamlXmlFormatter.jsx`: textarea input, wybór formatu (JSON/YAML/XML), przyciski „Format", „Validate", „Copy", „Minify/Pretty". Użycie `JSON.parse/stringify`, `js-yaml`, parser XML. Błędy walidacji pokazywane w panelu error (nie alert).
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Narzędzie `Tools/JsonYamlXmlFormatter.jsx` z formatowaniem, walidacją, minify/pretty.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `Tools/JsonYamlXmlFormatter.jsx` (NOWY), `icons.js`, locales.
+- **Komentarz:** Użycie `JSON.parse/stringify`, `js-yaml`.
 
 ---
 
 ### [Regex Tester] :
 
 - **ID:** TOOLS_REQ-002
-- **Opis:** Narzędzie `Tools/RegexTester.jsx`: pola pattern, flags, test string. Lista dopasowań, grup, indeksów pod spodem. Obsługa błędnego pattern w try/catch.
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Narzędzie `Tools/RegexTester.jsx` z pattern, flags, test string. Lista dopasowań i grup.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `Tools/RegexTester.jsx` (NOWY).
+- **Komentarz:** Obsługa błędnego pattern w try/catch.
 
 ---
 
 ### [Markdown Previewer] :
 
 - **ID:** TOOLS_REQ-003
-- **Opis:** Narzędzie `Tools/MarkdownPreviewer.jsx`: lewa strona — textarea/CodeMirror, prawa strona — podgląd HTML (marked/markdown-it). Tryb split/fullscreen. Drag & drop plików `.md`. Sanityzacja HTML (XSS). Eksport do HTML.
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Narzędzie `Tools/MarkdownPreviewer.jsx` z split view, drag & drop `.md`, eksport HTML.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `Tools/MarkdownPreviewer.jsx` (NOWY).
+- **Komentarz:** Sanityzacja HTML (XSS).
 
 ---
 
 ### [Image Tools — Compress, Resize, Convert] :
 
 - **ID:** TOOLS_REQ-004
-- **Opis:** Narzędzie `Tools/ImageTools.jsx`: drag & drop obrazów, preview przed/po, suwaki jakości i rozmiaru, wybór formatu (PNG/JPG/WebP). Przetwarzanie lokalne przez Canvas API (bez zewnętrznego API). Toast „Zapisano" po eksporcie.
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Narzędzie `Tools/ImageTools.jsx` z drag & drop, preview, suwaki jakości/rozmiaru, format (PNG/JPG/WebP). Przetwarzanie przez Canvas API.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `Tools/ImageTools.jsx` (NOWY).
+- **Komentarz:** Bez zewnętrznego API.
 
 ---
 
 ### [SVG → PNG Converter] :
 
 - **ID:** TOOLS_REQ-005
-- **Opis:** Narzędzie `Tools/SvgToPng.jsx`: drag & drop SVG, wybór rozdzielczości, render do canvas, eksport PNG. Obsługa wielu plików. Podgląd SVG + kod źródłowy.
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Narzędzie `Tools/SvgToPng.jsx` z drag & drop SVG, wybór rozdzielczości, render do canvas, eksport PNG.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `Tools/SvgToPng.jsx` (NOWY).
+- **Komentarz:** Obsługa wielu plików.
 
 ---
 
 ### [File Previewer] :
 
 - **ID:** TOOLS_REQ-006
-- **Opis:** Narzędzie `Tools/FilePreviewer.jsx`: drag & drop pliku, rozpoznanie typu po rozszerzeniu/MIME. Tryby: RAW / PREVIEW. HTML → WebView, TXT → text, JSON → format + kolor, CSS/JS → highlight, Markdown → auto preview. Użycie highlight.js/CodeMirror do kolorowania. Zakaz wykonywania JS z plików.
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Narzędzie `Tools/FilePreviewer.jsx` z drag & drop, rozpoznanie typu, tryby RAW/PREVIEW. Użycie highlight.js.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `Tools/FilePreviewer.jsx` (NOWY).
+- **Komentarz:** Zakaz wykonywania JS z plików.
 
 ---
 
 ### [Mini Postman — API Tester] :
 
 - **ID:** TOOLS_REQ-007
-- **Opis:** Narzędzie `Tools/ApiTester.jsx`: metoda HTTP, URL, headers, body, przycisk „Send", panel response (status, headers, body). Historia requestów. Użycie `fetch`. Obsługa timeout i błędów sieci.
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Narzędzie `Tools/ApiTester.jsx` z metodami HTTP, headers, body, historia requestów.
 - **Status:** IN_SPRINT
 - **Priorytet:** MINOR
 - **Version:** 0.0.3
-- **Komentarz:** Nice-to-have. Dotyczy: `Tools/ApiTester.jsx` (NOWY).
+- **Komentarz:** Nice-to-have.
 
 ---
 
 ### [Clipboard History] :
 
 - **ID:** TOOLS_REQ-008
-- **Opis:** Narzędzie `Tools/ClipboardHistory.jsx`: lista ostatnich wpisów schowka (tekst). Kliknięcie → skopiowanie z powrotem. Pinowanie wpisów. Użycie clipboard z Electron. Opcjonalny limit czasu dla wrażliwych danych.
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Narzędzie `Tools/ClipboardHistory.jsx` z listą ostatnich wpisów, pinowanie, kopiowanie.
 - **Status:** IN_SPRINT
 - **Priorytet:** MINOR
 - **Version:** 0.0.3
-- **Komentarz:** Nice-to-have. Nie zapisywać wrażliwych danych długoterminowo. Dotyczy: `Tools/ClipboardHistory.jsx` (NOWY), `clipboardStore.js` (NOWY), `main.js`.
+- **Komentarz:** Nie zapisywać wrażliwych danych długoterminowo.
 
 ---
 
 ### [Cookie Grabber] :
 
 - **ID:** TOOLS_REQ-009
-- **Opis:** Narzędzie Cookie Grabber: pobiera cookies z aktywnego WebView, pokazuje w tabeli (nazwa, wartość, domena, expiry), możliwość skopiowania pojedynczego cookie lub wszystkich, eksport do JSON.
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Narzędzie Cookie Grabber – pobiera cookies z aktywnego WebView, tabela, eksport JSON. **Full UI istnieje**.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Nowy feature. Dotyczy: nowy komponent w `Tools/`, `main.js` (handler IPC dla `session.cookies`).
+- **Komentarz:** Pełne narzędzie (komponent + handler IPC).
 
 ---
 
-## 📚 APP LIBRARY
+## 📚 APP LIBRARY (PEŁNY WIDOK)
 
 > Wymagania dotyczące pełnego widoku biblioteki aplikacji.
 
@@ -686,149 +791,941 @@ DEPENDS ON: structure.txt, DevelopersGuide.md, AI_Development_Standards.md
 ### [App Library — Pełny Widok Przeglądarki] :
 
 - **ID:** APPLIB_REQ-001
-- **Opis:** Pełny widok App Library jako osobny kafelek „App Library" w Sidebarze. Komponent `AppLibraryBrowser.jsx`. Możliwość filtrowania, sortowania, podglądu opisu, dodania do profili jednym kliknięciem. App Library jest tylko źródłem — nie zapisujemy jej zmian w store. Custom apps dopisywane do osobnego pliku `user-app-library.json`. Format aplikacji w bibliotece: `{ id, name, url, icon, isPinned, isDefault, isFavorite }`.
+- **Sekcja:** APP LIBRARY (PEŁNY WIDOK)
+- **Opis:** Pełny widok App Library jako osobny kafelek „App Library" w Sidebarze. Komponent `AppLibraryBrowser.jsx`. Filtrowanie, sortowanie, dodanie do profili. Działa dla default user.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `data/app-library.json`, `AppLibraryBrowser.jsx` (NOWY), Sidebar (skrótowa wersja).
+- **Komentarz:** App Library jest statyczna (`src/data/app-library.json`).
 
 ---
 
-## 🎨 UI/UX
+### [App Library – User Profile & Custom Apps] :
 
-> Wymagania dotyczące interfejsu użytkownika: redesign Sidebaru, toolbar WebView, toasty, tooltipy, modale, loading states, global search, sleep tabs.
+- **ID:** APPLIB_REQ-002
+- **Sekcja:** APP LIBRARY (PEŁNY WIDOK)
+- **Opis:** Po implementacji User Profile – możliwość tworzenia własnych aplikacji w bibliotece. Zapis do `user-app-library.json` (per użytkownik). Łączenie z domyślną biblioteką.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Zależne od implementacji User Profile / logowania.
+
+---
+
+## 🎨 UI/UX DESIGN & UX IMPROVEMENTS
+
+> Wymagania dotyczące interfejsu użytkownika: redesign, tooltipy, modale, loading states, global search.
 
 ---
 
 ### [Sidebar Redesign] :
 
 - **ID:** UIUX_REQ-001
-- **Opis:** Nowy layout Sidebaru: góra — search bar, poniżej — sekcje kategorii (AI, Dev, Design, Productivity, Special Tools, Profiles), na dole — „Last used", „Settings", „Help". Sidebar responsywny: zwijanie do ikon. Tooltipy na ikonach, pełne nazwy po hover.
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Nowy layout Sidebaru: search bar, sekcje kategorii, „Last used", „Settings", „Help". Responsywny: zwijanie do ikon.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `Sidebar.jsx`, `SidebarSection.jsx`, `SidebarProfileItem.jsx`, `SidebarSearch.jsx`.
+- **Komentarz:** Tooltipy na ikonach.
 
 ---
 
 ### [WebView Toolbar — Doprecyzowanie UX] :
 
 - **ID:** UIUX_REQ-002
-- **Opis:** Address bar przełączany między readonly/edytowalny (toggle w Settings). Skróty klawiszowe: `Ctrl+L` — fokus na address bar, `Ctrl+R` — reload, `Alt+←/→` — back/forward. Szczegóły implementacji w WEBVIEW_REQ-001.
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Address bar przełączany między readonly/edytowalny (toggle w Settings). Skróty klawiszowe.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Doprecyzowanie UX do WEBVIEW_REQ-001.
+- **Komentarz:** `addressBarEditable = false` w config.js – do weryfikacji UX.
 
 ---
 
 ### [Toast Messages — Globalny System] :
 
 - **ID:** UIUX_REQ-003
-- **Opis:** Globalny kontener `UI/ToastContainer.jsx` w `App.jsx`. API: `showToast("success" | "error" | "info" | "warning", message)`. Toasty znikają po 3–5 sekundach z możliwością ręcznego zamknięcia. Store `toastStore.js`.
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Globalny kontener `UI/ToastContainer.jsx`. API: `showToast(type, message)`. Toasty znikają po 3–5 sekundach.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `UI/ToastContainer.jsx`, `toastStore.js`.
+- **Komentarz:** Store `toastStore.js`.
 
 ---
 
 ### [Tooltipy Wszędzie] :
 
 - **ID:** UIUX_REQ-004
-- **Opis:** Komponent `UI/Tooltip.jsx` na hover/long-press. Tooltipy na: ikonach, kafelkach, przyciskach, polach formularzy (np. „User Agent — opcjonalny"), elementach UI ze skrótami klawiszowymi. Treść tooltipów z locales. Tooltipy muszą zawierać skróty klawiszowe, jeśli istnieją.
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Komponent `UI/Tooltip.jsx` na hover/long-press. Treść z locales. Tooltipy zawierają skróty klawiszowe.
 - **Status:** IN_SPRINT
 - **Priorytet:** MINOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `UI/Tooltip.jsx` (NOWY) i wszystkie przyciski/ikony w aplikacji.
+- **Komentarz:** Dotyczy wszystkich przycisków/ikon w aplikacji.
 
 ---
 
 ### [Modale zamiast alert/prompt] :
 
 - **ID:** UIUX_REQ-005
-- **Opis:** Globalny komponent `UI/Modal.jsx` z portalem do `document.body`. Obsługa: ESC, kliknięcie w tło, przyciski OK/Cancel. Każdy modal musi mieć: tytuł, opis, przyciski, walidację pól, komunikaty błędów. Modale: `TaskModal.jsx`, `ProfileModal.jsx`, `ProjectModal.jsx`. Wszystkie `alert/prompt/confirm` zastąpione modalami.
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Globalny komponent `UI/Modal.jsx` z portalem. Obsługa ESC, kliknięcie w tło, przyciski OK/Cancel.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `UI/Modal.jsx`, `TaskModal.jsx`, `ProfileModal.jsx`, `ProjectModal.jsx`.
+- **Komentarz:** Modale: Task, Profile, Project, Confirm.
 
 ---
 
 ### [Loading States — Spinner i Skeleton] :
 
 - **ID:** UIUX_REQ-006
-- **Opis:** Komponenty `UI/Spinner.jsx` i `UI/Skeleton.jsx`. Dla każdej operacji > 200ms: disable przycisk, pokaż spinner lub skeleton. Przykład: `if (loading) return <TasksSkeleton />`. Loading states spójne wizualnie. Nie blokować całej aplikacji — tylko lokalny obszar. Dotyczy: `TaskPanel`, `Settings`, `WebViewTab` (pierwsze ładowanie), `HistoryLog`.
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Komponenty `UI/Spinner.jsx` i `UI/Skeleton.jsx`. Dla operacji > 200ms: disable przycisk, spinner lub skeleton.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
-- **Komentarz:** Dotyczy: `UI/Spinner.jsx` (NOWY), `UI/Skeleton.jsx` (NOWY) i komponenty z operacjami async.
+- **Komentarz:** Dotyczy: TaskPanel, Settings, WebViewTab, HistoryLog.
 
 ---
 
 ### [Global Search — Ctrl+K] :
 
 - **ID:** UIUX_REQ-007
-- **Opis:** Komponent `GlobalSearch.jsx` otwierany skrótem `Ctrl+K`. Unified search: profile, projekty, zadania, notatki. Lista wyników z sekcjami: Profiles, Projects, Tasks, Notes. Enter na wyniku → przejście do odpowiedniego modułu (otwarcie profilu, projektu, notatki).
-- **Status:** IN_SPRINT
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Komponent `GlobalSearch.jsx` otwierany `Ctrl+K`. Unified search: profile, projekty, zadania, notatki.
+- **Status:** BACKLOG
 - **Priorytet:** MAJOR
-- **Version:** 0.0.3
-- **Komentarz:** Nowy feature. Dotyczy: `GlobalSearch.jsx` (NOWY), `App.jsx`, `profilesStore.js`, `tasksStore.js`, `notesStore.js`.
+- **Version:** 0.0.4
+- **Komentarz:** FEATURES.unifiedSearch = true w config.js, ale komponent nie istnieje.
 
 ---
 
-### [Sleep Tabs — Uśpienie Nieaktywnych Kafelków] :
+### [Loading Spinner / Skeleton – Globalny Util] :
 
 - **ID:** UIUX_REQ-008
-- **Opis:** Jeśli profil/kafelek nie jest aktywny przez X minut → WebView przechodzi w „sleep" (`loadURL("about:blank")`). Przy aktywacji zakładki → wybudzenie i załadowanie `profile.url`. Konfiguracja w `config.js`: `sleepTabsTimeout: 15 * 60 * 1000`. Ustawienia per profil i globalne w Settings: wyłączony / 5 / 15 / 30 min. Edge-case'y: formularze, logowanie (nie usuwać stanu logowania jeśli możliwe). Sprawdzanie co 60 sekund przez `setInterval` z cleanup.
-- **Status:** IN_SPRINT
-- **Priorytet:** MAJOR
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Globalny util do wyświetlania spinnera przy długich operacjach (logowanie, wake from sleep, ładowanie WebView). Sprawdzić, czy `UI/Spinner.jsx` lub `UI/Skeleton.jsx` już istnieją. Jeśli nie – dodać.
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
 - **Version:** 0.0.3
-- **Komentarz:** Nowy feature. Dotyczy: `WebViewTab.jsx`, `config.js`, `settingsStore.js`.
+- **Komentarz:** Do weryfikacji – na 99.9% nie ma.
 
 ---
 
+### [Splash Screen / Login Screen] :
+
+- **ID:** UIUX_REQ-009
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Ekran logowania / wyboru profilu użytkownika przy starcie (jeśli włączone). Grafika (logo, tło), lista użytkowników, przycisk „Dodaj nowego", opcja „Gość".
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Zależne od User Profile.
+
+---
+
+## 🧪 TEST (TESTY)
+
+> Wymagania dotyczące automatycznych testów integracyjnych i spójności projektu.
+
+---
+
+### [TestRunner – Dokumentacja (doc/)] :
+
+- **ID:** TEST_REQ-004
+- **Sekcja:** TEST
+- **Opis:** TestRunner sprawdza spójność folderu `doc/`. Testy: istnienie plików, nagłówki, README.md.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Implementacja: `tests/TestRunner_Doc.js`.
+
+---
+
+### [TestRunner – Zasoby (assets/)] :
+
+- **ID:** TEST_REQ-005
+- **Sekcja:** TEST
+- **Opis:** TestRunner sprawdza spójność folderu `assets/`. Testy: oczekiwane pliki, brak nieoczekiwanych, niepuste.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Implementacja: `tests/TestRunner_Assets.js`.
+
+---
+
+### [TestRunner – Konfiguracja (config.js)] :
+
+- **ID:** TEST_REQ-006
+- **Sekcja:** TEST
+- **Opis:** TestRunner sprawdza poprawność plików konfiguracyjnych. Testy: istnienie, re-eksport, typy flag, oczekiwane klucze.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Implementacja: `tests/TestRunner_Config.js`.
+
+---
+
+### [TestRunner – CSS (styles/)] :
+
+- **ID:** TEST_REQ-007
+- **Sekcja:** TEST
+- **Opis:** TestRunner sprawdza spójność plików CSS. Testy: istnienie plików, kolejność importów, brak cyklicznych zależności.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Implementacja: `tests/TestRunner_CSS.js`.
+
+---
+
+### [TestRunner – Re-eksporty (config, icons)] :
+
+- **ID:** TEST_REQ-008
+- **Sekcja:** TEST
+- **Opis:** TestRunner sprawdza poprawność re-eksportów: `root/config.js` → `src/config.js`, `src/utils/icons.js` → `src/data/icons.js`.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Implementacja: `tests/TestRunner_Reexport.js`.
+
+---
+
+### [TestRunner – Locales (dynamiczne)] :
+
+- **ID:** TEST_REQ-009
+- **Sekcja:** TEST
+- **Opis:** TestRunner dynamicznie ładuje locale na podstawie `SUPPORTED_LANGUAGES` z `config.js`. Testy spójności kluczy w `en.json` i `pl.json`.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** `SUPPORTED_LANGUAGES = ["en", "pl"]` w config.js – już istnieje.
+
+---
+
+### [TestRunner – Integracja z Main] :
+
+- **ID:** TEST_REQ-010
+- **Sekcja:** TEST
+- **Opis:** TestRunner zintegrowany z `main.js`, uruchamiany przy starcie gdy `debugMode === true`. Wyniki logowane do konsoli i pliku logów.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Dotyczy: `main.js`, `tests/index.js`.
+
+---
+
+## 📜 DOC (DOCUMENTATION)
+
+> Wymagania dotyczące dokumentacji.
+
+---
+
+### [Requirements.md – Ujednolicenie] :
+
+- **ID:** DOC_REQ-001
+- **Sekcja:** DOC
+- **Opis:** Aktualizacja `Requirements.md` zgodnie z ustaloną strukturą sekcji. Każde wymaganie ma poprawny ID, Status, Priorytet, Version, Komentarz.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Żadne wymaganie nie ma statusu DONE (dopóki nie potwierdzimy).
+
+---
+
+### [DEPENDS ON w CookieGrabber.jsx] :
+
+- **ID:** DOC_REQ-002
+- **Sekcja:** DOC
+- **Opis:** W `src/ui/tools/CookieGrabber.jsx` DEPENDS ON jest puste, mimo że importuje `TranslationContext`, `loggerRenderer`, `icons`. Wypełnić zgodnie z importami.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Skrypt `build_structure.py` powinien to wyłapać.
+
+---
+
+### [resourceMonitor.js – Brak importu loggera] :
+
+- **ID:** DOC_REQ-003
+- **Sekcja:** DOC
+- **Opis:** W `src/core/resourceMonitor.js` brak importu loggera. Dodać i użyć `logDebug` / `logError`.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Ostrzeżenie w MONIT.
+
+---
+
+## ## BLOCKED (ZABLOKOWANE ZADANIA)
+
+*(brak)*
+
+---
+
+## ## DONE (ZAKOŃCZONE ZADANIA)
+
+*(brak – zgodnie z zasadą: nic nie jest DONE dopóki nie potwierdzimy)*
+
+---
+
+## ## BACKLOG (CZEKAJĄ NA KOLEJNY SPRINT)
+
+> Wszystkie wymagania z Twojego oryginalnego pliku pozostają. Poniżej tylko **dodatkowe**, które nie były wcześniej.
+
+### [AI Voice Agent — Dyktowanie i Akcje] :
+- **ID:** ARCH_REQ-024
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Integracja z Web Speech API i lokalnym modelem LLM. Komendy głosowe PL na akcje systemowe.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** DO-ANALYSIS – nie implementować bez decyzji.
+
+### [Lokalny Automatyczny Asystent Code Review] :
+- **ID:** ARCH_REQ-025
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Narzędzie do code review w `src/ui/tools/CodeReview.jsx`. ESLint + heurystyki. Docelowo Ollama.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** DO-ANALYSIS – pełne przetwarzanie offline.
+
+### [Multi-Account Login & Credential Sharing] :
+- **ID:** SIDEBAR_REQ-007
+- **Sekcja:** SIDEBAR / PROFILE MANAGER
+- **Opis:** Izolacja profili z możliwością bezpiecznego współdzielenia cookies. Szyfrowany eksport/import przez `electron.safeStorage`.
+- **Status:** BACKLOG
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.4
+- **Komentarz:** DO-ANALYSIS – krytyczne pod kątem bezpieczeństwa.
+
+### [Zarządzanie Kontem i Synchronizacja w Chmurze] :
+- **ID:** SETTINGS_REQ-006
+- **Sekcja:** SETTINGS PANEL
+- **Opis:** Logowanie e-mail + hasło / OAuth. Synchronizacja profili, ustawień, notatek, tasków z backendem (Supabase/Firebase).
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** DO-ANALYSIS – wymaga osobnego projektu serwerowego.
+
+### [Help.jsx — Lazy Loading i Chunked Sekcje] :
+- **ID:** UIUX_REQ-010
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Optymalizacja panelu pomocy – lazy loading sekcji przez `React.lazy`, prefetch chunk, defer mount.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Likwidacja mikro-zamrożeń UI.
+
+### [Rozszerzenie Słownika constants.js] :
+- **ID:** GENERAL_REQ-001
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Rozbudowa `constants.js` o kategorie: Grafika, Search engines, Email, Cloud, Version Control.
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.4
+- **Komentarz:** Porządkowanie struktur danych.
+
+### [Natywna Obsługa Repozytoriów GitHub] :
+- **ID:** TOOLS_REQ-010
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Integracja z GitHub: przeglądanie zmian, branch, commit, push/pull.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Kluczowe dla automatyzacji z AI.
+
+### [Zaawansowany Monitoring Sieci i Ping] :
+- **ID:** UIUX_REQ-011
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Dynamiczne pingowanie hostów, renderowanie statusu opóźnień.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Podniesienie stabilności diagnostycznej.
+
+### [Zintegrowany Edytor CodeMirror / Monaco w Notepad] :
+- **ID:** NOTEPAD_REQ-004
+- **Sekcja:** NOTEPAD EDITOR
+- **Opis:** Zastąpienie `<textarea>` edytorem kodu. Syntax highlight, numeracja linii, auto-uzupełnianie.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Transformacja notatnika w mini-IDE.
+
+### [Pełny System Backupów i Walidacji Ustawień] :
+- **ID:** SETTINGS_REQ-007
+- **Sekcja:** SETTINGS PANEL
+- **Opis:** Dedykowany modal do eksportu/importu backupu. Walidacja JSON przed wgraniem.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Bezpieczeństwo i przenośność profili.
+
+### [Dynamiczne Schematy Kolorów — theme.js] :
+- **ID:** UIUX_REQ-012
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** `src/ui/styles/theme.js` z tablicami kolorów, mapowaniem kontrastów, motywami.
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.4
+- **Komentarz:** Separacja CSS od programowalnych motywów.
+
+### [App Library — Ulubione i Pinowanie Kont] :
+- **ID:** APPLIB_REQ-003
+- **Sekcja:** APP LIBRARY (PEŁNY WIDOK)
+- **Opis:** Flaga `isFavorite` i mechanizm pinowania kont z poziomu App Library.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Dla zaawansowanych użytkowników.
+
+### [Widok Kafelkowy WebView — Tile View] :
+- **ID:** WEBVIEW_REQ-009
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Tile View – 2–3 WebView obok siebie. Dynamiczne dzielenie grida, focus, izolacja procesów.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Wymaga optymalizacji RAM.
+
+### [Zintegrowany Panel Menedżera Skrótów — Hotkeys Manager UI] :
+- **ID:** SETTINGS_REQ-008
+- **Sekcja:** SETTINGS PANEL
+- **Opis:** UI do redefiniowania skrótów, przypisywania akcji, snippetów tekstowych.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Współpraca z IPC i store.
+
+### [Konsolidacja Modułów Pushbullet, Cookie Grabber i Mini Postman] :
+- **ID:** TOOLS_REQ-011
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Pełna integracja UI dla Pushbullet, Cookie Grabber, Mini Postman.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Unifikacja istniejących handlerów.
+
+### [Zaawansowany AdBlocker oparty o webRequest] :
+- **ID:** WEBVIEW_REQ-010
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Przeniesienie AdBlockera do main.js. Filtrowanie na poziomie sieciowym.
+- **Status:** BACKLOG
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.4
+- **Komentarz:** Kluczowe dla wydajności.
+
+### [Architektura Rozszerzeń i Wizualizacji — Plugin System, AI Panel, Workspace Templates] :
+- **ID:** PLUGIN_REQ-001
+- **Sekcja:** SYSTEM WTYCZEK / FUTURE IDEAS
+- **Opis:** Ramy dla: plugin system, AI chat panel, workspace templates.
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.4
+- **Komentarz:** Faza researchu.
+
+### [Standaryzacja Metadanych i Nagłówków Plików Source] :
+- **ID:** GENERAL_REQ-002
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Każdy plik musi mieć nagłówek: FILE, PATH, VERSION, PURPOSE, FUNCTIONS, DEPENDS ON, UWAGA.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Krytyczny tech debt dla współpracy z AI.
+
+### [Globalna Integracja Loggera w trybie debugMode] :
+- **ID:** GENERAL_REQ-003
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Każda metoda, handler, subskrypcja musi mieć `logDebug()` i `logError()`, aktywowane gdy `debugMode === true`.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Pełna diagnostyka błędów.
+
+### [Audyt i Czyszczenie utils/ — Usuwanie Martwego Kodu] :
+- **ID:** GENERAL_REQ-004
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Audyt `src/utils/`, usunięcie nieużywanych eksportów.
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.4
+- **Komentarz:** Redukcja objętości kodu.
+
+### [Ujednolicenie i Standaryzacja Warstwy Komunikacji IPC] :
+- **ID:** ARCH_REQ-026
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Unified response: `{ ok, data, error }`. Thin preload – tylko przekazywanie parametrów.
+- **Status:** BACKLOG
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.4
+- **Komentarz:** Kluczowa stabilizacja komunikacji.
+
+### [Korekta Numeracji i Struktury Pliku DevelopersGuide.md] :
+- **ID:** DOC_REQ-004
+- **Sekcja:** DOC
+- **Opis:** Naprawa hierarchii i numeracji w `DevelopersGuide.md`.
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.4
+- **Komentarz:** Ujednolicenie dokumentacji.
+
+### [Przegląd i Optymalizacja Systemu Magazynowania Danych (Stores)] :
+- **ID:** GENERAL_REQ-005
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Audyt stores: asynchroniczne I/O, odporność na uszkodzone JSON, fallback.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Stabilizacja warstwy danych.
+
+### [Audyt i Refaktoryzacja Mostka IPC Bridge w main.js] :
+- **ID:** ARCH_REQ-027
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Przegląd handlerów w main.js, eliminacja wycieków pamięci, migracja do modułów.
+- **Status:** BACKLOG
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.4
+- **Komentarz:** Przed nowymi funkcjami sieciowymi.
+
+### [Weryfikacja Migracji i Struktury Katalogu src/ui/] :
+- **ID:** UIUX_REQ-013
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Sprawdzenie integralności po migracji z `components/` do `src/ui/`. Poprawa ścieżek importów.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Porządkowanie struktury katalogów.
+
+### [Zabezpieczenie UI Stub Ustawień Konta — Account Placeholder] :
+- **ID:** SETTINGS_REQ-009
+- **Sekcja:** SETTINGS PANEL
+- **Opis:** Zabezpieczenie placeholderu `SettingsAccount.jsx` – brak wyjątków, tooltip lub wyłączenie przycisku.
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.4
+- **Komentarz:** Estetyka kodu i stabilność UI.
+
+### [Przegląd Techniczny Menedżerów Tła — sleepTabs, notifications, searchIndex] :
+- **ID:** ARCH_REQ-028
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Audyt `setInterval` w sleepTabsManager, notificationsManager, searchIndex. Brak wycieków po zamknięciu okien.
+- **Status:** BACKLOG
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.4
+- **Komentarz:** Kluczowy audyt procesów w tle.
+
+### [Czyszczenie i Refaktoryzacja Globalnego Re-eksportu config.js] :
+- **ID:** GENERAL_REQ-006
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Weryfikacja re-eksportów w `config.js`, usunięcie cyklicznych zależności.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Konsolidacja globalnych zmiennych.
+
+### [constants.js – TASK_STATUS.BLOCKED – czy używane?] :
+- **ID:** GENERAL_REQ-007
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Sprawdzić, czy `TASK_STATUS.BLOCKED` jest używane w TaskPanel. Jeśli nie – usunąć lub zaimplementować.
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.4
+- **Komentarz:** Do weryfikacji.
+
+### [Bezpieczne ładowanie stałych i plików (try-catch)] :
+- **ID:** GENERAL_REQ-008
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Wszystkie stałe i funkcje ładujące dane zewnętrzne (pliki, API, ścieżki systemowe) muszą być opakowane w `try-catch` z logowaniem błędu do loggera i toastem dla użytkownika. Dotyczy w szczególności: `getUserDataPath()`, `readJsonFile()`, `writeJsonFile()`, `CONST.HISTORY_FILE`, `CONST.LOGS_DIR`, `CONFIG` – wszędzie tam, gdzie brak walidacji może rzucić `undefined` lub błędem. Należy dodać osobny test (`TEST_REQ-011`) sprawdzający, czy wszystkie funkcje I/O mają obsługę błędów.
+- **Status:** BACKLOG
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.4
+- **Komentarz:** Brak try-catch przy `getUserDataPath()` → aplikacja wybucha bez logowania. Dotyczy: `src/utils/fileUtils.js`, `src/constants.js`, `src/config.js`, `tests/TestRunner_Safety.js` (nowy).
+
+---
+
+### [Refaktor duplikacji readJsonFile/writeJsonFile/getUserDataPath] :
+
+- **ID:** GENERAL_REQ-011
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Funkcje `readJsonFile()`, `writeJsonFile()` oraz `getUserDataPath()` są zduplikowane w wielu plikach (`persistence.js`, `profilesStore.js`, `projectsStore.js` i innych). Należy je wydzielić do jednego pliku `src/utils/fileUtils.js` i importować wszędzie tam, gdzie są potrzebne. Eliminacja duplikacji kodu i ułatwienie ewentualnych zmian w przyszłości.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Po wydzieleniu – dodać `try-catch` w jednym miejscu (zgodnie z `GENERAL_REQ-010`), a nie w każdym pliku osobno. Dotyczy co najmniej: `src/core/persistence.js`, `src/core/profilesStore.js`, `src/core/projectsStore.js`.
+
+---
+
+### [Refaktor duplikacji load() w hookach – wspólny loader] :
+
+- **ID:** GENERAL_REQ-012
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Funkcja `load()` (ustawianie `loading=true`, wywołanie IPC, ustawianie `loading=false`) jest zduplikowana w hookach: `useHistoryLog`, `useNotepad`, `useProjects`, `useSettings`, `useTasks`, `useWorkspaces`. Należy stworzyć wspólną funkcję `withLoading(asyncFn)` w `src/utils/loadingUtils.js` lub dedykowany hook `useDataLoader`, który przyjmuje nazwę kanału IPC i zwraca `{ data, loading, error, refetch }`. Eliminacja duplikacji.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Duplikacja wykryta przez skrypt (`[DUPLICATED]` w logu). To jest rozwinięcie `GENERAL_REQ-009` – warto rozdzielić na dwa osobne zadania.
+
+---
+
+### [TestRunner_ExternalResources.js – testy odporności na brak zasobów zewnętrznych] :
+- **ID:** TEST_REQ-011
+- **Sekcja:** TEST
+- **Opis:** Nowy test (nie rozbudowa `TestRunner_Store.js`). Sprawdza wszystkie miejsca w aplikacji, które odwołują się do zasobów **POZA aplikacją**: pliki na dysku (logi, konfiguracja, export/import), foldery użytkownika (`userData`, `appData`, `temp`), API zewnętrzne (Pushbullet, RemoveBG), ścieżki sieciowe, czytanie/zapis poza katalogiem aplikacji. Testy muszą symulować brak dostępu (brak pliku, brak folderu, brak uprawnień, uszkodzony JSON) i weryfikować, czy funkcja:
+      - nie rzuca nieobsłużonego wyjątku (brak crasha)
+      - loguje błąd przez logger
+      - zwraca bezpieczny fallback (`null`, `[]`, `{}`, `false`)
+      - wyświetla toast z komunikatem (jeśli dotyczy UI)
+- **Status:** BACKLOG
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.4
+- **Komentarz:** Przykład: użytkownik skasował folder z logami, a aplikacja próbuje go otworzyć – zamiast crasha ma pokazać toast „Folder logów nie istnieje”. Testy muszą pokryć wszystkie funkcje I/O, które odwołują się do zasobów zewnętrznych.
+
+---
+
+### [Refaktor duplikacji load() w hookach – wspólna funkcja] :
+- **ID:** GENERAL_REQ-009
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** W hookach (`useHistoryLog`, `useNotepad`, `useProjects`, `useSettings`, `useTasks`, `useWorkspaces`) występuje identyczna funkcja `load()`, która ustawia `loading=true`, wykonuje `window.electronAPI.invoke(...)` i ustawia `loading=false`. Należy wydzielić wspólną funkcję do `src/utils/loadingUtils.js` (np. `withLoading(asyncFn)`) lub stworzyć dedykowany hook `useDataLoader`. Eliminacja duplikacji kodu.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Duplikacja wykryta przez skrypt (`[DUPLICATED]` w logu). Dotyczy wszystkich hooków w `src/hooks/`.
+
+---
+
+### [Refaktor duplikacji load() w hookach] :
+- **ID:** GENERAL_REQ-009
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** W hookach (`useHistoryLog`, `useNotepad`, `useProjects`, `useSettings`, `useTasks`, `useWorkspaces`) występuje identyczna funkcja `load()`, która ustawia `loading=true`, wykonuje `window.electronAPI.invoke(...)` i ustawia `loading=false`. Należy wydzielić wspólną funkcję do `src/utils/loadingUtils.js` (np. `withLoading(asyncFn)`) lub stworzyć dedykowany hook `useDataLoader`, aby wyeliminować duplikację kodu.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Duplikacja wykryta przez skrypt (`[DUPLICATED]` w logu). Dotyczy plików: `src/hooks/useHistoryLog.js`, `src/hooks/useNotepad.js`, `src/hooks/useProjects.js`, `src/hooks/useSettings.js`, `src/hooks/useTasks.js`, `src/hooks/useWorkspaces.js`.
+
+---
+
+### [App Library – rozwijane / zwijane sekcje] :
+- **ID:** APPLIB_REQ-004
+- **Sekcja:** APP LIBRARY (PEŁNY WIDOK)
+- **Opis:** W App Library (`AppLibraryBrowser.jsx`) każda kategoria (np. AI, Dev, Design, Productivity) musi być rozwijana/zwijana. Stan zwinięcia ma być zapamiętywany w `settingsStore` (per użytkownik, nie per workspace). Użytkownik może ukryć wyświetlania rozwiniętych kategori, których nie potrzebuje (np. media społecznościowe). Tooltip po najechaniu na ikonę aplikacji (lub nazwę) wyświetla krótki opis do czego służy dana aplikacja. Tooltipy mają być pobierane z `app-library.json` (nowe pole `description`). Domyślnie wszystkie kategorie rozwinięte. Stan zapisywany i wczytywany przy otworzeniu App Library Browser.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Tooltipy mają być konkretne i mówiące o przeznaczeniu aplikacji. Dotyczy: `src/data/app-library.json` (dodać `description`), `AppLibraryBrowser.jsx`, `settingsStore.js`.
+
+---
+
+### [Profile Schema Version + migracje] :
+- **ID:** ARCH_REQ-029
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Wersjonowanie struktury profilu (`version` w `profilesStore`). Automatyczna migracja starych profili do nowej wersji przy starcie aplikacji. Brak migracji → crash przy zmianie struktury.
+- **Status:** BACKLOG
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.5
+- **Komentarz:** Bez tego zmiana struktury profilu wywali aplikację.
+
+---
+
+### [WebView Watchdog] :
+- **ID:** ARCH_REQ-030
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Mechanizm monitorujący WebView: timeout ładowania (np. 30s), auto-reload przy crashu, wykrywanie zawieszenia (frozen state). Konfiguracja w `config.js`.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** WebView potrafi się zawiesić – watchdog go odratuje.
+
+---
+
+### [Master Password / PIN Lock] :
+- **ID:** ARCH_REQ-031
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Blokada dostępu do całej aplikacji kodem PIN lub hasłem (np. przy dłuższej nieaktywności lub ręcznej blokadzie). Po wpisaniu poprawnego kodu – odblokowanie.
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.5
+- **Komentarz:** Niskie prio, ale dla niektórych użytkowników ważne.
+
+---
+
+### [Auto-update checker] :
+- **ID:** ARCH_REQ-032
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Sprawdzanie nowej wersji aplikacji przy starcie (lub ręcznie w Settings). Pobieranie, instalacja, restart. Changelog przed aktualizacją.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Ważne dla dystrybucji.
+
+---
+
+### [Session Manager] :
+- **ID:** ARCH_REQ-033
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Zapis i przywracanie całych sesji (zestaw otwartych profili + ich stan nawigacji + karty). Możliwość zapisu wielu sesji i przełączania między nimi.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Rozszerzenie `ARCH_REQ-020` (Session Restore).
+
+---
+
+### [Lokalny Mock Server / Interceptor] :
+- **ID:** ARCH_REQ-034
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Możliwość podmieniania odpowiedzi z serwera na lokalny plik JSON przez `session.defaultSession.webRequest`. Definiowanie reguł w Settings (URL pattern → ścieżka do pliku).
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Zaawansowane, bardzo potężne dla QA / developera.
+
+---
+
+### [User Scripts / Custom JS/CSS injection] :
+- **ID:** WEBVIEW_REQ-011
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Możliwość wstrzykiwania własnego kodu JS/CSS do ładowanej strony WebView (per profil). Wykorzystanie `webContents.executeJavaScript()` lub `<webview>` preload. Przydatne do automatyzacji testów, wymuszenia dark mode, ukrywania elementów.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Dla zaawansowanych użytkowników / QA.
+
+---
+
+### [Domain Lock / Link Injection] :
+- **ID:** WEBVIEW_REQ-012
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Blokowanie kliknięć w linki prowadzące poza zdefiniowaną domenę (per profil). Link zewnętrzny otwiera się w systemowej przeglądarce. Konfiguracja: dozwolone domeny lub tryb "tylko ta domena".
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.5
+- **Komentarz:** Zapobiega przypadkowemu opuszczeniu aplikacji.
+
+---
+
+### [Proxy per profil] :
+- **ID:** WEBVIEW_REQ-013
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Możliwość ustawienia dedykowanego proxy (HTTP/HTTPS/SOCKS) dla konkretnego WebView. Konfiguracja w `ProfileModal.jsx`. Proxy ustawiane przez `session.setProxy()`.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Bardzo użyteczne do testowania geolokalizacji / blokad.
+
+---
+
+### [Tab Groups w WebView] :
+- **ID:** WEBVIEW_REQ-014
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Grupowanie zakładek w obrębie jednego WebView (nawigacja wielopoziomowa). Możliwość zapisu grupy jako osobny "widok". Integracja z historyStore.
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.5
+- **Komentarz:** Dla zaawansowanej nawigacji.
+
+---
+
+### [Zastąpienie window.confirm w 4 komponentach] :
+
+- **ID:** UIUX_REQ-020
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** W plikach `HistoryLog.jsx`, `ProjectManager.jsx`, `Sidebar.jsx`, `TaskPanel.jsx` występuje `window.confirm` zamiast własnego modala `ConfirmModal`. Należy zastąpić każde wystąpienie. Wzór: zamiast `if (window.confirm(...))` → `showConfirm(title, message, onConfirm)`.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Wykryte przez skrypt. Dotyczy: `src/ui/history/HistoryLog.jsx`, `src/ui/projects/ProjectManager.jsx`, `src/ui/sidebar/Sidebar.jsx`, `src/ui/taskpanel/TaskPanel.jsx`.
+
+---
+
+### [Dashboard / Centralny widok startowy] :
+- **ID:** UIUX_REQ-014
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Widok startowy aplikacji (po uruchomieniu lub zamiast pustego layoutu) z podsumowaniem: ostatnio używane profile, taski (do zrobienia), notatki (ostatnie), ewentualnie powiadomienia. Możliwość wyłączenia w Settings.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Alternatywa dla `session restore` lub uzupełnienie.
+
+---
+
+### [Groupy / Folders dla profili] :
+- **ID:** UIUX_REQ-015
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Możliwość tworzenia folderów / grup w Sidebarze (zagnieżdżanie). Przeciąganie profili między folderami. Folder może być zwijany/rozwijany.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Rozszerzenie `SIDEBAR_REQ-003` (kategorie).
+
+---
+
+### [Custom Tags & Colors dla profili] :
+- **ID:** UIUX_REQ-016
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Dodanie własnych tagów i kolorów dla profili (np. "frontend", "backend", "client X"). Tagi mogą być filtrowane w Sidebarze. Kolor jako obramowanie lub tło ikony.
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.5
+- **Komentarz:** Personalizacja dla zaawansowanych użytkowników.
+
+---
+
+### [Workspace jako osobne zestawy aplikacji / profili] :
+- **ID:** UIUX_REQ-017
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Workspace przechowuje konkretny zestaw otwartych profili (nie tylko układ modułów). Przełączanie między workspace'ami przywraca dokładnie te profile, które były otwarte.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Rozszerzenie istniejącego `workspacesStore`.
+
+---
+
+### [Quick Notes / Sticky notes] :
+- **ID:** UIUX_REQ-018
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Małe "przypinki" na pulpicie / w sidebarze. Tworzenie, edycja, usuwanie, kolory. Przypinki zapisywane w `notesStore` z typem "sticky".
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.5
+- **Komentarz:** Szybkie notatki bez otwierania pełnego notatnika.
+
+---
+
+### [Profiles templates] :
+- **ID:** UIUX_REQ-019
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Szablony profili (np. "Dev: GitHub + StackOverflow + npm", "AI: ChatGPT + Claude + DeepSeek"), które tworzą kilka profili naraz. Szablony predefiniowane w `app-library.json` lub tworzone przez użytkownika.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Przyspiesza onboarding i konfigurację.
+
+---
+
+### [Smart Screenshot z metadanymi] :
+- **ID:** TOOLS_REQ-012
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Rozszerzenie `WEBVIEW_REQ-005` – zrzut ekranu WebView z automatycznie dodaną datą, godziną, URL, wersją modułu w nazwie pliku. Zapis do pliku (nie tylko schowek). Możliwość wyboru folderu docelowego.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Dla QA / testerów.
+
+---
+
+### [Export/Import pojedynczego profilu] :
+- **ID:** TOOLS_REQ-013
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Eksport/import jednego profilu do pliku `.json` (nie całego backupu). Umożliwia udostępnianie profili między użytkownikami lub kopię zapasową pojedynczego profilu.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Uzupełnienie `SETTINGS_REQ-003`.
+
+---
+
+### [Copy to Notepad (z WebView)] :
+- **ID:** TOOLS_REQ-014
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** Zaznaczenie tekstu w WebView i opcja "Wyślij do notatnika" z menu kontekstowego. Tekst dodawany jako nowa notatka lub do aktywnej karty notatnika (z konfiguracją).
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.5
+- **Komentarz:** Usprawnienie pracy z notatkami.
+
+---
+
+### [Service Recipes (Franz/Ferdi)] :
+- **ID:** APPLIB_REQ-005
+- **Sekcja:** APP LIBRARY (PEŁNY WIDOK)
+- **Opis:** Skrypt inicjalizacyjny dla aplikacji w bibliotece – definiuje jak pobrać favicon (jeśli nie działa standardowo), jak czytać liczbę powiadomień z DOM (badge). Struktura recipe: `{ appId, faviconSelector, notificationSelector, notificationRegex }`. Przechowywane w `app-library.json` lub osobny plik `recipes.json`.
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.5
+- **Komentarz:** Zaawansowane – dla aplikacji, które nie działają standardowo.
+
+---
+
+### [App Library – aktualizacja z Rambox] :
+- **ID:** APPLIB_REQ-006
+- **Sekcja:** APP LIBRARY (PEŁNY WIDOK)
+- **Opis:** Przejrzenie `https://rambox.app/apps/` i wybranie aplikacji do dodania do `app-library.json`. Kryteria: bez oczywistych niszowych (np. <10k odwiedzin/miesiąc – jeśli dane dostępne), bez komunikatorów (opcjonalnie, ale można dodać). Każda aplikacja musi mieć: nazwę, URL, kategorię, ikonę (lub fallback), opis (tooltip). Lista ma być sensowna i użyteczna, nie mega długa.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Do wykonania raz a porządnie. Dotyczy: `src/data/app-library.json`.
+
+---
+
+### [Favicon Cache (lokalny, hashed filenames)] :
+- **ID:** GENERAL_REQ-014
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Pobieranie favicon raz, zapis lokalnie w `userData/cache/favicons/` z hashowaną nazwą (hash z URL). Przy kolejnych uruchomieniach – odczyt z cache, brak requestów do sieci. Fallback jeśli brak favicon.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Ważne dla wydajności przy 50+ profilach.
+
+---
+
+### [QA Inspector Modulo – szybki DevTools per WebView] :
+- **ID:** GENERAL_REQ-015
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Dedykowany przycisk lub skrót do otwarcia DevTools dla konkretnego WebView (nie dla całej aplikacji). W `WebViewToolbar.jsx` ikona "DevTools" – otwiera devtools dla aktywnego WebView. (Uwaga: czy to już jest? Jeśli tak – przenieść do OBSOLETE).
+- **Status:** BACKLOG (DO SPRAWDZENIA)
+- **Priorytet:** MINOR
+- **Version:** 0.0.5
+- **Komentarz:** Sprawdzić, czy `WEBVIEW_REQ-001` już tego nie ma. Jeśli tak – usunąć.
+
+---
+
+### [OBSOLETE – kategoria do przenoszenia odrzuconych] :
+- **ID:** GENERAL_REQ-016
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** W `Requirements.md` dodać sekcję `## OBSOLETE (ZREALIZOWANE / ODRZUCONE)`. Przenosić tam wymagania, które: zostały zrealizowane (DONE), ale nie chcemy ich trzymać w BACKLOG/IN_SPRINT, lub zostały odrzucone jako niepotrzebne/niewykonalne.
+- **Status:** BACKLOG
+- **Priorytet:** MINOR
+- **Version:** 0.0.5
+- **Komentarz:** Ułatwia utrzymanie czystości w pliku.
+
+---
+
+### [Badge z liczbą nieprzeczytanych / powiadomień] :
+- **ID:** WEBVIEW_REQ-015
+- **Sekcja:** WEBVIEW MANAGER
+- **Opis:** Dla profili (szczególnie komunikatorów, ale też AI jak ChatGPT ma powiadomienia) wyświetlanie badge'a z liczbą nieprzeczytanych / powiadomień. Dane pobierane z WebView (DOM lub API). Konfiguracja per profil (włącz/wyłącz). Wykorzystanie `notificationSelector` z `APPLIB_REQ-005` (Service Recipes).
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Standard w takich aplikacjach (Rambox, Franz, Ferdi).
+
+---
+
+### [Rozwijane sekcje w App Library – przeniesione z APPLIB_REQ-004] :
+- **ID:** APPLIB_REQ-007
+- **Sekcja:** APP LIBRARY (PEŁNY WIDOK)
+- **Opis:** (to samo co `APPLIB_REQ-004`, ale wydzielone) – kategorie w App Library rozwijane/zwijane, pamiętanie stanu w `settingsStore`, tooltipy z opisem aplikacji.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Poprzednio `APPLIB_REQ-004` – tutaj jako osobne.
+
+---
+
+### [Analiza i refaktor logger.js – getLogFilePath() zawsze zwraca null] :
+- **ID:** GENERAL_REQ-017
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** W `src/utils/logger.js` funkcja `getLogFilePath()` zawsze zwraca `null` (lub `undefined`) i nie ma sensownej implementacji. Komentarz wskazuje na ograniczenia Electrona / dostępu do Node.js, ale `loggerRenderer.js` działa poprawnie. Należy przeanalizować oba pliki, ujednolicić logikę i zapewnić, że `getLogFilePath()` zwraca poprawną ścieżkę do pliku logów (`userData/logs/app.log`) lub – jeśli to niemożliwe w danym kontekście – usunąć funkcję lub zastąpić ją rzuceniem błędu z komunikatem. Dodatkowo: sprawdzić, czy `logger.js` i `loggerRenderer.js` nie są zduplikowane i czy nie można ich połączyć w jeden spójny moduł logowania z rozróżnieniem kontekstu (main vs renderer).
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Problem wykryty przez skrypt. Funkcja zwracająca zawsze `null` wprowadza w błąd i może powodować błędy przy zapisie logów. Dotyczy: `src/utils/logger.js`, `src/utils/loggerRenderer.js`.
+
+---
+
+
 *Koniec dokumentu wymagań — wersja 0.0.3*
-
-
-## Wymagania do weryfikacji (v0.0.3)
-
-- 2a. App Library (lista gotowych aplikacji)
-- 2b. Filtrowanie profili (search bar)
-- 2c. Kategorie profili
-- 2d. Ostatnio używane profile
-- 2e. Drag & drop profili
-- 2f. Edycja profilu (modal)
-- 2g. Multi‑account login (DO‑ANALYSIS)
-- 🧩 3a. Toolbar jak w przeglądarce
-- 🧩 3b. Tile view (2–3 WebView obok siebie)
-- 🧩 3c. Custom user agent per profile
-- 🧩 3d. AdBlocker toggle
-- 🧩 4a. Syntax highlight (JS, Python, HTML, CSS, XML)
-- 🧩 4b. Spellcheck
-- 🧩 4c. Rich text notatki
-- 🧩 5a. Filtrowanie po priorytecie
-- 🧩 5b. Wyszukiwarka zadań
-- 🧩 5c. Notatki rich‑text w zadaniach
-- 6a. Cleanup listenerów IPC
-- 6b. Historia komend
-- 6c. Kolorowanie outputu (ANSI)
-- 7a. Hotkeys manager (custom skróty + wklejanie tekstów)
-- 7b. Dark mode
-- 7c. Eksport/Import ustawień
-- 7d. Logi dostępne z Settings
-- 7e. Konto użytkownika + sync w chmurze (DO‑ANALYSIS)
-- 8a. JSON/YAML/XML formatter
-- 8b. Regex tester
-- 8c. Markdown Previewer
-- 8d. Image Tools (compress, resize, convert)
-- 8e. SVG → PNG converter + preview
-- 8f. File Previewer
-- 8g. Mini Postman (API tester)
-- 8h. Clipboard history
-- 10a. Sidebar redesign
-- 10b. WebView toolbar (doprecyzowanie)
-- 10c. Toast messages
-- 10d. Tooltipy wszędzie
-- 10e. Modale zamiast alert/prompt
-- 10f. Loading states

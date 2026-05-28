@@ -3,18 +3,17 @@
 // PATH: src/core/appLibraryStore.js
 // VERSION: 0.0.3
 // PURPOSE: Statyczna App Library (WebCatalog-style) — odczyt i filtrowanie.
-// FUNCTIONS: loadAppLibrary, filterApps, getAppById, searchAppLibrary
-// DEPENDS ON: app-library.json, logger.js
+// FUNCTIONS: loadAppLibrary, filterApps, searchAppLibrary, getAppById
+// DEPENDS ON: fs, path, url, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { logInfo } from "../utils/logger.js";
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 let cached = null;
-
 function readLibrary() {
   if (cached) return cached;
   const raw = fs.readFileSync(
@@ -24,13 +23,11 @@ function readLibrary() {
   cached = JSON.parse(raw);
   return cached;
 }
-
 export function loadAppLibrary() {
   const lib = readLibrary();
   logInfo("appLibraryStore.load", lib.categories?.length || 0);
   return lib.categories || [];
 }
-
 export function filterApps(query) {
   const q = String(query || "").toLowerCase().trim();
   if (!q) return [];
@@ -42,11 +39,9 @@ export function filterApps(query) {
       app.url?.toLowerCase().includes(q)
   );
 }
-
 export function searchAppLibrary(query) {
   return filterApps(query);
 }
-
 export function getAppById(appId) {
   for (const cat of loadAppLibrary()) {
     const found = (cat.apps || []).find((a) => a.id === appId);

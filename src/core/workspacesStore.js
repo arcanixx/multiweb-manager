@@ -3,22 +3,19 @@
 // PATH: src/core/workspacesStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie workspace'ami użytkownika
-//          - zapis układu
-//          - zapis otwartych WebViewTabs
-//          - zapis aktywnego profilu
+// FUNCTIONS: getAllWorkspaces, saveWorkspace, saveWorkspaces, deleteWorkspace
+// DEPENDS ON: fs, path, electron, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import fs from "fs";
 import path from "path";
 import { app } from "electron";
 import { logInfo, logError } from "../utils/logger.js";
-
 const WORKSPACES_FILE = path.join(app.getPath("userData"), "workspaces.json");
-
 // ---------------------------------------------------------------------------
 // Wewnętrzne helpers – odczyt / zapis pliku JSON
 // ---------------------------------------------------------------------------
-
 function loadStore() {
   try {
     if (!fs.existsSync(WORKSPACES_FILE)) {
@@ -30,7 +27,6 @@ function loadStore() {
     return { version: "0.0.3", data: [] };
   }
 }
-
 function saveStore(store) {
   try {
     fs.writeFileSync(WORKSPACES_FILE, JSON.stringify(store, null, 2), "utf8");
@@ -40,16 +36,13 @@ function saveStore(store) {
     return false;
   }
 }
-
 // ---------------------------------------------------------------------------
 // Publiczne API
 // ---------------------------------------------------------------------------
-
 /** Zwraca listę wszystkich workspace'ów. */
 export function getAllWorkspaces() {
   return loadStore().data;
 }
-
 /**
  * Zapisuje workspace (upsert po id).
  * Jeśli workspace o danym id nie istnieje – dodaje go.

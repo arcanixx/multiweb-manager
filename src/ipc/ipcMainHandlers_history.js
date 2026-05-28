@@ -2,25 +2,20 @@
 // FILE: ipcMainHandlers_history.js
 // PATH: src/ipc/ipcMainHandlers_history.js
 // VERSION: 0.0.3
-// PURPOSE: IPC dla historii odwiedzin/akcji.
-//          - history:getAll    – zwraca pełną historię (max 100 wpisów)
-//          - history:add       – dodaje nowy wpis i zapisuje
-//          - history:clear     – czyści historię
-//          - history:getRecent – zwraca ostatnie 10 wpisów
-// FUNCTIONS: history:getAll, history:add, history:clear, history:getRecent
-// DEPENDS ON: electron (ipcMain), logger.js, core/historyStore.js
-// UWAGA: Nie usuwaj komentarzy — opisują przeznaczenie każdego handlera.
+// PURPOSE: IPC dla historii odwiedzin/akcji. history:getAll    – zwraca pełną historię (max 5000 wpisów) history:add       – dodaje nowy wpis i zapisuje history:clear     – czyści historię history:getRecent – zwraca ostatnie 100 wpisów
+// FUNCTIONS: ipc:history:getAll, ipc:history:add, ipc:history:clear, ipc:history:getRecent
+// DEPENDS ON: electron, historyStore.js, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain } from "electron";
 import {
   loadHistory,
-  saveHistory,
   addHistoryEntry,
-  clearHistory
+  clearHistory,
+  getRecentHistory
 } from "../core/historyStore.js";
 import { logError } from "../utils/logger.js";
-
 // ----------------------------------------------------------------
 // history:getAll – zwraca pełną historię z historyStore
 // ----------------------------------------------------------------
@@ -33,10 +28,9 @@ ipcMain.handle("history:getAll", async () => {
     return { ok: false, error: err.message };
   }
 });
-
 // ----------------------------------------------------------------
 // history:add – dodaje nowy wpis i zapisuje do store
-//   entry: { profileName, url, timestamp? }
+//   entry: { profileName, url, timestamp?, level? }
 // ----------------------------------------------------------------
 ipcMain.handle("history:add", async (_, entry) => {
   try {
@@ -50,7 +44,6 @@ ipcMain.handle("history:add", async (_, entry) => {
     return { ok: false, error: err.message };
   }
 });
-
 // ----------------------------------------------------------------
 // history:clear – czyści historię, zwraca pustą tablicę
 // ----------------------------------------------------------------
@@ -65,12 +58,11 @@ ipcMain.handle("history:clear", async () => {
 });
 
 // ----------------------------------------------------------------
-// history:getRecent – zwraca ostatnie 10 wpisów (quick access)
+// history:getRecent – zwraca ostatnie 100 wpisów (quick access)
 // ----------------------------------------------------------------
 ipcMain.handle("history:getRecent", async () => {
   try {
-    const history = loadHistory();
-    const recent = history.slice(0, 10);
+    const recent = getRecentHistory(100);
     return { ok: true, data: recent };
   } catch (err) {
     logError("history:getRecent failed", err);

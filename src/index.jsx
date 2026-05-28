@@ -1,11 +1,11 @@
 // =============================================================================
-// FILE: src/index.jsx
-// PATH: multiweb-manager/src/index.jsx
-// VERSION: v1
+// FILE: index.jsx
+// PATH: src/index.jsx
+// VERSION: 0.0.3
 // PURPOSE: Punkt wejścia aplikacji React. Montuje <App /> w #root,
-//          owija TranslationProvider (kontekst i18n dla całej aplikacji).
-//          Lazy loading głównych komponentów przez React.lazy().
-// DEPENDS ON: React, ReactDOM, App.jsx, useTranslation.js, index.css
+// FUNCTIONS: -
+// DEPENDS ON: react, react-dom, useTranslation, App
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { Suspense } from 'react';
@@ -13,7 +13,6 @@ import ReactDOM from 'react-dom/client';
 import './ui/index.css';
 import { TranslationProvider } from './hooks/useTranslation';
 import App from './App';
-
 // Globalny fallback podczas lazy-load komponentów
 function AppLoader() {
   return (
@@ -25,7 +24,6 @@ function AppLoader() {
     </div>
   );
 }
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <TranslationProvider>

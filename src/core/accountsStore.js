@@ -3,22 +3,16 @@
 // PATH: src/core/accountsStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie kontami użytkownika (Google, GitHub, AI, itp.).
-//          - getAllAccounts()      – zwraca listę kont
-//          - addAccount(account)  – dodaje konto i zapisuje
-//          - updateAccount(id, patch) – aktualizuje konto (merge)
-//          - deleteAccount(id)    – usuwa konto
-//          Dane przechowywane w pliku accounts.json w userData.
-//          Przygotowane pod Multi-Account Login (DO-ANALYSIS).
-// DEPENDS ON: fs, path, electron (app), logger.js
+// FUNCTIONS: getAllAccounts, addAccount, updateAccount, deleteAccount
+// DEPENDS ON: fs, path, electron, logger.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import fs from "fs";
 import path from "path";
 import { app } from "electron";
 import { logError } from "../utils/logger.js";
-
 const ACCOUNTS_FILE = path.join(app.getPath("userData"), "accounts.json");
-
 // ----------------------------------------------------------------
 // loadAccounts() – wczytuje accounts.json, zwraca fallback przy błędzie
 // ----------------------------------------------------------------
@@ -34,7 +28,6 @@ function loadAccounts() {
     return { version: "0.0.3", data: [] };
   }
 }
-
 // ----------------------------------------------------------------
 // saveAccounts() – zapisuje store do accounts.json
 // ----------------------------------------------------------------
@@ -47,14 +40,12 @@ function saveAccounts(store) {
     return false;
   }
 }
-
 // ----------------------------------------------------------------
 // getAllAccounts() – zwraca listę wszystkich kont
 // ----------------------------------------------------------------
 export function getAllAccounts() {
   return loadAccounts().data;
 }
-
 // ----------------------------------------------------------------
 // addAccount() – dodaje nowe konto do listy i zapisuje
 // ----------------------------------------------------------------

@@ -1,33 +1,29 @@
 // =============================================================================
-// FILE: src/components/UpdateChecker.jsx
-// PATH: multiweb-manager/src/components/UpdateChecker.jsx
-// VERSION: v1
+// FILE: UpdateChecker.jsx
+// PATH: src/ui/system/UpdateChecker.jsx
+// VERSION: 0.0.3
 // PURPOSE: Komponent sprawdzania aktualizacji. Placeholder – docelowo
-//          electron-updater z GitHub Releases. Aktualnie wyświetla wersję
-//          i toast "Coming soon". Ikona z icons.js, tłumaczenia z locales.
-// DEPENDS ON: icons.js, useTranslation.js, logger.js
-// FUNCTIONS: checkForUpdates
+// FUNCTIONS: UpdateChecker
+// DEPENDS ON: react, icons, translations.js, loggerRenderer
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useState, useEffect } from 'react';
 import { ICONS } from '../../utils/icons';
-import { useTranslation } from '../../hooks/useTranslation';
+import { TranslationContext } from '../utils/translations.js';
 import { log } from '../../utils/loggerRenderer';
-
 export default function UpdateChecker() {
-  const { t } = useTranslation();
+  const { t } = React.useContext(TranslationContext);
   const [checking,   setChecking]   = useState(false);
   const [appVersion, setAppVersion] = useState('...');
   const [toast,      setToast]      = useState('');
   const [toastType,  setToastType]  = useState('info'); // 'info' | 'success' | 'warn'
-
   // Pobierz aktualną wersję aplikacji przy montowaniu
   useEffect(() => {
     window.electronAPI.getAppVersion?.()
       .then(v => setAppVersion(v || '1.0.0'))
       .catch(() => setAppVersion('1.0.0'));
   }, []);
-
   // ----------------------------------------------------------------
   // showToast() – wyświetla tymczasowy komunikat przez 3s
   // ----------------------------------------------------------------
@@ -36,7 +32,6 @@ export default function UpdateChecker() {
     setToastType(type);
     setTimeout(() => setToast(''), 3000);
   };
-
   // ----------------------------------------------------------------
   // checkForUpdates() – wywołuje IPC check-for-updates (placeholder)
   //   Docelowo: electron-updater sprawdza GitHub Releases
@@ -48,7 +43,6 @@ export default function UpdateChecker() {
     try {
       const latestVersion = await window.electronAPI.checkForUpdates();
       log('UpdateChecker: latest version:', latestVersion);
-
       if (latestVersion && latestVersion !== appVersion) {
         showToast(t('updateChecker.new_version', { version: latestVersion }), 'success');
       } else {
