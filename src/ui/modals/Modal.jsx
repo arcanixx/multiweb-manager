@@ -11,8 +11,6 @@
 import React, { useEffect } from 'react';
 import { logInfo } from '../utils/loggerRenderer.js';
 
-
-
 // ─── Modal() – bazowy komponent modalny dla całej aplikacji
 //   @param {Object} props – właściwości komponentu
 //   @param {boolean} props.isOpen – czy modal jest widoczny

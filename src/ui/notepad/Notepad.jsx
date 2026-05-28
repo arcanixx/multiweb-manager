@@ -17,8 +17,6 @@ import NotepadFindReplace from './NotepadFindReplace';
 import NotepadStatusBar from './NotepadStatusBar';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 
-
-
 // ─── Notepad() – główny komponent notatnika z zakładkami, paskiem narzędzi i wyszukiwaniem
 //   @returns {JSX.Element} – renderowany interfejs notatnika
 export default function Notepad() {

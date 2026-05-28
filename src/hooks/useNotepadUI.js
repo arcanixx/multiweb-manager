@@ -13,8 +13,6 @@ import { TranslationContext } from '../utils/translations.js';
 import { createNewTab, loadNotesFromStorage, saveNotesToStorage } from '../utils/notesStorage.js';
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 
-
-
 // ─── useNotepadUI() – hook do zarządzania stanem notatnika
 //   @param {Object} props – obiekt z referencjami
 //   @param {Object} props.textareaRef – referencja do elementu textarea

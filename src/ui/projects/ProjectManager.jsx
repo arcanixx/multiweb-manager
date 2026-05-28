@@ -15,8 +15,6 @@ import { log, logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 import ProjectModal from './ProjectModal';
 import ProjectList from './ProjectList';
 
-
-
 // ─── ProjectManager() – główny menedżer projektów z listą, dodawaniem i usuwaniem
 //   @param {Object} props – właściwości komponentu
 //   @param {Function} props.onOpenTasks – callback otwierania zadań projektu

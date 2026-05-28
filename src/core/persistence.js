@@ -14,8 +14,6 @@ import { app } from "electron";
 
 import { logError, logInfo } from "../utils/logger.js";
 
-
-
 // ─── getUserDataPath() – zwraca ścieżkę do katalogu userData Electrona
 //   @param {...string} segments – segmenty ścieżki do połączenia
 //   @returns {string} pełna ścieżka do pliku w userData

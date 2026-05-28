@@ -13,8 +13,6 @@ import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 
-
-
 // ─── NotepadToolbar() – pasek narzędzi notatnika z przyciskami akcji
 //   @param {Object} props – właściwości komponentu
 //   @param {Function} props.onSave – callback zapisu aktywnej zakładki

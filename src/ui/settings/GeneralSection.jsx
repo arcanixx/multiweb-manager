@@ -13,8 +13,6 @@ import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logInfo, logError, logWarn } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
 
-
-
 // ─── GeneralSection() – sekcja ustawień ogólnych (język, tryb ciemny, debug)
 //   @returns {JSX.Element} – renderowana sekcja ustawień ogólnych
 export default function GeneralSection() {

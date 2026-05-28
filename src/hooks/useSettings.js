@@ -11,8 +11,6 @@
 import { useEffect, useState } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 
-
-
 // ─── useSettings() – hook do zarządzania ustawieniami
 //   @returns {Object} – obiekt z settings, loading i funkcjami CRUD
 export function useSettings() {

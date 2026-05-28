@@ -13,8 +13,6 @@ import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 
-
-
 // ─── NotepadTabs() – pasek zakładek notatnika z obsługą przełączania i zamykania
 //   @param {Object} props – właściwości komponentu
 //   @param {Array} props.tabs – lista zakładek

@@ -11,8 +11,6 @@
 import React, { useEffect, useState } from "react";
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 
-
-
 // ─── Profiles() – komponent zarządzania profilami WebView
 //   @returns {JSX.Element} – renderowany interfejs zarządzania profilami
 export function Profiles() {

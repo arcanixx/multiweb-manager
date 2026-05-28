@@ -16,8 +16,6 @@ import HistoryFilters from './HistoryFilters';
 import HistoryList from './HistoryList';
 import HistoryExport from './HistoryExport';
 
-
-
 // ─── HistoryLog() – główny komponent historii z filtrowaniem, listą i eksportem
 //   @returns {JSX.Element} – renderowany widok historii
 export default function HistoryLog() {

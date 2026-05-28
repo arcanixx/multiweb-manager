@@ -11,8 +11,6 @@
 import { useEffect, useState } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 
-
-
 // ─── useHistoryLog() – hook do zarządzania historią akcji użytkownika
 //   @returns {Object} – obiekt z entries, loading i reloadHistory
 export function useHistoryLog() {

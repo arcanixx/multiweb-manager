@@ -87,5 +87,3 @@ export default function TaskDetails({ task, onBack, onEdit }) {
     </div>
   );
 }
-
-=============================================================================

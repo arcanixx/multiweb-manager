@@ -12,8 +12,6 @@ import React, { useEffect, useState, useContext } from "react";
 import { TranslationContext } from '../../utils/translations.js';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 
-
-
 // ─── ClipboardHistoryModal() – modal wyświetlający historię schowka
 //   @param {Object} props – właściwości komponentu
 //   @param {Function} props.onClose – callback zamknięcia modala

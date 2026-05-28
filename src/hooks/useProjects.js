@@ -11,8 +11,6 @@
 import { useEffect, useState } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 
-
-
 // ─── useProjects() – hook do zarządzania projektami
 //   @returns {Object} – obiekt z projects, loading i funkcjami CRUD
 export function useProjects() {

@@ -13,8 +13,6 @@ import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 
-
-
 // ─── HistoryFilters() – komponent filtrów historii (poziom, sortowanie, czyszczenie)
 //   @param {Object} props – właściwości komponentu
 //   @param {string} props.filterLevel – bieżący poziom filtru

@@ -13,8 +13,6 @@ import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 
-
-
 // ─── ProjectModal() – modal dodawania nowego projektu z walidacją
 //   @param {Object} props – właściwości komponentu
 //   @param {Function} props.onSave – callback zapisu nowego projektu

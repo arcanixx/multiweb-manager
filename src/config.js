@@ -172,7 +172,6 @@ export function getLimit(key) {
   return LIMITS[key];
 }
 
-
 // -----------------------------------------------------------------------------
 // API ENDPOINTS
 // -----------------------------------------------------------------------------
@@ -180,4 +179,3 @@ export function getLimit(key) {
 export const API_ENDPOINTS = {
   removeBg: "https://api.remove.bg/v1.0/removebg"
 };
-

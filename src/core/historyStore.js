@@ -63,8 +63,6 @@ export function saveHistory(entries) {
   return saveRaw(entries);
 }
 
-
-
 // ─── addHistoryEntry() – dodaje nowy wpis na początek listy i zapisuje
 //   @param {Object} entry – obiekt wpisu { profileName, url, timestamp?, level?, id? }
 //   @returns {Array} – zaktualizowana tablica wpisów
@@ -85,16 +83,12 @@ export function addHistoryEntry(entry) {
   return next;
 }
 
-
-
 // ─── clearHistory() – czyści całą historię
 //   @returns {Array} – pusta tablica
 export function clearHistory() {
   saveRaw([]);
   return [];
 }
-
-
 
 // ─── getRecentHistory() – ostatnie N wpisów (domyślnie 100)
 //   @param {number} limit – maksymalna liczba wpisów do zwrócenia

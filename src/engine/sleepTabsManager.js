@@ -11,8 +11,6 @@
 import { DEFAULT_SETTINGS } from "../config.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
 
-
-
 // ─── getSleepTimeoutMs() – pobiera timeout usypiania z ustawień lub domyślny
 //   @param {Object} settings – obiekt ustawień
 //   @returns {number} – timeout w milisekundach

@@ -15,8 +15,6 @@ import { ICONS } from '../../utils/icons';
 import ConfirmModal from '../modals/ConfirmModal';
 import Modal from '../modals/Modal';
 
-
-
 // ─── DataLogsSection() – sekcja zarządzania danymi i logami z eksportem/importem
 //   @returns {JSX.Element} – renderowana sekcja danych i logów
 export default function DataLogsSection() {

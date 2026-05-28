@@ -12,8 +12,6 @@ import os from "os";
 import { DEFAULT_SETTINGS } from "../config.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
 
-
-
 // ─── getSystemUsage() – zwraca aktualne użycie CPU i RAM z progami ostrzeżeń
 //   @returns {Object} – obiekt z cpuPercent, ramPercent, warnAt, criticalAt
 export function getSystemUsage() {

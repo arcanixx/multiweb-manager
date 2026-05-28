@@ -12,8 +12,6 @@ import { useContext } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 
-
-
 // ─── useTranslation() – hook do dostępu do tłumaczeń i helpData
 //   @returns {Object} – obiekt z funkcjami tłumaczenia
 //   @throws {Error} – jeśli użyty poza TranslationProvider

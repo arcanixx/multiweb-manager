@@ -13,8 +13,6 @@ import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 
-
-
 // ─── NotepadFindReplace() – panel znajdź/zastąp w notatniku
 //   @param {Object} props – właściwości komponentu
 //   @param {string} props.findText – bieżący tekst do wyszukania

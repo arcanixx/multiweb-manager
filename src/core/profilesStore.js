@@ -75,8 +75,6 @@ export function updateProfile(id, patch) {
   return next;
 }
 
-
-
 // ─── deleteProfile() – usuwa profil po ID
 //   @param {string} id – identyfikator profilu do usunięcia
 //   @returns {Array} – zaktualizowana tablica profili

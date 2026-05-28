@@ -12,8 +12,6 @@ import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { logError, logWarn } from '../../utils/loggerRenderer.js';
 
-
-
 // ─── NotepadStatusBar() – pasek statusu notatnika z informacjami o dokumencie
 //   @param {Object} props – właściwości komponentu
 //   @param {string} props.title – tytuł dokumentu

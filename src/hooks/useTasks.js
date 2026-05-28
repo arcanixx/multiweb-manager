@@ -11,8 +11,6 @@
 import { useEffect, useState } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 
-
-
 // ─── useTasks() – hook do zarządzania zadaniami
 //   @returns {Object} – obiekt z tasks, loading i funkcjami CRUD
 export function useTasks() {

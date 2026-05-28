@@ -11,8 +11,6 @@
 import { useEffect, useState } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 
-
-
 // ─── useNotepad() – hook do zarządzania notatkami
 //   @returns {Object} – obiekt z notes, loading i funkcjami CRUD
 export function useNotepad() {

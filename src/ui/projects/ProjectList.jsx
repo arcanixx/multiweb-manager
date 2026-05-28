@@ -13,8 +13,6 @@ import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 
-
-
 // ─── ProjectList() – lista projektów z przyciskami akcji (zadania, terminal, usuwanie)
 //   @param {Object} props – właściwości komponentu
 //   @param {Array} props.projects – lista projektów

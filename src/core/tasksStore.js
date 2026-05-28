@@ -81,8 +81,6 @@ export function saveTasksForProject(projectName, payload) {
   }
 }
 
-
-
 // ─── loadAllTasksGrouped() – ładuje wszystkie zadania pogrupowane po projektach
 //   @returns {Object} – obiekt z projektami jako kluczami i sekcjami jako wartościami
 export function loadAllTasksGrouped() {
@@ -102,8 +100,6 @@ export function loadAllTasksGrouped() {
     return {};
   }
 }
-
-
 
 // ─── loadTasks() – ładuje wszystkie zadania jako płaską listę z metadanymi
 //   @returns {Array} – tablica zadań z dodatkowymi polami projectName i section

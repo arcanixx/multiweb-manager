@@ -13,8 +13,6 @@ import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer';
 import { ICONS } from '../../utils/icons';
 
-
-
 // ─── NotificationsSection() – sekcja ustawień powiadomień (systemowe i Pushbullet)
 //   @returns {JSX.Element} – renderowana sekcja powiadomień
 export default function NotificationsSection() {

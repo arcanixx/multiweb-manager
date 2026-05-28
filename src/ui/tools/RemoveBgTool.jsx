@@ -414,5 +414,3 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
     </div>
   );
 }
-
-=============================================================================

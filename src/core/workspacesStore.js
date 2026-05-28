@@ -78,7 +78,3 @@ export function deleteWorkspace(id) {
   logInfo("workspacesStore.deleteWorkspace", id);
   return true;
 }
-
-// =============================================================================
-// END OF FILE
-// =============================================================================

@@ -142,7 +142,6 @@ export function checkDiskSpaceWarning() {
   }
 }
 
-
 app.whenReady().then(async () => {
   checkDiskSpaceWarning();
   await runStartupTestsIfEnabled();
@@ -169,6 +168,3 @@ app.on('will-quit', () => {
 // =============================================================================
 process.on("uncaughtException", (err) => logError("uncaughtException", err));
 process.on("unhandledRejection", (reason) => logError("unhandledRejection", reason));
-
-
-=============================================================================

@@ -103,5 +103,3 @@ export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
     </div>
   );
 }
-
-=============================================================================

@@ -78,16 +78,12 @@ export function mergeSettings(patch) {
   return merged;
 }
 
-
-
 // ─── updateSettings() – alias dla mergeSettings
 //   @param {Object} partial – obiekt z polami do zaktualizowania
 //   @returns {Object} – zaktualizowany obiekt ustawień
 export function updateSettings(partial) {
   return mergeSettings(partial);
 }
-
-
 
 // ─── resetSettings() – resetuje ustawienia do wartości domyślnych
 //   @returns {Object} – obiekt z domyślnymi ustawieniami

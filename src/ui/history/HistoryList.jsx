@@ -13,8 +13,6 @@ import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logError, logWarn } from '../../utils/loggerRenderer.js';
 
-
-
 // ─── HistoryList() – komponent wyświetlający listę wpisów historii w formie tabeli
 //   @param {Object} props – właściwości komponentu
 //   @param {Array} props.entries – tablica wpisów historii

@@ -13,8 +13,6 @@ import { TranslationContext } from '../utils/translations.js';
 import { ICONS } from 'src/utils/icons';
 import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
 
-
-
 // ─── AccountSection() – sekcja konta użytkownika z placeholderem dla przyszłej synchronizacji
 //   @returns {JSX.Element} – renderowana sekcja konta
 export default function AccountSection() {

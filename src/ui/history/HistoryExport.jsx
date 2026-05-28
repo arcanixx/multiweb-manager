@@ -13,8 +13,6 @@ import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 
-
-
 // ─── HistoryExport() – komponent eksportu historii do pliku CSV
 //   @param {Object} props – właściwości komponentu
 //   @param {Array} props.entries – tablica wpisów historii

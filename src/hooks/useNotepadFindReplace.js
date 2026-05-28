@@ -12,8 +12,6 @@ import { useState, useCallback, useContext } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 
-
-
 // ─── useNotepadFindReplace() – hook do funkcjonalności znajdź/zastąp w notatniku
 //   @param {Object} props – obiekt z referencjami i funkcjami
 //   @param {Object} props.contentRef – referencja do treści notatnika
