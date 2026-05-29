@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Pasek zakładek notatnika
 // FUNCTIONS: NotepadTabs
-// DEPENDS ON: react, translations.js, icons.js
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -25,8 +25,6 @@ import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 //   @returns {JSX.Element} – renderowany pasek zakładek
 export default function NotepadTabs({ tabs, activeId, dirty, onSwitch, onClose, onRename, onAdd }) {
   const { t } = useContext(TranslationContext);
-
-  
 
   // ─── handleRename() – obsługa zmiany nazwy zakładki przez prompt
   //   @param {string} tabId – identyfikator zakładki

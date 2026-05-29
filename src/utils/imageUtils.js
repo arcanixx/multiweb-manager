@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Operacje na obrazach – resize, konwersja formatów, kompresja JPEG (resizeImage, convertImage, compressJpeg).
 // FUNCTIONS: resizeImage, convertImage, compressJpeg
-// DEPENDS ON: sharp
+// DEPENDS ON: sharp, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

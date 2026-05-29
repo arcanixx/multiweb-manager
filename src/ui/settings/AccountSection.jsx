@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Sekcja konta użytkownika (placeholder – na później synchronizacja)
 // FUNCTIONS: AccountSection
-// DEPENDS ON: react, translations.js, src
+// DEPENDS ON: react, translations.js, src, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -18,8 +18,6 @@ import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
 export default function AccountSection() {
   const { t } = React.useContext(TranslationContext);
 
-  
-
   // ─── handleSignInClick() – obsługa kliknięcia przycisku logowania (placeholder)
   //   @returns {void}
   const handleSignInClick = () => {
@@ -31,8 +29,6 @@ export default function AccountSection() {
       logWarn('Wystąpił błąd podczas obsługi przycisku logowania');
     }
   };
-
-  
 
   // ─── handleSyncClick() – obsługa kliknięcia przycisku synchronizacji (placeholder)
   //   @returns {void}

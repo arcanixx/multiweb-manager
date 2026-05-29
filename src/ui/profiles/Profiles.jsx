@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: UI zarządzania profilami WebView — wyświetlanie listy profili z danych IPC (load, wyświetlanie nazwy, URL, obsługa błędów).
 // FUNCTIONS: Profiles
-// DEPENDS ON: react
+// DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -16,8 +16,6 @@ import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 export function Profiles() {
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  
 
   // ─── load() – ładuje listę profili z backendu
   //   @returns {Promise<void>}

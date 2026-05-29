@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook do workspacesStore – lista, zapis, usuwanie load()           pobiera wszystkie workspace'y (workspaces:getAll) save(workspace)  zapisuje workspace (workspaces:save) remove(id)       usuwa workspace (workspaces:delete)
 // FUNCTIONS: useWorkspaces
-// DEPENDS ON: react
+// DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

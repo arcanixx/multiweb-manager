@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook do tasksStore – pobieranie, dodawanie, aktualizacja, usuwanie load()        pobiera wszystkie taski (tasks:getAll) add(task)     dodaje task (tasks:add) update(id, patch) aktualizuje task (tasks:update) remove(id)    usuwa task (tasks:delete)
 // FUNCTIONS: useTasks
-// DEPENDS ON: react
+// DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -16,8 +16,6 @@ import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 export function useTasks() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  
 
   // ─── load() – ładuje wszystkie zadania z backendu
   //   @returns {Promise<void>}
@@ -40,8 +38,6 @@ export function useTasks() {
     }
   }
 
-  
-
   // ─── add() – dodaje nowe zadanie
   //   @param {Object} task – obiekt zadania
   //   @returns {Promise<Object>} – wynik operacji
@@ -62,8 +58,6 @@ export function useTasks() {
       return { ok: false, error: err.message };
     }
   }
-
-  
 
   // ─── update() – aktualizuje istniejące zadanie
   //   @param {string} id – identyfikator zadania
@@ -86,8 +80,6 @@ export function useTasks() {
       return { ok: false, error: err.message };
     }
   }
-
-  
 
   // ─── remove() – usuwa zadanie
   //   @param {string} id – identyfikator zadania

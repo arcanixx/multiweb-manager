@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Pasek statusu notatnika (tytuł, znaki, wiersze, ostatni zapis)
 // FUNCTIONS: NotepadStatusBar
-// DEPENDS ON: react, translations.js
+// DEPENDS ON: react, translations.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -21,19 +21,13 @@ import { logError, logWarn } from '../../utils/loggerRenderer.js';
 export default function NotepadStatusBar({ title, content, lastSaved }) {
   const { t } = useContext(TranslationContext);
 
-  
-
   // ─── lines – oblicza liczbę wierszy w dokumencie
   //   @returns {number} – liczba wierszy
   const lines = content ? content.split('\n').length : 0;
 
-  
-
   // ─── chars – oblicza liczbę znaków w dokumencie
   //   @returns {number} – liczba znaków
   const chars = content ? content.length : 0;
-
-  
 
   // ─── formatTime() – formatuje timestamp do czytelnej godziny
   //   @param {number} timestamp – timestamp do sformatowania

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook do settingsStore – pobieranie i zapisywanie ustawień load() pobiera ustawienia przez IPC (settings:get) save(patch) wysyła patch przez IPC (settings:update) i odświeża stan
 // FUNCTIONS: useSettings
-// DEPENDS ON: react
+// DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -16,8 +16,6 @@ import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 export function useSettings() {
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  
 
   // ─── load() – ładuje ustawienia z backendu
   //   @returns {Promise<void>}
@@ -39,8 +37,6 @@ export function useSettings() {
       setLoading(false);
     }
   }
-
-  
 
   // ─── save() – zapisuje zmiany w ustawieniach
   //   @param {Object} patch – obiekt z polami do zaktualizowania

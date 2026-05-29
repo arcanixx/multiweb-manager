@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Modal potwierdzenia (zastępuje window.confirm)
 // FUNCTIONS: ConfirmModal
-// DEPENDS ON: react, translations.js
+// DEPENDS ON: react, translations.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -23,8 +23,6 @@ import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
 export default function ConfirmModal({ isOpen, title, message, onConfirm, onCancel }) {
   const { t } = React.useContext(TranslationContext);
 
-  
-
   // ─── handleConfirm() – obsługa potwierdzenia z logowaniem
   //   @returns {void}
   const handleConfirm = () => {
@@ -36,8 +34,6 @@ export default function ConfirmModal({ isOpen, title, message, onConfirm, onCanc
       logWarn('Wystąpił błąd podczas potwierdzania');
     }
   };
-
-  
 
   // ─── handleCancel() – obsługa anulowania z logowaniem
   //   @returns {void}

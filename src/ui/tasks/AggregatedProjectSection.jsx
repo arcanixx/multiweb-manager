@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Pojedyncza sekcja projektu w widoku zbiorczym
 // FUNCTIONS: AggregatedProjectSection
-// DEPENDS ON: react, translations.js, icons.js, AggregatedTaskItem
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, AggregatedTaskItem
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

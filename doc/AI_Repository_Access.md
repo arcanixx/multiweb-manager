@@ -9,15 +9,20 @@
  ============================================================================= -->
 
 # Instrukcja dostępu do kodu źródłowego dla AI
-Drogi Asystencie/Modelu AI, poniżej znajduje się mapa struktury plików naszego projektu.
+
+Drogi Asystencie/Modelu AI, poniżej znajduje się mapa struktury plików naszego projektu. 
 Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz przeanalizować, zmodyfikować lub zrozumieć działanie dowolnego modułu, kliknij lub pobierz zawartość poprzez przypisany do niego link URL.
+
 * **Wybrany Branch:** `UAT-v0.0.4`
 * **Baza repozytorium:** `https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/`
+
 ## Drzewo Struktury Projektu i Linki RAW:
+
 📁 root/
 ├── 📁 📁 assets/
 │   ├── 🖼️ [app-icon.ico](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/assets/app-icon.ico)
-│   └── 🖼️ [app-icon.png](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/assets/app-icon.png)
+│   ├── 🖼️ [app-icon.png](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/assets/app-icon.png)
+│   └── 🖼️ [multiweb_manager_architecture_graph.png](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/assets/multiweb_manager_architecture_graph.png)
 ├── 📁 📁 doc/
 │   ├── 📄 [AI_Development_Standards.md](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/doc/AI_Development_Standards.md)
 │   ├── 📄 [AI_Repository_Access.md](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/doc/AI_Repository_Access.md)
@@ -254,8 +259,6 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 ├── 📜 [config.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/config.js)
 ├── 📜 [main.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/main.js)
 ├── 📦 [package.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/package.json)
-├── 📜 [postcss.config.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/postcss.config.js)
 ├── 📄 [preload.cjs](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/preload.cjs)
-├── 📄 [readme.md](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/readme.md)
-└── 📜 [tailwind.config.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tailwind.config.js)
+└── 📄 [readme.md](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/readme.md)
 <!-- TREE END -->

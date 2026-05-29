@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Modal historii schowka – integracja z clipboardStore, i18n
 // FUNCTIONS: ClipboardHistoryModal
-// DEPENDS ON: react, translations.js
+// DEPENDS ON: react, translations.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -19,8 +19,6 @@ import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 export default function ClipboardHistoryModal({ onClose }) {
   const { t } = useContext(TranslationContext);
   const [history, setHistory] = useState([]);
-
-  
 
   // ─── useEffect – ładowanie historii schowka przy montowaniu
   useEffect(() => {

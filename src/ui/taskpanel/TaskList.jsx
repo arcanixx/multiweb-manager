@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Lista zadań – grupowanie po statusie, sortowanie po priorytecie,
 // FUNCTIONS: TaskList
-// DEPENDS ON: react, constants.js, translations.js
+// DEPENDS ON: react, loggerRenderer.js, constants.js, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

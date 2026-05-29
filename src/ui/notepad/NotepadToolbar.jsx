@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Pasek narzędzi notatnika (zapisz, znajdź, word wrap)
 // FUNCTIONS: NotepadToolbar
-// DEPENDS ON: react, translations.js, icons.js
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -26,8 +26,6 @@ import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 export default function NotepadToolbar({ onSave, onSaveAs, onToggleFind, wordWrap, onToggleWordWrap, toast, dirty }) {
   const { t } = useContext(TranslationContext);
 
-  
-
   // ─── handleSave() – obsługa zapisu z logowaniem
   //   @returns {void}
   const handleSave = () => {
@@ -39,8 +37,6 @@ export default function NotepadToolbar({ onSave, onSaveAs, onToggleFind, wordWra
       logWarn('Wystąpił błąd podczas zapisu');
     }
   };
-
-  
 
   // ─── handleSaveAs() – obsługa zapisu do pliku z logowaniem
   //   @returns {void}
@@ -54,8 +50,6 @@ export default function NotepadToolbar({ onSave, onSaveAs, onToggleFind, wordWra
     }
   };
 
-  
-
   // ─── handleToggleFind() – obsługa przełączania wyszukiwania z logowaniem
   //   @returns {void}
   const handleToggleFind = () => {
@@ -67,8 +61,6 @@ export default function NotepadToolbar({ onSave, onSaveAs, onToggleFind, wordWra
       logWarn('Wystąpił błąd podczas przełączania wyszukiwania');
     }
   };
-
-  
 
   // ─── handleToggleWordWrap() – obsługa przełączania zawijania wierszy z logowaniem
   //   @returns {void}

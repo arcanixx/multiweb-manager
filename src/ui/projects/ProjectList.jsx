@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Lista projektów z akcjami (zadania, terminal, usuwanie)
 // FUNCTIONS: ProjectList
-// DEPENDS ON: react, translations.js, icons.js
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -23,8 +23,6 @@ import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTerminal }) {
   const { t } = useContext(TranslationContext);
 
-  
-
   // ─── handleDelete() – obsługa usuwania projektu z logowaniem
   //   @param {string} projectId – identyfikator projektu
   //   @returns {void}
@@ -38,8 +36,6 @@ export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTer
     }
   };
 
-  
-
   // ─── handleOpenTasks() – obsługa otwierania zadań projektu z logowaniem
   //   @param {string} projectName – nazwa projektu
   //   @returns {void}
@@ -52,8 +48,6 @@ export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTer
       logWarn('Wystąpił błąd podczas otwierania zadań');
     }
   };
-
-  
 
   // ─── handleOpenTerminal() – obsługa otwierania terminala projektu z logowaniem
   //   @param {Object} terminalConfig – konfiguracja terminala

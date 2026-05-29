@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Modal dodawania nowego projektu (nazwa + ścieżka)
 // FUNCTIONS: ProjectModal
-// DEPENDS ON: react, translations.js, icons.js
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -23,8 +23,6 @@ export default function ProjectModal({ onSave, onClose }) {
   const [name, setName] = useState('');
   const [path, setPath] = useState('');
 
-  
-
   // ─── handleSave() – obsługa zapisu projektu z walidacją i logowaniem
   //   @returns {void}
   const handleSave = () => {
@@ -38,8 +36,6 @@ export default function ProjectModal({ onSave, onClose }) {
       logWarn('Wystąpił błąd podczas zapisu projektu');
     }
   };
-
-  
 
   // ─── handleClose() – obsługa zamknięcia modala z logowaniem
   //   @returns {void}

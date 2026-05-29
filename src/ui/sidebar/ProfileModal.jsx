@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Modal dodawania/edycji profilu
 // FUNCTIONS: ProfileModal
-// DEPENDS ON: react, translations.js, icons.js, urlUtils.js, ModalPortal
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, urlUtils.js, ModalPortal
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Podgląd Markdown na żywo (split view)
 // FUNCTIONS: MarkdownPreviewer
-// DEPENDS ON: react, translations.js
+// DEPENDS ON: react, loggerRenderer.js, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

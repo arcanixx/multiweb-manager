@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Import plików Settings w poszczególnych modułach, export settings-container
 // FUNCTIONS: Settings
-// DEPENDS ON: react, GeneralSection, WebViewSection, TabsSection, NotificationsSection, HotkeysManager, DataLogsSection, AccountSection, translations.js
+// DEPENDS ON: react, loggerRenderer.js, GeneralSection, WebViewSection, TabsSection, NotificationsSection, HotkeysManager, DataLogsSection, AccountSection, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook zarządzania stanem notatnika – zakładki, autosave, zapis, klawisze
 // FUNCTIONS: useNotepadUI
-// DEPENDS ON: react, translations.js, notesStorage.js
+// DEPENDS ON: react, translations.js, notesStorage.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -32,7 +32,7 @@ export function useNotepadUI({ textareaRef }) {
 
   // Aktywna zakładka jako obiekt (do NotepadStatusBar i zapisu)
   const activeTabObj = notes.tabs.find(tab => tab.id === notes.activeTab) ?? null;
-  
+
   // ─── showToast() – wyświetla komunikat przez 2 sekundy
   //   @param {string} msg – komunikat do wyświetlenia
   //   @returns {void}
@@ -139,8 +139,6 @@ export function useNotepadUI({ textareaRef }) {
     setDirty(false);
     showToast(t('notepad.saved'));
   }, [showToast, t]);
-
-  
 
   // ─── saveToFile() – zapisuje zawartość do pliku przez electronAPI
   //   @returns {Promise<void>}

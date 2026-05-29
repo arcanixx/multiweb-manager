@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Filtry historii (poziom, sortowanie, przycisk czyszczenia)
 // FUNCTIONS: HistoryFilters
-// DEPENDS ON: react, translations.js, icons.js
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -25,8 +25,6 @@ import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 export default function HistoryFilters({ filterLevel, onFilterChange, sortOrder, onSortChange, onClear, hasEntries }) {
   const { t } = useContext(TranslationContext);
 
-  
-
   // ─── handleFilterChange() – obsługa zmiany poziomu filtru
   //   @param {Event} e – zdarzenie zmiany selecta
   //   @returns {void}
@@ -40,8 +38,6 @@ export default function HistoryFilters({ filterLevel, onFilterChange, sortOrder,
     }
   };
 
-  
-
   // ─── handleSortChange() – obsługa zmiany porządku sortowania
   //   @param {Event} e – zdarzenie zmiany selecta
   //   @returns {void}
@@ -54,8 +50,6 @@ export default function HistoryFilters({ filterLevel, onFilterChange, sortOrder,
       logWarn('Wystąpił błąd podczas zmiany sortowania');
     }
   };
-
-  
 
   // ─── handleClear() – obsługa czyszczenia historii
   //   @returns {void}

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Modal w portalu (document.body) — ponad natywnym <webview> w Electronie.
 // FUNCTIONS: ModalPortal
-// DEPENDS ON: react, react-dom
+// DEPENDS ON: react, loggerRenderer.js, react-dom
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

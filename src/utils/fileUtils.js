@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Bezpieczne operacje I/O dla plików JSON – odczyt z fallbackiem i zapis z wyfiltrowaniem danych (readJsonSafe, writeJsonSafe).
 // FUNCTIONS: readJsonSafe, writeJsonSafe
-// DEPENDS ON: fs
+// DEPENDS ON: fs, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

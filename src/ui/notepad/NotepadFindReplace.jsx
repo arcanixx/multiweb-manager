@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Panel znajdź/zastąp w notatniku
 // FUNCTIONS: NotepadFindReplace
-// DEPENDS ON: react, translations.js, icons.js
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -27,8 +27,6 @@ import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 export default function NotepadFindReplace({ findText, onFindTextChange, replaceText, onReplaceTextChange, onFind, onReplace, findCount, onClose }) {
   const { t } = useContext(TranslationContext);
 
-  
-
   // ─── handleFind() – obsługa wyszukiwania z logowaniem
   //   @returns {void}
   const handleFind = () => {
@@ -41,8 +39,6 @@ export default function NotepadFindReplace({ findText, onFindTextChange, replace
     }
   };
 
-  
-
   // ─── handleReplace() – obsługa zastępowania z logowaniem
   //   @returns {void}
   const handleReplace = () => {
@@ -54,8 +50,6 @@ export default function NotepadFindReplace({ findText, onFindTextChange, replace
       logWarn('Wystąpił błąd podczas zastępowania');
     }
   };
-
-  
 
   // ─── handleClose() – obsługa zamknięcia panelu z logowaniem
   //   @returns {void}

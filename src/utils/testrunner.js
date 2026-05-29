@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: testRunner.js
-// PATH: src/utils/testRunner.js
+// FILE: testrunner.js
+// PATH: src/utils/testrunner.js
 // VERSION: 0.0.3
 // PURPOSE: Moduł pomocniczy dla testów – asercje i logowanie.
 // FUNCTIONS: initTestResults, assert, assertThrows, getTestResults, logTestSummary

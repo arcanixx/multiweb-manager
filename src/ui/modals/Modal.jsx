@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Bazowy komponent modalny dla całej aplikacji
 // FUNCTIONS: Modal
-// DEPENDS ON: react
+// DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -20,7 +20,7 @@ import { logInfo } from '../utils/loggerRenderer.js';
 //   @param {string} props.size – rozmiar modala (small, medium, large, full)
 //   @returns {JSX.Element|null} – renderowany modal lub null
 export default function Modal({ isOpen, onClose, title, children, size = 'medium' }) {
-  
+
   // ─── useEffect – obsługa klawisza Escape i blokowanie scrolla
   useEffect(() => {
     const handleEscape = (e) => {

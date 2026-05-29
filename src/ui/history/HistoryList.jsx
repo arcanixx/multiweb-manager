@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Lista wpisów historii (tabela)
 // FUNCTIONS: HistoryList
-// DEPENDS ON: react, translations.js, icons.js
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -19,8 +19,6 @@ import { logError, logWarn } from '../../utils/loggerRenderer.js';
 //   @returns {JSX.Element} – renderowana lista lub komunikat o braku historii
 export default function HistoryList({ entries }) {
   const { t } = useContext(TranslationContext);
-
-  
 
   // ─── formatTime() – formatuje timestamp do czytelnej daty
   //   @param {string} iso – timestamp w formacie ISO

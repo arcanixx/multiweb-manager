@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Modal dodawania/edycji zadania – walidacja, zapis,
 // FUNCTIONS: TaskEditor
-// DEPENDS ON: react, constants.js, translations.js
+// DEPENDS ON: react, loggerRenderer.js, constants.js, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

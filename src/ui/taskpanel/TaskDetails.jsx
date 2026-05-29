@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Szczegóły zadania – pełny widok, zmiana statusu,
 // FUNCTIONS: TaskDetails
-// DEPENDS ON: react, constants.js, translations.js
+// DEPENDS ON: react, loggerRenderer.js, constants.js, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

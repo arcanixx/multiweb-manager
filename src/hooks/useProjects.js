@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook do projectsStore – lista projektów, CRUD load()           pobiera wszystkie projekty (projects:getAll) add(project)     dodaje projekt (projects:add) update(id,patch) aktualizuje projekt (projects:update) remove(id)       usuwa projekt (projects:delete)
 // FUNCTIONS: useProjects
-// DEPENDS ON: react
+// DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -16,8 +16,6 @@ import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 export function useProjects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  
 
   // ─── load() – ładuje wszystkie projekty z backendu
   //   @returns {Promise<void>}
@@ -40,8 +38,6 @@ export function useProjects() {
     }
   }
 
-  
-
   // ─── add() – dodaje nowy projekt
   //   @param {Object} project – obiekt projektu
   //   @returns {Promise<Object>} – wynik operacji
@@ -62,8 +58,6 @@ export function useProjects() {
       return { ok: false, error: err.message };
     }
   }
-
-  
 
   // ─── update() – aktualizuje istniejący projekt
   //   @param {string} id – identyfikator projektu
@@ -86,8 +80,6 @@ export function useProjects() {
       return { ok: false, error: err.message };
     }
   }
-
-  
 
   // ─── remove() – usuwa projekt
   //   @param {string} id – identyfikator projektu

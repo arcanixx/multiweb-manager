@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Generator kombinacji stringów. Podajesz tekst bazowy, znak podziału
 // FUNCTIONS: StringCombiner
-// DEPENDS ON: react, icons, translations.js, loggerRenderer
+// DEPENDS ON: react, loggerRenderer.js, icons, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

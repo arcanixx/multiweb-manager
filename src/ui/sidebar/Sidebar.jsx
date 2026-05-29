@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny panel boczny – nawigacja, profile, kategorie, narzędzia
 // FUNCTIONS: Sidebar
-// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js, ProfileModal, CategoryModal, ContextMenu, SidebarSearch, SidebarCategory, SidebarProfileItem, SidebarTools, SidebarWorkspaces
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, ProfileModal, CategoryModal, ContextMenu, SidebarSearch, SidebarCategory, SidebarProfileItem, SidebarTools, SidebarWorkspaces
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

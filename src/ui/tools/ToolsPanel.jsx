@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Kontener narzędzi – przełączanie między wszystkimi toolami
 // FUNCTIONS: ToolsPanel
-// DEPENDS ON: react, translations.js, icons, loggerRenderer, RemoveBgTool, StringCombiner, JsonFormatter, RegexTester, MarkdownPreviewer, ClipboardHistory, ImageTools, SvgToPngConverter, MiniPostman, FilePreviewer, CookieGrabber
+// DEPENDS ON: react, translations.js, icons, loggerRenderer
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
