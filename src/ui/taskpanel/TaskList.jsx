@@ -20,9 +20,6 @@ import { TranslationContext } from '../utils/translations.js';
 //   @param {Function} props.onOpenEditor – callback otwarcia edytora zadania
 //   @returns {JSX.Element} – renderowana lista zadań
 
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
 export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
   const { t } = React.useContext(TranslationContext);
   const [filter, setFilter] = useState("all");
@@ -30,11 +27,17 @@ export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
   // ─── sortByPriority() – sortuje zadania według priorytetu A → E
   //   @param {Array} list – lista zadań do posortowania
   //   @returns {Array} – posortowana lista
+
   function sortByPriority(list) {
     const order = ["A", "B", "C", "D", "E"];
     return [...list].sort((a, b) => order.indexOf(a.priority) - order.indexOf(b.priority));
   }
+
+  // ─── useEffect – logowanie załadowania zadań przy mount
+  //   @returns {void}
+
   // Grupowanie zadań po statusie z uwzględnieniem aktywnego filtra priorytetu
+
   const grouped = {
     [TASK_STATUS.TODO]:        [],
     [TASK_STATUS.IN_PROGRESS]: [],
@@ -50,9 +53,12 @@ export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
   Object.keys(grouped).forEach(status => {
     grouped[status] = sortByPriority(grouped[status]);
   });
-  // ---------------------------------------------------------------------------
-  // Helper – renderuje pojedynczą sekcję statusu
-  // ---------------------------------------------------------------------------
+
+  // ─── renderSection() – renderuje pojedynczą sekcję statusu
+  //   @param {string} statusKey – klucz statusu
+  //   @param {string} labelKey – klucz tłumaczenia nazwy sekcji
+  //   @returns {JSX.Element} – renderowana sekcja
+
   function renderSection(statusKey, labelKey) {
     const items = grouped[statusKey];
     return (
@@ -65,7 +71,10 @@ export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
           <div
             key={task.id}
             className="tasklist-item"
-            onClick={() => onOpenDetails(task)}
+            onClick={() => {
+              logDebug(`TaskList: opening details for task ${task.id}`);
+              onOpenDetails(task);
+            }}
           >
             <div className={`priority-dot priority-${task.priority}`} />
             <div className="tasklist-title">{task.title}</div>

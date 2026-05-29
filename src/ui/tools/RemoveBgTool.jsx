@@ -12,8 +12,14 @@ import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { ICONS } from "../../utils/icons";
 import { TranslationContext } from '../utils/translations.js';
-import { log, error as logError } from "../../utils/loggerRenderer";
+import { logInfo, logError, logWarn, logDebug } from "../../utils/loggerRenderer";
 import { API_ENDPOINTS } from "../../config";
+
+// ─── RemoveBgTool() – narzędzie do usuwania tła przez API remove.bg
+//   @param {Object} props – właściwości komponentu
+//   @param {string} props.apiKey – klucz API remove.bg
+//   @param {string} props.plan – plan subskrypcji (free/pro)
+//   @returns {JSX.Element} – renderowany interfejs narzędzia
 
 export default function RemoveBgTool({ apiKey, plan = "free" }) {
   const { t } = React.useContext(TranslationContext);
@@ -32,7 +38,7 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
           .map(f => ({ file: f, status: "pending", error: null }))
       ].slice(0, MAX_FILES);
       setFiles(all);
-      log(`RemoveBg: ${all.length} files queued`);
+      logInfo(`RemoveBg: ${all.length} files queued`);
     },
     [files]
   );
@@ -108,7 +114,7 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
         );
         doneCount++;
         setDone(doneCount);
-        log(`RemoveBg: done for ${file.name}`);
+        logInfo(`RemoveBg: done for ${file.name}`);
       } catch (err) {
         const errMsg = err.response?.data
           ? `HTTP ${err.response.status}`
@@ -126,7 +132,7 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
     }
 
     setProcessing(false);
-    log(`RemoveBg: batch done. ${doneCount} ok, ${errCount} errors`);
+    logInfo(`RemoveBg: batch done. ${doneCount} ok, ${errCount} errors`);
   };
 
   const pendingCount = files.filter(f => f.status === "pending").length;

@@ -12,8 +12,10 @@ import React, { useState, useCallback } from "react";
 import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { ICONS } from "../../utils/icons";
 import { TranslationContext } from '../utils/translations.js';
-import { log } from "../../utils/loggerRenderer";
 
+// ─── cartesian() – generuje iloczyn kartezjański tablic
+//   @param {Array} arrays – tablica tablic do połączenia
+//   @returns {Array} – wszystkie możliwe kombinacje
 function cartesian(arrays) {
   if (!arrays || arrays.length === 0) return [[]];
   if (arrays.length === 1) return arrays[0].map(v => [v]);
@@ -27,12 +29,20 @@ function cartesian(arrays) {
     return result;
   }, [[]]);
 }
+
+// ─── parseSplitChar() – parsuje znak podziału
+//   @param {string} raw – opis znakowy (\\n, \\t, space)
+//   @returns {string} – rzeczywisty znak
 function parseSplitChar(raw) {
   if (raw === "\\n" || raw === "enter" || raw === "newline") return "\n";
   if (raw === "\\t" || raw === "tab") return "\t";
   if (raw === "space" || raw === " ") return " ";
   return raw || " ";
 }
+
+// ─── StringCombiner() – generator kombinacji stringów
+//   @returns {JSX.Element} – renderowany interfejs narzędzia
+
 export default function StringCombiner() {
   const { t } = React.useContext(TranslationContext);
   const [baseText, setBaseText] = useState("");
@@ -55,7 +65,7 @@ export default function StringCombiner() {
     if (validVars.length === 0) {
       setResult(baseText);
       setCount(1);
-      log("StringCombiner: no variables, output = base text");
+      logInfo("StringCombiner: no variables, output = base text");
       return;
     }
 
@@ -69,7 +79,7 @@ export default function StringCombiner() {
     const output = lines.join("\n\n");
     setResult(output);
     setCount(combos.length);
-    log(`StringCombiner: generated ${combos.length} combinations`);
+    logInfo(`StringCombiner: generated ${combos.length} combinations`);
   }, [baseText, splitChar, variables]);
 
   const addVariable = () => {
@@ -104,7 +114,7 @@ export default function StringCombiner() {
       await navigator.clipboard.writeText(result);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      log("StringCombiner: result copied to clipboard");
+      logInfo("StringCombiner: result copied to clipboard");
     } catch {
       const ta = document.createElement("textarea");
       ta.value = result;
