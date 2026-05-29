@@ -11,18 +11,16 @@
 import React, { useState, useContext } from "react";
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons';
-import { logDebug } from '../../utils/loggerRenderer';
-import RemoveBgTool from "./RemoveBgTool";
-import StringCombiner from "./StringCombiner";
-import JsonFormatter from "./JsonFormatter";
-import RegexTester from "./RegexTester";
-import MarkdownPreviewer from "./MarkdownPreviewer";
-import ClipboardHistory from "./ClipboardHistory";
-import ImageTools from "./ImageTools";
-import SvgToPngConverter from "./SvgToPngConverter";
-import MiniPostman from "./MiniPostman";
-import FilePreviewer from "./FilePreviewer";
-import CookieGrabber from "./CookieGrabber";
+import { logDebug, logInfo, logWarn } from '../../utils/loggerRenderer';
+
+// ─── TOOLS_LIST – stała z listą dostępnych narzędzi
+
+// ─── ToolsPanel() – kontener narzędzi z zakładkami
+//   @param {Object} props – właściwości komponentu
+//   @param {string} props.removeBgApiKey – klucz API Remove.bg
+//   @param {string} props.plan – plan subskrypcji Remove.bg
+//   @param {string} props.activeWebViewId – ID aktywnej webview
+//   @returns {JSX.Element} – renderowany panel narzędzi
 
 export default function ToolsPanel({ removeBgApiKey, plan = "free", activeWebViewId }) {
   const { t } = useContext(TranslationContext);

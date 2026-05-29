@@ -10,9 +10,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { TranslationContext } from '../utils/translations.js';
-import { logDebug } from '../../utils/loggerRenderer';
+import { logDebug, logInfo, logWarn } from '../../utils/loggerRenderer';
 import { ICONS } from '../../utils/icons';
 import { CLIPBOARD_HISTORY_MAX } from '../../../config.js';
+
+// ─── ClipboardHistory() – historia schowka z możliwością pinowania
+//   @returns {JSX.Element} – renderowany interfejs historii schowka
 
 export default function ClipboardHistory() {
   const { t } = React.useContext(TranslationContext);

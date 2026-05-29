@@ -13,6 +13,12 @@ import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 
+// ─── SidebarSearch() – wyszukiwarka profili w sidebarze
+//   @param {Object} props – właściwości komponentu
+//   @param {string} props.value – bieżąca wartość wyszukiwania
+//   @param {Function} props.onChange – callback zmiany wartości
+//   @returns {JSX.Element} – renderowany input wyszukiwania
+
 export default function SidebarSearch({ value, onChange }) {
   const { t } = useContext(TranslationContext);
   return (

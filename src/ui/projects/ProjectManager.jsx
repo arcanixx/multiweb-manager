@@ -11,7 +11,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
-import { log, logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 import ProjectModal from './ProjectModal';
 import ProjectList from './ProjectList';
 
@@ -34,7 +34,7 @@ export default function ProjectManager({ onOpenTasks, onOpenTerminal }) {
       window.electronAPI.getSettings()
         .then(settings => {
           setProjects(settings.projects || []);
-          log('ProjectManager: loaded', (settings.projects || []).length, 'projects');
+          logDebug('ProjectManager: loaded', (settings.projects || []).length, 'projects');
           logInfo(`ProjectManager: loaded ${(settings.projects || []).length} projects`);
         })
         .catch(err => {
@@ -56,7 +56,7 @@ export default function ProjectManager({ onOpenTasks, onOpenTerminal }) {
     try {
       setProjects(newProjects);
       await window.electronAPI.saveSettings({ projects: newProjects });
-      log('ProjectManager: saved', newProjects.length, 'projects');
+      logDebug('ProjectManager: saved', newProjects.length, 'projects');
       logInfo(`ProjectManager: saved ${newProjects.length} projects`);
     } catch (err) {
       logError('ProjectManager: save failed', err);

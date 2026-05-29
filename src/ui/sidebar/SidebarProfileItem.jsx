@@ -13,6 +13,14 @@ import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 
+// ─── SidebarProfileItem() – pojedynczy element profilu w sidebarze
+//   @param {Object} props – właściwości komponentu
+//   @param {Object} props.profile – obiekt profilu (id, name, icon, favorite, notifs)
+//   @param {boolean} props.isActive – czy profil jest aktywny
+//   @param {Function} props.onSelect – callback wyboru profilu
+//   @param {Function} props.onContextMenu – callback menu kontekstowego
+//   @returns {JSX.Element} – renderowany element profilu
+
 export default function SidebarProfileItem({ profile, isActive, onSelect, onContextMenu }) {
   const { t } = useContext(TranslationContext);
   const iconStr = profile.icon || ICONS.DEFAULT;

@@ -12,7 +12,7 @@ import { ICONS } from './utils/icons.js';
 import React, { useState, useEffect, lazy, Suspense, useContext } from 'react';
 import Sidebar from './ui/sidebar/Sidebar';
 import ConfirmModal from './ui/modals/ConfirmModal';
-import { log, initLogger, setDebugMode, logDebug, logError } from './utils/loggerRenderer';
+import { logInfo as log, initLogger, setDebugMode, logDebug, logError, logWarn } from './utils/loggerRenderer';
 import { normalizeWebUrl } from './utils/urlUtils';
 import { TranslationContext } from './utils/translations.js';
 

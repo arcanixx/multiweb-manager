@@ -13,6 +13,13 @@ import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 
+// ─── SidebarWorkspaces() – sekcja workspace'ów w sidebarze
+//   @param {Object} props – właściwości komponentu
+//   @param {Array} props.workspaces – lista workspace'ów
+//   @param {Object} props.activeWorkspace – aktywny workspace
+//   @param {Function} props.onSelect – callback wyboru workspace
+//   @returns {JSX.Element|null} – renderowane workspace'y lub null
+
 export default function SidebarWorkspaces({ workspaces, activeWorkspace, onSelect }) {
   const { t } = useContext(TranslationContext);
   if (!workspaces || workspaces.length === 0) return null;

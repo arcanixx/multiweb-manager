@@ -13,6 +13,9 @@ import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS, SIDEBAR_ICON_MAP } from '../../utils/icons.js';
 
+// ─── SPECIAL_TOOLS – stała z listą narzędzi specjalnych w sidebarze
+//   @returns {Array} – tablica obiektów z id i kluczem tłumaczenia
+
 const SPECIAL_TOOLS = [
   { id: 'notepad', labelKey: 'notepad.title' },
   { id: 'projectManager', labelKey: 'projectManager.title' },
@@ -24,6 +27,13 @@ const SPECIAL_TOOLS = [
   { id: 'settings', labelKey: 'settings.title' },
   { id: 'help', labelKey: 'help.title' },
 ];
+
+// ─── SidebarTools() – sekcja narzędzi specjalnych w sidebarze
+//   @param {Object} props – właściwości komponentu
+//   @param {Object} props.activeItem – aktywny element
+//   @param {Function} props.onSelect – callback wyboru narzędzia
+//   @returns {JSX.Element} – renderowane narzędzia
+
 export default function SidebarTools({ activeItem, onSelect }) {
   const { t } = useContext(TranslationContext);
   const topSpecial = SPECIAL_TOOLS.slice(0, 3);

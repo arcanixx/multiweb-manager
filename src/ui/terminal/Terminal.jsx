@@ -14,7 +14,12 @@ import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import 'xterm/css/xterm.css';
 import { TranslationContext } from '../utils/translations.js';
-import { logDebug, logError } from 'src/utils/loggerRenderer';
+import { logDebug, logInfo, logError, logWarn } from 'src/utils/loggerRenderer';
+
+// ─── Terminal() – terminal z xterm.js i obsługą node-pty
+//   @returns {JSX.Element} – renderowany terminal
+
+export default function Terminal() {
 import { ICONS } from 'src/utils/icons';
 
 export default function Terminal() {

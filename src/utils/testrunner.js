@@ -8,16 +8,28 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { log, error as logError } from './utils/logger.js';
+import { logInfo as log, logError, logWarn, logDebug } from './utils/logger.js';
 import { ICONS } from '../utils/icons.js';
+
 let passCount = 0;
 let failCount = 0;
 const results = [];
+
+// ─── initTestResults() – resetuje liczniki testów do zera
+//   @returns {void}
+
 export function initTestResults() {
   passCount = 0;
   failCount = 0;
   results.length = 0;
 }
+
+// ─── assert() – asercja z logowaniem PASS/FAIL
+//   @param {string} name – nazwa asercji
+//   @param {boolean} condition – warunek do sprawdzenia
+//   @param {string} detail – dodatkowy opis błędu
+//   @returns {void}
+
 export function assert(name, condition, detail = '') {
   if (condition) {
     passCount++;
@@ -29,6 +41,12 @@ export function assert(name, condition, detail = '') {
     logError(`  ${ICONS.TEST_FAIL} FAIL: ${name}${detail ? ' – ' + detail : ''}`);
   }
 }
+
+// ─── assertThrows() – asercja sprawdzająca czy funkcja rzuci wyjątek
+//   @param {string} name – nazwa asercji
+//   @param {Function} fn – funkcja do wykonania
+//   @returns {void}
+
 export function assertThrows(name, fn) {
   try {
     fn();
@@ -41,9 +59,17 @@ export function assertThrows(name, fn) {
     log(`  ${ICONS.TEST_PASS} PASS: ${name} (threw as expected)`);
   }
 }
+
+// ─── getTestResults() – zwraca aktualne wyniki testów
+//   @returns {Object} – obiekt z passCount, failCount, total, results
+
 export function getTestResults() {
   return { passCount, failCount, total: passCount + failCount, results };
 }
+
+// ─── logTestSummary() – wyświetla podsumowanie testów w konsoli
+//   @returns {Object} – wyniki testów
+
 export function logTestSummary() {
   const total = passCount + failCount;
   log(`\n${ICONS.TEST} RESULTS: ${passCount}/${total} passed, ${failCount} failed`);

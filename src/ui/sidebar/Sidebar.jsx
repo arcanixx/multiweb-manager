@@ -12,7 +12,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
-import { log } from '../../utils/loggerRenderer.js';
 import ProfileModal from './ProfileModal';
 import CategoryModal from './CategoryModal';
 import ContextMenu from './ContextMenu';
@@ -21,6 +20,16 @@ import SidebarCategory from './SidebarCategory';
 import SidebarProfileItem from './SidebarProfileItem';
 import SidebarTools from './SidebarTools';
 import SidebarWorkspaces from './SidebarWorkspaces';
+
+// ─── Sidebar() – główny panel boczny z profile, kategoriami i narzędziami
+//   @param {Object} props – właściwości komponentu
+//   @param {Array} props.profiles – lista profili do wyświetlenia
+//   @param {Function} props.onSelect – callback wyboru elementu
+//   @param {Object} props.activeItem – aktywny element
+//   @param {Function} props.onProfilesChange – callback zmiany profili
+//   @param {Function} props.onOpenTaskPanel – callback otwarcia panelu zadań
+//   @param {Function} props.onModalOpenChange – callback zmiany stanu modala
+//   @returns {JSX.Element} – renderowany sidebar
 
 export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChange, onOpenTaskPanel, onModalOpenChange }) {
   const { t } = useContext(TranslationContext);

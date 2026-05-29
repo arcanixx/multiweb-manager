@@ -14,6 +14,16 @@ import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import AggregatedTaskItem from './AggregatedTaskItem';
 
+// ─── AggregatedProjectSection() – sekcja projektu z zadaniami w widoku zbiorczym
+//   @param {Object} props – właściwości komponentu
+//   @param {string} props.project – nazwa projektu
+//   @param {Object} props.taskData – dane zadań (active, backlog, done)
+//   @param {boolean} props.hidden – czy projekt jest ukryty
+//   @param {boolean} props.collapsed – czy sekcja jest zwinięta
+//   @param {Function} props.onToggleVisibility – callback przełączania widoczności
+//   @param {Function} props.onToggleCollapse – callback przełączania collapse
+//   @returns {JSX.Element} – renderowana sekcja projektu
+
 export default function AggregatedProjectSection({ project, taskData, hidden, collapsed, onToggleVisibility, onToggleCollapse }) {
   const { t } = useContext(TranslationContext);
   const active = taskData.active || [];

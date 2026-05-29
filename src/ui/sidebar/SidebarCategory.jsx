@@ -13,6 +13,15 @@ import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 
+// ─── SidebarCategory() – nagłówek kategorii profilów z ikoną i przełącznikiem collapse
+//   @param {Object} props – właściwości komponentu
+//   @param {string} props.name – nazwa kategorii
+//   @param {string} props.icon – ikona kategorii
+//   @param {boolean} props.isCollapsed – czy kategoria jest zwinięta
+//   @param {Function} props.onToggle – callback przełączania collapse
+//   @param {Function} props.onContextMenu – callback menu kontekstowego
+//   @returns {JSX.Element} – renderowany nagłówek kategorii
+
 export default function SidebarCategory({ name, icon, isCollapsed, onToggle, onContextMenu }) {
   const { t } = useContext(TranslationContext);
   return (

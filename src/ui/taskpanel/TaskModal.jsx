@@ -13,6 +13,15 @@ import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 
+// ─── TaskModal() – modal dodawania/edycji zadania z pełnym formularzem
+//   @param {Object} props – właściwości komponentu
+//   @param {Object|null} props.task – istniejące zadanie lub null
+//   @param {Array} props.availableProjects – dostępne projekty
+//   @param {string} props.currentProject – bieżący projekt
+//   @param {Function} props.onSave – callback zapisu zadania
+//   @param {Function} props.onClose – callback zamknięcia modala
+//   @returns {JSX.Element} – renderowany modal zadania
+
 export default function TaskModal({ task, availableProjects, currentProject, onSave, onClose }) {
   const { t } = useContext(TranslationContext);
   const isEdit = !!task;
@@ -24,19 +33,30 @@ export default function TaskModal({ task, availableProjects, currentProject, onS
   const [comment, setComment] = useState(task?.comment || '');
   const [project, setProject] = useState(task?.project || currentProject || '');
   const [pinned, setPinned] = useState(task?.pinned || false);
+  // ─── handleSave() – waliduje i zapisuje zadanie
+  //   @returns {void}
   const handleSave = () => {
-    if (!name.trim()) return;
-    onSave({
-      id: task?.id || Date.now().toString(),
-      name: name.trim(),
-      desc: desc.trim(),
-      priority: section === 'done' ? 'E' : priority,
-      section,
-      version: version.trim(),
-      comment: comment.trim(),
-      project: project || currentProject,
-      pinned,
-    });
+    try {
+      if (!name.trim()) {
+        logWarn('TaskModal: name is required');
+        return;
+      }
+      onSave({
+        id: task?.id || Date.now().toString(),
+        name: name.trim(),
+        desc: desc.trim(),
+        priority: section === 'done' ? 'E' : priority,
+        section,
+        version: version.trim(),
+        comment: comment.trim(),
+        project: project || currentProject,
+        pinned,
+      });
+      logInfo(`TaskModal: task ${task ? 'updated' : 'created'}`);
+    } catch (err) {
+      logError('TaskModal: save failed', err);
+      logWarn('Wystąpił błąd podczas zapisu zadania');
+    }
   };
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>

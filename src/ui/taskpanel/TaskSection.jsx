@@ -14,6 +14,21 @@ import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import TaskItem from './TaskItem';
 
+// ─── TaskSection() – pojedyncza sekcja zadań (active/backlog/done)
+//   @param {Object} props – właściwości komponentu
+//   @param {string} props.title – tytuł sekcji
+//   @param {string} props.iconColor – kolor indykatora sekcji
+//   @param {Array} props.tasks – lista zadań w sekcji
+//   @param {Function} props.onMoveToDone – callback przeniesienia do done
+//   @param {Function} props.onMoveToBacklog – callback przeniesienia do backlog
+//   @param {Function} props.onMoveToActive – callback przeniesienia do active
+//   @param {Function} props.onPin – callback przypięcia zadania
+//   @param {Function} props.onDelete – callback usunięcia zadania
+//   @param {Function} props.onEdit – callback edycji zadania
+//   @param {Function} props.onOpenComment – callback otwarcia komentarza
+//   @param {string} props.section – nazwa sekcji
+//   @returns {JSX.Element} – renderowana sekcja zadań
+
 export default function TaskSection({ title, iconColor, tasks, onMoveToDone, onMoveToBacklog, onMoveToActive, onPin, onDelete, onEdit, onOpenComment, section }) {
   const { t } = useContext(TranslationContext);
   const [collapsed, setCollapsed] = useState(false);

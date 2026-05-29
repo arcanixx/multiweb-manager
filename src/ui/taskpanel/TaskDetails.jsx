@@ -13,24 +13,39 @@ import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js
 import { TASK_PRIORITIES, TASK_STATUS } from "../../constants.js";
 import { TranslationContext } from '../utils/translations.js';
 
+// ─── TaskDetails() – szczegółowy widok zadania z możliwością edycji pól
+//   @param {Object} props – właściwości komponentu
+//   @param {Object} props.task – obiekt zadania do wyświetlenia
+//   @param {Function} props.onBack – callback powrotu do listy zadań
+//   @param {Function} props.onEdit – callback otwarcia edytora zadania
+//   @returns {JSX.Element} – renderowany widok szczegółów zadania
+
 // ---------------------------------------------------------------------------
-// TaskDetails
-// Props:
-//   task    – obiekt zadania do wyświetlenia
-//   onBack  – callback powrotu do listy
-//   onEdit  – callback otwarcia edytora dla tego zadania
+
 // ---------------------------------------------------------------------------
 export default function TaskDetails({ task, onBack, onEdit }) {
   const { t } = React.useContext(TranslationContext);
   const [local, setLocal] = useState(task);
-  /** Wysyła patch do IPC i aktualizuje lokalny stan. */
+
+  // ─── updateField() – aktualizuje pole zadania przez IPC
+  //   @param {string} field – nazwa pola do aktualizacji
+  //   @param {any} value – nowa wartość pola
+  //   @returns {Promise<void>}
   async function updateField(field, value) {
-    const res = await window.electronAPI.invoke("tasks:update", {
-      id: local.id,
-      patch: { [field]: value }
-    });
-    if (res?.ok) {
-      setLocal({ ...local, [field]: value });
+    try {
+      const res = await window.electronAPI.invoke("tasks:update", {
+        id: local.id,
+        patch: { [field]: value }
+      });
+      if (res?.ok) {
+        setLocal({ ...local, [field]: value });
+        logInfo(`TaskDetails: updated ${field}`);
+      } else {
+        logWarn(`Nie można zaktualizować pola ${field}`);
+      }
+    } catch (err) {
+      logError('TaskDetails.updateField failed', err);
+      logWarn('Wystąpił błąd podczas aktualizacji pola');
     }
   }
   return (

@@ -11,9 +11,12 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
-import { log, logError } from '../../utils/loggerRenderer.js';
+import { logDebug as log, logError, logInfo, logWarn } from '../../utils/loggerRenderer.js';
 import AggregatedProjectSection from './AggregatedProjectSection';
 import AggregatedTaskItem from './AggregatedTaskItem';
+
+// ─── AggregatedTasks() – widok zbiorczy zadań ze wszystkich projektów
+//   @returns {JSX.Element} – renderowany widok zadań
 
 export default function AggregatedTasks() {
   const { t } = useContext(TranslationContext);

@@ -11,7 +11,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
-import { log, logError, logInfo, logWarn } from '../../utils/loggerRenderer.js';
+import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 import HistoryFilters from './HistoryFilters';
 import HistoryList from './HistoryList';
 import HistoryExport from './HistoryExport';
@@ -37,7 +37,7 @@ export default function HistoryLog() {
 
       const data = await window.electronAPI.getHistory();
       setHistory(Array.isArray(data) ? data : []);
-      log('HistoryLog: loaded', data?.length || 0, 'entries');
+      logDebug('HistoryLog: loaded', data?.length || 0, 'entries');
       logInfo(`HistoryLog: loaded ${data?.length || 0} entries`);
     } catch (err) {
       setError(err.message);

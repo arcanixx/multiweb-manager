@@ -13,7 +13,24 @@ import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 
+// ─── PRIORITY_COLORS – mapowanie kolorów dla priorytetów zadań
+//   @returns {Object} – mapa priorytetu na kolor HEX
+
 const PRIORITY_COLORS = { A: '#ef4444', B: '#f97316', C: '#eab308', D: '#3b82f6', E: '#22c55e' };
+
+// ─── TaskItem() – pojedynczy element zadania z przyciskami akcji
+//   @param {Object} props – właściwości komponentu
+//   @param {Object} props.task – obiekt zadania
+//   @param {string} props.section – nazwa sekcji (active/backlog/done)
+//   @param {Function} props.onMoveToDone – callback przeniesienia do done
+//   @param {Function} props.onMoveToBacklog – callback przeniesienia do backlog
+//   @param {Function} props.onMoveToActive – callback przeniesienia do active
+//   @param {Function} props.onPin – callback przypięcia/odpięcia zadania
+//   @param {Function} props.onDelete – callback usunięcia zadania
+//   @param {Function} props.onEdit – callback edycji zadania
+//   @param {Function} props.onOpenComment – callback otwarcia komentarza
+//   @returns {JSX.Element} – renderowany element zadania
+
 export default function TaskItem({ task, section, onMoveToDone, onMoveToBacklog, onMoveToActive, onPin, onDelete, onEdit, onOpenComment }) {
   const { t } = useContext(TranslationContext);
   const pColor = PRIORITY_COLORS[task.priority] || '#94a3b8';

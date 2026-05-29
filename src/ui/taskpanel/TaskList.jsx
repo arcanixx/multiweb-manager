@@ -13,17 +13,23 @@ import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js
 import { TASK_PRIORITIES, TASK_STATUS } from "../../constants.js";
 import { TranslationContext } from '../utils/translations.js';
 
+// ─── TaskList() – lista zadań z grupowaniem po statusie i filtrem priorytetu
+//   @param {Object} props – właściwości komponentu
+//   @param {Array} props.tasks – lista zadań do wyświetlenia
+//   @param {Function} props.onOpenDetails – callback otwarcia szczegółów zadania
+//   @param {Function} props.onOpenEditor – callback otwarcia edytora zadania
+//   @returns {JSX.Element} – renderowana lista zadań
+
 // ---------------------------------------------------------------------------
-// TaskList
-// Props:
-//   tasks          – tablica zadań
-//   onOpenDetails  – callback otwierający TaskDetails dla zadania
-//   onOpenEditor   – callback otwierający TaskEditor (null = nowe zadanie)
+
 // ---------------------------------------------------------------------------
 export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
   const { t } = React.useContext(TranslationContext);
   const [filter, setFilter] = useState("all");
-  /** Sortuje zadania według priorytetu A → E. */
+
+  // ─── sortByPriority() – sortuje zadania według priorytetu A → E
+  //   @param {Array} list – lista zadań do posortowania
+  //   @returns {Array} – posortowana lista
   function sortByPriority(list) {
     const order = ["A", "B", "C", "D", "E"];
     return [...list].sort((a, b) => order.indexOf(a.priority) - order.indexOf(b.priority));

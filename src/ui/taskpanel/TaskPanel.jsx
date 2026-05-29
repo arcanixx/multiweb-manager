@@ -11,10 +11,18 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
-import { log, logError } from '../../utils/loggerRenderer.js';
+import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 import TaskModal from './TaskModal';
 import CommentModal from './CommentModal';
 import TaskSection from './TaskSection';
+
+// ─── TaskPanel() – główny panel zarządzania zadaniami projektu
+//   @param {Object} props – właściwości komponentu
+//   @param {string} props.projectName – nazwa projektu
+//   @param {Function} props.onClose – callback zamknięcia panelu
+//   @param {boolean} props.visible – czy panel jest widoczny
+//   @param {Array} props.availableProjects – dostępne projekty
+//   @returns {JSX.Element|null} – renderowany panel zadań
 
 export default function TaskPanel({ projectName, onClose, visible, availableProjects }) {
   const { t } = useContext(TranslationContext);
@@ -24,7 +32,7 @@ export default function TaskPanel({ projectName, onClose, visible, availableProj
   useEffect(() => {
     if (!visible || !projectName) return;
     window.electronAPI.getTasks(projectName)
-      .then(data => { setTasks(data.tasks || { active: [], backlog: [], done: [] }); log('TaskPanel: loaded for', projectName); })
+      .then(data => { setTasks(data.tasks || { active: [], backlog: [], done: [] }); logInfo('TaskPanel: loaded for', projectName); })
       .catch(err => logError('TaskPanel: load failed', err.message));
   }, [projectName, visible]);
   const saveFullState = useCallback((newTasks) => {

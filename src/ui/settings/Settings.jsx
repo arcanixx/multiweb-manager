@@ -19,6 +19,9 @@ import DataLogsSection from './DataLogsSection';
 import AccountSection from './AccountSection';
 import { TranslationContext } from '../utils/translations.js';
 
+// ─── Settings() – kontener wszystkich sekcji ustawień aplikacji
+//   @returns {JSX.Element} – renderowany interfejs ustawień
+
 export default function Settings() {
   const { t } = React.useContext(TranslationContext);
   return (

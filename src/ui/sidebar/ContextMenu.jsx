@@ -13,6 +13,14 @@ import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 
+// ─── ContextMenu() – menu kontekstowe (PPM) dla profili i innych elementów
+//   @param {Object} props – właściwości komponentu
+//   @param {number} props.x – pozycja X menu
+//   @param {number} props.y – pozycja Y menu
+//   @param {Array} props.items – lista elementów menu
+//   @param {Function} props.onClose – callback zamknięcia menu
+//   @returns {JSX.Element} – renderowane menu kontekstowe
+
 export default function ContextMenu({ x, y, items, onClose }) {
   const { t } = useContext(TranslationContext);
   const ref = useRef();

@@ -14,6 +14,13 @@ import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import ModalPortal from '../system/ModalPortal';
 
+// ─── CategoryModal() – modal dodawania lub edycji kategorii profili
+//   @param {Object} props – właściwości komponentu
+//   @param {Object} props.category – istniejąca kategoria (tryb edycji) lub null
+//   @param {Function} props.onSave – callback zapisu kategorii
+//   @param {Function} props.onClose – callback zamknięcia modala
+//   @returns {JSX.Element} – renderowany modal kategorii
+
 export default function CategoryModal({ category, onSave, onClose }) {
   const { t } = useContext(TranslationContext);
   const [name, setName] = useState(category?.name || '');

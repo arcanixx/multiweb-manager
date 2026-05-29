@@ -13,12 +13,15 @@ import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js
 import { TASK_PRIORITIES, TASK_STATUS } from "../../constants.js";
 import { TranslationContext } from '../utils/translations.js';
 
+// ─── TaskEditor() – modal edycji/dodawania zadania z formularzem
+//   @param {Object} props – właściwości komponentu
+//   @param {Object|null} props.task – istniejące zadanie (tryb edycji) lub null
+//   @param {Function} props.onCancel – callback anulowania
+//   @param {Function} props.onSaved – callback po zapisaniu
+//   @returns {JSX.Element} – renderowany formularz zadania
+
 // ---------------------------------------------------------------------------
-// TaskEditor
-// Props:
-//   task      – obiekt zadania (null = tryb dodawania, obiekt = tryb edycji)
-//   onCancel  – callback anulowania
-//   onSaved   – callback po pomyślnym zapisie
+
 // ---------------------------------------------------------------------------
 export default function TaskEditor({ task, onCancel, onSaved }) {
   const { t } = React.useContext(TranslationContext);
@@ -31,24 +34,39 @@ export default function TaskEditor({ task, onCancel, onSaved }) {
       status: TASK_STATUS.TODO
     }
   );
-  /** Aktualizuje pojedyncze pole formularza. */
+
+  // ─── update() – aktualizuje pole formularza
+  //   @param {string} field – nazwa pola
+  //   @param {any} value – nowa wartość
+  //   @returns {void}
   function update(field, value) {
     setForm({ ...form, [field]: value });
   }
-  /** Waliduje i zapisuje zadanie przez IPC (tasks:add lub tasks:update). */
+
+  // ─── save() – waliduje i zapisuje zadanie przez IPC
+  //   @returns {Promise<void>}
   async function save() {
-    if (!form.title.trim()) {
-      window.showToast("error", t("tasks.editor.error.titleRequired"));
-      return;
-    }
-    const channel = isEdit ? "tasks:update" : "tasks:add";
-    const payload  = isEdit ? { id: task.id, patch: form } : form;
-    const res = await window.electronAPI.invoke(channel, payload);
-    if (res?.ok) {
-      window.showToast("success", t("tasks.editor.saved"));
-      onSaved();
-    } else {
-      window.showToast("error", t("tasks.editor.error.saveFailed"));
+    try {
+      if (!form.title.trim()) {
+        logWarn('TaskEditor: title is required');
+        window.showToast("error", t("tasks.editor.error.titleRequired"));
+        return;
+      }
+      const channel = isEdit ? "tasks:update" : "tasks:add";
+      const payload = isEdit ? { id: task.id, patch: form } : form;
+      const res = await window.electronAPI.invoke(channel, payload);
+      if (res?.ok) {
+        logInfo(`TaskEditor: task ${isEdit ? 'updated' : 'created'}`);
+        window.showToast("success", t("tasks.editor.saved"));
+        onSaved();
+      } else {
+        logError('TaskEditor: save failed', res?.error);
+        logWarn('Nie można zapisać zadania');
+        window.showToast("error", t("tasks.editor.error.saveFailed"));
+      }
+    } catch (err) {
+      logError('TaskEditor.save exception', err);
+      logWarn('Wystąpił błąd podczas zapisu zadania');
     }
   }
 

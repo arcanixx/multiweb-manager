@@ -2,7 +2,7 @@
 // FILE: Profiles.jsx
 // PATH: src/ui/profiles/Profiles.jsx
 // VERSION: 0.0.3
-// PURPOSE: Profiles manager UI
+// PURPOSE: UI zarządzania profilami WebView — wyświetlanie listy profili z danych IPC (load, wyświetlanie nazwy, URL, obsługa błędów).
 // FUNCTIONS: Profiles
 // DEPENDS ON: react
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.

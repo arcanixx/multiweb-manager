@@ -2,7 +2,7 @@
 // FILE: validators.js
 // PATH: src/utils/validators.js
 // VERSION: 0.0.3
-// PURPOSE: Common validation helpers used across IPC handlers and stores.
+// PURPOSE: Walidatory danych – string, obiekt, tablica (ensureString, ensureObject).
 // FUNCTIONS: ensureString, ensureObject
 // DEPENDS ON: -
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.

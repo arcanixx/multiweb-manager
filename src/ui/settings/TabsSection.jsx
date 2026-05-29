@@ -10,27 +10,48 @@
 
 import React, { useState, useEffect } from 'react';
 import { TranslationContext } from '../utils/translations.js';
-import { logDebug } from 'src/utils/loggerRenderer';
+import { logDebug, logInfo, logError, logWarn } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
+
+// ─── TabsSection() – sekcja ustawień zakładek (timeout usypiania nieaktywnych kart)
+//   @returns {JSX.Element} – renderowana sekcja ustawień zakładek
 
 export default function TabsSection() {
   const { t } = React.useContext(TranslationContext);
   const [sleepTimeoutMinutes, setSleepTimeoutMinutes] = useState(15);
+
+  // ─── useEffect – ładowanie timeoutu przy montowaniu
   useEffect(() => {
     const loadTimeout = async () => {
-      if (window.electronAPI?.getSleepTimeout) {
-        const result = await window.electronAPI.getSleepTimeout();
-        setSleepTimeoutMinutes(result.data || 15);
+      try {
+        if (window.electronAPI?.getSleepTimeout) {
+          const result = await window.electronAPI.getSleepTimeout();
+          setSleepTimeoutMinutes(result.data || 15);
+          logInfo('TabsSection: sleep timeout loaded');
+        }
+      } catch (err) {
+        logError('TabsSection: failed to load timeout', err);
+        logWarn('Nie można załadować timeoutu usypiania zakładek');
       }
     };
     loadTimeout();
   }, []);
+
+  // ─── handleTimeoutChange() – zmienia timeout usypiania zakładek
+  //   @param {number} minutes – nowy timeout w minutach
+  //   @returns {Promise<void>}
   const handleTimeoutChange = async (minutes) => {
-    setSleepTimeoutMinutes(minutes);
-    if (window.electronAPI?.setSleepTimeout) {
-      await window.electronAPI.setSleepTimeout(minutes);
+    try {
+      setSleepTimeoutMinutes(minutes);
+      if (window.electronAPI?.setSleepTimeout) {
+        await window.electronAPI.setSleepTimeout(minutes);
+      }
+      logDebug(`Sleep tabs timeout set to ${minutes} minutes`);
+      logInfo(`TabsSection: timeout set to ${minutes} minutes`);
+    } catch (err) {
+      logError('TabsSection: failed to set timeout', err);
+      logWarn('Wystąpił błąd podczas ustawiania timeoutu');
     }
-    logDebug(`Sleep tabs timeout set to ${minutes} minutes`);
   };
   return (
     <section className="settings-section">

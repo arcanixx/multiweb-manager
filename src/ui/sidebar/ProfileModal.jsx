@@ -15,6 +15,14 @@ import { ICONS } from '../../utils/icons.js';
 import { normalizeWebUrl } from '../../utils/urlUtils.js';
 import ModalPortal from '../system/ModalPortal';
 
+// ─── ProfileModal() – modal dodawania lub edycji profilu WebView
+//   @param {Object} props – właściwości komponentu
+//   @param {Object} props.profile – istniejący profil (tryb edycji) lub null
+//   @param {Array} props.categories – lista dostępnych kategorii
+//   @param {Function} props.onSave – callback zapisu profilu
+//   @param {Function} props.onClose – callback zamknięcia modala
+//   @returns {JSX.Element} – renderowany modal profilu
+
 export default function ProfileModal({ profile, categories, onSave, onClose }) {
   const { t } = useContext(TranslationContext);
   const [name, setName] = useState(profile?.name || '');
@@ -24,17 +32,33 @@ export default function ProfileModal({ profile, categories, onSave, onClose }) {
   const [adBlock, setAdBlock] = useState(profile?.adBlock || false);
   const [notifs, setNotifs] = useState(profile?.notifs || false);
   const isEdit = !!profile;
+
+  // ─── handleSave() – obsługa zapisu profilu z walidacją URL
+  //   @returns {void}
   const handleSave = () => {
-    if (!name.trim() || !url.trim()) return;
-    const finalUrl = normalizeWebUrl(url);
-    if (!finalUrl) { alert(t('profile_modal.invalid_url')); return; }
-    const id = profile?.id || Date.now().toString();
-    onSave({
-      id, name: name.trim(), url: finalUrl, icon: icon.trim() || ICONS.DEFAULT,
-      category: category.trim(), type: 'webview', favorite: profile?.favorite || false,
-      zoom: profile?.zoom || 1, partition: profile?.partition || `persist:profile-${id}`,
-      adBlock, notifs
-    });
+    try {
+      if (!name.trim() || !url.trim()) {
+        logWarn('ProfileModal: validation failed - name or url empty');
+        return;
+      }
+      const finalUrl = normalizeWebUrl(url);
+      if (!finalUrl) {
+        logError('ProfileModal: invalid URL format');
+        alert(t('profile_modal.invalid_url'));
+        return;
+      }
+      const id = profile?.id || Date.now().toString();
+      onSave({
+        id, name: name.trim(), url: finalUrl, icon: icon.trim() || ICONS.DEFAULT,
+        category: category.trim(), type: 'webview', favorite: profile?.favorite || false,
+        zoom: profile?.zoom || 1, partition: profile?.partition || `persist:profile-${id}`,
+        adBlock, notifs
+      });
+      logInfo(`ProfileModal: profile ${isEdit ? 'updated' : 'created'} ${id}`);
+    } catch (err) {
+      logError('ProfileModal: save failed', err);
+      logWarn('Wystąpił błąd podczas zapisu profilu');
+    }
   };
   return (
     <ModalPortal onClose={onClose}>

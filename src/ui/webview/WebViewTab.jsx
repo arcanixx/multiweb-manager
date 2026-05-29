@@ -11,7 +11,7 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo, useContext } from 'react';
 import { ICONS } from '../../utils/icons';
 import { TranslationContext } from '../../utils/translations.js';
-import { log, logDebug, logError } from '../../utils/loggerRenderer';
+import { logDebug as log, logError, logInfo, logWarn } from '../../utils/loggerRenderer';
 import { normalizeWebUrl } from '../../utils/urlUtils';
 import { FEATURES, DEFAULT_SETTINGS } from '../../config';
 

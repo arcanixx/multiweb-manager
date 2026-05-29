@@ -12,6 +12,12 @@ import React, { useEffect } from 'react';
 import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { createPortal } from 'react-dom';
 
+// ─── ModalPortal() – portal modalny renderujący dzieci w document.body
+//   @param {Object} props – właściwości komponentu
+//   @param {ReactNode} props.children – zawartość modala
+//   @param {Function} props.onClose – callback zamknięcia modala
+//   @returns {JSX.Element} – portal z modal overlay
+
 export default function ModalPortal({ children, onClose }) {
   useEffect(() => {
     document.body.classList.add('modal-open');

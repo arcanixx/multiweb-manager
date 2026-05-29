@@ -2,7 +2,7 @@
 // FILE: profilesStore.js
 // PATH: src/core/profilesStore.js
 // VERSION: 0.0.3
-// PURPOSE: CRUD profili (Sidebar, WebView, App Library).
+// PURPOSE: Zarządzanie profilami WebView — odczyt z pliku, zapis, tworzenie, aktualizacja i usuwanie (loadProfiles, saveProfiles, createProfile, updateProfile, deleteProfile).
 // FUNCTIONS: loadProfiles, saveProfiles, createProfile, updateProfile, deleteProfile
 // DEPENDS ON: fs, path, url, persistence.js, logger.js, src
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.

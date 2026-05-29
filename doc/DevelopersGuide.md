@@ -362,6 +362,13 @@ showToast("success", "Zapisano ustawienia");
 
 ---
 
+## 1s. Graf aplikacji
+
+https://codesplain.ai/share/4a8586db4e01e423a595ddbdef94a8a5
+Również jako screenshot w assets/multiweb_manager_architecture_graph.png
+
+---
+
 # 2. SIDEBAR / PROFILE MANAGER / APP LIBRARY (2a–2g)
 
 ## 2a. App Library (lista gotowych aplikacji)
