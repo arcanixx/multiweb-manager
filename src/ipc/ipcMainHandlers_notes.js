@@ -26,6 +26,8 @@ ipcMain.handle("notes:getAll", async () => {
 });
 ipcMain.handle("notes:add", async (_, note) => {
   try {
+    if (!note || typeof note !== 'object') throw new Error('NOTE_INVALID_PAYLOAD');
+    if (!note.id || typeof note.id !== 'string') throw new Error('NOTE_INVALID_ID');
     return { ok: true, data: addNote(note) };
   } catch (err) {
     logError("notes:add", err);
@@ -34,6 +36,8 @@ ipcMain.handle("notes:add", async (_, note) => {
 });
 ipcMain.handle("notes:update", async (_, { id, patch }) => {
   try {
+    if (!id || typeof id !== 'string') throw new Error('NOTE_ID_REQUIRED');
+    if (!patch || typeof patch !== 'object') throw new Error('NOTE_INVALID_PATCH');
     return { ok: true, data: updateNote(id, patch) };
   } catch (err) {
     logError("notes:update", err);
@@ -42,6 +46,7 @@ ipcMain.handle("notes:update", async (_, { id, patch }) => {
 });
 ipcMain.handle("notes:delete", async (_, id) => {
   try {
+    if (!id || typeof id !== 'string') throw new Error('NOTE_ID_REQUIRED');
     deleteNote(id);
     return { ok: true };
   } catch (err) {

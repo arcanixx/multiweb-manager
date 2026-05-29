@@ -2,8 +2,8 @@
 // FILE: urlUtils.js
 // PATH: src/utils/urlUtils.js
 // VERSION: 0.0.3
-// PURPOSE: Normalizacja URL dla WebView — zawsze pelny adres z https://.
-// FUNCTIONS: normalizeWebUrl, isValidWebUrl
+// PURPOSE: Normalizacja URL dla WebView — zawsze pełny adres z https://. Blokuje niebezpieczne schematy: javascript:, file:, data: (URL sanitization).
+// FUNCTIONS: normalizeWebUrl, isValidWebUrl, isSafeUrl
 // DEPENDS ON: -
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -16,6 +16,8 @@ export function normalizeWebUrl(raw) {
   if (raw == null || typeof raw !== 'string') return null;
   let u = raw.trim();
   if (!u) return null;
+  // ─── Blokada niebezpiecznych schematów przed normalizacją ───
+  if (!isSafeUrl(u)) return null;
   if (!/^https?:\/\//i.test(u)) {
     u = `https://${u}`;
   }
@@ -33,4 +35,22 @@ export function normalizeWebUrl(raw) {
 }
 export function isValidWebUrl(raw) {
   return normalizeWebUrl(raw) !== null;
+}
+
+// ─── isSafeUrl() – blokuje niebezpieczne schematy URL (javascript:, file:, data: itp.)
+//   Wywoływane przed normalizeWebUrl() i w WebViewTab przed loadURL().
+//   @param {string} raw – surowy URL wpisany przez użytkownika
+//   @returns {boolean} – true jeśli URL jest bezpieczny, false jeśli zablokowany
+export function isSafeUrl(raw) {
+  if (!raw || typeof raw !== 'string') return false;
+  const u = raw.trim().toLowerCase();
+  const BLOCKED_SCHEMES = [
+    'javascript:',
+    'vbscript:',
+    'data:',
+    'file:',
+    'about:',
+    'blob:',
+  ];
+  return !BLOCKED_SCHEMES.some(scheme => u.startsWith(scheme));
 }

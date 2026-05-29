@@ -2,9 +2,9 @@
 // FILE: sharpLoader.js
 // PATH: src/utils/sharpLoader.js
 // VERSION: 0.0.3
-// PURPOSE: Leniwe ładowanie modułu sharp (przetwarzanie obrazów) z obsługą braku zależności
+// PURPOSE: Leniwe ładowanie modułu sharp (przetwarzanie obrazów) z obsługą braku zależności. Używane przez ipcMainHandlers_imageSharp.js w main process.
 // FUNCTIONS: loadSharp
-// DEPENDS ON: komponenty z folderu sharp/
+// DEPENDS ON: sharp, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

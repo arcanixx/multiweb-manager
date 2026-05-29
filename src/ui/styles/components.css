@@ -322,3 +322,18 @@ webview {
   flex: 1;
   min-height: 0;
 }
+
+/* ─── Prompt Modal styles ─── */
+.prompt-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+.prompt-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}

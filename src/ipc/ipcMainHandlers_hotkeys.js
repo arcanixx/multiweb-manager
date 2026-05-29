@@ -25,6 +25,7 @@ ipcMain.handle('hotkeys:getAll', async () => {
 // Zapisz listę skrótów do store (nie rejestruje ich globalnie)
 ipcMain.handle('hotkeys:save', async (_, hotkeys) => {
   try {
+    if (!Array.isArray(hotkeys)) throw new Error('HOTKEYS_MUST_BE_ARRAY');
     saveHotkeys(hotkeys);
     return { ok: true };
   } catch (err) {
@@ -37,6 +38,7 @@ ipcMain.handle('hotkeys:save', async (_, hotkeys) => {
 // -----------------------------------------------------------------------------
 ipcMain.handle('hotkeys:register', async (_, hotkeys) => {
   try {
+    if (!Array.isArray(hotkeys)) throw new Error('HOTKEYS_MUST_BE_ARRAY');
     registerHotkeysFromList(hotkeys);
     return { ok: true };
   } catch (err) {

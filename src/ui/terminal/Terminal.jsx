@@ -2,7 +2,7 @@
 // FILE: Terminal.jsx
 // PATH: src/ui/terminal/Terminal.jsx
 // VERSION: 0.0.3
-// PURPOSE: Terminal z xterm.js + node-pty (historia komend, ANSI colors)
+// PURPOSE: Terminal z xterm.js + node-pty (historia komend, ANSI colors). Używa terminalWriteLegacy/terminalResizeLegacy z preload (alias dla legacy IPC).
 // FUNCTIONS: Terminal
 // DEPENDS ON: react, xterm, xterm-addon-fit, xterm-addon-web-links, translations.js, src
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -13,14 +13,12 @@ import { Terminal as XTerm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import 'xterm/css/xterm.css';
-import { TranslationContext } from '../utils/translations.js';
-import { logDebug, logInfo, logError, logWarn } from 'src/utils/loggerRenderer';
+import { TranslationContext } from '../../utils/translations.js';
+import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer';
+import { ICONS } from '../../utils/icons';
 
 // ─── Terminal() – terminal z xterm.js i obsługą node-pty
 //   @returns {JSX.Element} – renderowany terminal
-
-export default function Terminal() {
-import { ICONS } from 'src/utils/icons';
 
 export default function Terminal() {
   const { t } = React.useContext(TranslationContext);
@@ -101,11 +99,11 @@ export default function Terminal() {
         const cmd = currentLine || '';
         if (cmd.trim()) {
           setHistory(prev => [...prev, cmd]);
-          window.electronAPI?.terminalWrite?.(cmd + '\r');
+          window.electronAPI?.terminalWriteLegacy?.(cmd + '\r');
           setCurrentLine('');
           setHistoryIndex(-1);
         } else {
-          window.electronAPI?.terminalWrite?.('\r');
+          window.electronAPI?.terminalWriteLegacy?.('\r');
         }
         ev.preventDefault();
       } else if (ev.key === 'Backspace') {
@@ -123,7 +121,7 @@ export default function Terminal() {
       if (fitAddonRef.current) {
         fitAddonRef.current.fit();
         const { cols, rows } = xtermRef.current;
-        window.electronAPI?.terminalResize?.(cols, rows);
+        window.electronAPI?.terminalResizeLegacy?.(cols, rows);
       }
     };
     

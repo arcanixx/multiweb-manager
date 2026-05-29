@@ -2,15 +2,18 @@
 // FILE: ipcMainHandlers_webview_controls.js
 // PATH: src/ipc/ipcMainHandlers_webview_controls.js
 // VERSION: 0.0.3
-// PURPOSE: IPC handlers dla User Agent, Single App Mode, Resource Monitor, Sleep Tabs
+// PURPOSE: IPC handlers dla User Agent, Single App Mode, Resource Monitor, Sleep Tabs. Używa ESM import path/url zamiast require() (ES module context).
 // FUNCTIONS: ipc:webview:setUserAgent, ipc:webview:openInWindow, ipc:webview:getUsage, ipc:webview:sleep, ipc:webview:wake
 // DEPENDS ON: electron, logger.js, config.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain, BrowserWindow } from 'electron';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { logError } from '../utils/logger.js';
 import { FEATURES, DEFAULT_SETTINGS } from '../../config.js';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 function getWebContentsById(id) {
   try {
     return BrowserWindow.getAllWindows()
@@ -39,7 +42,7 @@ ipcMain.handle('webview:openInWindow', async (_, { url, userAgent }) => {
       height: 800,
       backgroundColor: '#1e1e1e',
       webPreferences: {
-        preload: require('path').join(__dirname, '../preload.js'),
+        preload: join(__dirname, '../preload.cjs'),
         contextIsolation: true,
         nodeIntegration: false,
         sandbox: true,

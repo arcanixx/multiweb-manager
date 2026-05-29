@@ -10,8 +10,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { ICONS } from '../../utils/icons';
-import { TranslationContext } from '../utils/translations.js';
-import { log } from '../../utils/loggerRenderer';
+import { TranslationContext } from '../../utils/translations.js';
+import { logInfo as log, logError, logWarn } from '../../utils/loggerRenderer';
 export default function UpdateChecker() {
   const { t } = React.useContext(TranslationContext);
   const [checking,   setChecking]   = useState(false);
@@ -50,6 +50,7 @@ export default function UpdateChecker() {
         showToast(t('updateChecker.coming_soon'), 'info');
       }
     } catch (err) {
+      logError('UpdateChecker: check failed', err);
       showToast(t('notifications.error', { message: err.message }), 'warn');
     } finally {
       setChecking(false);

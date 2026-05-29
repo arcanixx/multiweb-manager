@@ -9,7 +9,7 @@
 // =============================================================================
 
 import { session } from 'electron';
-import { logDebug } from '../utils/logger.js';
+import { logDebug, logError, logWarn } from '../utils/logger.js';
 import { webviewProfileMap } from './webviewRegistry.js';
 let globalAdBlocker = true;
 const profileAdBlockers = new Map();
@@ -40,15 +40,26 @@ export function getGlobalAdBlocker() {
  * Ustawia stan AdBlockera dla konkretnego profilu
  */
 export function setProfileAdBlocker(profileId, enabled) {
-  profileAdBlockers.set(profileId, enabled);
-  logDebug(`AdBlocker for profile ${profileId} set to: ${enabled}`);
+  try {
+    if (!profileId) throw new Error('setProfileAdBlocker: brak profileId');
+    profileAdBlockers.set(profileId, enabled);
+    logDebug(`AdBlocker for profile ${profileId} set to: ${enabled}`);
+  } catch (err) {
+    logError('setProfileAdBlocker failed', err);
+    logWarn(`Nie można ustawić AdBlockera dla profilu ${profileId}`);
+  }
 }
 /**
  * Zwraca stan AdBlockera dla profilu (lub globalny, jeśli brak nadpisania)
  */
 export function getProfileAdBlocker(profileId) {
-  const value = profileAdBlockers.get(profileId);
-  return value !== undefined ? value : globalAdBlocker;
+  try {
+    const value = profileAdBlockers.get(profileId);
+    return value !== undefined ? value : globalAdBlocker;
+  } catch (err) {
+    logError('getProfileAdBlocker failed', err);
+    return globalAdBlocker;
+  }
 }
 
 /**

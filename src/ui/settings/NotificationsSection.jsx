@@ -22,28 +22,41 @@ export default function NotificationsSection() {
 
   
 
-  // ─── useEffect – ładowanie ustawień przy montowaniu
+  // ─── useEffect – ładowanie ustawień powiadomień z settingsStore przez IPC
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('system_notifications');
-      setSystemNotifications(saved !== 'false');
-      const savedPb = localStorage.getItem('pushbullet_api_key');
-      if (savedPb) setPushbulletApiKey(savedPb);
-      logInfo('NotificationsSection: settings loaded');
-    } catch (err) {
-      logError('NotificationsSection: failed to load settings', err);
-      logWarn('Nie można załadować ustawień powiadomień');
-    }
+    const load = async () => {
+      try {
+        if (window.electronAPI?.invoke) {
+          const res = await window.electronAPI.invoke('settings:get');
+          if (res?.ok) {
+            setSystemNotifications(res.data?.systemNotifications !== false);
+            setPushbulletApiKey(res.data?.pushbulletApiKey || '');
+            logInfo('NotificationsSection: settings loaded from IPC');
+          }
+        }
+      } catch (err) {
+        logError('NotificationsSection: failed to load settings', err);
+        logWarn('Nie można załadować ustawień powiadomień — fallback na localStorage');
+        // Fallback na localStorage gdy IPC niedostępne
+        const saved = localStorage.getItem('system_notifications');
+        setSystemNotifications(saved !== 'false');
+        const savedPb = localStorage.getItem('pushbullet_api_key');
+        if (savedPb) setPushbulletApiKey(savedPb);
+      }
+    };
+    load();
   }, []);
   
-  // ─── handleSystemNotifToggle() – przełącza powiadomienia systemowe
+  // ─── handleSystemNotifToggle() – przełącza powiadomienia systemowe i zapisuje przez IPC
   //   @param {Event} e – zdarzenie zmiany checkboxa
-  //   @returns {void}
-  const handleSystemNotifToggle = (e) => {
+  //   @returns {Promise<void>}
+  const handleSystemNotifToggle = async (e) => {
     try {
       const enabled = e.target.checked;
       setSystemNotifications(enabled);
-      localStorage.setItem('system_notifications', enabled);
+      if (window.electronAPI?.invoke) {
+        await window.electronAPI.invoke('settings:update', { systemNotifications: enabled });
+      }
       logDebug(`System notifications: ${enabled}`);
       logInfo(`NotificationsSection: system notifications ${enabled ? 'enabled' : 'disabled'}`);
     } catch (err) {
@@ -52,11 +65,13 @@ export default function NotificationsSection() {
     }
   };
   
-  // ─── handlePushbulletSave() – zapisuje klucz API Pushbullet
-  //   @returns {void}
-  const handlePushbulletSave = () => {
+  // ─── handlePushbulletSave() – zapisuje klucz API Pushbullet przez IPC
+  //   @returns {Promise<void>}
+  const handlePushbulletSave = async () => {
     try {
-      localStorage.setItem('pushbullet_api_key', pushbulletApiKey);
+      if (window.electronAPI?.invoke) {
+        await window.electronAPI.invoke('settings:update', { pushbulletApiKey });
+      }
       logDebug('Pushbullet API key saved');
       logInfo('NotificationsSection: Pushbullet API key saved');
     } catch (err) {

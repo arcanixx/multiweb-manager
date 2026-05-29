@@ -31,7 +31,11 @@ export default function DataLogsSection() {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const settings = await window.electronAPI?.getSettings?.() || {};
+        let settings = {};
+        if (window.electronAPI?.invoke) {
+          const res = await window.electronAPI.invoke('settings:get');
+          if (res?.ok) settings = res.data || {};
+        }
         setDebugMode(settings.debugMode === true);
         setLogsEnabled(settings.logsEnabled === true);
         logInfo('DataLogsSection: settings loaded');
@@ -126,7 +130,8 @@ export default function DataLogsSection() {
       t('settings.resetConfirmMessage'),
       async () => {
         try {
-          localStorage.clear();
+          // localStorage.clear() usuwało tylko dane renderer scratch, nie settingsStore.
+          // Reset danych aplikacji odbywa się wyłącznie przez IPC settings:reset.
           if (window.electronAPI?.resetSettings) {
             await window.electronAPI.resetSettings();
           }
@@ -184,7 +189,7 @@ export default function DataLogsSection() {
     try {
       const newValue = !logsEnabled;
       setLogsEnabled(newValue);
-      await window.electronAPI?.saveSettings?.({ logsEnabled: newValue });
+      await window.electronAPI?.invoke?.('settings:update', { logsEnabled: newValue });
       logInfo(`DataLogsSection: logs ${newValue ? 'enabled' : 'disabled'}`);
     } catch (err) {
       logError('DataLogsSection: toggle logs failed', err);

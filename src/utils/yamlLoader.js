@@ -2,9 +2,9 @@
 // FILE: yamlLoader.js
 // PATH: src/utils/yamlLoader.js
 // VERSION: 0.0.3
-// PURPOSE: Leniwe ładowanie modułu js-yaml (parsowanie/serializacja YAML) z obsługą braku zależności
+// PURPOSE: Leniwe ładowanie modułu js-yaml (parsowanie/serializacja YAML) z obsługą braku zależności. Używane przez ipcMainHandlers_jsonYaml.js w main process.
 // FUNCTIONS: loadYaml
-// DEPENDS ON: komponenty z folderu yaml/
+// DEPENDS ON: js-yaml, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

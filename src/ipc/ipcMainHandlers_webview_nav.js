@@ -2,7 +2,7 @@
 // FILE: ipcMainHandlers_webview_nav.js
 // PATH: src/ipc/ipcMainHandlers_webview_nav.js
 // VERSION: 0.0.3
-// PURPOSE: IPC handlers dla nawigacji WebView
+// PURPOSE: IPC handlers dla nawigacji WebView. webview:navigate waliduje URL przez isSafeUrl() przed loadURL() — blokuje javascript:, data:, file: itp.
 // FUNCTIONS: ipc:webview:navigate, ipc:webview:reload, ipc:webview:goBack, ipc:webview:goForward, ipc:webview:getURL
 // DEPENDS ON: electron, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -10,6 +10,7 @@
 
 import { ipcMain, BrowserWindow } from 'electron';
 import { logError } from '../utils/logger.js';
+import { isSafeUrl } from '../utils/urlUtils.js';
 function getWebContentsById(id) {
   try {
     return BrowserWindow.getAllWindows()
@@ -21,6 +22,9 @@ function getWebContentsById(id) {
 }
 ipcMain.handle('webview:navigate', async (_, { id, url }) => {
   try {
+    if (!id) throw new Error('WEBVIEW_ID_REQUIRED');
+    if (!url || typeof url !== 'string') throw new Error('WEBVIEW_URL_REQUIRED');
+    if (!isSafeUrl(url)) throw new Error('WEBVIEW_URL_BLOCKED_UNSAFE_SCHEME');
     const wc = getWebContentsById(id);
     if (!wc) throw new Error('WEBVIEW_NOT_FOUND');
     await wc.loadURL(url);

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny panel boczny – nawigacja, profile, kategorie, narzędzia
 // FUNCTIONS: Sidebar
-// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, ProfileModal, CategoryModal, ContextMenu, SidebarSearch, SidebarCategory, SidebarProfileItem, SidebarTools, SidebarWorkspaces
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, ProfileModal, CategoryModal, ContextMenu, SidebarSearch, SidebarCategory, SidebarProfileItem, SidebarTools, SidebarWorkspaces, ConfirmModal
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -20,6 +20,7 @@ import SidebarCategory from './SidebarCategory';
 import SidebarProfileItem from './SidebarProfileItem';
 import SidebarTools from './SidebarTools';
 import SidebarWorkspaces from './SidebarWorkspaces';
+import ConfirmModal from '../modals/ConfirmModal.jsx';
 
 // ─── Sidebar() – główny panel boczny z profile, kategoriami i narzędziami
 //   @param {Object} props – właściwości komponentu
@@ -43,6 +44,9 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
   const [editingCategory, setEditingCategory] = useState(null);
   const [contextMenu, setContextMenu] = useState(null);
   const modalOpen = showProfileModal || showCategoryModal;
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [profileToDelete, setProfileToDelete] = useState(null);
+  
   useEffect(() => onModalOpenChange?.(modalOpen), [modalOpen, onModalOpenChange]);
   useEffect(() => {
     window.electronAPI.getSettings().then(s => {
@@ -50,10 +54,12 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
       setCollapsed(s.collapsedCategories || {});
     });
   }, []);
+  
   const saveCategories = (cats, cols = collapsed) => {
     setCategories(cats);
     window.electronAPI.saveSettings({ categories: cats, collapsedCategories: cols });
   };
+  
   const saveProfiles = (newProfiles) => {
     onProfilesChange(newProfiles);
     window.electronAPI.saveProfiles(newProfiles);
@@ -79,9 +85,29 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
     saveProfiles(profiles.map(p => p.id === profileId ? { ...p, favorite: !p.favorite } : p));
   };
 
+  // ─── deleteProfile() – oryginalna funkcja usuwania
   const deleteProfile = (profileId) => {
-    if (!window.confirm('Czy na pewno usunąć ten profil?')) return;
-    saveProfiles(profiles.filter(p => p.id !== profileId));
+    const newProfiles = profiles.filter(p => p.id !== profileId);
+    saveProfiles(newProfiles);
+    if (activeItem?.id === profileId) {
+      onSelect(null);
+    }
+    logInfo(`Sidebar: deleted profile ${profileId}`);
+  };
+
+  // ─── handleDeleteClick() – otwiera modal potwierdzenia
+  const handleDeleteClick = (profileId) => {
+    setProfileToDelete(profileId);
+    setShowDeleteConfirm(true);
+  };
+
+  // ─── handleDeleteConfirm() – wykonuje usunięcie po potwierdzeniu
+  const handleDeleteConfirm = () => {
+    if (profileToDelete) {
+      deleteProfile(profileToDelete);
+    }
+    setShowDeleteConfirm(false);
+    setProfileToDelete(null);
   };
 
   const toggleCollapse = (catId) => {
@@ -98,7 +124,7 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
       '---',
       { icon: ICONS.TASKS, label: t('sidebar.open_tasks'), action: () => onOpenTaskPanel?.(profile) },
       '---',
-      { icon: ICONS.DELETE, label: t('sidebar.delete_profile'), action: () => deleteProfile(profile.id), danger: true },
+      { icon: ICONS.DELETE, label: t('sidebar.delete_profile'), action: () => handleDeleteClick(profile.id), danger: true },
     ];
     setContextMenu({ x: e.clientX, y: e.clientY, items });
   };
@@ -169,6 +195,18 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
       {showProfileModal && <ProfileModal profile={editingProfile} categories={categories} onSave={handleSaveProfile} onClose={() => setShowProfileModal(false)} />}
       {showCategoryModal && <CategoryModal category={editingCategory} onSave={(cat) => { const exists = categories.find(c => c.id === cat.id); saveCategories(exists ? categories.map(c => c.id === cat.id ? cat : c) : [...categories, cat]); setShowCategoryModal(false); }} onClose={() => setShowCategoryModal(false)} />}
       {contextMenu && <ContextMenu x={contextMenu.x} y={contextMenu.y} items={contextMenu.items} onClose={() => setContextMenu(null)} />}
+
+      {/* ─── MODAL POTWIERDZENIA USUNIĘCIA – NA KOŃCU PRZED ZAMYKAJĄCYM DIVEM ─── */}
+      <ConfirmModal
+        isOpen={showDeleteConfirm}
+        title={t('confirm.deleteProfileTitle')}
+        message={t('confirm.deleteProfileMessage')}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => {
+          setShowDeleteConfirm(false);
+          setProfileToDelete(null);
+        }}
+      />
     </div>
   );
 }

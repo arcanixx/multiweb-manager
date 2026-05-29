@@ -10,45 +10,49 @@
 
 import React, { useState, useEffect } from 'react';
 import { TranslationContext } from '../utils/translations.js';
-import { logDebug, logInfo, logError, logWarn } from 'src/utils/loggerRenderer';
-import { ICONS } from 'src/utils/icons';
+import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer';
+import { ICONS } from '../../utils/icons';
 
 // ─── GeneralSection() – sekcja ustawień ogólnych (język, tryb ciemny, debug)
 //   @returns {JSX.Element} – renderowana sekcja ustawień ogólnych
 export default function GeneralSection() {
   const { t, language, setLanguage } = React.useContext(TranslationContext);
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem('theme') === 'dark';
-  });
+  const [darkMode, setDarkMode] = useState(false);
   const [debugMode, setDebugMode] = useState(false);
 
-  
-
-  // ─── useEffect – ładowanie trybu debug przy montowaniu
+  // ─── useEffect – ładowanie ustawień (theme + debugMode) z settingsStore przez IPC
   useEffect(() => {
-    const loadDebugMode = async () => {
+    const loadSettings = async () => {
       try {
-        if (window.electronAPI?.getDebugMode) {
-          const result = await window.electronAPI.getDebugMode();
-          setDebugMode(result.data === true);
-          logInfo('GeneralSection: debug mode loaded');
+        if (window.electronAPI?.invoke) {
+          const res = await window.electronAPI.invoke('settings:get');
+          if (res?.ok) {
+            const theme = res.data?.theme || 'system';
+            setDarkMode(theme === 'dark');
+            setDebugMode(res.data?.debugMode === true);
+            logInfo('GeneralSection: settings loaded from IPC');
+          }
         }
       } catch (err) {
-        logError('GeneralSection: failed to load debug mode', err);
-        logWarn('Nie można załadować trybu debug');
+        logError('GeneralSection: failed to load settings', err);
+        logWarn('Nie można załadować ustawień — fallback na localStorage');
+        // Fallback na localStorage gdy IPC niedostępne
+        setDarkMode(localStorage.getItem('theme') === 'dark');
       }
     };
-    loadDebugMode();
+    loadSettings();
   }, []);
   
-  // ─── handleDarkModeToggle() – przełącza tryb ciemny
-  //   @returns {void}
-  const handleDarkModeToggle = () => {
+  // ─── handleDarkModeToggle() – przełącza tryb ciemny i zapisuje przez IPC
+  //   @returns {Promise<void>}
+  const handleDarkModeToggle = async () => {
     try {
       const newMode = !darkMode;
       setDarkMode(newMode);
-      localStorage.setItem('theme', newMode ? 'dark' : 'light');
       document.documentElement.classList.toggle('dark', newMode);
+      if (window.electronAPI?.invoke) {
+        await window.electronAPI.invoke('settings:update', { theme: newMode ? 'dark' : 'light' });
+      }
       logDebug(`Dark mode toggled: ${newMode ? 'dark' : 'light'}`);
       logInfo(`GeneralSection: dark mode ${newMode ? 'enabled' : 'disabled'}`);
     } catch (err) {

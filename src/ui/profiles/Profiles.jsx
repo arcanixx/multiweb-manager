@@ -2,7 +2,7 @@
 // FILE: Profiles.jsx
 // PATH: src/ui/profiles/Profiles.jsx
 // VERSION: 0.0.3
-// PURPOSE: UI zarządzania profilami WebView — wyświetlanie listy profili z danych IPC (load, wyświetlanie nazwy, URL, obsługa błędów).
+// PURPOSE: UI zarządzania profilami WebView — wyświetlanie listy profili z danych IPC (load, wyświetlanie nazwy, URL, obsługa błędów). Używa window.electronAPI.invoke zamiast window.mw.
 // FUNCTIONS: Profiles
 // DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -22,7 +22,7 @@ export function Profiles() {
   async function load() {
     try {
       setLoading(true);
-      const res = await window.mw.invoke("profiles:getAll");
+      const res = await window.electronAPI.invoke("profiles:getAll");
       if (res.ok) {
         setProfiles(res.data || []);
         logInfo(`Profiles: loaded ${res.data?.length || 0} profiles`);

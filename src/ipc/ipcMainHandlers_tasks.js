@@ -28,6 +28,8 @@ ipcMain.handle("tasks:getAll", async (_, projectName) => {
 });
 ipcMain.handle("tasks:saveSections", async (_, { projectName, sections }) => {
   try {
+    if (!projectName || typeof projectName !== 'string') throw new Error('TASKS_PROJECT_NAME_REQUIRED');
+    if (!Array.isArray(sections)) throw new Error('TASKS_SECTIONS_MUST_BE_ARRAY');
     saveTasksForProject(projectName, { tasks: sections });
     return { ok: true };
   } catch (err) {

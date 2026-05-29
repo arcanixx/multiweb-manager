@@ -9,11 +9,12 @@
 // =============================================================================
 
 import React, { useState, useContext } from 'react';
-import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
+import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { normalizeWebUrl } from '../../utils/urlUtils.js';
 import ModalPortal from '../system/ModalPortal';
+import { showNotification } from '../../utils/notificationsManager.js';
 
 // ─── ProfileModal() – modal dodawania lub edycji profilu WebView
 //   @param {Object} props – właściwości komponentu
@@ -44,7 +45,7 @@ export default function ProfileModal({ profile, categories, onSave, onClose }) {
       const finalUrl = normalizeWebUrl(url);
       if (!finalUrl) {
         logError('ProfileModal: invalid URL format');
-        alert(t('profile_modal.invalid_url'));
+        showNotification(t('profile_modal.invalid_url'), 'error');
         return;
       }
       const id = profile?.id || Date.now().toString();

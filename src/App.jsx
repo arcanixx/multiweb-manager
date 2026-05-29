@@ -2,7 +2,7 @@
 // FILE: App.jsx
 // PATH: src/App.jsx
 // VERSION: 0.0.3
-// PURPOSE: Główny komponent — Sidebar + content, lazy moduły z src/ui/*
+// PURPOSE: Główny komponent — Sidebar + content, lazy moduły z src/ui/*. Zawiera AppErrorBoundary dla obsługi krytycznych błędów React.
 // FUNCTIONS: App
 // DEPENDS ON: icons.js, react, Sidebar, ConfirmModal, loggerRenderer, urlUtils, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -15,6 +15,36 @@ import ConfirmModal from './ui/modals/ConfirmModal';
 import { logInfo as log, initLogger, setDebugMode, logDebug, logError, logWarn } from './utils/loggerRenderer';
 import { normalizeWebUrl } from './utils/urlUtils';
 import { TranslationContext } from './utils/translations.js';
+
+// ─── AppErrorBoundary – przechwytuje błędy React w drzewie komponentów
+//   Zapobiega białemu ekranowi — wyświetla czytelny komunikat błędu.
+class AppErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, info) {
+    // logError nie jest dostępne bezpośrednio w class component — używamy console jako fallback
+    console.error('[AppErrorBoundary] Uncaught error:', error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: 32, color: 'var(--text-primary, #fff)', background: 'var(--bg-primary, #1e1e1e)', minHeight: '100vh' }}>
+          <h2>⚠️ Wystąpił krytyczny błąd aplikacji</h2>
+          <pre style={{ fontSize: 12, opacity: 0.7, marginTop: 12 }}>{this.state.error?.message}</pre>
+          <button onClick={() => this.setState({ hasError: false, error: null })} style={{ marginTop: 16 }}>
+            Spróbuj ponownie
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const WebViewTab = lazy(() => import('./ui/webview/WebViewTab'));
 const Notepad = lazy(() => import('./ui/notepad/Notepad'));
@@ -211,6 +241,7 @@ export default function App() {
   if (!loaded) return <Spinner />;
 
   return (
+    <AppErrorBoundary>
     <div className="flex h-screen app-root" style={{ background: 'var(--bg-primary)' }}>
       <Sidebar
         profiles={profiles}
@@ -252,5 +283,6 @@ export default function App() {
         onCancel={() => setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null })}
       />
     </div>
+    </AppErrorBoundary>
   );
 }

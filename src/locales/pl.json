@@ -12,6 +12,9 @@
     "confirm": "Potwierdź",
     "cancel": "Anuluj",
     "save": "Zapisz",
+    "prompt": "Wprowadź wartość: ",
+    "converting": "Konwertowanie...",
+    "processing": "Przetwarzanie...",
     "delete": "Usuń",
     "loading": "Ładowanie...",
     "minutes": "minut",
@@ -26,6 +29,7 @@
   "sidebar": {
     "add_profile": "Dodaj workspace",
     "add_workspace": "Dodaj workspace",
+    "workspaces": "Obszary robocze",
     "special": "Narzędzia",
     "favorites": "Ulubione",
     "all_profiles": "Workspaces",
@@ -68,6 +72,10 @@
     "save": "Zapisz",
     "cancel": "Anuluj"
   },
+  "projects": {
+  "delete": "Usuń projekt",
+  "delete_confirm": "Czy na pewno chcesz usunąć ten projekt? Tej operacji nie można cofnąć."
+},
   "notepad": {
     "title": "Notatnik",
     "new_tab": "Nowa notatka",
@@ -75,6 +83,8 @@
     "save_as": "Zapisz jako...",
     "saved": "Zapisano",
     "autosaved": "Autozapis",
+    "enter_new_tab_name": "Wprowadź nową nazwę zakładki",
+    "tab_name_placeholder": "Nazwa zakładki",
     "crash_recovery": "Odzyskano po awarii",
     "tab_rename": "Zmień nazwę zakładki",
     "tab_close": "Zamknij zakładkę",
@@ -158,6 +168,8 @@
     "removebg_plan": "Plan remove.bg",
     "removebg_plan_free": "Darmowy (30 plików)",
     "removebg_plan_pro": "PRO (120 plików)",
+    "darkMode": "Tryb ciemny",
+    "never": "Nigdy",
     "language": "Język",
     "theme": "Motyw",
     "theme_system": "Systemowy (auto)",
@@ -247,6 +259,10 @@
     "reload": "Odśwież",
     "devTools": "Narzędzia deweloperskie",
     "clearCache": "Wyczyść cache i przeładuj",
+    "screenshotNotSupported": "Zrzut ekranu nie jest wspierany w tym WebView",
+    "singleAppModeNotSupported": "Tryb pojedynczej aplikacji nie jest wspierany",
+    "resourceMonitorNotSupported": "Monitor zasobów nie jest wspierany",
+    "resourceMonitorFailed": "Monitorowanie zasobów nie powiodło się",
     "zoomIn": "Przybliż",
     "zoomOut": "Oddal",
     "zoom_reset": "Resetuj zoom",
@@ -283,6 +299,7 @@
     "delete": "Usuń zadanie",
     "pin": "Przypnij",
     "unpin": "Odepnij",
+    "delete_confirm_message": "Czy na pewno chcesz usunąć to zadanie?",
     "move_to_active": "Przenieś do Aktualnych",
     "move_to_backlog": "Przenieś do Backlogu",
     "move_to_done": "Oznacz jako Zrobione",
@@ -331,7 +348,8 @@
     "no_history": "Historia jest pusta",
     "col_time": "Czas",
     "col_profile": "Profil",
-    "col_url": "URL"
+    "col_url": "URL",
+    "export": "Eksportuj historię"
   },
   "updateChecker": {
     "check": "Sprawdź aktualizacje",
@@ -415,7 +433,8 @@
     "height": "Wysokość (px)",
     "convert": "Konwertuj",
     "converting": "Konwersja...",
-    "converted": "Plik SVG został pomyślnie przekonwertowany na PNG"
+    "converted": "Plik SVG został pomyślnie przekonwertowany na PNG",
+    "download": "Pobierz PNG"
   },
   "filePreviewer": {
     "title": "Podgląd plików",
@@ -469,6 +488,45 @@
     "matches": "Dopasowania",
     "noMatches": "Brak dopasowań",
     "editor": "Edytor",
-    "preview": "Podgląd"
+    "preview": "Podgląd",
+    "input": "Wejście",
+    "output": "Wyjście",
+    "send": "Wyślij",
+    "response": "Odpowiedź",
+    "status": "Status",
+    "body": "Treść",
+    "headers": "Nagłówki",
+    "raw": "Surowy",
+    "dropOrClick": "Upuść plik lub kliknij aby wybrać",
+    "noFileLoaded": "Nie załadowano pliku",
+    "cannotReadFile": "Nie można odczytać pliku",
+    "regexPattern": "Wzór regex",
+    "regexPlaceholder": "Wprowadź wyrażenie regularne...",
+    "jsonPlaceholder": "Wprowadź JSON...",
+    "markdownPlaceholder": "Wprowadź Markdown...",
+    "testString": "Testowy ciąg znaków",
+    "enterUrl": "Wprowadź URL",
+    "bodyPlaceholder": "Treść żądania...",
+    "invalidHeaders": "Nieprawidłowe nagłówki"
+  },
+  "hotkeys": {
+    "title": "Skróty klawiszowe",
+    "add": "Dodaj skrót",
+    "edit": "Edytuj",
+    "shortcut": "Skrót",
+    "text": "Tekst",
+    "actions": "Akcje",
+    "enabled": "Włączony",
+    "noHotkeys": "Brak zdefiniowanych skrótów",
+    "validationError": "Błąd walidacji",
+    "duplicateError": "Taki skrót już istnieje",
+    "namePlaceholder": "Nazwa skrótu",
+    "shortcutHint": "Naciśnij kombinację klawiszy...",
+    "textHint": "Treść do wklejenia lub akcja",
+    "textPlaceholder": "Wprowadź tekst lub polecenie...",
+    "name": "Nazwa",
+    "description": "Opis",
+    "deleteConfirmTitle": "Usuń skrót?",
+    "deleteConfirmMessage": "Czy na pewno chcesz usunąć ten skrót?"
   }
 }

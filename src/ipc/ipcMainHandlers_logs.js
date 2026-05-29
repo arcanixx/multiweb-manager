@@ -2,7 +2,7 @@
 // FILE: ipcMainHandlers_logs.js
 // PATH: src/ipc/ipcMainHandlers_logs.js
 // VERSION: 0.0.3
-// PURPOSE: Handlery IPC dla logów testów (LogWriter)
+// PURPOSE: Handlery IPC dla logów testów (LogWriter). logs:getFile buduje ścieżkę lokalnie przez app.getPath('userData') — nie używa getLogFilePath() z renderer logger.js (zwraca null w main).
 // FUNCTIONS: registerLogsHandlers, ipc:append-log-file, ipc:get-logs-file, ipc:clear-logs-file, ipc:logs:getFile
 // DEPENDS ON: electron, fs, path, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -64,7 +64,10 @@ export function registerLogsHandlers() {
 
  ipcMain.handle('logs:getFile', async () => {
   try {
-    const logPath = getLogFilePath();
+    // getLogFilePath() z renderer logger.js zwraca null w main process.
+    // Budujemy ścieżkę lokalnie — analogicznie do get-logs-file powyżej.
+    const logPath = path.join(app.getPath('userData'), 'logs', 'test-fails.log');
+    if (!fs.existsSync(logPath)) return { ok: true, data: { path: logPath, content: '' } };
     const content = fs.readFileSync(logPath, 'utf8');
     return { ok: true, data: { path: logPath, content } };
   } catch (err) {

@@ -14,6 +14,7 @@ import { ICONS } from "../../utils/icons";
 import { TranslationContext } from '../utils/translations.js';
 import { logInfo, logError, logWarn, logDebug } from "../../utils/loggerRenderer";
 import { API_ENDPOINTS } from "../../config";
+import { showNotification } from '../../utils/notificationsManager.js';
 
 // ─── RemoveBgTool() – narzędzie do usuwania tła przez API remove.bg
 //   @param {Object} props – właściwości komponentu
@@ -68,7 +69,7 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
 
   const processImages = async () => {
     if (!apiKey) {
-      alert(t("removebg.no_api_key"));
+      showNotification(t('removebg.no_api_key'), 'warning');
       logError("RemoveBg: no API key");
       return;
     }

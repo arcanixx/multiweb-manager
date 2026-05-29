@@ -2,119 +2,150 @@
 // FILE: ProjectManager.jsx
 // PATH: src/ui/projects/ProjectManager.jsx
 // VERSION: 0.0.3
-// PURPOSE: Główny menedżer projektów – lista, dodawanie, usuwanie
+// PURPOSE: Zarządzanie projektami – lista, dodawanie, usuwanie, edycja
 // FUNCTIONS: ProjectManager
-// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js, ProjectModal, ProjectList
+// DEPENDS ON: react, projectsStore, ConfirmModal, loggerRenderer, translations
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useState, useEffect, useContext } from 'react';
+import { loadProjects, saveProjects, deleteProject, updateProject } from '../../core/projectsStore.js';
 import { TranslationContext } from '../../utils/translations.js';
+import { logInfo, logError } from '../../utils/loggerRenderer.js';
 import { ICONS } from '../../utils/icons.js';
-import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
-import ProjectModal from './ProjectModal';
-import ProjectList from './ProjectList';
+import ConfirmModal from '../modals/ConfirmModal.jsx';
+import ProjectModal from './ProjectModal.jsx';
 
-// ─── ProjectManager() – główny menedżer projektów z listą, dodawaniem i usuwaniem
-//   @param {Object} props – właściwości komponentu
-//   @param {Function} props.onOpenTasks – callback otwierania zadań projektu
-//   @param {Function} props.onOpenTerminal – callback otwierania terminala projektu
-//   @returns {JSX.Element} – renderowany interfejs menedżera projektów
-export default function ProjectManager({ onOpenTasks, onOpenTerminal }) {
+export default function ProjectManager() {
   const { t } = useContext(TranslationContext);
   const [projects, setProjects] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showProjectModal, setShowProjectModal] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  
-
-  // ─── useEffect – ładowanie projektów przy montowaniu
   useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
     try {
-      window.electronAPI.getSettings()
-        .then(settings => {
-          setProjects(settings.projects || []);
-          logDebug('ProjectManager: loaded', (settings.projects || []).length, 'projects');
-          logInfo(`ProjectManager: loaded ${(settings.projects || []).length} projects`);
-        })
-        .catch(err => {
-          logError('ProjectManager: failed to load settings', err);
-          logWarn('Nie można załadować ustawień');
-        })
-        .finally(() => setLoading(false));
-    } catch (err) {
-      logError('ProjectManager: load failed', err);
-      logWarn('Wystąpił błąd podczas ładowania projektów');
+      setLoading(true);
+      const projectsData = await loadProjects();
+      setProjects(projectsData);
+      logInfo('ProjectManager: loaded projects');
+    } catch (error) {
+      logError('ProjectManager: failed to load projects', error);
+    } finally {
       setLoading(false);
     }
-  }, []);
-  
-  // ─── saveProjects() – zapisuje listę projektów do ustawień
-  //   @param {Array} newProjects – nowa lista projektów
-  //   @returns {Promise<void>}
-  const saveProjects = async (newProjects) => {
+  };
+
+  const handleSaveProject = async (projectData) => {
     try {
-      setProjects(newProjects);
-      await window.electronAPI.saveSettings({ projects: newProjects });
-      logDebug('ProjectManager: saved', newProjects.length, 'projects');
-      logInfo(`ProjectManager: saved ${newProjects.length} projects`);
-    } catch (err) {
-      logError('ProjectManager: save failed', err);
-      logWarn('Wystąpił błąd podczas zapisu projektów');
-      throw err;
+      let updatedProjects;
+      if (editingProject) {
+        updatedProjects = projects.map(p =>
+          p.id === editingProject.id ? { ...projectData, id: editingProject.id } : p
+        );
+        await updateProject(editingProject.id, projectData);
+        logInfo(`ProjectManager: updated project ${editingProject.id}`);
+      } else {
+        const newProject = { ...projectData, id: Date.now() };
+        updatedProjects = [...projects, newProject];
+        await saveProjects(updatedProjects);
+        logInfo(`ProjectManager: added project ${newProject.id}`);
+      }
+      setProjects(updatedProjects);
+      setShowProjectModal(false);
+      setEditingProject(null);
+    } catch (error) {
+      logError('ProjectManager: failed to save project', error);
     }
   };
-  
-  // ─── addProject() – dodaje nowy projekt do listy
-  //   @param {Object} projectData – dane nowego projektu
-  //   @param {string} projectData.name – nazwa projektu
-  //   @param {string} projectData.path – ścieżka projektu
-  //   @returns {Promise<void>}
-  const addProject = async ({ name, path }) => {
+
+  const handleDeleteClick = (project) => {
+    setProjectToDelete(project);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!projectToDelete) return;
     try {
-      const newProjects = [...projects, { name, path, id: Date.now().toString() }];
-      await saveProjects(newProjects);
-      setShowModal(false);
-      log('ProjectManager: added project:', name);
-      logInfo(`ProjectManager: added project ${name}`);
-    } catch (err) {
-      logError('ProjectManager: add project failed', err);
-      logWarn('Wystąpił błąd podczas dodawania projektu');
+      await deleteProject(projectToDelete.id);
+      setProjects(projects.filter(p => p.id !== projectToDelete.id));
+      logInfo(`ProjectManager: deleted project ${projectToDelete.id}`);
+    } catch (error) {
+      logError('ProjectManager: failed to delete project', error);
+    } finally {
+      setShowDeleteConfirm(false);
+      setProjectToDelete(null);
     }
   };
-  
-  // ─── deleteProject() – usuwa projekt z listy po potwierdzeniu
-  //   @param {string} projectId – identyfikator projektu do usunięcia
-  //   @returns {Promise<void>}
-  const deleteProject = async (projectId) => {
-    try {
-      if (!window.confirm(t('projectManager.delete_project') + '?')) return;
-      await saveProjects(projects.filter(p => p.id !== projectId));
-      log('ProjectManager: deleted project:', projectId);
-      logInfo(`ProjectManager: deleted project ${projectId}`);
-    } catch (err) {
-      logError('ProjectManager: delete project failed', err);
-      logWarn('Wystąpił błąd podczas usuwania projektu');
-    }
+
+  const handleEdit = (project) => {
+    setEditingProject(project);
+    setShowProjectModal(true);
   };
-  if (loading) {
-    return <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>{ICONS.LOADING} {t('common.loading')}</div>;
-  }
+
+  if (loading) return <div className="loading">{t('common.loading')}</div>;
 
   return (
-    <div style={{ height: '100%', overflowY: 'auto', padding: '20px 24px', background: 'var(--bg-primary)' }}>
-      <div style={{ maxWidth: 720, margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-          <h1 style={{ fontSize: 20, fontWeight: 800, margin: 0, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 10 }}>
-            {ICONS.PROJECTMANAGER} {t('projectManager.title')}
-          </h1>
-          <button className="btn btn-primary" style={{ fontSize: 13 }} onClick={() => setShowModal(true)}>
-            {ICONS.PLUS} {t('projectManager.add_project')}
-          </button>
-        </div>
-        <ProjectList projects={projects} onDelete={deleteProject} onOpenTasks={onOpenTasks} onOpenTerminal={onOpenTerminal} />
-        {showModal && <ProjectModal onSave={addProject} onClose={() => setShowModal(false)} />}
+    <div className="project-manager">
+      <div className="project-manager-header">
+        <h2>{t('projectManager.title')}</h2>
+        <button className="btn-primary" onClick={() => {
+          setEditingProject(null);
+          setShowProjectModal(true);
+        }}>
+          {ICONS.ADD} {t('projectManager.add_project')}
+        </button>
       </div>
+
+      <div className="project-list">
+        {projects.length === 0 && (
+          <div className="empty-state">{t('projectManager.no_projects')}</div>
+        )}
+        {projects.map(project => (
+          <div key={project.id} className="project-item">
+            <div className="project-info">
+              <span className="project-name">{project.name}</span>
+              <span className="project-path">{project.path}</span>
+            </div>
+            <div className="project-actions">
+              <button className="btn-icon" onClick={() => handleEdit(project)} title={t('common.edit')}>
+                {ICONS.EDIT}
+              </button>
+              <button className="btn-icon" onClick={() => handleDeleteClick(project)} title={t('common.delete')}>
+                {ICONS.DELETE}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {showProjectModal && (
+        <ProjectModal
+          project={editingProject}
+          onSave={handleSaveProject}
+          onClose={() => {
+            setShowProjectModal(false);
+            setEditingProject(null);
+          }}
+        />
+      )}
+
+      <ConfirmModal
+        isOpen={showDeleteConfirm}
+        title={t('projects.delete')}
+        message={t('projects.delete_confirm')}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => {
+          setShowDeleteConfirm(false);
+          setProjectToDelete(null);
+        }}
+      />
     </div>
   );
 }

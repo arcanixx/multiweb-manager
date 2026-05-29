@@ -13,7 +13,6 @@ import fs from "fs";
 import { logError } from "../utils/logger.js";
 import {
   loadSettings,
-  saveSettings,
   resetSettings,
   mergeSettings
 } from "../core/settingsStore.js";
@@ -40,7 +39,7 @@ ipcMain.handle("settings:update", async (_, patch) => {
       throw new Error("INVALID_SETTINGS_PATCH");
     }
     const updated = mergeSettings(patch);
-    saveSettings(updated);
+    // mergeSettings() wewnętrznie wywołuje saveSettings() — nie zapisujemy drugi raz
     return { ok: true, data: updated };
   } catch (err) {
     logError("settings:update failed", err);
@@ -90,7 +89,7 @@ ipcMain.handle("settings:import", async (_, importPath) => {
       throw new Error("INVALID_IMPORT_DATA");
     }
     const merged = mergeSettings(parsed);
-    saveSettings(merged);
+    // mergeSettings() wewnętrznie wywołuje saveSettings() — nie zapisujemy drugi raz
     return { ok: true, data: merged };
   } catch (err) {
     logError("settings:import failed", err);

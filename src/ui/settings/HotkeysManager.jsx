@@ -13,6 +13,7 @@ import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError, logInfo, logWarn } from 'src/utils/loggerRenderer';
 import ConfirmModal from '../modals/ConfirmModal';
 import Modal from '../modals/Modal';
+import { showNotification } from '../../utils/notificationsManager.js';
 
 const DEFAULT_HOTKEYS = [
   { id: 'hk-1', shortcut: 'Ctrl+Shift+S', name: 'Screenshot WebView', text: '', enabled: true, action: 'screenshot' },
@@ -167,7 +168,7 @@ export default function HotkeysManager() {
   const handleSave = async () => {
     try {
       if (!editingHotkey.shortcut || !editingHotkey.name) {
-        alert(t('hotkeys.validationError'));
+        showNotification(t('hotkeys.validationError'), 'error');
         logWarn('HotkeysManager: validation failed - missing required fields');
         return;
       }
@@ -175,7 +176,7 @@ export default function HotkeysManager() {
       // Sprawdź duplikaty
       const exists = hotkeys.some(h => h.id !== editingHotkey.id && h.shortcut === editingHotkey.shortcut);
       if (exists) {
-        alert(t('hotkeys.duplicateError'));
+        showNotification(t('hotkeys.duplicateError'), 'error');
         logWarn('HotkeysManager: duplicate shortcut detected');
         return;
       }

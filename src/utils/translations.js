@@ -10,6 +10,9 @@
 
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { LANGUAGES, DEFAULT_LANGUAGE } from '../config.js';
+// loggerRenderer nie jest dostępny tutaj (translations.js ładuje się przed App),
+// używamy console.warn jako fallback dla brakujących kluczy.
+const _warnMissingKey = (key) => console.warn(`[i18n] Brakujący klucz tłumaczenia: "${key}" — sprawdź pl.json / en.json`);
 const TranslationContext = createContext(null);
 // Dynamiczne zaimportowanie tłumaczeń dla danego języka
 async function loadTranslations(lang) {
@@ -76,7 +79,10 @@ export function TranslationProvider({ children }) {
       if (val && typeof val === 'object') val = val[part];
       else return key;
     }
-    if (typeof val !== 'string') return key;
+    if (typeof val !== 'string') {
+      _warnMissingKey(key);
+      return key;
+    }
     return Object.keys(params).reduce(
       (str, p) => str.replace(new RegExp(`\\{${p}\\}`, 'g'), params[p]),
       val
