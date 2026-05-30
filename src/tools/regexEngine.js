@@ -10,6 +10,7 @@
 // =============================================================================
 
 import { logDebug, logError } from "../utils/logger.js";
+// ─── testRegex() – TODO: opis funkcji
 export function testRegex(pattern, flags, text) {
   try {
     logDebug(`regexEngine.testRegex: pattern="${pattern}", flags="${flags}"`);

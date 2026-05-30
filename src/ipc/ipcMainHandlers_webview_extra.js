@@ -16,6 +16,7 @@ const PRELOAD_PATH = path.join(__dirname, '../../preload.cjs');
 /**
  * Rejestruje wszystkie handlery WebView
  */
+// ─── registerWebViewExtraHandlers() – TODO: opis funkcji
 export function registerWebViewExtraHandlers() {
   // Single App Mode – nowe okno
   ipcMain.handle('open-single-window', async (_, payload) => {

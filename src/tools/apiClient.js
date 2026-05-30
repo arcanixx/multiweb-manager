@@ -3,13 +3,14 @@
 // PATH: src/tools/apiClient.js
 // VERSION: 0.0.3
 // PURPOSE: Prosty wrapper HTTP do testowania API apiRequest(url, method, headers, body)
-            wykonuje żądanie i zwraca { status, headers, body }
+//          wykonuje żądanie i zwraca { status, headers, body }
 // FUNCTIONS: apiRequest
 // DEPENDS ON: logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { logDebug, logError } from "../utils/logger.js";
+// ─── apiRequest() – TODO: opis funkcji
 export async function apiRequest(url, method, headers, body) {
   try {
     logDebug(`apiClient.apiRequest: ${method} ${url}`);

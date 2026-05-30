@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, session } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
@@ -74,6 +74,19 @@ export function createWindow() {
   });
 
   setMainWindow(mainWindow);
+
+// CSP – Content Security Policy
+// Ogranicza możliwość wykonywania niebezpiecznego kodu (XSS, script injection)
+session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+  callback({
+    responseHeaders: {
+      ...details.responseHeaders,
+      'Content-Security-Policy': [
+        "default-src 'self'; img-src * data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
+      ]
+    }
+  });
+});
 
   if (isDev) {
     mainWindow.loadURL('http://localhost:3000');

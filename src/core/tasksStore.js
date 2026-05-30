@@ -12,6 +12,8 @@ import fs from "fs";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
 
+// ─── TASKS_DIR() – zwraca ścieżkę do folderu z plikami zadań w userData
+//   @returns {string} – pełna ścieżka do katalogu tasks/
 const TASKS_DIR = () => getUserDataPath("tasks");
 
 // ─── taskFile() – generuje bezpieczną ścieżkę do pliku zadań dla projektu

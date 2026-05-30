@@ -57,7 +57,7 @@ export function filterApps(query) {
   );
 }
 
-// ─── searchAppLibrary() – alias dla filterApps
+// ─── searchAppLibrary() – alias dla filterApps (kompatybilność wsteczna)
 //   @param {string} query – fraza do wyszukania
 //   @returns {Array} – tablica dopasowanych aplikacji
 export function searchAppLibrary(query) {

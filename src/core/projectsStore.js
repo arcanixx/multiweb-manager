@@ -12,6 +12,8 @@ import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
 import { loadSettings, mergeSettings } from "./settingsStore.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
 
+// ─── PROJECTS_FILE() – zwraca ścieżkę do pliku projektów w userData
+//   @returns {string} – pełna ścieżka do projects.json
 const PROJECTS_FILE = () => getUserDataPath("projects.json");
 
 // ─── loadProjects() – ładuje projekty z pliku lub z ustawień
@@ -65,7 +67,7 @@ export function updateProject(id, patch) {
   return saveProjects(list);
 }
 
-// ─── archiveProject() – archiwizuje projekt
+// ─── archiveProject() – archiwizuje projekt (ustawia status: archived)
 //   @param {string} id – identyfikator projektu do zarchiwizowania
 //   @returns {Array} – zaktualizowana tablica projektów
 export function archiveProject(id) {

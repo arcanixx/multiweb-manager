@@ -16,12 +16,14 @@ let mainWindow = null;
 /**
  * Ustawia referencję do głównego okna (potrzebne do wysyłania eventów)
  */
+// ─── setMainWindow() – TODO: opis funkcji
 export function setMainWindow(win) {
   mainWindow = win;
 }
 /**
  * Odrejestrowuje wszystkie aktywne skróty
  */
+// ─── unregisterAllHotkeys() – TODO: opis funkcji
 export function unregisterAllHotkeys() {
   registeredHotkeys.forEach(hk => {
     try { globalShortcut.unregister(hk); } catch(e) {}
@@ -32,6 +34,7 @@ export function unregisterAllHotkeys() {
 /**
  * Rejestruje listę skrótów (zapisanych w store)
  */
+// ─── registerGlobalHotkeys() – TODO: opis funkcji
 export async function registerGlobalHotkeys(hotkeys) {
   unregisterAllHotkeys();
   for (const hk of hotkeys) {
@@ -65,6 +68,7 @@ export async function registerGlobalHotkeys(hotkeys) {
 /**
  * Pobiera wszystkie skróty z store
  */
+// ─── getAllHotkeys() – TODO: opis funkcji
 export async function getAllHotkeys() {
   const store = new Store({ name: 'hotkeys', defaults: { hotkeys: [] } });
   return store.get('hotkeys', []);
@@ -73,6 +77,7 @@ export async function getAllHotkeys() {
 /**
  * Zapisuje skróty do store i rejestruje je
  */
+// ─── saveHotkeys() – TODO: opis funkcji
 export async function saveHotkeys(hotkeys) {
   const store = new Store({ name: 'hotkeys', defaults: { hotkeys: [] } });
   store.set('hotkeys', hotkeys);
@@ -83,6 +88,7 @@ export async function saveHotkeys(hotkeys) {
 /**
  * Rejestruje hotkeys (bez zapisu do store – tylko aktywacja)
  */
+// ─── registerHotkeysFromList() – TODO: opis funkcji
 export async function registerHotkeysFromList(hotkeys) {
   await registerGlobalHotkeys(hotkeys);
 }

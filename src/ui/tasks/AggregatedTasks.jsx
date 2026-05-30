@@ -25,6 +25,8 @@ export default function AggregatedTasks() {
   const [collapsed, setCollapsed] = useState({});
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
+  // ─── loadData() – ładuję wszystkie zadania i ustawienia widoczności
+//   @returns {Promise<void>}
   const loadData = async () => {
     setLoading(true);
     try {
@@ -54,12 +56,14 @@ export default function AggregatedTasks() {
     window.electronAPI.saveSettings({ collapsedTaskProjects: newCollapsed });
   }, [collapsed]);
 
+// ─── collapseAll() – zwiń wszystkie sekcje projektów
   const collapseAll = () => {
     const all = Object.fromEntries(Object.keys(allData).map(k => [k, true]));
     setCollapsed(all);
     window.electronAPI.saveSettings({ collapsedTaskProjects: all });
   };
 
+  // ─── expandAll() – rozwiń wszystkie sekcje projektów
   const expandAll = () => {
     setCollapsed({});
     window.electronAPI.saveSettings({ collapsedTaskProjects: {} });

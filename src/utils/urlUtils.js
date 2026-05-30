@@ -12,6 +12,10 @@
  * @param {string} raw
  * @returns {string|null} gotowy URL lub null gdy pusty / niepoprawny
  */
+
+// ─── normalizeWebUrl() – normalizuje URL, dodając https:// jeśli brak protokolu
+//   @param {string} raw - surowy adres URL
+//   @returns {string|null} - pełny URL lub null gdy niepoprawny
 export function normalizeWebUrl(raw) {
   if (raw == null || typeof raw !== 'string') return null;
   let u = raw.trim();
@@ -33,6 +37,10 @@ export function normalizeWebUrl(raw) {
     return null;
   }
 }
+
+// ─── isValidWebUrl() – sprawdza czy URL jest poprawny przez normalizeWebUrl
+//   @param {string} raw - surowy adres URL
+//   @returns {boolean} - true jeśli URL jest poprawny
 export function isValidWebUrl(raw) {
   return normalizeWebUrl(raw) !== null;
 }

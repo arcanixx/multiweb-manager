@@ -38,7 +38,10 @@ export default function SvgToPngConverter() {
     setSvgContent(text);
     logDebug(`SvgToPng: loaded ${file.name}`);
   }, [t]);
-  const handleConvert = async () => {
+  
+   // ─── handleConvert() – Konwertuje załadowany plik SVG na PNG przy użyciu podanej szerokości i wysokości, a następnie ustawia ścieżkę wyjściową do pobrania.
+   //   @returns {Promise<void>} – obietnica rozwiązywana po zakończeniu konwersji
+   const handleConvert = async () => {
     if (!inputFile) {
       setError(t('svgToPng.noFile'));
       return;
@@ -62,7 +65,9 @@ export default function SvgToPngConverter() {
     }
   };
 
-  const handleDownload = async () => {
+   // ─── handleDownload() – Inicjalizuje pobranie wygenerowanego pliku PNG poprzez wywołanie okna dialogowego zapisu pliku.
+   //   @returns {Promise<void>} – obietnica rozwiązywana po zakończeniu pobierania
+   const handleDownload = async () => {
     if (!outputPath) return;
     await window.electronAPI?.showSaveDialog?.(outputPath);
   };

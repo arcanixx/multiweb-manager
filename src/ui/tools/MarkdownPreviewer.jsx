@@ -16,8 +16,12 @@ export default function MarkdownPreviewer() {
   const { t } = React.useContext(TranslationContext);
   const [markdown, setMarkdown] = useState('# Hello World\n\nThis is **Markdown** previewer.');
   const [html, setHtml] = useState('');
+  
   // Prosta konwersja Markdown → HTML (uproszczona, bez zależności)
-  const convertToHtml = (md) => {
+   // ─── convertToHtml() – Konwertuje tekst Markdown na uproszczony HTML przy użyciu wyrażeń regularnych (obsługuje nagłówki, pogrubienie, kursywę, linki, listy i akapity).
+   //   @param {string} md – tekst Markdown do konwersji
+   //   @returns {string} – wygenerowany HTML
+   const convertToHtml = (md) => {
     let html = md
       .replace(/^# (.*$)/gm, '<h1>$1</h1>')
       .replace(/^## (.*$)/gm, '<h2>$1</h2>')
@@ -31,7 +35,10 @@ export default function MarkdownPreviewer() {
       .replace(/^(?!<[a-z])/gm, '<p>$&</p>');
     return `<div class="markdown-body">${html}</div>`;
   };
-  const handleChange = (e) => {
+  
+   // ─── handleChange() – Obsługuje zmianę tekstu w edytorze Markdown – aktualizuje stan markdown oraz przetwarza go na HTML do podglądu.
+   //   @param {React.ChangeEvent<HTMLTextAreaElement>} e – zdarzenie zmiany zawartości pola tekstowego
+   const handleChange = (e) => {
     const value = e.target.value;
     setMarkdown(value);
     setHtml(convertToHtml(value));

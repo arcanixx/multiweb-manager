@@ -28,6 +28,7 @@ export default function HistoryFilters({ filterLevel, onFilterChange, sortOrder,
   // ─── handleFilterChange() – obsługa zmiany poziomu filtru
   //   @param {Event} e – zdarzenie zmiany selecta
   //   @returns {void}
+  // ─── handleFilterChange() – TODO: opis funkcji
   const handleFilterChange = (e) => {
     try {
       onFilterChange(e.target.value);
@@ -41,6 +42,7 @@ export default function HistoryFilters({ filterLevel, onFilterChange, sortOrder,
   // ─── handleSortChange() – obsługa zmiany porządku sortowania
   //   @param {Event} e – zdarzenie zmiany selecta
   //   @returns {void}
+  // ─── handleSortChange() – TODO: opis funkcji
   const handleSortChange = (e) => {
     try {
       onSortChange(e.target.value);

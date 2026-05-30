@@ -1,7 +1,7 @@
 // =============================================================================
 // FILE: PromptModal.jsx
 // PATH: src/ui/modals/PromptModal.jsx
-// VERSION: 0.0.4
+// VERSION: 0.0.3
 // PURPOSE: Modal z polem input – zastępuje window.prompt()
 // FUNCTIONS: PromptModal
 // DEPENDS ON: react, translations.js, loggerRenderer.js
@@ -41,6 +41,7 @@ export default function PromptModal({
     }
   }, [isOpen, defaultValue]);
 
+  // ─── handleConfirm() – TODO: opis funkcji
   const handleConfirm = () => {
     try {
       logInfo(`PromptModal: confirmed with value: ${value}`);
@@ -50,6 +51,7 @@ export default function PromptModal({
     }
   };
 
+  // ─── handleCancel() – TODO: opis funkcji
   const handleCancel = () => {
     try {
       logInfo('PromptModal: cancelled');
@@ -59,6 +61,7 @@ export default function PromptModal({
     }
   };
 
+  // ─── handleKeyDown() – TODO: opis funkcji
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       handleConfirm();

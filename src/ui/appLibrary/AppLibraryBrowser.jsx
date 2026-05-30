@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState, useEffect } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError, logInfo, logWarn } from '../../utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
@@ -60,19 +61,24 @@ export default function AppLibraryBrowser({ onAddProfile }) {
     }
   }, [searchQuery]);
   
+  if (!isFeatureEnabled("appLibrary")) return null;
+  
   // ─── handleCategoryClick() – obsługa kliknięcia kategorii
   //   @param {string} categoryId – identyfikator kategorii
   //   @returns {void}
+  // ─── handleCategoryClick() – TODO: opis funkcji
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);
     setSearchQuery('');
     logInfo(`AppLibraryBrowser: category selected ${categoryId}`);
   };
+  // ─── handleAddApp() – TODO: opis funkcji
   const handleAddApp = (app) => {
     logDebug(`AppLibraryBrowser: adding app ${app.name}`);
     onAddProfile?.(app);
   };
 
+  // ─── renderAppCard() – TODO: opis funkcji
   const renderAppCard = (app, categoryId) => (
     <div key={app.id} className="app-card">
       <div className="app-card-icon">

@@ -15,6 +15,7 @@ import { logError } from '../utils/logger.js';
 /**
  * Rejestruje handlery dla logów testów
  */
+// ─── registerLogsHandlers() – TODO: opis funkcji
 export function registerLogsHandlers() {
   ipcMain.handle('append-log-file', async (_, payload) => {
     try {

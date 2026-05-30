@@ -284,6 +284,61 @@
 
 ---
 
+### [Terminal.jsx – naprawa błędów składni i API] :
+- **ID:** ARCH_REQ-038
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** W `src/ui/terminal/Terminal.jsx` usunięto podwójny export default oraz przeniesiono importy na początek pliku. Dodatkowo naprawiono rozbieżność API z preload.cjs – używane są aliasy (terminalWriteLegacy, terminalResizeLegacy) dla zachowania spójności. Docelowo aliasy należy usunąć i ujednolicić sygnatury.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Zmiana eliminuje błąd parsowania modułu i przywraca komunikację terminala z preload. Pełna poprawa API (bez aliasów) wymaga dodatkowej sesji.
+
+---
+
+### [Dodanie brakujących ikon do rejestru] :
+- **ID:** ARCH_REQ-039
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Do pliku `src/data/icons.js` dodano brakujące ikony: CLEAR, APP_LIBRARY, DATA, HTML, NOTIFICATION, PUSHBULLET, SVG, TABS. Uzupełniono SIDEBAR_ICON_MAP o brakujące mapowania (appLibrary, tools).
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Ikony były używane w komponentach ale niezdefiniowane – powodowało błędy w konsoli.
+
+---
+
+### [Dodanie Error Boundary w App.jsx] :
+- **ID:** ARCH_REQ-040
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Dodano `AppErrorBoundary` (klasowy React.Component) opakowujący główny render App. Przy błędzie w dowolnym komponencie renderuje fallback UI zamiast białego ekranu.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Zgodne z ARCH_REQ-017. Brak tego elementu powodował całkowite zawieszenie renderera.
+
+---
+
+### [URL sanitization – blokada niebezpiecznych URLi] :
+- **ID:** ARCH_REQ-041
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Dodano `isSafeUrl()` w `src/utils/urlUtils.js` blokującą: javascript:, vbscript:, data:, file:, about:, blob:. Zintegrowano z `normalizeWebUrl()` i `ipcMainHandlers_webview_nav.js` (webview:navigate).
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+- **Komentarz:** Podstawowe zabezpieczenie przed atakami script injection przez pasek adresu.
+
+---
+
+### [Deep merge ustawień (lodash.merge)] :
+- **ID:** ARCH_REQ-042
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Zastąpiono `{...current, ...patch}` przez `_.merge({}, current, patch)` w `settingsStore.js`. Zapewnia poprawną aktualizację zagnieżdżonych pól (np. resourceMonitor.warnAt).
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Lodash musi być zainstalowany (`npm i lodash`). Zgodne z ARCH_REQ-006.
+
+---
+
 ## 🗂️ SIDEBAR / PROFILE MANAGER
 
 > Wymagania dotyczące panelu bocznego: zarządzanie profilami, biblioteka aplikacji, wyszukiwanie, kategorie, drag & drop.
@@ -674,8 +729,73 @@
 
 ---
 
-### [JSON/YAML/XML Formatter] :
+### [Lazy loading narzędzi w ToolsPanel (React.lazy)] :
+- **ID:** TOOLS_REQ-015
+- **Sekcja:** TOOLSPANEL (KAFELKI)
+- **Opis:** ToolsPanel.jsx ładuje wszystkie narzędzia (MiniPostman, RegexTester, CookieGrabber, itd.) przy starcie, co zwiększa rozmiar bundle i czas ładowania. Należy zastosować React.lazy i Suspense – każde narzędzie ładowane dynamicznie dopiero po kliknięciu w zakładkę.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Zadanie w stanie PENDING – do wdrożenia. Nie zmienia logiki działania, tylko sposób ładowania komponentów.
 
+---
+
+### [useAsync hook – wspólny wrapper dla operacji asynchronicznych] :
+- **ID:** GENERAL_REQ-019
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Stworzenie hooka `useAsync(asyncFn, deps)` w `src/hooks/useAsync.js`. Hook przyjmuje funkcję asynchroniczną i zwraca `{ data, loading, error, refetch }`. Eliminuje duplikację wzorca `setLoading(true) → invoke → setLoading(false)` z wszystkich hooków (useHistoryLog, useNotepad, useProjects, useSettings, useTasks, useWorkspaces). Zależne od GENERAL_REQ-009 i GENERAL_REQ-012.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Do wdrożenia. Powiązane z refaktorem load() w hookach.
+
+---
+
+### [Feature Flags per moduł w config.js] :
+- **ID:** GENERAL_REQ-020
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Rozbudowa `FEATURES` w `config.js` o flagi per moduł: `FEATURES.debug.terminal`, `FEATURES.debug.webview`, `FEATURES.debug.ipc`. Każda flaga kontroluje szczegółowość logowania dla konkretnego modułu. Flagi widoczne w Settings (sekcja Debug) jako checkboxy. Aktualna struktura `FEATURES` ma flagi globalne – wymaga rozbudowy do granularnej kontroli.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Do wdrożenia. Obecny `FEATURES` jest płaski – wymaga rozbudowy o granularne flagi debug.
+
+---
+
+### [Rotacja logów w logWriter.js] :
+- **ID:** GENERAL_REQ-021
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** W `src/utils/logWriter.js` i `ipcMainHandlers_logs.js` dodanie automatycznej rotacji plików logów: maksymalny rozmiar pliku 5MB, po przekroczeniu – archiwizacja do `test-fails.log.1`, `test-fails.log.2` (max 3 archiwum). Bieżący plik zawsze `test-fails.log`. Czyszczenie starszych archiwum automatycznie.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Do wdrożenia. Bez rotacji plik logów rośnie nieograniczenie.
+
+---
+
+### [Walidator locale przed buildem] :
+- **ID:** GENERAL_REQ-022
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Dodanie walidatora kluczy tłumaczeń uruchamianego przed buildem lub jako test. Walidator sprawdza: wszystkie klucze z `en.json` istnieją w `pl.json` i odwrotnie, brak pustych wartości, spraw dzenie czy używane `t('klucz')` w kodzie mają odpowiedniki w plikach locale. Może być częścią `translations.js` lub osobnym `build_validate_locales.py`.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Do wdrożenia. Obecne `_warnMissingKey()` działa tylko w runtime – potrzeba statycznej walidacji przed buildem.
+
+---
+
+### [Podział constants.js na constants.js i constants_UI.js] :
+- **ID:** GENERAL_REQ-023
+- **Sekcja:** OGÓLNE / TECH DEBT
+- **Opis:** Przeniesienie stałych UI (kategorie aplikacji, mapowania ikon, priorytety zadań, statusy) z `src/constants.js` do `src/ui/constants_UI.js`. Stałe domenowe (LIMITS, PATHS, API) zostają w `constants.js`. Jeśli plik po podziale przekroczy 300 linii – rozważyć dalszy podział. Aktualizacja wszystkich importów.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Do wdrożenia. Wymaga analizy, które stałe gdzie powinny trafić. Skrypt `split_constants_file.py` przygotowany, ale wymaga ręcznego dostrojenia.
+
+---
+
+### [JSON/YAML/XML Formatter] :
 - **ID:** TOOLS_REQ-001
 - **Sekcja:** TOOLSPANEL (KAFELKI)
 - **Opis:** Narzędzie `Tools/JsonYamlXmlFormatter.jsx` z formatowaniem, walidacją, minify/pretty.

@@ -32,6 +32,7 @@ export default function NotepadStatusBar({ title, content, lastSaved }) {
   // ─── formatTime() – formatuje timestamp do czytelnej godziny
   //   @param {number} timestamp – timestamp do sformatowania
   //   @returns {string} – sformatowana godzina
+  // ─── formatTime() – TODO: opis funkcji
   const formatTime = (timestamp) => {
     try {
       return new Date(timestamp).toLocaleTimeString('pl-PL');

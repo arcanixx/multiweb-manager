@@ -15,6 +15,7 @@ import { logError } from "../utils/logger.js";
 // ----------------------------------------------------------------
 // enrich() – helper: dodaje projectName do każdego taska
 // ----------------------------------------------------------------
+// ─── enrich() – TODO: opis funkcji
 function enrich(tasks, projects) {
   return tasks.map((t) => {
     const project = projects.find((p) => p.id === t.projectId);

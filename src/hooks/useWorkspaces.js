@@ -13,7 +13,6 @@ import { logInfo, logError, logWarn, logDebug } from "../utils/loggerRenderer.js
 
 // ─── useWorkspaces() – hook do zarządzania workspace'ami
 //   @returns {Object} – obiekt z workspaces, loading i funkcjami saveWorkspace, deleteWorkspace
-
 export function useWorkspaces() {
   const [workspaces, setWorkspaces] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -8,16 +8,21 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../utils/translations.js';
 import { logError } from 'src/utils/loggerRenderer';
 
 export default function JsonFormatter() {
-  const { t } = React.useContext(TranslationContext);
+  const { t } = useContext(TranslationContext);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
   const [mode, setMode] = useState('json'); // json, yaml, xml
+
+  if (!isFeatureEnabled("jsonYamlXmlFormatter")) return null;
+
+  // ─── handleFormat() – Formatuje wprowadzony tekst w zależności od wybranego trybu (JSON, YAML, XML) – dla JSON dodaje wcięcia, dla YAML wyświetla informację o braku obsługi, dla XML wykonuje podstawowe formatowanie.
   const handleFormat = () => {
     setError('');
     try {
@@ -37,6 +42,8 @@ export default function JsonFormatter() {
       logError('Format error', err);
     }
   };
+
+  // ─── handleMinify() – kompresuje JSON do jednej linii (bez białych znaków)
   const handleMinify = () => {
     try {
       const parsed = JSON.parse(input);
@@ -45,14 +52,16 @@ export default function JsonFormatter() {
       setError(err.message);
     }
   };
+
+  // ─── handleCopy() – kopiuję wynik do schowka
   const handleCopy = () => {
     navigator.clipboard.writeText(output);
   };
-  
+
   return (
     <div className="tool-container">
-	<h2>{t('tools.jsonFormatter')}</h2>
-      
+      <h2>{t('tools.jsonFormatter')}</h2>
+
       <div className="tool-controls">
         <select value={mode} onChange={(e) => setMode(e.target.value)}>
           <option value="json">JSON</option>
@@ -63,7 +72,7 @@ export default function JsonFormatter() {
         <button onClick={handleMinify}>{t('tools.minify')}</button>
         <button onClick={handleCopy}>{t('tools.copy')}</button>
       </div>
-      
+
       <div className="tool-panels">
         <div className="tool-panel">
           <label>{t('tools.input')}</label>

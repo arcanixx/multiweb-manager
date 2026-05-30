@@ -9,13 +9,15 @@
 // =============================================================================
 
 import { session } from 'electron';
-import { logDebug, logError, logWarn } from '../utils/logger.js';
+import { isFeatureEnabled } from '../config.js';
+import { logInfo, logDebug, logError, logWarn } from '../utils/logger.js';
 import { webviewProfileMap } from './webviewRegistry.js';
 let globalAdBlocker = true;
 const profileAdBlockers = new Map();
-/**
- * Sprawdza, czy URL jest reklamą (pattern matching)
- */
+
+// ─── isAdUrl() – sprawdza czy URL pasuje do wzorców reklam
+//   @param {string} url – URL do sprawdzenia
+//   @returns {boolean} – true jeśli URL jest reklamą
 export function isAdUrl(url) {
   const patterns = [
     /doubleclick/i, /adservice/i, /googlesyndication/i,
@@ -23,9 +25,9 @@ export function isAdUrl(url) {
   ];
   return patterns.some(p => p.test(url));
 }
-/**
- * Ustawia globalny stan AdBlockera
- */
+
+// ─── setGlobalAdBlocker() – ustawia globalny stan AdBlockera
+//   @param {boolean} enabled – czy włączyć globalny adblocker
 export function setGlobalAdBlocker(enabled) {
   globalAdBlocker = enabled;
   logDebug(`AdBlocker global set to: ${enabled}`);
@@ -33,12 +35,15 @@ export function setGlobalAdBlocker(enabled) {
 /**
  * Zwraca globalny stan AdBlockera
  */
+// ─── getGlobalAdBlocker() – zwraca globalny stan AdBlockera
+//   @returns {boolean} – stan globalnego adblockera
 export function getGlobalAdBlocker() {
   return globalAdBlocker;
 }
-/**
- * Ustawia stan AdBlockera dla konkretnego profilu
- */
+
+// ─── setProfileAdBlocker() – ustawia stan AdBlockera dla konkretnego profilu
+//   @param {string} profileId – ID profilu
+//   @param {boolean} enabled – czy włączyć adblocker dla profilu
 export function setProfileAdBlocker(profileId, enabled) {
   try {
     if (!profileId) throw new Error('setProfileAdBlocker: brak profileId');
@@ -49,9 +54,10 @@ export function setProfileAdBlocker(profileId, enabled) {
     logWarn(`Nie można ustawić AdBlockera dla profilu ${profileId}`);
   }
 }
-/**
- * Zwraca stan AdBlockera dla profilu (lub globalny, jeśli brak nadpisania)
- */
+
+// ─── getProfileAdBlocker() – zwraca stan AdBlockera dla profilu (lub globalny)
+//   @param {string} profileId – ID profilu
+//   @returns {boolean} – stan adblockera dla profilu
 export function getProfileAdBlocker(profileId) {
   try {
     const value = profileAdBlockers.get(profileId);
@@ -62,10 +68,12 @@ export function getProfileAdBlocker(profileId) {
   }
 }
 
-/**
- * Inicjalizuje AdBlockera (rejestruje onBeforeRequest)
- */
+// ─── initAdBlocker() – inicjalizuje AdBlockera (rejestruje onBeforeRequest)
 export function initAdBlocker() {
+  if (!isFeatureEnabled('adBlocker')) {
+    logInfo('AdBlocker is disabled by feature flag.');
+    return;
+  }
   session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
     const profileId = webviewProfileMap.get(details.webContentsId);
     let shouldBlock = globalAdBlocker;

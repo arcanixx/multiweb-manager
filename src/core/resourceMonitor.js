@@ -2,7 +2,7 @@
 // FILE: resourceMonitor.js
 // PATH: src/core/resourceMonitor.js
 // VERSION: 0.0.3
-// PURPOSE: Monitor zasobów systemowych
+// PURPOSE: Monitor zasobów systemowych – odczyt użycia CPU i RAM z wartościami limitów z ostrzeżeniami (getSystemUsage).
 // FUNCTIONS: getSystemUsage
 // DEPENDS ON: os, config.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.

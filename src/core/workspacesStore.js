@@ -16,6 +16,7 @@ const WORKSPACES_FILE = path.join(app.getPath("userData"), "workspaces.json");
 // ---------------------------------------------------------------------------
 // Wewnętrzne helpers – odczyt / zapis pliku JSON
 // ---------------------------------------------------------------------------
+// ─── loadStore() – TODO: opis funkcji
 function loadStore() {
   try {
     if (!fs.existsSync(WORKSPACES_FILE)) {
@@ -27,6 +28,7 @@ function loadStore() {
     return { version: "0.0.3", data: [] };
   }
 }
+// ─── saveStore() – TODO: opis funkcji
 function saveStore(store) {
   try {
     fs.writeFileSync(WORKSPACES_FILE, JSON.stringify(store, null, 2), "utf8");
@@ -40,6 +42,7 @@ function saveStore(store) {
 // Publiczne API
 // ---------------------------------------------------------------------------
 /** Zwraca listę wszystkich workspace'ów. */
+// ─── getAllWorkspaces() – TODO: opis funkcji
 export function getAllWorkspaces() {
   return loadStore().data;
 }
@@ -48,6 +51,7 @@ export function getAllWorkspaces() {
  * Jeśli workspace o danym id nie istnieje – dodaje go.
  * Jeśli istnieje – nadpisuje.
  */
+// ─── saveWorkspace() – TODO: opis funkcji
 export function saveWorkspace(workspace) {
   const store = loadStore();
   const idx = store.data.findIndex(w => w.id === workspace.id);
@@ -64,6 +68,7 @@ export function saveWorkspace(workspace) {
 }
 
 /** Zastępuje całą listę workspace'ów. */
+// ─── saveWorkspaces() – TODO: opis funkcji
 export function saveWorkspaces(workspaces) {
   saveStore({ version: "0.0.3", data: workspaces });
   logInfo("workspacesStore.saveWorkspaces", workspaces.length);
@@ -71,6 +76,7 @@ export function saveWorkspaces(workspaces) {
 }
 
 /** Usuwa workspace po id. */
+// ─── deleteWorkspace() – TODO: opis funkcji
 export function deleteWorkspace(id) {
   const store = loadStore();
   store.data = store.data.filter(w => w.id !== id);

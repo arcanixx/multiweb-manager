@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Panel zadań projektu z filtrowaniem, przypinaniem i sekcjami
 // FUNCTIONS: TaskPanel
-// DEPENDS ON: react, tasksStore, projectsStore, ConfirmModal, loggerRenderer, translations
+// DEPENDS ON: react, tasksStore.js, projectsStore.js, translations.js, loggerRenderer.js, icons.js, ConfirmModal.jsx, TaskItem.jsx, TaskModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -32,6 +32,8 @@ export default function TaskPanel({ projectId, onClose }) {
     loadData();
   }, [projectId]);
 
+  // ─── loadData() – ładuję zadania i projekty dla danego projectId
+  //   @returns {Promise<void>}
   const loadData = async () => {
     try {
       setLoading(true);
@@ -49,6 +51,9 @@ export default function TaskPanel({ projectId, onClose }) {
     }
   };
 
+  // ─── handleSaveTask() – zapisuje nowe lub aktualizuje istniejące zadanie
+//   @param {Object} taskData – dane zadania do zapisania
+//   @returns {Promise<void>}
   const handleSaveTask = async (taskData) => {
     try {
       const updatedTasks = { ...tasks };
@@ -74,11 +79,15 @@ export default function TaskPanel({ projectId, onClose }) {
     }
   };
 
+  // ─── handleDeleteClick() – ustawia zadanie do usunięcia i otwiera modal potwierdzenia
+//   @param {Object} task – zadanie do usunięcia
   const handleDeleteClick = (task) => {
     setTaskToDelete(task);
     setShowDeleteConfirm(true);
   };
 
+  // ─── handleDeleteConfirm() – usuwa zadanie z listy
+//   @returns {Promise<void>}
   const handleDeleteConfirm = async () => {
     if (!taskToDelete) return;
     try {
@@ -101,6 +110,10 @@ export default function TaskPanel({ projectId, onClose }) {
     }
   };
 
+  // ─── handleMoveTask() – przenosi zadanie do innej sekcji (active/backlog/done)
+//   @param {Object} task – zadanie do przeniesienia
+//   @param {string} newSection – docelowa sekcja
+//   @returns {Promise<void>}
   const handleMoveTask = async (task, newSection) => {
     try {
       const updatedTasks = { ...tasks };
@@ -120,6 +133,9 @@ export default function TaskPanel({ projectId, onClose }) {
     }
   };
 
+  // ─── getProjectName() – znajduje nazwę projektu po ID
+//   @param {string|number} pid – ID projektu
+//   @returns {string} – nazwa projektu lub napis "unknown project"
   const getProjectName = (pid) => {
     const project = projects.find(p => p.id === pid);
     return project ? project.name : t('tasks.unknown_project');

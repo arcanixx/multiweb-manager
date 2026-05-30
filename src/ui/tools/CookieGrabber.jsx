@@ -18,6 +18,9 @@ export default function CookieGrabber({ activeWebViewId }) {
   const [cookies, setCookies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  // ─── handleGrabCookies() – pobiera cookies z aktywnego WebView
+//   @returns {Promise<void>}
   const handleGrabCookies = async () => {
   if (!activeWebViewId) {
     setError(t('cookieGrabber.noActiveWebView'));
@@ -40,17 +43,22 @@ export default function CookieGrabber({ activeWebViewId }) {
     setLoading(false);
   }
 };
+  // ─── handleCopyCookie() – kopiuję pojedynczy cookie do schowka
+//   @param {Object} cookie – cookie do skopiowania
   const handleCopyCookie = (cookie) => {
     const text = `${cookie.name}=${cookie.value}`;
     navigator.clipboard.writeText(text);
     logDebug(`CookieGrabber: copied ${cookie.name}`);
   };
+
+  // ─── handleCopyAll() – kopiuję wszystkie cookies do schowka
   const handleCopyAll = () => {
     const all = cookies.map(c => `${c.name}=${c.value}`).join('; ');
     navigator.clipboard.writeText(all);
     logDebug('CookieGrabber: copied all cookies');
   };
 
+  // ─── handleExportJson() – eksportuje cookies do pliku JSON
   const handleExportJson = () => {
     const data = JSON.stringify(cookies, null, 2);
     const blob = new Blob([data], { type: 'application/json' });

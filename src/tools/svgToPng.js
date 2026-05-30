@@ -13,6 +13,7 @@
 import fs from "fs";
 import sharp from "sharp";
 import { logDebug, logError } from "../utils/logger.js";
+// ─── svgToPng() – TODO: opis funkcji
 export async function svgToPng(svgPath, outputPath, width, height) {
   try {
     logDebug(`svgToPng: ${svgPath} → ${width}x${height} → ${outputPath}`);

@@ -57,6 +57,9 @@ const Help = lazy(() => import('./ui/help/Help'));
 const TaskPanel = lazy(() => import('./ui/taskpanel/TaskPanel'));
 const AggregatedTasks = lazy(() => import('./ui/tasks/AggregatedTasks'));
 const HistoryLog = lazy(() => import('./ui/history/HistoryLog'));
+
+// ─── Spinner() – komponent wskaźnika ładowania
+//   @returns {JSX.Element} – renderowany wskaźnik
 function Spinner() {
   return (
     <div className="flex items-center justify-center h-full text-slate-400">
@@ -64,6 +67,11 @@ function Spinner() {
     </div>
   );
 }
+
+// ─── NetToast() – komponent wyświetlający powiadomienia o stanie połączenia sieciowego
+//   @param {string} message - treść komunikatu
+//   @param {string} type - typ powiadomienia: 'online' | 'offline' | 'warning'
+//   @returns {JSX.Element|null} - renderowane powiadomienie lub null
 function NetToast({ message, type }) {
   if (!message) return null;
   const cls =
@@ -72,6 +80,7 @@ function NetToast({ message, type }) {
     'toast toast-warning';
   return <div className={cls}>{message}</div>;
 }
+
 export default function App() {
   const { t, loaded } = useContext(TranslationContext);
   const [activeItem, setActiveItem] = useState(null);
@@ -84,6 +93,10 @@ export default function App() {
   const [sidebarModalOpen, setSidebarModalOpen] = useState(false);
   const [confirmState, setConfirmState] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
+  // ─── showConfirm() – wyświetla modal potwierdzenia z tytułem, wiadomością i callbackiem
+  //   @param {string} title - tytuł modala
+  //   @param {string} message - treść wiadomości
+  //   @param {Function} onConfirm - funkcja wywoływana po potwierdzeniu
   const showConfirm = (title, message, onConfirm) => {
     setConfirmState({ isOpen: true, title, message, onConfirm });
   };
@@ -113,13 +126,18 @@ export default function App() {
       applyTheme(merged.theme || 'system');
     });
 
+    // ─── showToastMsg() – wyświetla chwilowe powiadomienie z komunikatem i typem
+    //   @param {string} msg - treść powiadomienia
+    //   @param {string} type - typ powiadomienia: 'online' | 'offline' | 'warning'
     const showToastMsg = (msg, type) => {
       setNetToast(msg);
       setNetToastType(type);
       setTimeout(() => setNetToast(null), 4000);
     };
 
+    // ─── handleOnline() – obsługuje zdarzenie przejścia do trybu online, wyświetla toast
     const handleOnline = () => showToastMsg(t('notifications.online'), 'online');
+    // ─── handleOffline() – obsługuje zdarzenie przejścia do trybu offline, wyświetla toast
     const handleOffline = () => showToastMsg(t('notifications.offline'), 'offline');
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
@@ -141,10 +159,10 @@ export default function App() {
   // Nasłuchiwanie hotkeyów
   useEffect(() => {
     if (!window.electronAPI?.onHotkeyTrigger) return;
-    
+
     const dispose = window.electronAPI.onHotkeyTrigger(async (data) => {
       logDebug(`Hotkey triggered: ${data.id}`, data);
-      
+
       if (data.action === 'insertText' && data.text) {
         try {
           await navigator.clipboard.writeText(data.text);
@@ -158,7 +176,7 @@ export default function App() {
         window.dispatchEvent(new CustomEvent('hotkey-monitor'));
       }
     });
-    
+
     return () => dispose?.();
   }, []);
 
@@ -166,6 +184,8 @@ export default function App() {
     if (settings.theme) applyTheme(settings.theme);
   }, [settings.theme]);
 
+  // ─── applyTheme() – ustawia klasę dark na elemencie html w zależności od motywu
+  //   @param {string} theme - 'dark' | 'light' | 'system'
   function applyTheme(theme) {
     const html = document.documentElement;
     if (theme === 'dark') html.classList.add('dark');
@@ -176,6 +196,7 @@ export default function App() {
     }
   }
 
+  // ─── handleSaveSettings() – zapisuje ustawienia aplikacji, aktualizuje motyw i tryb debug
   const handleSaveSettings = async (patch) => {
     const merged = { ...settings, ...patch };
     setSettings(merged);
@@ -184,17 +205,23 @@ export default function App() {
     applyTheme(merged.theme || 'system');
   };
 
+  // ─── renderContent() – renderuje aktywny komponent w zależności od wybranego elementu
+  //   @returns {JSX.Element} – zawartość główna aplikacji
   const renderContent = () => {
-  if (!activeItem) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full" style={{ color: 'var(--text-muted)' }}>
-        <div style={{ fontSize: 48, marginBottom: 12 }}>{ICONS.DEFAULT}</div>
-        <div style={{ fontSize: 16, fontWeight: 600 }}>{t('app.welcome_title')}</div>
-        <div style={{ fontSize: 13, marginTop: 6 }}>{t('app.welcome_subtitle')}</div>
-      </div>
-    );
-  }
+    if (!activeItem) {
+      return (
+        <div className="flex flex-col items-center justify-center h-full" style={{ color: 'var(--text-muted)' }}>
+          <div style={{ fontSize: 48, marginBottom: 12 }}>{ICONS.DEFAULT}</div>
+          <div style={{ fontSize: 16, fontWeight: 600 }}>{t('app.welcome_title')}</div>
+          <div style={{ fontSize: 13, marginTop: 6 }}>{t('app.welcome_subtitle')}</div>
+        </div>
+      );
+    }
 
+    // ─── wrap() – opakowuje komponent w Suspense z wskaźnikiem ładowania
+    //   @param {React.Component} Component - komponent do opakowania
+    //   @param {Object} props - właściwości przekazywane do komponentu
+    //   @returns {JSX.Element} – komponent w Suspense
     const wrap = (Component, props = {}) => (
       <Suspense fallback={<Spinner />}>
         <Component {...props} />
@@ -224,6 +251,8 @@ export default function App() {
     return <div style={{ padding: 32 }}>Nieznany element: {activeItem.name || activeItem.id}</div>;
   };
 
+  // ─── handleOpenTaskPanel() – otwiera panel zadań dla wybranego projektu/profilu
+  //   @param {string|Object} profileOrProject - nazwa projektu lub obiekt profilu
   const handleOpenTaskPanel = (profileOrProject) => {
     const name = typeof profileOrProject === 'string' ? profileOrProject : profileOrProject?.taskProject || profileOrProject?.name || 'default';
     setCurrentProject(name);
@@ -242,47 +271,47 @@ export default function App() {
 
   return (
     <AppErrorBoundary>
-    <div className="flex h-screen app-root" style={{ background: 'var(--bg-primary)' }}>
-      <Sidebar
-        profiles={profiles}
-        onSelect={setActiveItem}
-        activeItem={activeItem}
-        onProfilesChange={setProfiles}
-        onOpenTaskPanel={handleOpenTaskPanel}
-        onModalOpenChange={setSidebarModalOpen}
-      />
-      <main
-        className={`main-area flex flex-col overflow-hidden ${isWebViewActive ? 'main-area--webview' : 'main-area--module'}`}
-        style={{ minWidth: 0, flex: 1, minHeight: 0 }}
-      >
-        <div
-          className="module-view"
-          style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}
-          key={activeItem ? `${activeItem.type}-${activeItem.id || activeItem.name}` : 'home'}
-        >
-          {renderContent()}
-        </div>
-      </main>
-      <Suspense fallback={null}>
-        <TaskPanel
-          projectName={currentProject}
-          visible={showTaskPanel}
-          onClose={() => setShowTaskPanel(false)}
-          availableProjects={(settings.projects || []).map((p) => p.name)}
+      <div className="flex h-screen app-root" style={{ background: 'var(--bg-primary)' }}>
+        <Sidebar
+          profiles={profiles}
+          onSelect={setActiveItem}
+          activeItem={activeItem}
+          onProfilesChange={setProfiles}
+          onOpenTaskPanel={handleOpenTaskPanel}
+          onModalOpenChange={setSidebarModalOpen}
         />
-      </Suspense>
-      <NetToast message={netToast} type={netToastType} />
-      <ConfirmModal
-        isOpen={confirmState.isOpen}
-        title={confirmState.title}
-        message={confirmState.message}
-        onConfirm={() => {
-          confirmState.onConfirm?.();
-          setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null });
-        }}
-        onCancel={() => setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null })}
-      />
-    </div>
+        <main
+          className={`main-area flex flex-col overflow-hidden ${isWebViewActive ? 'main-area--webview' : 'main-area--module'}`}
+          style={{ minWidth: 0, flex: 1, minHeight: 0 }}
+        >
+          <div
+            className="module-view"
+            style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}
+            key={activeItem ? `${activeItem.type}-${activeItem.id || activeItem.name}` : 'home'}
+          >
+            {renderContent()}
+          </div>
+        </main>
+        <Suspense fallback={null}>
+          <TaskPanel
+            projectName={currentProject}
+            visible={showTaskPanel}
+            onClose={() => setShowTaskPanel(false)}
+            availableProjects={(settings.projects || []).map((p) => p.name)}
+          />
+        </Suspense>
+        <NetToast message={netToast} type={netToastType} />
+        <ConfirmModal
+          isOpen={confirmState.isOpen}
+          title={confirmState.title}
+          message={confirmState.message}
+          onConfirm={() => {
+            confirmState.onConfirm?.();
+            setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null });
+          }}
+          onCancel={() => setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null })}
+        />
+      </div>
     </AppErrorBoundary>
   );
 }

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Zakładki notatnika – tworzenie, zamykanie, zmiana nazwy
 // FUNCTIONS: NotepadTabs
-// DEPENDS ON: react, PromptModal, loggerRenderer, translations
+// DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js, PromptModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -20,12 +20,14 @@ export default function NotepadTabs({ tabs, activeTabId, onTabSelect, onTabClose
   const [renameTabId, setRenameTabId] = React.useState(null);
   const [currentTabName, setCurrentTabName] = React.useState('');
 
+  // ─── handleRenameClick() – TODO: opis funkcji
   const handleRenameClick = (tabId, currentName) => {
     setRenameTabId(tabId);
     setCurrentTabName(currentName);
     setShowRenamePrompt(true);
   };
 
+  // ─── handleRenameConfirm() – TODO: opis funkcji
   const handleRenameConfirm = (newName) => {
     if (newName && newName.trim() && renameTabId) {
       onTabRename(renameTabId, newName.trim());

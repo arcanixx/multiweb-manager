@@ -32,9 +32,12 @@ let debugMode = false;
 // ─── clearLogsFile() – czyści plik logów
 //   @returns {Promise<boolean>}
 
+// ─── initLogWriter() – inicjalizuje system logowania testów
+//   @returns {Promise<void>}
 export async function initLogWriter() {
   try {
-    const settings = await window.electronAPI?.getSettings?.() || DEFAULT_SETTINGS;
+    const settingsRes = await window.electronAPI?.invoke?.('settings:get');
+    const settings = settingsRes?.ok ? settingsRes.data : DEFAULT_SETTINGS;
     debugMode = settings.debugMode === true;
     logsEnabled = settings.logsEnabled === true;
     logDebug(`initLogWriter: debugMode=${debugMode}, logsEnabled=${logsEnabled}`);
@@ -70,6 +73,10 @@ export async function initLogWriter() {
 //   @param {Object} params – parametry interpolacji
 //   @returns {string} przetłumaczony tekst lub klucz
 
+// ─── t() – uproszczona funkcja tłumaczenia dla logWriter (fallback poza kontekstem React)
+//   @param {string} key – klucz tłumaczenia
+//   @param {Object} params – parametry interpolacji
+//   @returns {string} przełumaczony tekst lub klucz
 function t(key, params = {}) {
   const translations = {
     'logs.askForPermission': 'Czy zezwolić na zapisywanie logów testów?',
@@ -82,6 +89,9 @@ function t(key, params = {}) {
   return result;
 }
 
+// ─── askForLogPermission() – prosi użytkownika o zgodę na logowanie przez window.confirm
+//   Uwaga: window.confirm jest tu celowy (logWriter działa poza aplikacją React)
+//   @returns {Promise<boolean>} czy zgodę przyznano
 async function askForLogPermission() {
   // Użyjemy modala (ConfirmModal) – tutaj uproszczona wersja
   return new Promise((resolve) => {

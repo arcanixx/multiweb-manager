@@ -25,6 +25,7 @@ export default function ContextMenu({ x, y, items, onClose }) {
   const { t } = useContext(TranslationContext);
   const ref = useRef();
   useEffect(() => {
+    // ─── close() – TODO: opis funkcji
     const close = (e) => { if (ref.current && !ref.current.contains(e.target)) onClose(); };
     document.addEventListener('mousedown', close);
     return () => document.removeEventListener('mousedown', close);

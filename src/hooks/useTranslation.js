@@ -15,6 +15,7 @@ import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 // ─── useTranslation() – hook do dostępu do tłumaczeń i helpData
 //   @returns {Object} – obiekt z funkcjami tłumaczenia
 //   @throws {Error} – jeśli użyty poza TranslationProvider
+
 export function useTranslation() {
   try {
     const ctx = useContext(TranslationContext);

@@ -20,6 +20,9 @@ export default function FilePreviewer() {
   const [content, setContent] = useState('');
   const [mode, setMode] = useState('preview'); // 'raw' or 'preview'
   const [error, setError] = useState(null);
+
+  // ─── handleFileDrop() – obsługuje upuszczenie pliku i wczytuje jego zawartość
+//   @param {Event} e – zdarzenie drop/pick
   const handleFileDrop = async (e) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer?.files[0] || e.target?.files[0];
@@ -36,6 +39,8 @@ export default function FilePreviewer() {
       setError(t('tools.cannotReadFile'));
     }
   };
+
+  // ─── getFileIcon() – zwraca odpowiednią ikonę dla typu pliku
   const getFileIcon = () => {
     if (!file) return ICONS.FILE;
     const ext = file.name.split('.').pop().toLowerCase();
@@ -45,6 +50,9 @@ export default function FilePreviewer() {
     if (['html', 'htm'].includes(ext)) return ICONS.HTML;
     return ICONS.FILE;
   };
+  
+  // ─── renderPreview() – renderuje podgląd pliku w zależności od typu
+//   @returns {JSX.Element} – skonwertowany podgląd
   const renderPreview = () => {
     if (!content) return <div className="preview-placeholder">{t('tools.noFileLoaded')}</div>;
     const ext = file?.name.split('.').pop().toLowerCase();

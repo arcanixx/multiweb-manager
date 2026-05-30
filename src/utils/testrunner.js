@@ -18,6 +18,7 @@ const results = [];
 // ─── initTestResults() – resetuje liczniki testów do zera
 //   @returns {void}
 
+// ─── initTestResults() – TODO: opis funkcji
 export function initTestResults() {
   passCount = 0;
   failCount = 0;
@@ -30,6 +31,7 @@ export function initTestResults() {
 //   @param {string} detail – dodatkowy opis błędu
 //   @returns {void}
 
+// ─── assert() – TODO: opis funkcji
 export function assert(name, condition, detail = '') {
   if (condition) {
     passCount++;
@@ -47,6 +49,7 @@ export function assert(name, condition, detail = '') {
 //   @param {Function} fn – funkcja do wykonania
 //   @returns {void}
 
+// ─── assertThrows() – TODO: opis funkcji
 export function assertThrows(name, fn) {
   try {
     fn();
@@ -63,6 +66,7 @@ export function assertThrows(name, fn) {
 // ─── getTestResults() – zwraca aktualne wyniki testów
 //   @returns {Object} – obiekt z passCount, failCount, total, results
 
+// ─── getTestResults() – TODO: opis funkcji
 export function getTestResults() {
   return { passCount, failCount, total: passCount + failCount, results };
 }
@@ -70,6 +74,7 @@ export function getTestResults() {
 // ─── logTestSummary() – wyświetla podsumowanie testów w konsoli
 //   @returns {Object} – wyniki testów
 
+// ─── logTestSummary() – TODO: opis funkcji
 export function logTestSummary() {
   const total = passCount + failCount;
   log(`\n${ICONS.TEST} RESULTS: ${passCount}/${total} passed, ${failCount} failed`);

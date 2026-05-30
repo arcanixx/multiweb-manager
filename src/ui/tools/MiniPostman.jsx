@@ -23,7 +23,10 @@ export default function MiniPostman() {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const handleSend = async () => {
+
+   // ─── handleSend() – Wysyła żądanie HTTP przy użyciu podanej metody, URL, nagłówków i ciała, a następnie aktualizuje stan odpowiedzi lub błędu.
+   //   @returns {Promise<void>} – obietnica rozwiązywana po zakończeniu żądania
+   const handleSend = async () => {
     setLoading(true);
     setError(null);
     setResponse(null);
@@ -47,7 +50,9 @@ export default function MiniPostman() {
       setLoading(false);
     }
   };
-  const handleCopyResponse = () => {
+  
+   // ─── handleCopyResponse() – Kopiuje sformatowaną odpowiedź JSON do schowka.
+   const handleCopyResponse = () => {
     if (response) {
       navigator.clipboard.writeText(JSON.stringify(response, null, 2));
     }

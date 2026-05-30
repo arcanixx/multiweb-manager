@@ -9,6 +9,7 @@
 // =============================================================================
 
 import { logInfo } from "../utils/logger.js";
+// ─── checkForUpdates() – TODO: opis funkcji
 export async function checkForUpdates() {
   logInfo("updateService: checkForUpdates — coming soon");
   return { available: false, version: "0.0.3", message: "Coming soon" };

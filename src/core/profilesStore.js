@@ -14,9 +14,18 @@ import { fileURLToPath } from "url";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
 
-import { DEFAULT_PROFILE_CATEGORY } from 'src/config.js'; // Obecnie profil domyślny, moduł jest placeholderem, do użycia w VERSION 0.0.4
+import { DEFAULT_PROFILE_CATEGORY } from '../config.js'; // Obecnie profil domyślny, moduł jest placeholderem, do użycia w VERSION 0.0.4
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PROFILES_FILE = () => getUserDataPath("profiles.json");
+// ─── PROFILES_FILE() – zwraca ścieżkę do pliku profili w userData
+//   @returns {string} – pełna ścieżka do profiles.json (lub fallback)
+const PROFILES_FILE = () => {
+  try {
+    return getUserDataPath("profiles.json");
+  } catch (err) {
+    logError("profilesStore: Failed to get user data path", err);
+    return "profiles.json"; // fallback
+  }
+};
 
 // ─── defaultProfiles() – ładuje domyślne profile z pliku JSON
 //   @returns {Array} – tablica domyślnych profili

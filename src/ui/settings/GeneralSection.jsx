@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Sekcja ustawień ogólnych (język, dark mode, debug)
 // FUNCTIONS: GeneralSection
-// DEPENDS ON: react, translations.js, src
+// DEPENDS ON: react, translations.js, loggerRenderer, icons
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -22,6 +22,7 @@ export default function GeneralSection() {
 
   // ─── useEffect – ładowanie ustawień (theme + debugMode) z settingsStore przez IPC
   useEffect(() => {
+    // ─── loadSettings() – ładuję ustawienia (theme + debugMode) z settingsStore przez IPC
     const loadSettings = async () => {
       try {
         if (window.electronAPI?.invoke) {
@@ -42,7 +43,7 @@ export default function GeneralSection() {
     };
     loadSettings();
   }, []);
-  
+
   // ─── handleDarkModeToggle() – przełącza tryb ciemny i zapisuje przez IPC
   //   @returns {Promise<void>}
   const handleDarkModeToggle = async () => {
@@ -60,7 +61,7 @@ export default function GeneralSection() {
       logWarn('Wystąpił błąd podczas przełączania trybu ciemnego');
     }
   };
-  
+
   // ─── handleDebugModeToggle() – przełącza tryb debug
   //   @returns {Promise<void>}
   const handleDebugModeToggle = async () => {
@@ -77,10 +78,11 @@ export default function GeneralSection() {
       logWarn('Wystąpił błąd podczas przełączania trybu debug');
     }
   };
-  
+
   // ─── handleLanguageChange() – zmienia język interfejsu
   //   @param {Event} e – zdarzenie zmiany selecta
   //   @returns {void}
+  // ─── handleLanguageChange() – zmienia język interfejsu
   const handleLanguageChange = (e) => {
     try {
       const newLang = e.target.value;

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny panel boczny – nawigacja, profile, kategorie, narzędzia
 // FUNCTIONS: Sidebar
-// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, ProfileModal, CategoryModal, ContextMenu, SidebarSearch, SidebarCategory, SidebarProfileItem, SidebarTools, SidebarWorkspaces, ConfirmModal
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, ProfileModal, CategoryModal, ContextMenu, SidebarSearch, SidebarCategory, SidebarProfileItem, SidebarTools, SidebarWorkspaces, ConfirmModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -46,7 +46,7 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
   const modalOpen = showProfileModal || showCategoryModal;
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [profileToDelete, setProfileToDelete] = useState(null);
-  
+
   useEffect(() => onModalOpenChange?.(modalOpen), [modalOpen, onModalOpenChange]);
   useEffect(() => {
     window.electronAPI.getSettings().then(s => {
@@ -54,22 +54,30 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
       setCollapsed(s.collapsedCategories || {});
     });
   }, []);
-  
+
+// ─── saveCategories() – zapisuje kategorie i ich stan zwinięcia
+  //   @param {Array} cats – lista kategorii
+  //   @param {Object} cols – stan zwiniętych kategorii
   const saveCategories = (cats, cols = collapsed) => {
     setCategories(cats);
     window.electronAPI.saveSettings({ categories: cats, collapsedCategories: cols });
   };
-  
+
+// ─── saveProfiles() – zapisuje profile przez IPC
+  //   @param {Array} newProfiles – aktualizowana lista profili
   const saveProfiles = (newProfiles) => {
     onProfilesChange(newProfiles);
     window.electronAPI.saveProfiles(newProfiles);
   };
 
+// ─── handleAddProfile() – otwiera modal dodawania nowego profilu
   const handleAddProfile = () => {
     setEditingProfile(null);
     setShowProfileModal(true);
   };
 
+// ─── handleSaveProfile() – zapisuje profil (nowy lub edytowany)
+  //   @param {Object} profileData – dane profilu
   const handleSaveProfile = (profileData) => {
     const exists = profiles.find(p => p.id === profileData.id);
     const newProfiles = exists
@@ -81,6 +89,8 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
     if (!exists) window.electronAPI.addHistory({ profileName: profileData.name, url: profileData.url });
   };
 
+// ─── toggleFavorite() – przełącza status ulubionego dla profilu
+  //   @param {number} profileId – ID profilu
   const toggleFavorite = (profileId) => {
     saveProfiles(profiles.map(p => p.id === profileId ? { ...p, favorite: !p.favorite } : p));
   };
@@ -110,12 +120,17 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
     setProfileToDelete(null);
   };
 
+// ─── toggleCollapse() – przełącza stan zwinięcia kategorii
+  //   @param {string} catId – ID kategorii
   const toggleCollapse = (catId) => {
     const newCollapsed = { ...collapsed, [catId]: !collapsed[catId] };
     setCollapsed(newCollapsed);
     saveCategories(categories, newCollapsed);
   };
 
+// ─── handleContext() – obsługuje menu kontekstowe dla profilu
+  //   @param {Event} e – zdarzenie myszy
+  //   @param {Object} profile – profil dla którego otwarte menu
   const handleContext = (e, profile) => {
     e.preventDefault();
     const items = [
@@ -135,6 +150,9 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
   const byCategory = {};
   filtered.filter(p => !p.favorite).forEach(p => { const cat = p.category || ''; if (!byCategory[cat]) byCategory[cat] = []; byCategory[cat].push(p); });
 
+// ─── renderProfile() – renderuje pojedynczy profil jako SidebarProfileItem
+  //   @param {Object} p – obiekt profilu
+  //   @returns {JSX.Element} – renderowany element profilu
   const renderProfile = (p) => {
     const isActive = activeItem?.id === p.id;
     return <SidebarProfileItem key={p.id} profile={p} isActive={isActive} onSelect={() => onSelect({ ...p, type: 'webview' })} onContextMenu={(e) => handleContext(e, p)} />;

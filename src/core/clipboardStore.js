@@ -17,6 +17,7 @@ let history = [];
 // addClipboardEntry() – dodaje nowy wpis do historii (LIFO)
 //   Aktualizuje też systemowy schowek przez clipboard.writeText()
 // ----------------------------------------------------------------
+// ─── addClipboardEntry() – TODO: opis funkcji
 export function addClipboardEntry(text) {
   if (!text || typeof text !== "string") return;
   history.unshift({
@@ -34,12 +35,14 @@ export function addClipboardEntry(text) {
 // ----------------------------------------------------------------
 // getClipboardHistory() – zwraca całą historię (najnowsze pierwsze)
 // ----------------------------------------------------------------
+// ─── getClipboardHistory() – TODO: opis funkcji
 export function getClipboardHistory() {
   return history;
 }
 // ----------------------------------------------------------------
 // clearClipboardHistory() – czyści historię in-memory
 // ----------------------------------------------------------------
+// ─── clearClipboardHistory() – TODO: opis funkcji
 export function clearClipboardHistory() {
   history = [];
   return true;

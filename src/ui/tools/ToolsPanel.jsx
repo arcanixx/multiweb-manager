@@ -12,8 +12,17 @@ import React, { useState, useContext } from "react";
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons';
 import { logDebug, logInfo, logWarn } from '../../utils/loggerRenderer';
-
-// ─── TOOLS_LIST – stała z listą dostępnych narzędzi
+import RemoveBgTool from './RemoveBgTool.jsx';
+import StringCombiner from './StringCombiner.jsx';
+import JsonFormatter from './JsonFormatter.jsx';
+import RegexTester from './RegexTester.jsx';
+import MarkdownPreviewer from './MarkdownPreviewer.jsx';
+import ClipboardHistory from './ClipboardHistory.jsx';
+import ImageTools from './ImageTools.jsx';
+import SvgToPngConverter from './SvgToPngConverter.jsx';
+import MiniPostman from './MiniPostman.jsx';
+import FilePreviewer from './FilePreviewer.jsx';
+import CookieGrabber from './CookieGrabber.jsx';
 
 // ─── ToolsPanel() – kontener narzędzi z zakładkami
 //   @param {Object} props – właściwości komponentu
@@ -21,11 +30,15 @@ import { logDebug, logInfo, logWarn } from '../../utils/loggerRenderer';
 //   @param {string} props.plan – plan subskrypcji Remove.bg
 //   @param {string} props.activeWebViewId – ID aktywnej webview
 //   @returns {JSX.Element} – renderowany panel narzędzi
-
 export default function ToolsPanel({ removeBgApiKey, plan = "free", activeWebViewId }) {
   const { t } = useContext(TranslationContext);
   const [activeTool, setActiveTool] = useState("removebg");
-  const handleSetActiveTool = (toolId) => {
+
+  // ─── TOOLS_LIST – stała z listą dostępnych narzędzi
+
+  // ─── handleSetActiveTool() – Ustawia aktywne narzędzie w panelu i rejestruje przełączenie w logach.
+   //   @param {string} toolId – identyfikator narzędzia do aktywacji
+   const handleSetActiveTool = (toolId) => {
     setActiveTool(toolId);
     logDebug(`ToolsPanel: switched to ${toolId}`);
   };

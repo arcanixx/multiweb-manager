@@ -16,6 +16,7 @@ const ACCOUNTS_FILE = path.join(app.getPath("userData"), "accounts.json");
 // ----------------------------------------------------------------
 // loadAccounts() – wczytuje accounts.json, zwraca fallback przy błędzie
 // ----------------------------------------------------------------
+// ─── loadAccounts() – TODO: opis funkcji
 function loadAccounts() {
   try {
     if (!fs.existsSync(ACCOUNTS_FILE)) {
@@ -31,6 +32,7 @@ function loadAccounts() {
 // ----------------------------------------------------------------
 // saveAccounts() – zapisuje store do accounts.json
 // ----------------------------------------------------------------
+// ─── saveAccounts() – TODO: opis funkcji
 function saveAccounts(store) {
   try {
     fs.writeFileSync(ACCOUNTS_FILE, JSON.stringify(store, null, 2), "utf8");
@@ -43,12 +45,14 @@ function saveAccounts(store) {
 // ----------------------------------------------------------------
 // getAllAccounts() – zwraca listę wszystkich kont
 // ----------------------------------------------------------------
+// ─── getAllAccounts() – TODO: opis funkcji
 export function getAllAccounts() {
   return loadAccounts().data;
 }
 // ----------------------------------------------------------------
 // addAccount() – dodaje nowe konto do listy i zapisuje
 // ----------------------------------------------------------------
+// ─── addAccount() – TODO: opis funkcji
 export function addAccount(account) {
   const store = loadAccounts();
   store.data.push(account);
@@ -60,6 +64,7 @@ export function addAccount(account) {
 // updateAccount() – aktualizuje konto (shallow merge pól)
 //   Zwraca zaktualizowane konto lub null gdy nie znaleziono
 // ----------------------------------------------------------------
+// ─── updateAccount() – TODO: opis funkcji
 export function updateAccount(id, patch) {
   const store = loadAccounts();
   const idx = store.data.findIndex(a => a.id === id);
@@ -72,6 +77,7 @@ export function updateAccount(id, patch) {
 // ----------------------------------------------------------------
 // deleteAccount() – usuwa konto z listy i zapisuje
 // ----------------------------------------------------------------
+// ─── deleteAccount() – TODO: opis funkcji
 export function deleteAccount(id) {
   const store = loadAccounts();
   store.data = store.data.filter(a => a.id !== id);

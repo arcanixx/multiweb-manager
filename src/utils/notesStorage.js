@@ -11,6 +11,7 @@
 import { logError } from './logger.js';
 const NOTES_STORAGE_KEY = 'notepad_notes';
 // Tworzy nową zakładkę z domyślnymi wartościami
+// ─── createNewTab() – TODO: opis funkcji
 export function createNewTab(id) {
   return {
     id: id || `tab-${Date.now()}`,
@@ -22,6 +23,7 @@ export function createNewTab(id) {
   };
 }
 // Ładuje notatki z electronAPI (jeśli dostępne) lub localStorage jako fallback
+// ─── loadNotesFromStorage() – TODO: opis funkcji
 export function loadNotesFromStorage() {
   try {
     if (window.electronAPI?.loadNotes) {
@@ -35,6 +37,7 @@ export function loadNotesFromStorage() {
   return null;
 }
 // Zapisuje notatki do electronAPI lub localStorage jako fallback
+// ─── saveNotesToStorage() – TODO: opis funkcji
 export function saveNotesToStorage(notesState) {
   try {
     if (window.electronAPI?.saveNotes) {

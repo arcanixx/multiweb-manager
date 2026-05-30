@@ -23,6 +23,7 @@ export default function HistoryList({ entries }) {
   // ─── formatTime() – formatuje timestamp do czytelnej daty
   //   @param {string} iso – timestamp w formacie ISO
   //   @returns {string} – sformatowana data lub '–' dla pustych wartości
+  // ─── formatTime() – TODO: opis funkcji
   const formatTime = (iso) => {
     if (!iso) return '–';
     try {

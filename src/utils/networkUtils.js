@@ -15,6 +15,7 @@ import { logInfo, logWarn } from './logger.js';
 //   @returns {Promise<boolean>} czy URL odpowiada poprawnie
 //   Używaj do sprawdzenia połączenia przed wywołaniem API
 
+// ─── pingUrl() – TODO: opis funkcji
 export async function pingUrl(url) {
   try {
     const res = await fetch(url, { method: "HEAD" });

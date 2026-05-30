@@ -9,22 +9,33 @@
 // =============================================================================
 
 import React, { useState, useEffect, useContext } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import HelpSection from './HelpSection';
 import ToolCard from './ToolCard';
 import Shortcut from './Shortcut';
 import FAQ from './FAQ';
+
 export default function Help() {
   const { t } = useContext(TranslationContext);
   const [ready, setReady] = useState(false);
+
   useEffect(() => {
     const id = requestAnimationFrame(() => setReady(true));
     return () => cancelAnimationFrame(id);
   }, []);
+
+  if (!isFeatureEnabled('helpScreen')) return null;
+
   if (!ready) {
-    return <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>{t('common.loading')}</div>;
+    return (
+      <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+        {t('common.loading')}
+      </div>
+    );
   }
+
   return (
     <div style={{ height: '100%', overflowY: 'auto', padding: '20px 24px', background: 'var(--bg-primary)' }}>
       <div style={{ maxWidth: 720, margin: '0 auto' }}>

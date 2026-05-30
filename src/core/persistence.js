@@ -17,6 +17,7 @@ import { logError, logInfo } from "../utils/logger.js";
 // ─── getUserDataPath() – zwraca ścieżkę do katalogu userData Electrona
 //   @param {...string} segments – segmenty ścieżki do połączenia
 //   @returns {string} pełna ścieżka do pliku w userData
+// ─── getUserDataPath() – TODO: opis funkcji
 export function getUserDataPath(...segments) {
   try {
     return path.join(app.getPath("userData"), ...segments);
@@ -31,6 +32,7 @@ export function getUserDataPath(...segments) {
 //   @param {string} filePath – ścieżka do pliku JSON
 //   @param {any} fallback – wartość zwracana w przypadku błędu
 //   @returns {any} sparsowana zawartość pliku lub fallback
+// ─── readJsonFile() – TODO: opis funkcji
 export function readJsonFile(filePath, fallback) {
   try {
     if (!fs.existsSync(filePath)) return fallback;
@@ -45,6 +47,7 @@ export function readJsonFile(filePath, fallback) {
 //   @param {string} filePath – ścieżka docelowego pliku JSON
 //   @param {any} data – dane do zapisania (zostaną zserializowane)
 //   @returns {boolean} true jeśli zapis się powiódł, false w przypadku błędu
+// ─── writeJsonFile() – TODO: opis funkcji
 export function writeJsonFile(filePath, data) {
   try {
     fs.mkdirSync(path.dirname(filePath), { recursive: true });

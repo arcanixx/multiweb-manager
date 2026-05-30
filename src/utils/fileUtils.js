@@ -21,6 +21,7 @@ import { logInfo, logError, logWarn, logDebug } from './logger.js';
 //   @param {any} data – dane do zapisania
 //   @returns {boolean} true jeśli zapis się powiódł
 
+// ─── readJsonSafe() – TODO: opis funkcji
 export function readJsonSafe(filePath, fallback) {
   try {
     if (!fs.existsSync(filePath)) {
@@ -37,6 +38,7 @@ export function readJsonSafe(filePath, fallback) {
   }
 }
 
+// ─── writeJsonSafe() – TODO: opis funkcji
 export function writeJsonSafe(filePath, data) {
   try {
     const json = JSON.stringify(data, null, 2);

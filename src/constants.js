@@ -44,6 +44,24 @@ export const APP_CATEGORIES_MAP = {
   ZOHO: "Zoho Suite",
   OTHER: "Other"
 };
+
+// ---------------------------------------------------------------------------
+// SIDEBAR_ICON_MAP – mapowanie ID kafelka na klucz ICONS
+// ---------------------------------------------------------------------------
+export const SIDEBAR_ICON_MAP = {
+  notepad:        "NOTEPAD",
+  projectManager: "PROJECTMANAGER",
+  aggregatedTasks: "AGGREGATEDTASKS",
+  history:        "HISTORY",
+  removebg:       "REMOVEBG",
+  stringCombiner: "STRINGCOMBINER",
+  terminal:       "TERMINAL",
+  settings:       "SETTINGS",
+  help:           "HELP",
+  appLibrary:     "APP_LIBRARY",
+  tools:          "TOOLS"
+};
+
 // Kategorie aplikacji — lista ID
 export const APP_CATEGORIES_LIST = Object.keys(APP_CATEGORIES_MAP);
 // Kategorie aplikacji — tablica z id + kluczem do i18n

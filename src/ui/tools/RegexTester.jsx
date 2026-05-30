@@ -20,7 +20,9 @@ export default function RegexTester() {
   const [testString, setTestString] = useState('');
   const [matches, setMatches] = useState([]);
   const [error, setError] = useState('');
-  const handleTest = () => {
+  
+   // ─── handleTest() – Testuje wyrażenie regularne przeciwko podanemu ciągowi testowym, uwzględniając flagi, i aktualizuje listę dopasowań lub błąd.
+   const handleTest = () => {
   setError('');
   try {
     const rawMatches = testRegex(pattern, flags, testString);

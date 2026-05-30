@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla User Agent, Single App Mode, Resource Monitor, Sleep Tabs. Używa ESM import path/url zamiast require() (ES module context).
 // FUNCTIONS: ipc:webview:setUserAgent, ipc:webview:openInWindow, ipc:webview:getUsage, ipc:webview:sleep, ipc:webview:wake
-// DEPENDS ON: electron, logger.js, config.js, path
+// DEPENDS ON: electron, path, url, logger.js, config.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -14,6 +14,7 @@ import { fileURLToPath } from 'url';
 import { logError } from '../utils/logger.js';
 import { FEATURES, DEFAULT_SETTINGS } from '../../config.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
+// ─── getWebContentsById() – TODO: opis funkcji
 function getWebContentsById(id) {
   try {
     return BrowserWindow.getAllWindows()

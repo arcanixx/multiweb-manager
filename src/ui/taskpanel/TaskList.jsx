@@ -27,7 +27,6 @@ export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
   // ─── sortByPriority() – sortuje zadania według priorytetu A → E
   //   @param {Array} list – lista zadań do posortowania
   //   @returns {Array} – posortowana lista
-
   function sortByPriority(list) {
     const order = ["A", "B", "C", "D", "E"];
     return [...list].sort((a, b) => order.indexOf(a.priority) - order.indexOf(b.priority));
@@ -58,7 +57,6 @@ export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
   //   @param {string} statusKey – klucz statusu
   //   @param {string} labelKey – klucz tłumaczenia nazwy sekcji
   //   @returns {JSX.Element} – renderowana sekcja
-
   function renderSection(statusKey, labelKey) {
     const items = grouped[statusKey];
     return (

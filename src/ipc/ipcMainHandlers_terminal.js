@@ -20,6 +20,7 @@ const terminalBuffers = {};
 // =============================================================================
 // HELPER: create shell command per OS
 // =============================================================================
+// ─── getDefaultShell() – TODO: opis funkcji
 function getDefaultShell() {
   if (os.platform() === "win32") return "powershell.exe";
   if (os.platform() === "darwin") return "zsh";

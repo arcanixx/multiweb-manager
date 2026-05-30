@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Leniwe ładowanie modułu sharp (przetwarzanie obrazów) z obsługą braku zależności. Używane przez ipcMainHandlers_imageSharp.js w main process.
 // FUNCTIONS: loadSharp
-// DEPENDS ON: sharp, logger.js
+// DEPENDS ON: komponenty z folderu sharp/
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

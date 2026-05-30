@@ -7,6 +7,7 @@
 // DEPENDS ON: fs, path, url, config.js, persistence.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
+import _ from 'lodash';
 
 import fs from "fs";
 import path from "path";
@@ -16,6 +17,8 @@ import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// ─── SETTINGS_FILE() – zwraca ścieżkę do pliku ustawień w userData
+//   @returns {string} – pełna ścieżka do settings.json
 const SETTINGS_FILE = () => getUserDataPath("settings.json");
 
 // ─── baseDefaults() – ładuje domyślne ustawienia z pliku lub używa DEFAULT_SETTINGS
@@ -68,17 +71,17 @@ export function saveSettings(settings) {
   }
 }
 
-// ─── mergeSettings() – scala bieżące ustawienia z podanymi zmianami
+// ─── mergeSettings() – scala bieżące ustawienia z podanymi zmianami przez _.merge (deep merge)
 //   @param {Object} patch – obiekt z polami do zaktualizowania
 //   @returns {Object} – zaktualizowany obiekt ustawień
 export function mergeSettings(patch) {
   const current = loadSettings();
-  const merged = { ...current, ...patch };
+  const merged = _.merge({}, current, patch);
   saveSettings(merged);
   return merged;
 }
 
-// ─── updateSettings() – alias dla mergeSettings
+// ─── updateSettings() – alias dla mergeSettings (kompatybilność wsteczna)
 //   @param {Object} partial – obiekt z polami do zaktualizowania
 //   @returns {Object} – zaktualizowany obiekt ustawień
 export function updateSettings(partial) {

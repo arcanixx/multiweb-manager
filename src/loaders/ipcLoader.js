@@ -22,6 +22,7 @@ const EXCLUDED = new Set([
 //   Każdy plik rejestruje handlery przez side-effect przy imporcie.
 //   Wywołaj raz w main.js przed app.whenReady().
 // ----------------------------------------------------------------
+// ─── loadAllIpcHandlers() – TODO: opis funkcji
 export async function loadAllIpcHandlers() {
   const ipcDir = join(__dirname, "..", "ipc");
   let files;

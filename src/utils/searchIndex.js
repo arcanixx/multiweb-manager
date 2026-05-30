@@ -10,6 +10,7 @@
 
 import { logDebug } from "./logger.js";
 
+// ─── buildSearchIndex() – TODO: opis funkcji
 export function buildSearchIndex({ profiles = [], projects = [], tasks = [], notes = [] }) {
   return {
     profiles: profiles.map((p) => ({
@@ -38,13 +39,16 @@ export function buildSearchIndex({ profiles = [], projects = [], tasks = [], not
     }))
   };
 }
+// ─── match() – TODO: opis funkcji
 function match(text, q) {
   return String(text || "").toLowerCase().includes(q);
 }
+// ─── searchAll() – TODO: opis funkcji
 export function searchAll(index, query) {
   const q = String(query || "").toLowerCase().trim();
   if (!q) return { profiles: [], projects: [], tasks: [], notes: [] };
   logDebug("searchIndex.searchAll", q);
+  // ─── filter() – TODO: opis funkcji
   const filter = (items) =>
     items.filter((i) => match(i.label, q) || match(i.sub, q));
   return {

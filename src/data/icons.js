@@ -152,19 +152,4 @@ export const ICONS = {
   SUCCESS: "✅",
   ERROR: "❌"
 };
-// ---------------------------------------------------------------------------
-// SIDEBAR_ICON_MAP – mapowanie ID kafelka na klucz ICONS
-// ---------------------------------------------------------------------------
-export const SIDEBAR_ICON_MAP = {
-  notepad:        "NOTEPAD",
-  projectManager: "PROJECTMANAGER",
-  aggregatedTasks: "AGGREGATEDTASKS",
-  history:        "HISTORY",
-  removebg:       "REMOVEBG",
-  stringCombiner: "STRINGCOMBINER",
-  terminal:       "TERMINAL",
-  settings:       "SETTINGS",
-  help:           "HELP",
-  appLibrary:     "APP_LIBRARY",
-  tools:          "TOOLS"
-};
+

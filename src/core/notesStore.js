@@ -16,6 +16,7 @@ const NOTES_FILE = path.join(app.getPath("userData"), "notes.json");
 // ---------------------------------------------------------------------------
 // Wewnętrzne helpers – odczyt / zapis pliku JSON
 // ---------------------------------------------------------------------------
+// ─── loadStore() – TODO: opis funkcji
 function loadStore() {
   try {
     if (!fs.existsSync(NOTES_FILE)) {
@@ -27,6 +28,7 @@ function loadStore() {
     return { version: "0.0.3", data: [] };
   }
 }
+// ─── saveStore() – TODO: opis funkcji
 function saveStore(store) {
   try {
     fs.writeFileSync(NOTES_FILE, JSON.stringify(store, null, 2), "utf8");
@@ -40,10 +42,12 @@ function saveStore(store) {
 // Publiczne API
 // ---------------------------------------------------------------------------
 /** Zwraca listę wszystkich notatek. */
+// ─── getAllNotes() – TODO: opis funkcji
 export function getAllNotes() {
   return loadStore().data;
 }
 /** Dodaje nową notatkę i zapisuje plik. */
+// ─── addNote() – TODO: opis funkcji
 export function addNote(note) {
   const store = loadStore();
   store.data.push(note);
@@ -53,6 +57,7 @@ export function addNote(note) {
 }
 
 /** Aktualizuje notatkę po id (patch). Zwraca zaktualizowany obiekt lub null. */
+// ─── updateNote() – TODO: opis funkcji
 export function updateNote(id, patch) {
   const store = loadStore();
   const idx = store.data.findIndex(n => n.id === id);
@@ -64,6 +69,7 @@ export function updateNote(id, patch) {
 }
 
 /** Usuwa notatkę po id. */
+// ─── deleteNote() – TODO: opis funkcji
 export function deleteNote(id) {
   const store = loadStore();
   store.data = store.data.filter(n => n.id !== id);

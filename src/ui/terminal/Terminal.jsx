@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Terminal z xterm.js + node-pty (historia komend, ANSI colors). Używa terminalWriteLegacy/terminalResizeLegacy z preload (alias dla legacy IPC).
 // FUNCTIONS: Terminal
-// DEPENDS ON: react, xterm, xterm-addon-fit, xterm-addon-web-links, translations.js, src
+// DEPENDS ON: react, xterm, xterm-addon-fit, xterm-addon-web-links, translations.js, loggerRenderer, icons
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -52,22 +52,22 @@ export default function Terminal() {
     if (window.electronAPI?.terminalStart) {
       window.electronAPI.terminalStart();
     }
-    
+
     // Nasłuch danych z PTY
     const dataDispose = window.electronAPI?.onTerminalData?.((data) => {
       term.write(data);
     });
-    
+
     // Nasłuch wyjścia
     const exitDispose = window.electronAPI?.onTerminalExit?.(() => {
       term.write('\r\n\x1b[33m[Process exited]\x1b[0m\r\n');
     });
-    
+
     // Obsługa wejścia z klawiatury
     term.onKey(({ key, domEvent }) => {
       const ev = domEvent;
-      const code = ev.keyCode;
-      
+      const code = ev.keyCode; //check purpose later
+
       if (ev.key === 'ArrowUp') {
         if (history.length > 0) {
           const newIndex = historyIndex === -1 ? history.length - 1 : Math.max(0, historyIndex - 1);
@@ -115,8 +115,9 @@ export default function Terminal() {
         setCurrentLine(prev => prev + key);
       }
     });
-    
+
     // Resize handler
+    // ─── handleResize() – dopasowuje terminal do rozmiaru okna
     const handleResize = () => {
       if (fitAddonRef.current) {
         fitAddonRef.current.fit();
@@ -124,10 +125,10 @@ export default function Terminal() {
         window.electronAPI?.terminalResizeLegacy?.(cols, rows);
       }
     };
-    
+
     window.addEventListener('resize', handleResize);
     setTimeout(handleResize, 100);
-    
+
     // Cleanup
     return () => {
       dataDispose?.();
@@ -138,11 +139,14 @@ export default function Terminal() {
     };
   }, []);
 
+  // ─── handleClear() – czyści zawartość terminala
   const handleClear = () => {
     xtermRef.current?.clear();
     logDebug('Terminal cleared');
   };
 
+  // ─── handleRestart() – restartuje sesję terminala
+//   @returns {Promise<void>}
   const handleRestart = async () => {
     await window.electronAPI?.terminalKill?.();
     await window.electronAPI?.terminalStart?.();

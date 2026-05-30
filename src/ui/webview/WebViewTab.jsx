@@ -13,7 +13,7 @@ import { ICONS } from '../../utils/icons';
 import { TranslationContext } from '../../utils/translations.js';
 import { logDebug as log, logError, logInfo, logWarn } from '../../utils/loggerRenderer';
 import { normalizeWebUrl } from '../../utils/urlUtils';
-import { FEATURES, DEFAULT_SETTINGS } from '../../config';
+import { FEATURES, DEFAULT_SETTINGS, isFeatureEnabled } from '../../config';
 
 export default function WebViewTab({ profile, isActive = true, suspended = false }) {
   const { t } = useContext(TranslationContext);
@@ -29,6 +29,11 @@ export default function WebViewTab({ profile, isActive = true, suspended = false
   const [domReady, setDomReady] = useState(false);
   const [toast, setToast] = useState(null);
   const sleepTimeout = profile.sleepTabsTimeout ?? DEFAULT_SETTINGS.sleepTabsTimeout;
+
+  // Pokazuje powiadomienie toast.
+  // @param {string} type - typ powiadomienia (np. 'success', 'error', 'info')
+  // @param {string} msg - wiadomość do wyświetlenia
+  // @returns {void}
   const showToast = (type, msg) => {
     setToast({ type, msg });
     setTimeout(() => setToast(null), 3000);
@@ -36,6 +41,7 @@ export default function WebViewTab({ profile, isActive = true, suspended = false
   useEffect(() => {
     setCurrentUrl(pageUrl || profile.url || '');
   }, [pageUrl, profile.url]);
+ 
   // Cleanup WebView przy unmount
   useEffect(() => {
     return () => {
@@ -89,6 +95,11 @@ export default function WebViewTab({ profile, isActive = true, suspended = false
     if (webviewRef.current && window.electronAPI?.registerWebView) {
       const id = `webview-${profile.id}-${Date.now()}`;
       webviewRef.current.setAttribute('data-tab-id', id);
+
+
+      // Rejestruje webview po załadowaniu.
+      // @param {Event} e - zdarzenie did-finish-load
+      // @returns {void}
       const onLoad = () => {
         const webContentsId = webviewRef.current?.getWebContentsId();
         if (webContentsId) {
@@ -122,11 +133,24 @@ export default function WebViewTab({ profile, isActive = true, suspended = false
       window.electronAPI?.addHistory?.({ profileName: profile.name, url: wv.getURL?.() || pageUrl }).catch(() => {});
     };
 
+    // Ustawia stan ładowania na true przy rozpoczęciu ładowania strony.
+    // @returns {void}
     const onStartLoad = () => setLoading(true);
+
+    // Ustawia stan ładowania na false po zakończeniu ładowania strony.
+    // @returns {void}
     const onStopLoad = () => setLoading(false);
+
+    // Aktualizuje bieżący URL przy nawigacji w WebView.
+    // @param {Event} e - zdarzenie nawigacji zawierające właściwość url
+    // @returns {void}
     const onNavigate = (e) => {
       if (e.url) setCurrentUrl(e.url);
     };
+
+    // Obsługuje błąd ładowania WebView.
+    // @param {Event} e - zdarzenie błędu ładowania zawierające errorCode i errorDescription
+    // @returns {void}
     const onFailLoad = (e) => {
       setLoading(false);
       if (e.errorCode === -3) return;
@@ -170,6 +194,8 @@ export default function WebViewTab({ profile, isActive = true, suspended = false
   // NOWE FUNKCJE (Single App, Screenshot, Resource Monitor)
   // =========================================================================
 
+  // ─── handleSingleAppMode() – otwiera profil w trybie single app (oddzielne okno)
+  //   @returns {Promise<void>}
   const handleSingleAppMode = async () => {
     try {
       if (!window.electronAPI?.openSingleWindow) {
@@ -189,6 +215,8 @@ export default function WebViewTab({ profile, isActive = true, suspended = false
     }
   };
 
+  // ─── handleScreenshot() – robi screenshot aktywnego WebView i kopiuje do schowka
+  //   @returns {Promise<void>}
   const handleScreenshot = async () => {
     try {
       if (!window.electronAPI?.captureWebView) {
@@ -205,13 +233,15 @@ export default function WebViewTab({ profile, isActive = true, suspended = false
       const blob = new Blob([result.data], { type: 'image/png' });
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
       showToast('success', t('webview.screenshotCopied'));
-      logDebug('Screenshot captured and copied to clipboard');
+      log('Screenshot captured and copied to clipboard');
     } catch (err) {
       logError('Screenshot failed', err);
       showToast('error', t('webview.screenshotFailed'));
     }
   };
 
+  // ─── handleResourceMonitor() – pobiera i wyświetla informacje o zużyciu zasobów WebView
+  //   @returns {Promise<void>}
   const handleResourceMonitor = async () => {
     try {
       if (!window.electronAPI?.getWebViewResourceInfo) {
@@ -227,7 +257,7 @@ export default function WebViewTab({ profile, isActive = true, suspended = false
       if (!result.ok) throw new Error(result.error);
       const { memory, cpu } = result.data;
       showToast('info', `${t('webview.ram')}: ${memory} MB | ${t('webview.cpu')}: ${cpu}%`);
-      logDebug(`Resource monitor: RAM=${memory}MB, CPU=${cpu}%`);
+      log(`Resource monitor: RAM=${memory}MB, CPU=${cpu}%`);
     } catch (err) {
       logError('Resource monitor failed', err);
       showToast('error', t('webview.resourceMonitorFailed'));
@@ -248,23 +278,32 @@ export default function WebViewTab({ profile, isActive = true, suspended = false
     webviewRef.current?.reload();
   }, [profile.id]);
 
+  // ─── handleZoomDelta() – zmienia zoom WebView o podany krok
+  //   @param {number} delta - wartość zmiany zoom (np. 0.1 dla zwiększenia)
   const handleZoomDelta = (delta) => setZoom((z) => Math.min(3, Math.max(0.3, +(z + delta).toFixed(1))));
 
+  // ─── handleCopyUrl() – kopiuje bieżący URL WebView do schowka
   const handleCopyUrl = () => {
     const url = webviewRef.current?.getURL?.() || currentUrl;
     if (url) navigator.clipboard.writeText(url);
   };
 
+  // ─── handleOpenExternal() – otwiera bieżący URL w zewnętrznej przeglądarce
   const handleOpenExternal = () => {
     const url = webviewRef.current?.getURL?.() || currentUrl;
     if (url) window.electronAPI?.openExternal?.(url);
   };
 
+  // ─── wakeUp() – budzi śpiący WebView i przywraca jego źródło
   const wakeUp = () => {
     setSleeping(false);
     setLastActiveAt(Date.now());
     if (webviewRef.current && pageUrl) webviewRef.current.src = pageUrl;
   };
+
+
+if (!isFeatureEnabled("webview")) return null;
+ 
 
   // =========================================================================
   // RENDER

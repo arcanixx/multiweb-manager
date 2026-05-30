@@ -10,6 +10,7 @@
 
 import { marked } from "marked";
 import { logDebug, logError } from "../utils/logger.js";
+// ─── renderMarkdown() – TODO: opis funkcji
 export function renderMarkdown(text) {
   try {
     logDebug(`markdownRenderer.renderMarkdown: ${text?.length || 0} chars`);

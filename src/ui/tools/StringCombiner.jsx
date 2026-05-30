@@ -31,7 +31,7 @@ function cartesian(arrays) {
 }
 
 // ─── parseSplitChar() – parsuje znak podziału
-//   @param {string} raw – opis znakowy (\\n, \\t, space)
+//   @param {string} raw – opis znakowy (\n, \t, space)
 //   @returns {string} – rzeczywisty znak
 function parseSplitChar(raw) {
   if (raw === "\\n" || raw === "enter" || raw === "newline") return "\n";
@@ -82,6 +82,7 @@ export default function StringCombiner() {
     logInfo(`StringCombiner: generated ${combos.length} combinations`);
   }, [baseText, splitChar, variables]);
 
+  // ─── addVariable() – dodaje nową zmienną z domyślną nazwą i wartością
   const addVariable = () => {
     setVariables(v => [
       ...v,
@@ -89,10 +90,16 @@ export default function StringCombiner() {
     ]);
   };
 
+  // ─── removeVariable() – usuwa zmienną o podanym indeksie
+  //   @param {number} i - indeks zmiennej do usunięcia
   const removeVariable = i => {
     setVariables(v => v.filter((_, idx) => idx !== i));
   };
 
+  // ─── updateVariable() – aktualizuje pole zmiennej o podanym indeksie
+  //   @param {number} i - indeks zmiennej
+  //   @param {string} field - nazwa pola do aktualizacji (name lub values)
+  //   @param {string} value - nowa wartość
   const updateVariable = (i, field, value) => {
     setVariables(v =>
       v.map((item, idx) => {
@@ -106,8 +113,9 @@ export default function StringCombiner() {
         return { ...item, [field]: value };
       })
     );
-  };
+};
 
+  // ─── copyResult() – kopiuję wynik do schowka (z fallbackiem dla starszych przeglądarek)
   const copyResult = async () => {
     if (!result) return;
     try {

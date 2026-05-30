@@ -43,6 +43,7 @@ export default function ImageTools() {
     reader.readAsDataURL(file);
     logDebug(`ImageTools: loaded ${file.name} (${file.size} bytes)`);
   }, [t]);
+  // ─── handleProcess() – przetwarza obraz wybraną operacją (resize, convert, compress)
   const handleProcess = async () => {
     if (!inputFile) {
       setError(t('imageTools.noFile'));
@@ -85,6 +86,7 @@ export default function ImageTools() {
     }
   };
 
+  // ─── handleDownload() – otwiera dialog zapisu dla przetworzonego obrazu
   const handleDownload = async () => {
     if (!outputPath) return;
     await window.electronAPI?.showSaveDialog?.(outputPath);

@@ -46,10 +46,16 @@ export default function ClipboardHistory() {
   useEffect(() => {
     localStorage.setItem('clipboard_pinned', JSON.stringify(pinned));
   }, [pinned]);
+  
+  // ─── handleCopy() – kopiuję tekst do schowka
+//   @param {string} text – tekst do skopiowania
   const handleCopy = async (text) => {
     await navigator.clipboard.writeText(text);
     logDebug('ClipboardHistory: copied to clipboard', { textLength: text.length });
   };
+
+  // ─── handlePin() – przypięcie wpisu do listy pinned
+//   @param {number} id – ID wpisu do przypięcia
   const handlePin = (id) => {
     const entry = history.find(h => h.id === id);
     if (entry && !pinned.find(p => p.id === id)) {
@@ -58,10 +64,13 @@ export default function ClipboardHistory() {
     }
   };
 
+  // ─── handleUnpin() – odpinanie wpisu z listy pinned
+//   @param {number} id – ID wpisu do odpinania
   const handleUnpin = (id) => {
     setPinned(prev => prev.filter(p => p.id !== id));
   };
 
+  // ─── handleClear() – czyszczenie całej historii schowka
   const handleClear = () => {
     setHistory([]);
     setPinned([]);

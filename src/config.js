@@ -49,7 +49,7 @@ export const CPU_CRITICAL_AT = 80;
 export const DEFAULT_PROFILE_CATEGORY = "AI";
 
 // =============================================================================
-// FEATURE FLAGS — włączanie/wyłączanie modułów
+// FEATURE FLAGS — włączanie/wyłączanie modułów dla DEBUG
 // =============================================================================
 
 export const FEATURES = {
@@ -156,18 +156,30 @@ export const DEFAULT_SETTINGS = {
 // HELPERY
 // =============================================================================
 
+// ─── isFeatureEnabled() – sprawdza czy dana funkcja jest włączona w FEATURES
+//   @param {string} key - klucz funkcji w obiekcie FEATURES
+//   @returns {boolean} - true jeśli funkcja jest włączona
 export function isFeatureEnabled(key) {
   return !!FEATURES[key];
 }
 
+// ─── isToolEnabled() – sprawdza czy dane narzędzie jest włączone w FEATURES
+//   @param {string} key - klucz narzędzia w obiekcie FEATURES
+//   @returns {boolean} - true jeśli narzędzie jest włączone
 export function isToolEnabled(key) {
   return !!FEATURES[key];
 }
 
+// ─── getDefaultSetting() – zwraca domyślną wartość ustawienia o podanym kluczu
+//   @param {string} key - klucz ustawienia w obiekcie DEFAULT_SETTINGS
+//   @returns {*} - domyślna wartość ustawienia
 export function getDefaultSetting(key) {
   return DEFAULT_SETTINGS[key];
 }
 
+// ─── getLimit() – zwraca limit aplikacji o podanym kluczu
+//   @param {string} key - klucz limitu w obiekcie LIMITS
+//   @returns {number} - wartość limitu
 export function getLimit(key) {
   return LIMITS[key];
 }

@@ -27,6 +27,7 @@ export default function UpdateChecker() {
   // ----------------------------------------------------------------
   // showToast() – wyświetla tymczasowy komunikat przez 3s
   // ----------------------------------------------------------------
+  // ─── showToast() – TODO: opis funkcji
   const showToast = (msg, type = 'info') => {
     setToast(msg);
     setToastType(type);
@@ -37,6 +38,7 @@ export default function UpdateChecker() {
   //   Docelowo: electron-updater sprawdza GitHub Releases
   //   Aktualnie: zwraca aktualną wersję i pokazuje "coming soon"
   // ----------------------------------------------------------------
+  // ─── checkForUpdates() – TODO: opis funkcji
   const checkForUpdates = async () => {
     setChecking(true);
     log('UpdateChecker: checking for updates...');

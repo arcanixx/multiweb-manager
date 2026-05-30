@@ -23,6 +23,7 @@ export default function ModalPortal({ children, onClose }) {
     document.body.classList.add('modal-open');
     return () => document.body.classList.remove('modal-open');
   }, []);
+  // ─── handleBackdropMouseDown() – TODO: opis funkcji
   const handleBackdropMouseDown = (e) => {
     if (e.target === e.currentTarget) onClose?.();
   };

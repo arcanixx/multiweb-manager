@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Narzędzie do masowego usuwania tła ze zdjęć przez API remove.bg.
 // FUNCTIONS: RemoveBgTool
-// DEPENDS ON: react, axios, icons, translations.js, loggerRenderer, config
+// DEPENDS ON: react, axios, icons, translations.js, loggerRenderer, config, notificationsManager.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -52,22 +52,30 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
     },
     [addFiles]
   );
-  const handleFileSelect = e => {
+  
+   // ─── handleFileSelect() – Obsługuje wybór plików przez użytkownika – dodaje wybrane obrazy do kolejki przetwarzania i czyści pole wyboru pliku.
+   //   @param {React.ChangeEvent<HTMLInputElement>} e – zdarzenie zmiany wyboru pliku
+   const handleFileSelect = e => {
     addFiles(Array.from(e.target.files));
     e.target.value = "";
   };
 
-  const removeFile = idx => {
+   // ─── removeFile() – Usuwa plik z kolejki przetwarzania pod podanym indeksem.
+   //   @param {number} idx – indeks pliku do usunięcia
+   const removeFile = idx => {
     setFiles(f => f.filter((_, i) => i !== idx));
   };
 
-  const clearList = () => {
+   // ─── clearList() – Czyści całą kolejkę plików oraz zeruje liczniki przetworzonych i błędnych plików.
+   const clearList = () => {
     setFiles([]);
     setDone(0);
     setErrors(0);
   };
 
-  const processImages = async () => {
+   // ─── processImages() – Przetwarza wszystkie kolejkowane obrazy przez API remove.bg – pobiera wyniki, inicjalizuje pobieranie plików i aktualizuje status przetwarzania.
+   //   @returns {Promise<void>} – obietnica rozwiązywana po zakończeniu przetwarzania wszystkich obrazów
+   const processImages = async () => {
     if (!apiKey) {
       showNotification(t('removebg.no_api_key'), 'warning');
       logError("RemoveBg: no API key");

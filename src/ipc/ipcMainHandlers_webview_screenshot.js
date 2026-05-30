@@ -11,6 +11,7 @@
 import { ipcMain, BrowserWindow } from 'electron';
 import { logError } from '../utils/logger.js';
 import { FEATURES } from '../../config.js';
+// ─── getWebContentsById() – TODO: opis funkcji
 function getWebContentsById(id) {
   try {
     return BrowserWindow.getAllWindows()

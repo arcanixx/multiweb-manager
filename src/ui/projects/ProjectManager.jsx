@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie projektami – lista, dodawanie, usuwanie, edycja
 // FUNCTIONS: ProjectManager
-// DEPENDS ON: react, projectsStore, ConfirmModal, loggerRenderer, translations
+// DEPENDS ON: react, projectsStore.js, translations.js, loggerRenderer.js, icons.js, ConfirmModal.jsx, ProjectModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -29,6 +29,7 @@ export default function ProjectManager() {
     loadData();
   }, []);
 
+  // ─── loadData() – ładuję listę projektów
   const loadData = async () => {
     try {
       setLoading(true);
@@ -42,6 +43,7 @@ export default function ProjectManager() {
     }
   };
 
+  // ─── handleSaveProject() – zapisuje nowy lub aktualizuje istniejący projekt
   const handleSaveProject = async (projectData) => {
     try {
       let updatedProjects;
@@ -65,11 +67,13 @@ export default function ProjectManager() {
     }
   };
 
+  // ─── handleDeleteClick() – ustawia projekt do usunięcia i otwiera modal potwierdzenia
   const handleDeleteClick = (project) => {
     setProjectToDelete(project);
     setShowDeleteConfirm(true);
   };
 
+  // ─── handleDeleteConfirm() – usuwa projekt po potwierdzeniu
   const handleDeleteConfirm = async () => {
     if (!projectToDelete) return;
     try {
@@ -84,6 +88,7 @@ export default function ProjectManager() {
     }
   };
 
+  // ─── handleEdit() – otwiera modal edycji projektu
   const handleEdit = (project) => {
     setEditingProject(project);
     setShowProjectModal(true);

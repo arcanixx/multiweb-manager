@@ -134,7 +134,8 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   │   └── ⚛️ [HistoryLog.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/history/HistoryLog.jsx)
 │   │   ├── 📁 📁 modals/
 │   │   │   ├── ⚛️ [ConfirmModal.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/modals/ConfirmModal.jsx)
-│   │   │   └── ⚛️ [Modal.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/modals/Modal.jsx)
+│   │   │   ├── ⚛️ [Modal.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/modals/Modal.jsx)
+│   │   │   └── ⚛️ [PromptModal.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/modals/PromptModal.jsx)
 │   │   ├── 📁 📁 notepad/
 │   │   │   ├── ⚛️ [ClipboardHistoryModal.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/notepad/ClipboardHistoryModal.jsx)
 │   │   │   ├── ⚛️ [Notepad.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/notepad/Notepad.jsx)
@@ -155,7 +156,8 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   │   ├── ⚛️ [HotkeysManager.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/settings/HotkeysManager.jsx)
 │   │   │   ├── ⚛️ [NotificationsSection.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/settings/NotificationsSection.jsx)
 │   │   │   ├── ⚛️ [Settings.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/settings/Settings.jsx)
-│   │   │   └── ⚛️ [TabsSection.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/settings/TabsSection.jsx)
+│   │   │   ├── ⚛️ [TabsSection.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/settings/TabsSection.jsx)
+│   │   │   └── ⚛️ [WebViewSection.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/settings/WebViewSection.jsx)
 │   │   ├── 📁 📁 sidebar/
 │   │   │   ├── ⚛️ [CategoryModal.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/sidebar/CategoryModal.jsx)
 │   │   │   ├── ⚛️ [ContextMenu.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/sidebar/ContextMenu.jsx)
@@ -217,7 +219,7 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   ├── 📜 [searchIndex.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/searchIndex.js)
 │   │   ├── 📜 [sharpLoader.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/sharpLoader.js)
 │   │   │   📁 DEPENDS ON: komponenty z folderu sharp/
-│   │   ├── 📜 [testRunner.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/testRunner.js)
+│   │   ├── 📜 [testrunner.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/testrunner.js)
 │   │   ├── 📜 [translations.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/translations.js)
 │   │   ├── 📜 [urlUtils.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/urlUtils.js)
 │   │   ├── 📜 [validators.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/validators.js)

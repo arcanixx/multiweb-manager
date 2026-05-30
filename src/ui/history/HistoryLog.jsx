@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Historia przeglądania – lista ostatnio odwiedzonych profili
 // FUNCTIONS: HistoryLog
-// DEPENDS ON: react, historyStore, ConfirmModal, loggerRenderer, translations
+// DEPENDS ON: react, historyStore.js, translations.js, loggerRenderer.js, icons.js, ConfirmModal.jsx, HistoryFilters.jsx, HistoryList.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -28,6 +28,7 @@ export default function HistoryLog() {
     loadData();
   }, []);
 
+  // ─── loadData() – TODO: opis funkcji
   const loadData = async () => {
     try {
       setLoading(true);
@@ -42,6 +43,7 @@ export default function HistoryLog() {
     }
   };
 
+  // ─── handleClearHistory() – TODO: opis funkcji
   const handleClearHistory = async () => {
     try {
       await clearHistory();
@@ -54,6 +56,7 @@ export default function HistoryLog() {
     setShowClearConfirm(false);
   };
 
+  // ─── handleFilter() – TODO: opis funkcji
   const handleFilter = (filters) => {
     let filtered = [...history];
     if (filters.search) {

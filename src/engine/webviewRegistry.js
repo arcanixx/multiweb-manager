@@ -17,6 +17,7 @@ export const webviewProfileMap = new Map(); // webContentsId → profileId
  * @param {string} tabId - identyfikator zakładki
  * @param {number} webContentsId - ID WebContents z Electron
  */
+// ─── registerWebView() – TODO: opis funkcji
 export function registerWebView(tabId, webContentsId) {
   webviewMap.set(tabId, { webContentsId, registeredAt: Date.now() });
   webviewProfileMap.set(webContentsId, tabId);
@@ -26,6 +27,7 @@ export function registerWebView(tabId, webContentsId) {
  * Usuwa WebView z map
  * @param {string} tabId - identyfikator zakładki
  */
+// ─── unregisterWebView() – TODO: opis funkcji
 export function unregisterWebView(tabId) {
   const entry = webviewMap.get(tabId);
   if (entry) {
@@ -38,12 +40,14 @@ export function unregisterWebView(tabId) {
  * Pobiera wpis WebView po tabId
  * @param {string} tabId
  */
+// ─── getWebViewEntry() – TODO: opis funkcji
 export function getWebViewEntry(tabId) {
   return webviewMap.get(tabId);
 }
 /**
  * Pobiera wszystkie WebContents (pomocnicza)
  */
+// ─── getAllWebContents() – TODO: opis funkcji
 export function getAllWebContents() {
   const { webContents } = require('electron');
   return webContents.getAllWebContents();

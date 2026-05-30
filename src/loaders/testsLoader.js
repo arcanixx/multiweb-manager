@@ -23,6 +23,7 @@ const EXCLUDED = new Set([
 //   i wywołuje eksportowaną funkcję run*Tests().
 //   Zwraca zagregowane wyniki { passed, failed, results }.
 // ----------------------------------------------------------------
+// ─── loadAndRunAllTests() – TODO: opis funkcji
 export async function loadAndRunAllTests(options = {}) {
   const testsDir = join(__dirname, "..", "..", "tests");
   let files;

@@ -29,6 +29,7 @@ export default function DataLogsSection() {
 
   // ─── useEffect – ładowanie ustawień przy montowaniu
   useEffect(() => {
+    // ─── loadSettings() – ładuję ustawienia (debugMode, logsEnabled) z IPC
     const loadSettings = async () => {
       try {
         let settings = {};

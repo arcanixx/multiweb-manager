@@ -20,6 +20,7 @@ import { logError } from "../utils/logger.js";
 // =============================================================================
 // VALIDATION HELPERS
 // =============================================================================
+// ─── validateProfile() – TODO: opis funkcji
 function validateProfile(p) {
   if (!p) throw new Error("PROFILE_EMPTY");
   if (!p.id || typeof p.id !== "string") throw new Error("PROFILE_INVALID_ID");
