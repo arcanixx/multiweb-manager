@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState, useCallback } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
@@ -23,6 +24,7 @@ export default function SvgToPngConverter() {
   const [outputPath, setOutputPath] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
   const handleFileDrop = useCallback(async (e) => {
     e.preventDefault();
     const file = e.dataTransfer?.files[0] || e.target?.files[0];
@@ -71,7 +73,7 @@ export default function SvgToPngConverter() {
     if (!outputPath) return;
     await window.electronAPI?.showSaveDialog?.(outputPath);
   };
-
+ if (!isFeatureEnabled('svgToPng')) return null;
   return (
     <div className="tool-container svg-to-png">
       <h2>{ICONS.SVG} {t('svgToPng.title')}</h2>

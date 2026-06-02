@@ -26,7 +26,6 @@ export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTer
   // ─── handleDelete() – obsługa usuwania projektu z logowaniem
   //   @param {string} projectId – identyfikator projektu
   //   @returns {void}
-  // ─── handleDelete() – TODO: opis funkcji
   const handleDelete = (projectId) => {
     try {
       logInfo(`ProjectList: deleting project ${projectId}`);
@@ -40,7 +39,6 @@ export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTer
   // ─── handleOpenTasks() – obsługa otwierania zadań projektu z logowaniem
   //   @param {string} projectName – nazwa projektu
   //   @returns {void}
-  // ─── handleOpenTasks() – TODO: opis funkcji
   const handleOpenTasks = (projectName) => {
     try {
       logInfo(`ProjectList: opening tasks for ${projectName}`);
@@ -54,7 +52,6 @@ export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTer
   // ─── handleOpenTerminal() – obsługa otwierania terminala projektu z logowaniem
   //   @param {Object} terminalConfig – konfiguracja terminala
   //   @returns {void}
-  // ─── handleOpenTerminal() – TODO: opis funkcji
   const handleOpenTerminal = (terminalConfig) => {
     try {
       logInfo(`ProjectList: opening terminal for ${terminalConfig.cwd}`);

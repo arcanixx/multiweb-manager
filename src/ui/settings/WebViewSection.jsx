@@ -15,17 +15,17 @@ import { ICONS } from '../../utils/icons';
 
 // ─── WebViewSection() – sekcja ustawień WebView (AdBlocker, User Agent, Single App)
 //   @returns {JSX.Element} – renderowana sekcja ustawień WebView
-// TODO: Rozbudować wg Definition_Mockups_UI_UX.md sekcja 8 (pełna specyfikacja UI)
-// TODO: Podpiąć pod window.electronAPI.setGlobalAdBlocker / getGlobalAdBlocker
-// TODO: Podpiąć User Agent przez window.electronAPI.invoke('webview:setUserAgent', ...)
-// TODO: Dodać opcję edytowalnego paska adresu (addressBarEditable)
+// NOTE: Do rozbudowania wg Definition_Mockups_UI_UX.md sekcja 8 (pełna specyfikacja UI WebView)
+// NOTE: Podpiąć pod window.electronAPI.setGlobalAdBlocker / getGlobalAdBlocker
+// NOTE: Podpiąć User Agent przez window.electronAPI.invoke('webview:setUserAgent', ...)
+// NOTE: Dodać opcję edytowalnego paska adresu (addressBarEditable)
 export default function WebViewSection() {
   const { t } = React.useContext(TranslationContext);
   const [adBlockerEnabled, setAdBlockerEnabled] = useState(true);
 
   // ─── useEffect – ładowanie stanu AdBlockera z backendu
   useEffect(() => {
-    // ─── load() – TODO: opis funkcji
+    // ─── load() – Ładuje aktualny stan globalnego AdBlockera z procesu głównego przez electronAPI
     const load = async () => {
       try {
         if (window.electronAPI?.getGlobalAdBlocker) {
@@ -64,7 +64,7 @@ export default function WebViewSection() {
     <section className="settings-section">
       <h2>{ICONS.BROWSER} {t('settings.webview') || 'WebView'}</h2>
 
-      {/* TODO: Rozbudować o pełną listę opcji wg mockupów */}
+      {/* NOTE: Rozbudować o pełną listę opcji wg mockupów */}
       <div className="setting-item">
         <label>
           <input

@@ -22,7 +22,8 @@ import { logError } from "../utils/logger.js";
 // =============================================================================
 // VALIDATION
 // =============================================================================
-// ─── validateProject() – TODO: opis funkcji
+
+// ─── validateProject() – Waliduje poprawność obiektu projektu, sprawdzając obecność i prawidłowość typu podstawowych właściwości (id, name) i rzucając wyjątek w przypadku błędów
 function validateProject(p) {
   if (!p) throw new Error("PROJECT_EMPTY");
   if (!p.id || typeof p.id !== "string") throw new Error("PROJECT_INVALID_ID");

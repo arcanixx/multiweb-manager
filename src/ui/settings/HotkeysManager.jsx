@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState, useEffect } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError, logInfo, logWarn } from 'src/utils/loggerRenderer';
 import ConfirmModal from '../modals/ConfirmModal';
@@ -190,7 +191,6 @@ export default function HotkeysManager() {
   //   @param {string} id – identyfikator skrótu
   //   @param {boolean} enabled – nowy stan aktywności
   //   @returns {Promise<void>}
-  // ─── handleToggleEnabled() – TODO: opis funkcji
   const handleToggleEnabled = async (id, enabled) => {
     try {
       const newHotkeys = hotkeys.map(h => h.id === id ? { ...h, enabled } : h);
@@ -205,7 +205,6 @@ export default function HotkeysManager() {
   // ─── parseShortcut() – parsowanie skrótu (placeholder dla przyszłej walidacji)
   //   @param {string} shortcut – skrót w formacie tekstowym
   //   @returns {string} – sparsowany skrót
-  // ─── parseShortcut() – TODO: opis funkcji
   const parseShortcut = (shortcut) => {
     try {
       // Użytkownik wpisuje np. "Ctrl+Shift+S" – bez walidacji, przekazujemy dalej
@@ -218,6 +217,8 @@ export default function HotkeysManager() {
       return '';
     }
   };
+
+  if (!isFeatureEnabled('hotkeysManager')) return null;
 
   if (loading) {
     return <div className="settings-loading-small">{t('common.loading')}</div>;

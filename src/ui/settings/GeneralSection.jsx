@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState, useEffect } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer';
 import { ICONS } from '../../utils/icons';
@@ -107,16 +108,18 @@ export default function GeneralSection() {
         </select>
       </div>
 
-      <div className="setting-item">
-        <label>
-          <input
-            type="checkbox"
-            checked={darkMode}
-            onChange={handleDarkModeToggle}
-          />
-          {ICONS.THEME_DARK} {t('settings.darkMode')}
-        </label>
-      </div>
+      {isFeatureEnabled('darkMode') && (
+        <div className="setting-item">
+          <label>
+            <input
+              type="checkbox"
+              checked={darkMode}
+              onChange={handleDarkModeToggle}
+            />
+            {ICONS.THEME_DARK} {t('settings.darkMode')}
+          </label>
+        </div>
+      )}
 
       <div className="setting-item">
         <label>

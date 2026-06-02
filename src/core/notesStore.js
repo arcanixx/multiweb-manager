@@ -13,10 +13,8 @@ import path from "path";
 import { app } from "electron";
 import { logInfo, logError } from "../utils/logger.js";
 const NOTES_FILE = path.join(app.getPath("userData"), "notes.json");
-// ---------------------------------------------------------------------------
-// Wewnętrzne helpers – odczyt / zapis pliku JSON
-// ---------------------------------------------------------------------------
-// ─── loadStore() – TODO: opis funkcji
+
+// ─── loadStore() – Wczytuje i deserializuje dane notatek z pliku notes.json; w przypadku błędu lub braku pliku zwraca domyślną strukturę z pustą listą
 function loadStore() {
   try {
     if (!fs.existsSync(NOTES_FILE)) {
@@ -28,7 +26,8 @@ function loadStore() {
     return { version: "0.0.3", data: [] };
   }
 }
-// ─── saveStore() – TODO: opis funkcji
+
+// ─── saveStore() – Zapisuje aktualną strukturę notatek do pliku notes.json w katalogu danych użytkownika; zwraca true w przypadku powodzenia lub false przy błędzie
 function saveStore(store) {
   try {
     fs.writeFileSync(NOTES_FILE, JSON.stringify(store, null, 2), "utf8");
@@ -38,16 +37,14 @@ function saveStore(store) {
     return false;
   }
 }
-// ---------------------------------------------------------------------------
-// Publiczne API
-// ---------------------------------------------------------------------------
-/** Zwraca listę wszystkich notatek. */
-// ─── getAllNotes() – TODO: opis funkcji
+
+// ─── getAllNotes() – Pobiera i zwraca tablicę wszystkich zarejestrowanych notatek użytkownika
 export function getAllNotes() {
   return loadStore().data;
 }
 /** Dodaje nową notatkę i zapisuje plik. */
-// ─── addNote() – TODO: opis funkcji
+
+// ─── addNote() – Rejestruje nowy obiekt notatki w sklepie danych, zapisuje zmiany na dysku i zwraca nowo utworzoną notatkę
 export function addNote(note) {
   const store = loadStore();
   store.data.push(note);
@@ -57,7 +54,8 @@ export function addNote(note) {
 }
 
 /** Aktualizuje notatkę po id (patch). Zwraca zaktualizowany obiekt lub null. */
-// ─── updateNote() – TODO: opis funkcji
+
+// ─── updateNote() – Aktualizuje dane istniejącej notatki o określonym ID za pomocą merge'a z obiektem patch, zapisuje zmiany i zwraca zaktualizowaną notatkę
 export function updateNote(id, patch) {
   const store = loadStore();
   const idx = store.data.findIndex(n => n.id === id);
@@ -69,7 +67,8 @@ export function updateNote(id, patch) {
 }
 
 /** Usuwa notatkę po id. */
-// ─── deleteNote() – TODO: opis funkcji
+
+// ─── deleteNote() – Usuwa notatkę o podanym ID ze sklepu danych, zapisuje zaktualizowany stan na dysku i zwraca true
 export function deleteNote(id) {
   const store = loadStore();
   store.data = store.data.filter(n => n.id !== id);

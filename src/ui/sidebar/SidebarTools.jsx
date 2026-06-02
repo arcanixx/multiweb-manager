@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useContext } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS, SIDEBAR_ICON_MAP } from '../../utils/icons.js';
@@ -25,7 +26,7 @@ const SPECIAL_TOOLS = [
   { id: 'stringCombiner', labelKey: 'stringCombiner.title' },
   { id: 'terminal', labelKey: 'terminal.title' },
   { id: 'settings', labelKey: 'settings.title' },
-  { id: 'help', labelKey: 'help.title' },
+  { id: 'help', labelKey: 'help.title', feature: 'helpScreen' },
 ];
 
 // ─── SidebarTools() – sekcja narzędzi specjalnych w sidebarze
@@ -36,8 +37,9 @@ const SPECIAL_TOOLS = [
 
 export default function SidebarTools({ activeItem, onSelect }) {
   const { t } = useContext(TranslationContext);
-  const topSpecial = SPECIAL_TOOLS.slice(0, 3);
-  const sortedSpecial = SPECIAL_TOOLS.slice(3).sort((a, b) => t(a.labelKey).localeCompare(t(b.labelKey)));
+  const visibleTools = SPECIAL_TOOLS.filter(tool => !tool.feature || isFeatureEnabled(tool.feature));
+  const topSpecial = visibleTools.slice(0, 3);
+  const sortedSpecial = visibleTools.slice(3).sort((a, b) => t(a.labelKey).localeCompare(t(b.labelKey)));
   return (
     <>
       {topSpecial.map(tool => {

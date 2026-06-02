@@ -24,7 +24,7 @@ export default function NotificationsSection() {
 
   // ─── useEffect – ładowanie ustawień powiadomień z settingsStore przez IPC
   useEffect(() => {
-    // ─── load() – TODO: opis funkcji
+    // ─── load() – Ładuje zapisane ustawienia powiadomień z procesu głównego przez IPC, z fallbackiem na localStorage
     const load = async () => {
       try {
         if (window.electronAPI?.invoke) {
@@ -51,7 +51,6 @@ export default function NotificationsSection() {
   // ─── handleSystemNotifToggle() – przełącza powiadomienia systemowe i zapisuje przez IPC
   //   @param {Event} e – zdarzenie zmiany checkboxa
   //   @returns {Promise<void>}
-  // ─── handleSystemNotifToggle() – TODO: opis funkcji
   const handleSystemNotifToggle = async (e) => {
     try {
       const enabled = e.target.checked;

@@ -23,7 +23,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'medium
 
   // ─── useEffect – obsługa klawisza Escape i blokowanie scrolla
   useEffect(() => {
-    // ─── handleEscape() – TODO: opis funkcji
+    // ─── handleEscape() – Obsługuje naciśnięcie klawisza Escape i zamyka modal wywołując callback onClose, gdy modal jest aktualnie otwarty
     const handleEscape = (e) => {
       if (e.key === 'Escape' && isOpen) {
         logInfo('Modal: closed via Escape key');

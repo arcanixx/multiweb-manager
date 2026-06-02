@@ -24,21 +24,13 @@ export default function UpdateChecker() {
       .then(v => setAppVersion(v || '1.0.0'))
       .catch(() => setAppVersion('1.0.0'));
   }, []);
-  // ----------------------------------------------------------------
-  // showToast() – wyświetla tymczasowy komunikat przez 3s
-  // ----------------------------------------------------------------
-  // ─── showToast() – TODO: opis funkcji
+  // ─── showToast() – Wyświetla tymczasowy komunikat inline na 3 sekundy, ustawiając treść i typ (info/success/warn) a następnie automatycznie ukrywając
   const showToast = (msg, type = 'info') => {
     setToast(msg);
     setToastType(type);
     setTimeout(() => setToast(''), 3000);
   };
-  // ----------------------------------------------------------------
-  // checkForUpdates() – wywołuje IPC check-for-updates (placeholder)
-  //   Docelowo: electron-updater sprawdza GitHub Releases
-  //   Aktualnie: zwraca aktualną wersję i pokazuje "coming soon"
-  // ----------------------------------------------------------------
-  // ─── checkForUpdates() – TODO: opis funkcji
+  // ─── checkForUpdates() – Wywołuje IPC check-for-updates; jeśli nowa wersja jest dostępna, wyświetla powiadomienie z numerem wersji, w przeciwnym razie pokazuje komunikat "coming soon"
   const checkForUpdates = async () => {
     setChecking(true);
     log('UpdateChecker: checking for updates...');

@@ -14,10 +14,9 @@ import { app } from "electron";
 
 import { logError, logInfo } from "../utils/logger.js";
 
-// ─── getUserDataPath() – zwraca ścieżkę do katalogu userData Electrona
-//   @param {...string} segments – segmenty ścieżki do połączenia
-//   @returns {string} pełna ścieżka do pliku w userData
-// ─── getUserDataPath() – TODO: opis funkcji
+// ─── getUserDataPath() – Wyznacza i zwraca pełną ścieżkę bezwzględną do zasobu w katalogu userData aplikacji Electron, łącząc podane segmenty ścieżki
+//   @param {...string} segments – Segmenty ścieżki do połączenia
+//   @returns {string} Pełna ścieżka do pliku w katalogu danych użytkownika
 export function getUserDataPath(...segments) {
   try {
     return path.join(app.getPath("userData"), ...segments);
@@ -28,11 +27,10 @@ export function getUserDataPath(...segments) {
   }
 }
 
-// ─── readJsonFile() – odczytuje i parsuje plik JSON z fallbackiem
-//   @param {string} filePath – ścieżka do pliku JSON
-//   @param {any} fallback – wartość zwracana w przypadku błędu
-//   @returns {any} sparsowana zawartość pliku lub fallback
-// ─── readJsonFile() – TODO: opis funkcji
+// ─── readJsonFile() – Odczytuje z dysku i parsuje plik w formacie JSON; w przypadku braku pliku lub błędu parsowania zwraca przekazaną wartość domyślną (fallback)
+//   @param {string} filePath – Ścieżka do pliku JSON
+//   @param {any} fallback – Wartość zwracana w przypadku błędu lub braku pliku
+//   @returns {any} Sparsowana zawartość pliku lub przekazany fallback
 export function readJsonFile(filePath, fallback) {
   try {
     if (!fs.existsSync(filePath)) return fallback;
@@ -43,11 +41,10 @@ export function readJsonFile(filePath, fallback) {
   }
 }
 
-// ─── writeJsonFile() – zapisuje dane jako sformatowany JSON
-//   @param {string} filePath – ścieżka docelowego pliku JSON
-//   @param {any} data – dane do zapisania (zostaną zserializowane)
-//   @returns {boolean} true jeśli zapis się powiódł, false w przypadku błędu
-// ─── writeJsonFile() – TODO: opis funkcji
+// ─── writeJsonFile() – Serializuje przekazane dane do formatu JSON i zapisuje je w pliku pod wskazaną ścieżką, tworząc w razie potrzeby wymagane foldery nadrzędne
+//   @param {string} filePath – Ścieżka docelowego pliku JSON
+//   @param {any} data – Dane do zserializowania i zapisu
+//   @returns {boolean} True, jeśli operacja zapisu się powiodła, w przeciwnym razie false
 export function writeJsonFile(filePath, data) {
   try {
     fs.mkdirSync(path.dirname(filePath), { recursive: true });

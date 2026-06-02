@@ -28,7 +28,7 @@ export default function HistoryLog() {
     loadData();
   }, []);
 
-  // ─── loadData() – TODO: opis funkcji
+  // ─── loadData() – Pobiera wpisy historii za pomocą funkcji loadHistory(), aktualizuje stan lokalny oraz obsługuje flagę ładowania (loading)
   const loadData = async () => {
     try {
       setLoading(true);
@@ -43,7 +43,7 @@ export default function HistoryLog() {
     }
   };
 
-  // ─── handleClearHistory() – TODO: opis funkcji
+  // ─── handleClearHistory() – Obsługuje proces czyszczenia całej historii przeglądania użytkownika, resetuje stany filtrowania oraz zamyka modal potwierdzający
   const handleClearHistory = async () => {
     try {
       await clearHistory();
@@ -56,7 +56,7 @@ export default function HistoryLog() {
     setShowClearConfirm(false);
   };
 
-  // ─── handleFilter() – TODO: opis funkcji
+  // ─── handleFilter() – Filtruje dane historii na podstawie przekazanych kryteriów wyszukiwania (nazwa profilu lub adres URL) i aktualizuje stan przefiltrowanej historii
   const handleFilter = (filters) => {
     let filtered = [...history];
     if (filters.search) {

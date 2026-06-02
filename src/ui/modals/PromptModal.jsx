@@ -41,7 +41,7 @@ export default function PromptModal({
     }
   }, [isOpen, defaultValue]);
 
-  // ─── handleConfirm() – TODO: opis funkcji
+  // ─── handleConfirm() – Zatwierdza wartość wpisaną przez użytkownika i przekazuje ją do callbacku onConfirm, logując operację
   const handleConfirm = () => {
     try {
       logInfo(`PromptModal: confirmed with value: ${value}`);
@@ -51,7 +51,7 @@ export default function PromptModal({
     }
   };
 
-  // ─── handleCancel() – TODO: opis funkcji
+  // ─── handleCancel() – Anuluje modal bez przekazywania wartości, wywołując callback onCancel i logując zdarzenie
   const handleCancel = () => {
     try {
       logInfo('PromptModal: cancelled');
@@ -61,7 +61,7 @@ export default function PromptModal({
     }
   };
 
-  // ─── handleKeyDown() – TODO: opis funkcji
+  // ─── handleKeyDown() – Obsługuje klawisze Enter (potwierdza) i Escape (anuluje) wewnątrz pola tekstowego modala
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       handleConfirm();

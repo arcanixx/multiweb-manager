@@ -10,7 +10,8 @@
 
 import { marked } from "marked";
 import { logDebug, logError } from "../utils/logger.js";
-// ─── renderMarkdown() – TODO: opis funkcji
+
+// ─── renderMarkdown() – Konwertuje przekazany tekst w formacie Markdown na znacznik HTML przy użyciu biblioteki marked, rejestrując przebieg operacji w logach
 export function renderMarkdown(text) {
   try {
     logDebug(`markdownRenderer.renderMarkdown: ${text?.length || 0} chars`);

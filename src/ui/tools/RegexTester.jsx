@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../utils/translations.js';
 import { logError } from 'src/utils/loggerRenderer';
 import { testRegex } from 'src/tools/regexEngine';
@@ -20,6 +21,8 @@ export default function RegexTester() {
   const [testString, setTestString] = useState('');
   const [matches, setMatches] = useState([]);
   const [error, setError] = useState('');
+
+  if (!isFeatureEnabled('regexTester')) return null;
   
    // ─── handleTest() – Testuje wyrażenie regularne przeciwko podanemu ciągowi testowym, uwzględniając flagi, i aktualizuje listę dopasowań lub błąd.
    const handleTest = () => {

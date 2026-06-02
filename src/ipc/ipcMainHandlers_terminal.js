@@ -20,7 +20,8 @@ const terminalBuffers = {};
 // =============================================================================
 // HELPER: create shell command per OS
 // =============================================================================
-// ─── getDefaultShell() – TODO: opis funkcji
+
+// ─── getDefaultShell() – Zwraca nazwę binarnego pliku domyślnej powłoki systemowej (shell) na podstawie platformy operacyjnej (powershell.exe dla Windows, zsh dla macOS, bash dla Linuxa)
 function getDefaultShell() {
   if (os.platform() === "win32") return "powershell.exe";
   if (os.platform() === "darwin") return "zsh";

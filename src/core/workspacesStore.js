@@ -13,10 +13,8 @@ import path from "path";
 import { app } from "electron";
 import { logInfo, logError } from "../utils/logger.js";
 const WORKSPACES_FILE = path.join(app.getPath("userData"), "workspaces.json");
-// ---------------------------------------------------------------------------
-// Wewnętrzne helpers – odczyt / zapis pliku JSON
-// ---------------------------------------------------------------------------
-// ─── loadStore() – TODO: opis funkcji
+
+// ─── loadStore() – Wczytuje i analizuje plik konfiguracyjny workspaces.json z katalogu użytkownika; przy błędzie lub braku pliku zwraca obiekt z pustą tablicą
 function loadStore() {
   try {
     if (!fs.existsSync(WORKSPACES_FILE)) {
@@ -28,7 +26,8 @@ function loadStore() {
     return { version: "0.0.3", data: [] };
   }
 }
-// ─── saveStore() – TODO: opis funkcji
+
+// ─── saveStore() – Zapisuje obiekt stanu przestrzeni roboczych (workspaces) do pliku workspaces.json w katalogu danych użytkownika; zwraca true przy sukcesie lub false przy błędzie
 function saveStore(store) {
   try {
     fs.writeFileSync(WORKSPACES_FILE, JSON.stringify(store, null, 2), "utf8");
@@ -38,11 +37,8 @@ function saveStore(store) {
     return false;
   }
 }
-// ---------------------------------------------------------------------------
-// Publiczne API
-// ---------------------------------------------------------------------------
-/** Zwraca listę wszystkich workspace'ów. */
-// ─── getAllWorkspaces() – TODO: opis funkcji
+
+// ─── getAllWorkspaces() – Pobiera i zwraca tablicę wszystkich zdefiniowanych przestrzeni roboczych użytkownika
 export function getAllWorkspaces() {
   return loadStore().data;
 }
@@ -51,7 +47,8 @@ export function getAllWorkspaces() {
  * Jeśli workspace o danym id nie istnieje – dodaje go.
  * Jeśli istnieje – nadpisuje.
  */
-// ─── saveWorkspace() – TODO: opis funkcji
+
+// ─── saveWorkspace() – Zapisuje lub aktualizuje (upsert) pojedynczą przestrzeń roboczą na podstawie jej identyfikatora, zapisuje stan w pliku i zwraca ten obiekt
 export function saveWorkspace(workspace) {
   const store = loadStore();
   const idx = store.data.findIndex(w => w.id === workspace.id);
@@ -68,7 +65,8 @@ export function saveWorkspace(workspace) {
 }
 
 /** Zastępuje całą listę workspace'ów. */
-// ─── saveWorkspaces() – TODO: opis funkcji
+
+// ─── saveWorkspaces() – Nadpisuje całą listę przestrzeni roboczych nową tablicą obiektów, zapisuje ją na dysku i zwraca przekazaną tablicę
 export function saveWorkspaces(workspaces) {
   saveStore({ version: "0.0.3", data: workspaces });
   logInfo("workspacesStore.saveWorkspaces", workspaces.length);
@@ -76,7 +74,8 @@ export function saveWorkspaces(workspaces) {
 }
 
 /** Usuwa workspace po id. */
-// ─── deleteWorkspace() – TODO: opis funkcji
+
+// ─── deleteWorkspace() – Usuwa przestrzeń roboczą o podanym identyfikatorze ze sklepu danych, zapisuje zmiany na dysku i zwraca true
 export function deleteWorkspace(id) {
   const store = loadStore();
   store.data = store.data.filter(w => w.id !== id);

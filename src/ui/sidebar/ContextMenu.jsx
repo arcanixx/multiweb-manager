@@ -25,7 +25,7 @@ export default function ContextMenu({ x, y, items, onClose }) {
   const { t } = useContext(TranslationContext);
   const ref = useRef();
   useEffect(() => {
-    // ─── close() – TODO: opis funkcji
+    // ─── close() – Zamyka menu kontekstowe po kliknięciu poza jego obszar (sprawdza, czy kliknięty element nie należy do menu)
     const close = (e) => { if (ref.current && !ref.current.contains(e.target)) onClose(); };
     document.addEventListener('mousedown', close);
     return () => document.removeEventListener('mousedown', close);

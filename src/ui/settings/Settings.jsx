@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import GeneralSection from './GeneralSection';
 import WebViewSection from './WebViewSection';

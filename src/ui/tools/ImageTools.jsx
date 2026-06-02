@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState, useCallback } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
@@ -21,12 +22,13 @@ export default function ImageTools() {
   const [outputPath, setOutputPath] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  // Opcje
-  const [operation, setOperation] = useState('resize'); // resize, convert, compress
+  const [operation, setOperation] = useState('resize');
   const [width, setWidth] = useState(800);
   const [height, setHeight] = useState(600);
   const [format, setFormat] = useState('png');
   const [quality, setQuality] = useState(80);
+
+  
   const handleFileDrop = useCallback(async (e) => {
     e.preventDefault();
     const file = e.dataTransfer?.files[0] || e.target?.files[0];
@@ -52,7 +54,7 @@ export default function ImageTools() {
     
     setLoading(true);
     setError(null);
-    
+    if (!isFeatureEnabled('imageTools')) return null;
     try {
       // Użyj electronAPI do zapisu pliku tymczasowego
       const inputPath = await window.electronAPI?.saveTempFile?.(inputFile);

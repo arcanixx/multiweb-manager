@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
@@ -18,6 +19,8 @@ export default function CookieGrabber({ activeWebViewId }) {
   const [cookies, setCookies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  if (!isFeatureEnabled('cookieGrabber')) return null;
   
   // ─── handleGrabCookies() – pobiera cookies z aktywnego WebView
 //   @returns {Promise<void>}

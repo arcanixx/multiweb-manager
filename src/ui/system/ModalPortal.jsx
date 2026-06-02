@@ -23,7 +23,7 @@ export default function ModalPortal({ children, onClose }) {
     document.body.classList.add('modal-open');
     return () => document.body.classList.remove('modal-open');
   }, []);
-  // ─── handleBackdropMouseDown() – TODO: opis funkcji
+  // ─── handleBackdropMouseDown() – Obsługuje kliknięcie na tło modala: zamyka go tylko gdy kliknięto bezpośrednio w overlay (nie w jego dzieci)
   const handleBackdropMouseDown = (e) => {
     if (e.target === e.currentTarget) onClose?.();
   };

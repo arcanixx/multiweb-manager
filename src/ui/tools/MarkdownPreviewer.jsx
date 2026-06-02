@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../utils/translations.js';
 
@@ -16,6 +17,8 @@ export default function MarkdownPreviewer() {
   const { t } = React.useContext(TranslationContext);
   const [markdown, setMarkdown] = useState('# Hello World\n\nThis is **Markdown** previewer.');
   const [html, setHtml] = useState('');
+
+  if (!isFeatureEnabled('markdownPreviewer')) return null;
   
   // Prosta konwersja Markdown → HTML (uproszczona, bez zależności)
    // ─── convertToHtml() – Konwertuje tekst Markdown na uproszczony HTML przy użyciu wyrażeń regularnych (obsługuje nagłówki, pogrubienie, kursywę, linki, listy i akapity).

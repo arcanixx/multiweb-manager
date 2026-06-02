@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
@@ -18,8 +19,10 @@ export default function FilePreviewer() {
   const { t } = React.useContext(TranslationContext);
   const [file, setFile] = useState(null);
   const [content, setContent] = useState('');
-  const [mode, setMode] = useState('preview'); // 'raw' or 'preview'
+  const [mode, setMode] = useState('preview');
   const [error, setError] = useState(null);
+
+  if (!isFeatureEnabled('filePreviewer')) return null;
 
   // ─── handleFileDrop() – obsługuje upuszczenie pliku i wczytuje jego zawartość
 //   @param {Event} e – zdarzenie drop/pick

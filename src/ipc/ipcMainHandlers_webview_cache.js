@@ -10,7 +10,8 @@
 
 import { ipcMain, BrowserWindow } from 'electron';
 import { logError } from '../utils/logger.js';
-// ─── getWebContentsById() – TODO: opis funkcji
+
+// ─── getWebContentsById() – Wyszukuje i zwraca obiekt WebContents powiązany z danym identyfikatorem liczbowym w obrębie wszystkich otwartych okien aplikacji
 function getWebContentsById(id) {
   try {
     return BrowserWindow.getAllWindows()

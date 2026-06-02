@@ -12,22 +12,15 @@ import { logDebug } from '../utils/logger.js';
 // Mapy dla WebView i AdBlockera
 export const webviewMap = new Map();        // tabId → { webContentsId, registeredAt }
 export const webviewProfileMap = new Map(); // webContentsId → profileId
-/**
- * Rejestruje WebView w mapach
- * @param {string} tabId - identyfikator zakładki
- * @param {number} webContentsId - ID WebContents z Electron
- */
-// ─── registerWebView() – TODO: opis funkcji
+
+// ─── registerWebView() – Kojarzy identyfikator zakładki (tabId) z identyfikatorem instancji webContentsId z Electrona w rejestrze i zapisuje czas rejestracji
 export function registerWebView(tabId, webContentsId) {
   webviewMap.set(tabId, { webContentsId, registeredAt: Date.now() });
   webviewProfileMap.set(webContentsId, tabId);
   logDebug(`WebView registered: ${tabId} -> ${webContentsId}`);
 }
-/**
- * Usuwa WebView z map
- * @param {string} tabId - identyfikator zakładki
- */
-// ─── unregisterWebView() – TODO: opis funkcji
+
+// ─── unregisterWebView() – Wyrejestrowuje i usuwa powiązania danego tabId oraz skojarzonego webContentsId z map rejestru WebView
 export function unregisterWebView(tabId) {
   const entry = webviewMap.get(tabId);
   if (entry) {
@@ -36,18 +29,13 @@ export function unregisterWebView(tabId) {
     logDebug(`WebView unregistered: ${tabId}`);
   }
 }
-/**
- * Pobiera wpis WebView po tabId
- * @param {string} tabId
- */
-// ─── getWebViewEntry() – TODO: opis funkcji
+
+// ─── getWebViewEntry() – Pobiera z map rejestru dane powiązane z podanym identyfikatorem zakładki (tabId), w tym webContentsId
 export function getWebViewEntry(tabId) {
   return webviewMap.get(tabId);
 }
-/**
- * Pobiera wszystkie WebContents (pomocnicza)
- */
-// ─── getAllWebContents() – TODO: opis funkcji
+
+// ─── getAllWebContents() – Zwraca listę wszystkich aktywnych obiektów WebContents z Electrona za pomocą natywnego modułu
 export function getAllWebContents() {
   const { webContents } = require('electron');
   return webContents.getAllWebContents();

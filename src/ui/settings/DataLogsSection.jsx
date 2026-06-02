@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState, useEffect } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer';
 import { ICONS } from '../../utils/icons';
@@ -204,12 +205,18 @@ export default function DataLogsSection() {
 
       {/* Zawsze widoczne przyciski eksport/import/logi/reset */}
       <div className="setting-item">
-        <button onClick={handleExportSettings}>{ICONS.EXPORT} {t('settings.exportSettings')}</button>
-        <button onClick={handleImportSettings}>{ICONS.IMPORT} {t('settings.importSettings')}</button>
+        {isFeatureEnabled('exportImport') && (
+          <button onClick={handleExportSettings}>{ICONS.EXPORT} {t('settings.exportSettings')}</button>
+        )}
+        {isFeatureEnabled('exportImport') && (
+          <button onClick={handleImportSettings}>{ICONS.IMPORT} {t('settings.importSettings')}</button>
+        )}
       </div>
 
       <div className="setting-item">
-        <button onClick={handleOpenLogs}>{ICONS.FOLDER} {t('settings.openLogsFolder')}</button>
+        {isFeatureEnabled('logsAccess') && (
+          <button onClick={handleOpenLogs}>{ICONS.FOLDER} {t('settings.openLogsFolder')}</button>
+        )}
       </div>
 
       <div className="setting-item">

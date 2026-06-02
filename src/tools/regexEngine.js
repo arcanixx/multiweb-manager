@@ -10,7 +10,8 @@
 // =============================================================================
 
 import { logDebug, logError } from "../utils/logger.js";
-// ─── testRegex() – TODO: opis funkcji
+
+// ─── testRegex() – Testuje wyrażenie regularne na przekazanym tekście przy użyciu podanego wzorca i flag; zwraca tablicę wszystkich dopasowań lub zgłasza błąd składni regex
 export function testRegex(pattern, flags, text) {
   try {
     logDebug(`regexEngine.testRegex: pattern="${pattern}", flags="${flags}"`);

@@ -1504,6 +1504,100 @@ Jeśli dwa pliki mają tę samą nazwę — skrypt zachowa rozróżnienie: `root
 
 ---
 
-<!-- ============================================================================= -->
+# 17. FEATURE FLAGS — WARUNKOWE ŁADOWANIE MODUŁÓW
+
+## 17.1. Przeznaczenie
+
+Obiekt `FEATURES` w `src/config.js` steruje włączaniem/wyłączaniem poszczególnych modułów aplikacji bez konieczności usuwania kodu. Pozwala szybko wyłączyć dowolny feature na czas debugów lub testów.
+
+## 17.2. Implementacja w komponentach React
+
+**Zasada: WSZYSTKIE hooki muszą być PRZED warunkiem feature.**
+
+React wymaga, żeby hooki były wywoływane bezwarunkowo i zawsze w tej samej kolejności. Umieszczenie `if (!isFeatureEnabled(...)) return null` przed `useState` / `useEffect` / `useContext` jest błędem (`React Hook called conditionally`).
+
+```jsx
+// ✅ POPRAWNIE — hooki przed warunkiem
+import { isFeatureEnabled } from '../../config.js';
+
+export default function MojKomponent() {
+  const { t } = useContext(TranslationContext); // ✅ hook zawsze na górze
+  const [stan, setStan] = useState(null);        // ✅ hook zawsze na górze
+
+  if (!isFeatureEnabled('nazwaFeature')) return null; // ✅ warunek PO hookach
+
+  return <div>...</div>;
+}
+
+// ❌ ŹLE — warunek przed hookami
+export default function MojKomponent() {
+  if (!isFeatureEnabled('nazwaFeature')) return null; // ❌ BŁĄD!
+  const [stan, setStan] = useState(null);
+  // ...
+}
+```
+
+**Wyjątek — komponenty z `useEffect`:** Jeśli komponent ma useEffect (np. ładuje dane przy mount), warunek feature powinien wystąpić po hookach, ale logika efektu nie ulegnie zmianie — komponent po prostu zwróci null zanim wyrenderuje UI.
+
+## 17.3. Implementacja w modułach logicznych (`.js`)
+
+```js
+// ✅ POPRAWNIE — warunek na początku funkcji (nie hook, więc można przed logiką)
+export function initAdBlocker() {
+  if (!isFeatureEnabled('adBlocker')) return;
+  // ... logika inicjalizacji
+}
+```
+
+## 17.4. Mapowanie FEATURES → pliki
+
+| Flaga | Plik(i) | Sposób warunkowania |
+|---|---|---|
+| `helpScreen` | `src/ui/help/Help.jsx` | `return null` w komponencie |
+| `appLibrary` | `src/ui/appLibrary/AppLibraryBrowser.jsx` | `return null` w komponencie |
+| `unifiedSearch` | `src/ui/system/GlobalSearch.jsx` (jeśli istnieje) | `return null` w komponencie |
+| `tileView` | `src/ui/webview/WebViewTileView.jsx` (jeśli istnieje) | `return null` w komponencie |
+| `singleAppMode` | `src/ui/webview/WebViewTab.jsx` | prop `onSingleAppMode` = `undefined` |
+| `screenshotWebView` | `src/ui/webview/WebViewTab.jsx` | prop `onScreenshot` = `undefined` |
+| `resourceMonitor` | `src/ui/webview/WebViewTab.jsx` | prop `onResourceMonitor` = `undefined` |
+| `sleepTabs` | `src/engine/sleepTabsManager.js` | `return 0` w `getSleepTimeoutMs()` |
+| `adBlocker` | `src/engine/adBlocker.js` | `return` w `initAdBlocker()` |
+| `jsonYamlXmlFormatter` | `src/ui/tools/JsonFormatter.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `regexTester` | `src/ui/tools/RegexTester.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `markdownPreviewer` | `src/ui/tools/MarkdownPreviewer.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `imageTools` | `src/ui/tools/ImageTools.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `svgToPng` | `src/ui/tools/SvgToPngConverter.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `filePreviewer` | `src/ui/tools/FilePreviewer.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `miniPostman` | `src/ui/tools/MiniPostman.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `clipboardHistory` | `src/ui/tools/ClipboardHistory.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `cookieGrabber` | `src/ui/tools/CookieGrabber.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `hotkeysManager` | `src/ui/settings/HotkeysManager.jsx` + `Settings.jsx` | `return null` + `{isFeatureEnabled && <HotkeysManager />}` |
+| `exportImport` | `src/ui/settings/DataLogsSection.jsx` | warunkowe renderowanie przycisków |
+| `logsAccess` | `src/ui/settings/DataLogsSection.jsx` | warunkowe renderowanie przycisku |
+
+## 17.5. Wzorzec filtrowania zakładek w ToolsPanel
+
+Lista narzędzi w `ToolsPanel.jsx` używa pola `feature` i filtruje tablicę `allTools`:
+
+```jsx
+const allTools = [
+  { id: 'jsonFormatter', icon: ICONS.JSON, label: t('tools.jsonFormatter'), feature: 'jsonYamlXmlFormatter' },
+  { id: 'removebg', icon: ICONS.REMOVEBG, label: t('tools.removebg'), feature: null }, // null = zawsze widoczne
+  // ...
+];
+const tools = allTools.filter(tool => !tool.feature || isFeatureEnabled(tool.feature));
+```
+
+## 17.6. Dodawanie nowego feature flaga — checklista
+
+1. Dodaj wpis do `FEATURES` w `src/config.js`
+2. Dodaj `import { isFeatureEnabled } from '../../config.js'` w docelowym pliku
+3. W komponencie React: dodaj `if (!isFeatureEnabled('klucz')) return null;` **PO wszystkich hookach**
+4. W module JS: dodaj `if (!isFeatureEnabled('klucz')) return;` na początku funkcji inicjalizacyjnej
+5. Jeśli tool pojawia się w `ToolsPanel` — dodaj pole `feature: 'klucz'` w `allTools`
+6. Zaktualizuj tablicę mapowania w sekcji 17.4 powyżej
+7. Dodaj wpis do `.clinerules` (sekcja DEBUG / FEATURES)
+
+---
 <!-- KONIEC DOKUMENTU -->
 <!-- ============================================================================= -->

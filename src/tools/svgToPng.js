@@ -13,7 +13,8 @@
 import fs from "fs";
 import sharp from "sharp";
 import { logDebug, logError } from "../utils/logger.js";
-// ─── svgToPng() – TODO: opis funkcji
+
+// ─── svgToPng() – Odczytuje plik wejściowy SVG z dysku, przeprowadza jego konwersję do formatu PNG przy użyciu biblioteki sharp, po czym zapisuje wynikowy plik graficzny we wskazanej lokalizacji
 export async function svgToPng(svgPath, outputPath, width, height) {
   try {
     logDebug(`svgToPng: ${svgPath} → ${width}x${height} → ${outputPath}`);

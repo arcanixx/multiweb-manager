@@ -11,7 +11,8 @@
 import { ipcMain, BrowserWindow } from 'electron';
 import { logError } from '../utils/logger.js';
 import { isSafeUrl } from '../utils/urlUtils.js';
-// ─── getWebContentsById() – TODO: opis funkcji
+
+// ─── getWebContentsById() – Wyszukuje i zwraca obiekt WebContents o określonym identyfikatorze z listy wszystkich aktywnych okien Electrona
 function getWebContentsById(id) {
   try {
     return BrowserWindow.getAllWindows()

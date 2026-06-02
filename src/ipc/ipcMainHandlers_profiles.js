@@ -20,7 +20,8 @@ import { logError } from "../utils/logger.js";
 // =============================================================================
 // VALIDATION HELPERS
 // =============================================================================
-// ─── validateProfile() – TODO: opis funkcji
+
+// ─── validateProfile() – Waliduje poprawność danych obiektu profilu WebView, sprawdzając obecność i typ kluczowych pól (id, name, url, category) oraz zgłaszając wyjątek w razie niezgodności
 function validateProfile(p) {
   if (!p) throw new Error("PROFILE_EMPTY");
   if (!p.id || typeof p.id !== "string") throw new Error("PROFILE_INVALID_ID");

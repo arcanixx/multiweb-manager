@@ -13,11 +13,8 @@ import { LIMITS } from "../../config.js";
 import { logInfo } from "../utils/logger.js";
 // In-memory historia (nie jest persystowana między restartami)
 let history = [];
-// ----------------------------------------------------------------
-// addClipboardEntry() – dodaje nowy wpis do historii (LIFO)
-//   Aktualizuje też systemowy schowek przez clipboard.writeText()
-// ----------------------------------------------------------------
-// ─── addClipboardEntry() – TODO: opis funkcji
+
+// ─── addClipboardEntry() – Dodaje nowy wpis tekstowy na początek historii schowka, przycina ją do maksymalnego limitu z konfiguracji oraz aktualizuje zawartość systemowego schowka
 export function addClipboardEntry(text) {
   if (!text || typeof text !== "string") return;
   history.unshift({
@@ -32,17 +29,13 @@ export function addClipboardEntry(text) {
   clipboard.writeText(text);
   logInfo("Clipboard updated", { length: text.length });
 }
-// ----------------------------------------------------------------
-// getClipboardHistory() – zwraca całą historię (najnowsze pierwsze)
-// ----------------------------------------------------------------
-// ─── getClipboardHistory() – TODO: opis funkcji
+
+// ─── getClipboardHistory() – Pobiera i zwraca pełną listę in-memory wpisów z historii schowka (od najnowszych do najstarszych)
 export function getClipboardHistory() {
   return history;
 }
-// ----------------------------------------------------------------
-// clearClipboardHistory() – czyści historię in-memory
-// ----------------------------------------------------------------
-// ─── clearClipboardHistory() – TODO: opis funkcji
+
+// ─── clearClipboardHistory() – Czyści całą zapisaną w pamięci (in-memory) listę historii schowka i zwraca true
 export function clearClipboardHistory() {
   history = [];
   return true;

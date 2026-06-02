@@ -20,14 +20,14 @@ export default function NotepadTabs({ tabs, activeTabId, onTabSelect, onTabClose
   const [renameTabId, setRenameTabId] = React.useState(null);
   const [currentTabName, setCurrentTabName] = React.useState('');
 
-  // ─── handleRenameClick() – TODO: opis funkcji
+  // ─── handleRenameClick() – Otwiera modal zmiany nazwy zakładki, zapisując ID i aktualną nazwę wybranej zakładki w stanie komponentu
   const handleRenameClick = (tabId, currentName) => {
     setRenameTabId(tabId);
     setCurrentTabName(currentName);
     setShowRenamePrompt(true);
   };
 
-  // ─── handleRenameConfirm() – TODO: opis funkcji
+  // ─── handleRenameConfirm() – Zatwierdza zmianę nazwy zakładki: weryfikuje, czy nowa nazwa nie jest pusta, wywołuje callback onTabRename i zamyka modal
   const handleRenameConfirm = (newName) => {
     if (newName && newName.trim() && renameTabId) {
       onTabRename(renameTabId, newName.trim());

@@ -18,12 +18,8 @@ const EXCLUDED = new Set([
   "TestRunner.js",   // orchestrator — sam siebie nie testuje
   "testUtils.js",    // shared utils
 ]);
-// ----------------------------------------------------------------
-// loadAndRunAllTests() – skanuje tests/, importuje każdy TestRunner_*.js
-//   i wywołuje eksportowaną funkcję run*Tests().
-//   Zwraca zagregowane wyniki { passed, failed, results }.
-// ----------------------------------------------------------------
-// ─── loadAndRunAllTests() – TODO: opis funkcji
+
+// ─── loadAndRunAllTests() – Skanuje katalog tests/ w poszukiwaniu modułów testowych TestRunner_*.js, dynamicznie je wczytuje i wywołuje ich funkcje testowe, a następnie agreguje i zwraca sumaryczny wynik
 export async function loadAndRunAllTests(options = {}) {
   const testsDir = join(__dirname, "..", "..", "tests");
   let files;

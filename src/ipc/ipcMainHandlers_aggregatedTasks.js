@@ -12,10 +12,8 @@ import { ipcMain } from "electron";
 import { loadTasks } from "../core/tasksStore.js";
 import { loadProjects } from "../core/projectsStore.js";
 import { logError } from "../utils/logger.js";
-// ----------------------------------------------------------------
-// enrich() – helper: dodaje projectName do każdego taska
-// ----------------------------------------------------------------
-// ─── enrich() – TODO: opis funkcji
+
+// ─── enrich() – Funkcja pomocnicza uzupełniająca obiekty zadań o nazwę przynależnego projektu na podstawie mapowania identyfikatorów
 function enrich(tasks, projects) {
   return tasks.map((t) => {
     const project = projects.find((p) => p.id === t.projectId);

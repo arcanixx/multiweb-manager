@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logError } from 'src/utils/loggerRenderer';
 import { ICONS } from 'src/utils/icons';
@@ -23,6 +24,8 @@ export default function MiniPostman() {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  if (!isFeatureEnabled('miniPostman')) return null;
 
    // ─── handleSend() – Wysyła żądanie HTTP przy użyciu podanej metody, URL, nagłówków i ciała, a następnie aktualizuje stan odpowiedzi lub błędu.
    //   @returns {Promise<void>} – obietnica rozwiązywana po zakończeniu żądania

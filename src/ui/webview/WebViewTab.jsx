@@ -2,392 +2,285 @@
 // FILE: WebViewTab.jsx
 // PATH: src/ui/webview/WebViewTab.jsx
 // VERSION: 0.0.3
-// PURPOSE: Mini-przeglądarka profilu (webview + toolbar). Partycja per profil,
-// FUNCTIONS: WebViewTab
-// DEPENDS ON: react, icons, translations.js, loggerRenderer, urlUtils, config
+// PURPOSE: Zakładka WebView – lifecycle, nawigacja, zoom, recovery, logowanie błędów
+// FUNCTIONS: WebViewTab, goBack, goForward, reload, zoomIn, zoomOut, zoomReset,
+//            handleZoomDelta, openDevTools, clearCache, takeScreenshot, 
+//            openSingleAppMode, showResourceMonitor, handleWebViewEvents, cleanup
+// DEPENDS ON: react, electronAPI, loggerRenderer, translations.js, WebViewToolbar
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useRef, useEffect, useState, useCallback, useMemo, useContext } from 'react';
-import { ICONS } from '../../utils/icons';
+import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
-import { logDebug as log, logError, logInfo, logWarn } from '../../utils/loggerRenderer';
-import { normalizeWebUrl } from '../../utils/urlUtils';
-import { FEATURES, DEFAULT_SETTINGS, isFeatureEnabled } from '../../config';
+import { logError, logInfo, logDebug, logWarn } from '../../utils/loggerRenderer.js';
+import WebViewToolbar from './WebViewToolbar.jsx';
 
-export default function WebViewTab({ profile, isActive = true, suspended = false }) {
+// ─── WebViewTab – pojedyncza zakładka WebView z pełnym toolbar'em
+//   @param {Object} props
+//   @param {Object} props.profile – obiekt profilu (url, userAgent, adBlocker, partition)
+//   @param {boolean} props.isActive – czy zakładka aktywna
+//   @param {function} props.onTitleChange – callback po zmianie tytułu strony
+//   @param {function} props.onLoadError – callback przy błędzie ładowania
+//   @returns {JSX.Element}
+export default function WebViewTab({ profile, isActive, onTitleChange, onLoadError }) {
   const { t } = useContext(TranslationContext);
   const webviewRef = useRef(null);
-  const pageUrl = useMemo(() => normalizeWebUrl(profile.url), [profile.url]);
-  const urlInvalid = !pageUrl;
-  const [zoom, setZoom] = useState(profile.zoom || 1);
-  const [loading, setLoading] = useState(!urlInvalid);
-  const [currentUrl, setCurrentUrl] = useState(pageUrl || profile.url || '');
-  const [netError, setNetError] = useState(null);
-  const [sleeping, setSleeping] = useState(false);
-  const [lastActiveAt, setLastActiveAt] = useState(Date.now());
-  const [domReady, setDomReady] = useState(false);
-  const [toast, setToast] = useState(null);
-  const sleepTimeout = profile.sleepTabsTimeout ?? DEFAULT_SETTINGS.sleepTabsTimeout;
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [url, setUrl] = useState(profile.url || '');
+  const [title, setTitle] = useState(profile.name || '');
+  const [canGoBack, setCanGoBack] = useState(false);
+  const [canGoForward, setCanGoForward] = useState(false);
+  const [zoomFactor, setZoomFactor] = useState(1.0);
 
-  // Pokazuje powiadomienie toast.
-  // @param {string} type - typ powiadomienia (np. 'success', 'error', 'info')
-  // @param {string} msg - wiadomość do wyświetlenia
-  // @returns {void}
-  const showToast = (type, msg) => {
-    setToast({ type, msg });
-    setTimeout(() => setToast(null), 3000);
+  // =========================================================================
+  // ─── Helper: aktualizacja URL i stanu nawigacji ─────────────────────────
+  // =========================================================================
+  const updateNavigationState = useCallback(() => {
+    if (webviewRef.current) {
+      setCanGoBack(webviewRef.current.canGoBack());
+      setCanGoForward(webviewRef.current.canGoForward());
+      const currentUrl = webviewRef.current.getURL();
+      if (currentUrl && currentUrl !== 'about:blank') {
+        setUrl(currentUrl);
+      }
+    }
+  }, []);
+
+  // =========================================================================
+  // ─── Nawigacja ──────────────────────────────────────────────────────────
+  // =========================================================================
+  const goBack = () => webviewRef.current?.goBack();
+  const goForward = () => webviewRef.current?.goForward();
+  const reload = () => webviewRef.current?.reload();
+
+  // =========================================================================
+  // ─── Zoom ───────────────────────────────────────────────────────────────
+  // =========================================================================
+  const zoomIn = () => setZoomFactor(prev => Math.min(prev + 0.1, 3.0));
+  const zoomOut = () => setZoomFactor(prev => Math.max(prev - 0.1, 0.5));
+  const zoomReset = () => setZoomFactor(1.0);
+
+  const handleZoomDelta = useCallback((e) => {
+    if (e.ctrlKey && e.deltaY) {
+      e.preventDefault();
+      if (e.deltaY < 0) zoomIn();
+      else if (e.deltaY > 0) zoomOut();
+    }
+  }, []);
+
+  // =========================================================================
+  // ─── Narzędzia ──────────────────────────────────────────────────────────
+  // =========================================================================
+  const openDevTools = () => webviewRef.current?.openDevTools();
+  
+  const clearCache = async () => {
+    try {
+      await window.electronAPI?.clearProfileCache?.(profile.id);
+      reload();
+      logInfo(`WebViewTab: cache cleared for profile ${profile.id}`);
+    } catch (err) {
+      logError('WebViewTab: clearCache failed', err);
+    }
   };
-  useEffect(() => {
-    setCurrentUrl(pageUrl || profile.url || '');
-  }, [pageUrl, profile.url]);
- 
-  // Cleanup WebView przy unmount
-  useEffect(() => {
-    return () => {
-      const wv = webviewRef.current;
-      if (!wv) return;
-      try {
-        wv.src = 'about:blank';
-      } catch (e) {
-        logError('WebView cleanup failed', e);
-      }
-    };
-  }, []);
 
-  const showNetError = useCallback((msg) => {
-    setNetError(msg);
-    setTimeout(() => setNetError(null), 5000);
-  }, []);
-
-  // Aktywacja / wake up
-  useEffect(() => {
-    if (isActive) {
-      setLastActiveAt(Date.now());
-      if (sleeping && webviewRef.current) {
-        setSleeping(false);
-        if (pageUrl) webviewRef.current.src = pageUrl;
-        log(`WebView wake: ${profile.name}`);
-      }
-    }
-  }, [isActive, pageUrl, profile.name, sleeping]);
-
-  // Sleep Tabs
-  useEffect(() => {
-    if (!FEATURES.sleepTabs || isActive) return undefined;
-    const interval = setInterval(() => {
-      const idle = Date.now() - lastActiveAt;
-      if (idle > sleepTimeout && !sleeping && webviewRef.current) {
-        setSleeping(true);
-        try {
-          webviewRef.current.src = 'about:blank';
-          log(`WebView sleep: ${profile.name}`);
-        } catch (e) {
-          logError('WebView sleep failed', e);
-        }
-      }
-    }, 60000);
-    return () => clearInterval(interval);
-  }, [lastActiveAt, sleeping, sleepTimeout, isActive, profile.name]);
-
-  // Rejestracja WebView (dla screenshot/resource monitor)
-  useEffect(() => {
-    if (webviewRef.current && window.electronAPI?.registerWebView) {
-      const id = `webview-${profile.id}-${Date.now()}`;
-      webviewRef.current.setAttribute('data-tab-id', id);
-
-
-      // Rejestruje webview po załadowaniu.
-      // @param {Event} e - zdarzenie did-finish-load
-      // @returns {void}
-      const onLoad = () => {
-        const webContentsId = webviewRef.current?.getWebContentsId();
-        if (webContentsId) {
-          window.electronAPI.registerWebView(id, webContentsId);
-        }
-      };
-      webviewRef.current.addEventListener('did-finish-load', onLoad);
-      return () => {
-        webviewRef.current?.removeEventListener('did-finish-load', onLoad);
-        window.electronAPI?.unregisterWebView?.(id);
-      };
-    }
-  }, [profile.id]);
-
-  // Eventy WebView
-  useEffect(() => {
-    const wv = webviewRef.current;
-    if (!wv || sleeping || urlInvalid) return;
-
-    setDomReady(false);
-
-    const onDomReady = () => {
-      setDomReady(true);
-      try {
-        wv.setZoomFactor(zoom);
-      } catch (e) {
-        logError('WebView setZoomFactor on dom-ready failed', e);
-      }
-      setLoading(false);
-      log(`WebView ready: ${profile.name} @ ${pageUrl}`);
-      window.electronAPI?.addHistory?.({ profileName: profile.name, url: wv.getURL?.() || pageUrl }).catch(() => {});
-    };
-
-    // Ustawia stan ładowania na true przy rozpoczęciu ładowania strony.
-    // @returns {void}
-    const onStartLoad = () => setLoading(true);
-
-    // Ustawia stan ładowania na false po zakończeniu ładowania strony.
-    // @returns {void}
-    const onStopLoad = () => setLoading(false);
-
-    // Aktualizuje bieżący URL przy nawigacji w WebView.
-    // @param {Event} e - zdarzenie nawigacji zawierające właściwość url
-    // @returns {void}
-    const onNavigate = (e) => {
-      if (e.url) setCurrentUrl(e.url);
-    };
-
-    // Obsługuje błąd ładowania WebView.
-    // @param {Event} e - zdarzenie błędu ładowania zawierające errorCode i errorDescription
-    // @returns {void}
-    const onFailLoad = (e) => {
-      setLoading(false);
-      if (e.errorCode === -3) return;
-      logError(`WebView load failed: ${e.errorDescription}`, e.errorCode);
-      if (e.errorCode === -106 || e.errorCode === -2) {
-        showNetError(t('webview.error_offline'));
-      } else if (e.errorCode === -105 || e.errorCode === -501) {
-        showNetError(t('webview.error_bad_host') || t('webview.error_404', { url: pageUrl || profile.url }));
-      }
-    };
-
-    wv.addEventListener('dom-ready', onDomReady);
-    wv.addEventListener('did-start-loading', onStartLoad);
-    wv.addEventListener('did-stop-loading', onStopLoad);
-    wv.addEventListener('did-navigate', onNavigate);
-    wv.addEventListener('did-navigate-in-page', onNavigate);
-    wv.addEventListener('did-fail-load', onFailLoad);
-
-    return () => {
-      wv.removeEventListener('dom-ready', onDomReady);
-      wv.removeEventListener('did-start-loading', onStartLoad);
-      wv.removeEventListener('did-stop-loading', onStopLoad);
-      wv.removeEventListener('did-navigate', onNavigate);
-      wv.removeEventListener('did-navigate-in-page', onNavigate);
-      wv.removeEventListener('did-fail-load', onFailLoad);
-    };
-  }, [profile.id, sleeping, zoom, profile.name, pageUrl, urlInvalid, showNetError, t]);
-
-  // Zoom – aktualizacja po DOM ready
-  useEffect(() => {
-    const wv = webviewRef.current;
-    if (!wv || !domReady || sleeping) return;
+  const takeScreenshot = async () => {
     try {
-      wv.setZoomFactor(zoom);
-    } catch (e) {
-      logError('WebView setZoomFactor failed', e);
-    }
-  }, [zoom, domReady, sleeping]);
-
-  // =========================================================================
-  // NOWE FUNKCJE (Single App, Screenshot, Resource Monitor)
-  // =========================================================================
-
-  // ─── handleSingleAppMode() – otwiera profil w trybie single app (oddzielne okno)
-  //   @returns {Promise<void>}
-  const handleSingleAppMode = async () => {
-    try {
-      if (!window.electronAPI?.openSingleWindow) {
-        showToast('error', t('webview.singleAppModeNotSupported'));
-        return;
+      const result = await window.electronAPI?.captureWebView?.(webviewRef.current?.getWebContentsId());
+      if (result?.ok && result.data) {
+        // copy to clipboard
+        logInfo('WebViewTab: screenshot taken');
+      } else {
+        logWarn('WebViewTab: screenshot failed');
       }
-      await window.electronAPI.openSingleWindow({
-        url: profile.url,
-        width: 1200,
-        height: 800,
-        debug: false
+    } catch (err) {
+      logError('WebViewTab: screenshot error', err);
+    }
+  };
+
+  const openSingleAppMode = () => {
+    try {
+      window.electronAPI?.openSingleWindow?.({
+        url: url,
+        profile: profile
       });
-      showToast('success', t('webview.singleAppModeOpened'));
+      logInfo(`WebViewTab: opened in single app mode for ${profile.id}`);
     } catch (err) {
-      logError('Single App Mode failed', err);
-      showToast('error', t('webview.singleAppModeFailed'));
+      logError('WebViewTab: openSingleAppMode failed', err);
     }
   };
 
-  // ─── handleScreenshot() – robi screenshot aktywnego WebView i kopiuje do schowka
-  //   @returns {Promise<void>}
-  const handleScreenshot = async () => {
+  const showResourceMonitor = async () => {
     try {
-      if (!window.electronAPI?.captureWebView) {
-        showToast('error', t('webview.screenshotNotSupported'));
-        return;
+      const webContentsId = webviewRef.current?.getWebContentsId();
+      const result = await window.electronAPI?.getWebViewResourceInfo?.(webContentsId);
+      if (result?.ok && result.data) {
+        logInfo(`WebViewTab: resource info: ${JSON.stringify(result.data)}`);
+        // TODO: show toast with RAM/CPU
       }
-      const tabId = webviewRef.current?.getAttribute('data-tab-id');
-      if (!tabId) {
-        showToast('error', t('webview.screenshotFailed'));
-        return;
-      }
-      const result = await window.electronAPI.captureWebView(tabId);
-      if (!result.ok) throw new Error(result.error);
-      const blob = new Blob([result.data], { type: 'image/png' });
-      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-      showToast('success', t('webview.screenshotCopied'));
-      log('Screenshot captured and copied to clipboard');
     } catch (err) {
-      logError('Screenshot failed', err);
-      showToast('error', t('webview.screenshotFailed'));
-    }
-  };
-
-  // ─── handleResourceMonitor() – pobiera i wyświetla informacje o zużyciu zasobów WebView
-  //   @returns {Promise<void>}
-  const handleResourceMonitor = async () => {
-    try {
-      if (!window.electronAPI?.getWebViewResourceInfo) {
-        showToast('error', t('webview.resourceMonitorNotSupported'));
-        return;
-      }
-      const tabId = webviewRef.current?.getAttribute('data-tab-id');
-      if (!tabId) {
-        showToast('error', t('webview.resourceMonitorFailed'));
-        return;
-      }
-      const result = await window.electronAPI.getWebViewResourceInfo(tabId);
-      if (!result.ok) throw new Error(result.error);
-      const { memory, cpu } = result.data;
-      showToast('info', `${t('webview.ram')}: ${memory} MB | ${t('webview.cpu')}: ${cpu}%`);
-      log(`Resource monitor: RAM=${memory}MB, CPU=${cpu}%`);
-    } catch (err) {
-      logError('Resource monitor failed', err);
-      showToast('error', t('webview.resourceMonitorFailed'));
+      logError('WebViewTab: resource monitor failed', err);
     }
   };
 
   // =========================================================================
-  // Toolbar actions
+  // ─── WebView event handlers ─────────────────────────────────────────────
   // =========================================================================
+  const handleDidFinishLoad = useCallback(() => {
+    setIsLoading(false);
+    setError(null);
+    updateNavigationState();
+    webviewRef.current?.getTitle().then(setTitle).catch(() => {});
+    logDebug(`WebViewTab: finished loading ${profile.id}`);
+  }, [profile.id, updateNavigationState]);
 
-  const openDevTools = useCallback(() => {
-    webviewRef.current?.openDevTools();
-  }, []);
+  const handleDidFailLoad = useCallback((event) => {
+    const errorCode = event.errorCode;
+    const errorDescription = event.errorDescription;
+    setIsLoading(false);
+    setError({ code: errorCode, description: errorDescription });
+    logError(`WebViewTab: fail load ${profile.id}`, { errorCode, errorDescription });
+    if (onLoadError) onLoadError(profile.id, errorCode);
+  }, [profile.id, onLoadError]);
 
-  const clearCacheAndReload = useCallback(async () => {
-    setLoading(true);
-    await window.electronAPI?.clearProfileCache?.(profile.id);
-    webviewRef.current?.reload();
+  const handleDidStartLoading = useCallback(() => {
+    setIsLoading(true);
+    setError(null);
+    logDebug(`WebViewTab: started loading ${profile.id}`);
   }, [profile.id]);
 
-  // ─── handleZoomDelta() – zmienia zoom WebView o podany krok
-  //   @param {number} delta - wartość zmiany zoom (np. 0.1 dla zwiększenia)
-  const handleZoomDelta = (delta) => setZoom((z) => Math.min(3, Math.max(0.3, +(z + delta).toFixed(1))));
+  const handleDidStopLoading = useCallback(() => {
+    setIsLoading(false);
+    updateNavigationState();
+    logDebug(`WebViewTab: stopped loading ${profile.id}`);
+  }, [profile.id, updateNavigationState]);
 
-  // ─── handleCopyUrl() – kopiuje bieżący URL WebView do schowka
-  const handleCopyUrl = () => {
-    const url = webviewRef.current?.getURL?.() || currentUrl;
-    if (url) navigator.clipboard.writeText(url);
-  };
+  const handleDidNavigateInPage = useCallback(() => {
+    updateNavigationState();
+    webviewRef.current?.getTitle().then(setTitle).catch(() => {});
+    logDebug(`WebViewTab: navigated in page ${profile.id}`);
+  }, [profile.id, updateNavigationState]);
 
-  // ─── handleOpenExternal() – otwiera bieżący URL w zewnętrznej przeglądarce
-  const handleOpenExternal = () => {
-    const url = webviewRef.current?.getURL?.() || currentUrl;
-    if (url) window.electronAPI?.openExternal?.(url);
-  };
+  const handlePageTitleUpdated = useCallback((event) => {
+    const newTitle = event.title;
+    setTitle(newTitle);
+    if (onTitleChange) onTitleChange(profile.id, newTitle);
+    logDebug(`WebViewTab: title updated to ${newTitle}`);
+  }, [profile.id, onTitleChange]);
 
-  // ─── wakeUp() – budzi śpiący WebView i przywraca jego źródło
-  const wakeUp = () => {
-    setSleeping(false);
-    setLastActiveAt(Date.now());
-    if (webviewRef.current && pageUrl) webviewRef.current.src = pageUrl;
-  };
-
-
-if (!isFeatureEnabled("webview")) return null;
- 
+  const handleConsoleMessage = useCallback((event) => {
+    const { level, message, line, sourceId } = event;
+    if (level === 0) logDebug(`WebView console: ${message}`);
+    else if (level === 1) logWarn(`WebView console warning: ${message}`);
+    else if (level === 2) logError(`WebView console error: ${message}`, { line, sourceId });
+  }, []);
 
   // =========================================================================
-  // RENDER
+  // ─── useEffect – zoom factor ────────────────────────────────────────────
   // =========================================================================
+  useEffect(() => {
+    if (webviewRef.current) {
+      webviewRef.current.setZoomFactor(zoomFactor);
+      logDebug(`WebViewTab: zoom factor set to ${zoomFactor} for ${profile.id}`);
+    }
+  }, [zoomFactor, profile.id]);
+
+  // =========================================================================
+  // ─── useEffect – attach event listeners + cleanup ───────────────────────
+  // =========================================================================
+  useEffect(() => {
+    const webview = webviewRef.current;
+    if (!webview) return;
+
+    const events = [
+      { name: 'did-finish-load', handler: handleDidFinishLoad },
+      { name: 'did-fail-load', handler: handleDidFailLoad },
+      { name: 'did-start-loading', handler: handleDidStartLoading },
+      { name: 'did-stop-loading', handler: handleDidStopLoading },
+      { name: 'did-navigate-in-page', handler: handleDidNavigateInPage },
+      { name: 'page-title-updated', handler: handlePageTitleUpdated },
+      { name: 'console-message', handler: handleConsoleMessage }
+    ];
+
+    events.forEach(({ name, handler }) => {
+      webview.addEventListener(name, handler);
+    });
+
+    window.addEventListener('wheel', handleZoomDelta, { passive: false });
+
+    return () => {
+      events.forEach(({ name, handler }) => {
+        webview.removeEventListener(name, handler);
+      });
+      window.removeEventListener('wheel', handleZoomDelta);
+      logDebug(`WebViewTab: cleaned up events for ${profile.id}`);
+    };
+  }, [
+    handleDidFinishLoad,
+    handleDidFailLoad,
+    handleDidStartLoading,
+    handleDidStopLoading,
+    handleDidNavigateInPage,
+    handlePageTitleUpdated,
+    handleConsoleMessage,
+    handleZoomDelta,
+    profile.id
+  ]);
+
+  // =========================================================================
+  // ─── Render ──────────────────────────────────────────────────────────────
+  // =========================================================================
+  const webviewSrc = profile.url || 'about:blank';
+  const userAgent = profile.userAgent || undefined;
+  const partition = profile.partition || `persist:profile-${profile.id}`;
+  const adBlockerEnabled = profile.adBlocker !== undefined ? profile.adBlocker : true;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }} className="webview-tab-root">
-      {/* Toolbar */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
-        <button className="btn-icon" onClick={() => webviewRef.current?.goBack()} title={t('webview.back')}>{ICONS.BACK}</button>
-        <button className="btn-icon" onClick={() => webviewRef.current?.goForward()} title={t('webview.forward')}>{ICONS.FORWARD}</button>
-        <button className="btn-icon" onClick={() => webviewRef.current?.reload()} title={t('webview.reload')}>
-          <span style={loading ? { display: 'inline-block', animation: 'spin 1s linear infinite' } : {}}>{ICONS.REFRESH}</span>
-        </button>
-        <div style={{ flex: 1, padding: '3px 10px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 12, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={currentUrl}>
-          {currentUrl}
-        </div>
-        <button className="btn-icon" onClick={handleCopyUrl} title={t('webview.copyUrl')}>{ICONS.COPY}</button>
-        <button className="btn-icon" onClick={handleOpenExternal} title={t('webview.openExternal')}>{ICONS.LINK}</button>
-        <button className="btn-icon" onClick={openDevTools} title={t('webview.devTools')}>{ICONS.DEVTOOLS}</button>
-        <button className="btn-icon" onClick={clearCacheAndReload} title={t('webview.clearCache')}>{ICONS.CLEAR_CACHE}</button>
-        <button className="btn-icon" onClick={() => handleZoomDelta(-0.1)} title={t('webview.zoomOut')}>{ICONS.ZOOM_OUT}</button>
-        <span onClick={() => setZoom(1)} style={{ fontSize: 11, minWidth: 38, textAlign: 'center', cursor: 'pointer' }}>{Math.round(zoom * 100)}%</span>
-        <button className="btn-icon" onClick={() => handleZoomDelta(0.1)} title={t('webview.zoomIn')}>{ICONS.ZOOM_IN}</button>
+    <div className="webview-tab" style={{ display: isActive ? 'flex' : 'none' }}>
+      <WebViewToolbar
+        canGoBack={canGoBack}
+        canGoForward={canGoForward}
+        isLoading={isLoading}
+        url={url}
+        onBack={goBack}
+        onForward={goForward}
+        onReload={reload}
+        onCopyUrl={() => navigator.clipboard.writeText(url)}
+        onOpenExternal={() => window.electronAPI?.openExternal?.(url)}
+        onZoomIn={zoomIn}
+        onZoomOut={zoomOut}
+        onZoomReset={zoomReset}
+        onDevTools={openDevTools}
+        onClearCache={clearCache}
+        onScreenshot={takeScreenshot}
+        onSingleAppMode={openSingleAppMode}
+        onResourceMonitor={showResourceMonitor}
+      />
 
-        {/* Nowe przyciski */}
-        <button className="btn-icon" onClick={handleSingleAppMode} title={t('webview.singleAppMode')}>{ICONS.SINGLE_APP}</button>
-        <button className="btn-icon" onClick={handleScreenshot} title={t('webview.screenshot')}>{ICONS.SCREENSHOT}</button>
-        <button className="btn-icon" onClick={handleResourceMonitor} title={t('webview.resourceMonitor')}>{ICONS.RESOURCE_MONITOR}</button>
-
-        <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis' }}>{profile.name}</span>
-      </div>
-
-      {/* Error bar */}
-      {netError && (
-        <div style={{ padding: '8px 16px', background: 'var(--danger)', color: 'white', fontSize: 13, display: 'flex', alignItems: 'center', gap: 8 }}>
-          {ICONS.WARNING} {netError}
-          <button style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'white', cursor: 'pointer' }} onClick={() => setNetError(null)}>{ICONS.CLOSE}</button>
+      {error && (
+        <div className="webview-error-bar">
+          <span>Error: {error.description || `Code ${error.code}`}</span>
+          <button onClick={reload}>{t('webview.reload')}</button>
         </div>
       )}
 
-      {/* Toast */}
-      {toast && (
-        <div style={{ position: 'fixed', bottom: 20, right: 20, padding: '8px 16px', borderRadius: 8, zIndex: 9999, background: toast.type === 'success' ? 'var(--success)' : toast.type === 'error' ? 'var(--danger)' : 'var(--accent)', color: 'white' }}>
-          {toast.msg}
+      {isLoading && !error && (
+        <div className="webview-loading">
+          <span>{t('webview.loading')}</span>
         </div>
       )}
 
-      {/* Sleeping placeholder */}
-      {sleeping && (
-        <div style={{ padding: 16, textAlign: 'center', background: 'var(--bg-secondary)' }}>
-          <p>{t('webview.sleeping') || 'Tab is sleeping'}</p>
-          <button className="btn btn-primary" onClick={wakeUp}>{t('webview.wakeUp') || 'Wake up'}</button>
-        </div>
-      )}
-
-      {/* Invalid URL */}
-      {urlInvalid && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center', color: 'var(--text-secondary)', gap: 8 }}>
-          <span style={{ fontSize: 32 }}>{ICONS.WARNING}</span>
-          <p style={{ margin: 0, fontSize: 14 }}>{t('webview.invalid_url')}</p>
-          <code style={{ fontSize: 12, background: 'var(--bg-secondary)', padding: '4px 8px', borderRadius: 4 }}>{profile.url || '—'}</code>
-          <p style={{ margin: 0, fontSize: 12, color: 'var(--text-muted)' }}>{t('webview.invalid_url_hint')}</p>
-        </div>
-      )}
-
-      {/* WebView */}
-      {!sleeping && !suspended && !urlInvalid && pageUrl && (
-        <webview
-          key={`wv-${profile.id}-${pageUrl}`}
-          ref={webviewRef}
-          src={pageUrl}
-          partition={profile.partition || `persist:profile-${profile.id}`}
-          useragent={profile.userAgent || undefined}
-          style={{ flex: 1, display: 'flex' }}
-          allowpopups="true"
-          webpreferences="contextIsolation=yes, nativeWindowOpen=yes, javascript=yes"
-        />
-      )}
-      {suspended && !sleeping && (
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: 13 }}>
-          {t('webview.paused_for_modal') || 'Podgląd wstrzymany (otwarty modal)'}
-        </div>
-      )}
+      <webview
+        ref={webviewRef}
+        src={webviewSrc}
+        useragent={userAgent}
+        partition={partition}
+        preload="file:///preload-webview.js"
+        disablewebsecurity={false}
+        allowpopups="false"
+        webpreferences="contextIsolation=yes, nodeIntegration=no, sandbox=yes"
+        style={{ width: '100%', height: '100%' }}
+      />
     </div>
   );
 }

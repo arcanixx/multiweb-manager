@@ -9,9 +9,13 @@
 // =============================================================================
 
 import { logError } from './logger.js';
+
+// ─── NOTES_STORAGE_KEY – klucz używany do zapisu/odczytu notatek w localStorage (fallback gdy IPC niedostępne)
 const NOTES_STORAGE_KEY = 'notepad_notes';
-// Tworzy nową zakładkę z domyślnymi wartościami
-// ─── createNewTab() – TODO: opis funkcji
+
+// ─── createNewTab() – Tworzy nową zakładkę notatnika z domyślnymi wartościami (tytuł 'Notatka', pusta treść, timestamp założenia)
+//   @param {string} id – opcjonalny identyfikator; jeśli brak, generowany na podstawie Date.now()
+//   @returns {Object} – nowy obiekt zakładki
 export function createNewTab(id) {
   return {
     id: id || `tab-${Date.now()}`,
@@ -22,8 +26,9 @@ export function createNewTab(id) {
     lastSaved: null,
   };
 }
-// Ładuje notatki z electronAPI (jeśli dostępne) lub localStorage jako fallback
-// ─── loadNotesFromStorage() – TODO: opis funkcji
+
+// ─── loadNotesFromStorage() – Ładuje notatki z procesu głównego przez electronAPI; jeśli niedostępne, czyta dane z localStorage jako fallback
+//   @returns {Array|null} – tablica notatek lub null przy braku danych
 export function loadNotesFromStorage() {
   try {
     if (window.electronAPI?.loadNotes) {
@@ -36,8 +41,10 @@ export function loadNotesFromStorage() {
   }
   return null;
 }
-// Zapisuje notatki do electronAPI lub localStorage jako fallback
-// ─── saveNotesToStorage() – TODO: opis funkcji
+
+// ─── saveNotesToStorage() – Zapisuje stan notatek przez electronAPI (IPC); jeśli niedostępne, zapisuje do localStorage jako fallback
+//   @param {Object} notesState – aktualny stan notatek (zakładki, treści)
+//   @returns {void}
 export function saveNotesToStorage(notesState) {
   try {
     if (window.electronAPI?.saveNotes) {

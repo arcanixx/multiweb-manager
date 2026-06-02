@@ -13,10 +13,8 @@ import path from 'path';
 import { logError } from '../utils/logger.js';
 import { getWebViewEntry, getAllWebContents } from '../engine/webviewRegistry.js';
 const PRELOAD_PATH = path.join(__dirname, '../../preload.cjs');
-/**
- * Rejestruje wszystkie handlery WebView
- */
-// ─── registerWebViewExtraHandlers() – TODO: opis funkcji
+
+// ─── registerWebViewExtraHandlers() – Rejestruje dodatkowe handlery IPC dedykowane dla WebView, w tym obsługę osobnych okien (Single App Mode), wykonywanie zrzutów ekranu oraz monitorowanie zasobów sprzętowych
 export function registerWebViewExtraHandlers() {
   // Single App Mode – nowe okno
   ipcMain.handle('open-single-window', async (_, payload) => {

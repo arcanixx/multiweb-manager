@@ -12,10 +12,8 @@ import { ipcMain, app } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { logError } from '../utils/logger.js';
-/**
- * Rejestruje handlery dla logów testów
- */
-// ─── registerLogsHandlers() – TODO: opis funkcji
+
+// ─── registerLogsHandlers() – Rejestruje zestaw głównych handlerów komunikacji IPC odpowiedzialnych za dopisywanie, pobieranie i czyszczenie pliku logów błędów testów jednostkowych (test-fails.log)
 export function registerLogsHandlers() {
   ipcMain.handle('append-log-file', async (_, payload) => {
     try {

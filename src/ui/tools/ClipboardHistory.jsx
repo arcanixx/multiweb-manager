@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState, useEffect } from 'react';
+import { isFeatureEnabled } from '../../../config.js';
 import { TranslationContext } from '../utils/translations.js';
 import { logDebug, logInfo, logWarn } from '../../utils/loggerRenderer';
 import { ICONS } from '../../utils/icons';
@@ -16,12 +17,13 @@ import { CLIPBOARD_HISTORY_MAX } from '../../../config.js';
 
 // ─── ClipboardHistory() – historia schowka z możliwością pinowania
 //   @returns {JSX.Element} – renderowany interfejs historii schowka
-
 export default function ClipboardHistory() {
   const { t } = React.useContext(TranslationContext);
   const [history, setHistory] = useState([]);
   const [filter, setFilter] = useState('');
   const [pinned, setPinned] = useState([]);
+
+  // ─── useEffect – ładowanie historii i polling schowka
   useEffect(() => {
     const saved = localStorage.getItem('clipboard_history');
     if (saved) setHistory(JSON.parse(saved));
@@ -46,7 +48,9 @@ export default function ClipboardHistory() {
   useEffect(() => {
     localStorage.setItem('clipboard_pinned', JSON.stringify(pinned));
   }, [pinned]);
-  
+
+  if (!isFeatureEnabled('clipboardHistory')) return null;
+
   // ─── handleCopy() – kopiuję tekst do schowka
 //   @param {string} text – tekst do skopiowania
   const handleCopy = async (text) => {

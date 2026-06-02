@@ -20,10 +20,9 @@ import { logError, logWarn } from '../../utils/loggerRenderer.js';
 export default function HistoryList({ entries }) {
   const { t } = useContext(TranslationContext);
 
-  // ─── formatTime() – formatuje timestamp do czytelnej daty
+  // ─── formatTime() – Konwertuje i formatuje wejściowy łańcuch daty ISO na czytelny format daty i czasu zgodnie z polskimi ustawieniami regionalnymi (pl-PL)
   //   @param {string} iso – timestamp w formacie ISO
   //   @returns {string} – sformatowana data lub '–' dla pustych wartości
-  // ─── formatTime() – TODO: opis funkcji
   const formatTime = (iso) => {
     if (!iso) return '–';
     try {

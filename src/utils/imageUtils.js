@@ -17,8 +17,6 @@ import { logInfo, logError, logWarn, logDebug } from './logger.js';
 //   @param {number} height – wysokość docelowa
 //   @param {string} outputPath – ścieżka wyjściowa
 //   @returns {Promise<string>} ścieżka do przetworzonego pliku
-
-// ─── resizeImage() – TODO: opis funkcji
 export async function resizeImage(inputPath, width, height, outputPath) {
   try {
     await sharp(inputPath).resize(width, height).toFile(outputPath);
@@ -37,7 +35,6 @@ export async function resizeImage(inputPath, width, height, outputPath) {
 //   @param {string} outputPath – ścieżka wyjściowa
 //   @returns {Promise<string>} ścieżka do przetworzonego pliku
 
-// ─── convertImage() – TODO: opis funkcji
 export async function convertImage(inputPath, format, outputPath) {
   try {
     await sharp(inputPath).toFormat(format).toFile(outputPath);
@@ -56,7 +53,6 @@ export async function convertImage(inputPath, format, outputPath) {
 //   @param {string} outputPath – ścieżka wyjściowa
 //   @returns {Promise<string>} ścieżka do przetworzonego pliku
 
-// ─── compressJpeg() – TODO: opis funkcji
 export async function compressJpeg(inputPath, quality, outputPath) {
   try {
     await sharp(inputPath).jpeg({ quality }).toFile(outputPath);

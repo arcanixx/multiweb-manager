@@ -15,13 +15,6 @@ import { logInfo, logError, logWarn, logDebug } from './logger.js';
 //   @param {string} filePath – ścieżka do pliku JSON
 //   @param {any} fallback – wartość zwracana w przypadku błędu
 //   @returns {any} sparsowane dane lub fallback
-
-// ─── writeJsonSafe() – zapisuje dane jako JSON do pliku z obsługą błędów
-//   @param {string} filePath – ścieżka do pliku
-//   @param {any} data – dane do zapisania
-//   @returns {boolean} true jeśli zapis się powiódł
-
-// ─── readJsonSafe() – TODO: opis funkcji
 export function readJsonSafe(filePath, fallback) {
   try {
     if (!fs.existsSync(filePath)) {
@@ -38,7 +31,10 @@ export function readJsonSafe(filePath, fallback) {
   }
 }
 
-// ─── writeJsonSafe() – TODO: opis funkcji
+// ─── writeJsonSafe() – zapisuje dane jako JSON do pliku z obsługą błędów
+//   @param {string} filePath – ścieżka do pliku
+//   @param {any} data – dane do zapisania
+//   @returns {boolean} true jeśli zapis się powiódł
 export function writeJsonSafe(filePath, data) {
   try {
     const json = JSON.stringify(data, null, 2);

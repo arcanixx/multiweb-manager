@@ -63,22 +63,23 @@ export default function AppLibraryBrowser({ onAddProfile }) {
   
   if (!isFeatureEnabled("appLibrary")) return null;
   
-  // ─── handleCategoryClick() – obsługa kliknięcia kategorii
+  // ─── handleCategoryClick() – Obsługuje zdarzenie kliknięcia kategorii aplikacji; ustawia wybraną kategorię jako aktywny filtr i resetuje pole wyszukiwania
   //   @param {string} categoryId – identyfikator kategorii
   //   @returns {void}
-  // ─── handleCategoryClick() – TODO: opis funkcji
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);
     setSearchQuery('');
     logInfo(`AppLibraryBrowser: category selected ${categoryId}`);
   };
-  // ─── handleAddApp() – TODO: opis funkcji
+
+  // ─── handleAddApp() – Obsługuje dodawanie wybranej aplikacji z biblioteki do profili użytkownika poprzez wywołanie zewnętrznego callbacku onAddProfile
   const handleAddApp = (app) => {
     logDebug(`AppLibraryBrowser: adding app ${app.name}`);
     onAddProfile?.(app);
   };
 
-  // ─── renderAppCard() – TODO: opis funkcji
+
+  // ─── renderAppCard() – Funkcja pomocnicza renderująca kartę graficzną aplikacji (nazwę, URL, ikonę oraz przycisk dodawania) w strukturze JSX
   const renderAppCard = (app, categoryId) => (
     <div key={app.id} className="app-card">
       <div className="app-card-icon">

@@ -17,12 +17,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const EXCLUDED = new Set([
   "ipcLegacyBridge.js",  // ładowany ręcznie w main.js (legacy kanały)
 ]);
-// ----------------------------------------------------------------
-// loadAllIpcHandlers() – skanuje src/ipc/ i importuje każdy handler
-//   Każdy plik rejestruje handlery przez side-effect przy imporcie.
-//   Wywołaj raz w main.js przed app.whenReady().
-// ----------------------------------------------------------------
-// ─── loadAllIpcHandlers() – TODO: opis funkcji
+
+// ─── loadAllIpcHandlers() – Automatycznie skanuje katalog src/ipc/ w poszukiwaniu plików z prefiksem ipcMainHandlers_ i dynamicznie importuje każdy z nich, inicjalizując powiązane handlery IPC w procesie głównym
 export async function loadAllIpcHandlers() {
   const ipcDir = join(__dirname, "..", "ipc");
   let files;

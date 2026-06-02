@@ -13,8 +13,8 @@ import ReactDOM from 'react-dom/client';
 import './ui/index.css';
 import { TranslationProvider } from './hooks/useTranslation';
 import App from './App';
-// Globalny fallback podczas lazy-load komponentów
-// ─── AppLoader() – TODO: opis funkcji
+
+// ─── AppLoader() – Komponent fallback wyświetlający ekran ładowania podczas asynchronicznego wczytywania (lazy-loading) głównych komponentów aplikacji React
 function AppLoader() {
   return (
     <div className="flex items-center justify-center h-screen bg-slate-900 text-white">

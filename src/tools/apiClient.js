@@ -10,7 +10,8 @@
 // =============================================================================
 
 import { logDebug, logError } from "../utils/logger.js";
-// ─── apiRequest() – TODO: opis funkcji
+
+// ─── apiRequest() – Wykonuje asynchroniczne żądanie HTTP o podanych parametrach (URL, metoda, nagłówki, treść), loguje szczegóły i zwraca status oraz dane odpowiedzi
 export async function apiRequest(url, method, headers, body) {
   try {
     logDebug(`apiClient.apiRequest: ${method} ${url}`);

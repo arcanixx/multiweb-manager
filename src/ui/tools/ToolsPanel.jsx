@@ -9,6 +9,7 @@
 // =============================================================================
 
 import React, { useState, useContext } from "react";
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons';
 import { logDebug, logInfo, logWarn } from '../../utils/loggerRenderer';
@@ -42,19 +43,20 @@ export default function ToolsPanel({ removeBgApiKey, plan = "free", activeWebVie
     setActiveTool(toolId);
     logDebug(`ToolsPanel: switched to ${toolId}`);
   };
-  const tools = [
-    { id: "removebg", icon: ICONS.REMOVEBG, label: t("tools.removebg") },
-    { id: "stringCombiner", icon: ICONS.STRINGCOMBINER, label: t("tools.stringCombiner") },
-    { id: "jsonFormatter", icon: ICONS.JSON, label: t("tools.jsonFormatter") },
-    { id: "regexTester", icon: ICONS.REGEX, label: t("tools.regexTester") },
-    { id: "markdownPreviewer", icon: ICONS.MARKDOWN, label: t("tools.markdownPreviewer") },
-    { id: "clipboardHistory", icon: ICONS.CLIPBOARD, label: t("tools.clipboardHistory") },
-    { id: "imageTools", icon: ICONS.IMAGE, label: t("tools.imageTools") },
-    { id: "svgToPng", icon: ICONS.SVG, label: t("tools.svgToPng") },
-    { id: "miniPostman", icon: ICONS.API, label: t("tools.miniPostman") },
-    { id: "filePreviewer", icon: ICONS.PREVIEW, label: t("tools.filePreviewer") },
-    { id: "cookieGrabber", icon: ICONS.COOKIE, label: t("tools.cookieGrabber") }
+  const allTools = [
+    { id: "removebg", icon: ICONS.REMOVEBG, label: t("tools.removebg"), feature: null },
+    { id: "stringCombiner", icon: ICONS.STRINGCOMBINER, label: t("tools.stringCombiner"), feature: null },
+    { id: "jsonFormatter", icon: ICONS.JSON, label: t("tools.jsonFormatter"), feature: 'jsonYamlXmlFormatter' },
+    { id: "regexTester", icon: ICONS.REGEX, label: t("tools.regexTester"), feature: 'regexTester' },
+    { id: "markdownPreviewer", icon: ICONS.MARKDOWN, label: t("tools.markdownPreviewer"), feature: 'markdownPreviewer' },
+    { id: "clipboardHistory", icon: ICONS.CLIPBOARD, label: t("tools.clipboardHistory"), feature: 'clipboardHistory' },
+    { id: "imageTools", icon: ICONS.IMAGE, label: t("tools.imageTools"), feature: 'imageTools' },
+    { id: "svgToPng", icon: ICONS.SVG, label: t("tools.svgToPng"), feature: 'svgToPng' },
+    { id: "miniPostman", icon: ICONS.API, label: t("tools.miniPostman"), feature: 'miniPostman' },
+    { id: "filePreviewer", icon: ICONS.PREVIEW, label: t("tools.filePreviewer"), feature: 'filePreviewer' },
+    { id: "cookieGrabber", icon: ICONS.COOKIE, label: t("tools.cookieGrabber"), feature: 'cookieGrabber' }
   ];
+  const tools = allTools.filter(tool => !tool.feature || isFeatureEnabled(tool.feature));
   return (
     <div className="tools-panel">
       <div className="tools-sidebar">

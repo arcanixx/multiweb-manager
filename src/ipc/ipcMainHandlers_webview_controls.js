@@ -14,7 +14,8 @@ import { fileURLToPath } from 'url';
 import { logError } from '../utils/logger.js';
 import { FEATURES, DEFAULT_SETTINGS } from '../../config.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
-// ─── getWebContentsById() – TODO: opis funkcji
+
+// ─── getWebContentsById() – Wyszukuje i zwraca obiekt WebContents powiązany z podanym identyfikatorem w zestawie wszystkich aktywnych okien Electrona
 function getWebContentsById(id) {
   try {
     return BrowserWindow.getAllWindows()

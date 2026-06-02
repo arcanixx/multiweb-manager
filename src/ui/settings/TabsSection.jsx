@@ -22,7 +22,7 @@ export default function TabsSection() {
 
   // ─── useEffect – ładowanie timeoutu przy montowaniu
   useEffect(() => {
-    // ─── loadTimeout() – TODO: opis funkcji
+    // ─── loadTimeout() – Ładuje zapisany timeout usypiania zakładek z procesu głównego przez electronAPI i ustawia wartość domyślną 15 minut jeśli brak
     const loadTimeout = async () => {
       try {
         if (window.electronAPI?.getSleepTimeout) {
@@ -41,7 +41,6 @@ export default function TabsSection() {
   // ─── handleTimeoutChange() – zmienia timeout usypiania zakładek
   //   @param {number} minutes – nowy timeout w minutach
   //   @returns {Promise<void>}
-  // ─── handleTimeoutChange() – TODO: opis funkcji
   const handleTimeoutChange = async (minutes) => {
     try {
       setSleepTimeoutMinutes(minutes);

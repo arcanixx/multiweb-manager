@@ -25,10 +25,9 @@ import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 export default function HistoryFilters({ filterLevel, onFilterChange, sortOrder, onSortChange, onClear, hasEntries }) {
   const { t } = useContext(TranslationContext);
 
-  // ─── handleFilterChange() – obsługa zmiany poziomu filtru
+  // ─── handleFilterChange() – Obsługuje zmianę poziomu filtrowania historii (np. info, warn, error) i przekazuje nową wartość do nadrzędnego callbacku
   //   @param {Event} e – zdarzenie zmiany selecta
   //   @returns {void}
-  // ─── handleFilterChange() – TODO: opis funkcji
   const handleFilterChange = (e) => {
     try {
       onFilterChange(e.target.value);
@@ -39,10 +38,9 @@ export default function HistoryFilters({ filterLevel, onFilterChange, sortOrder,
     }
   };
 
-  // ─── handleSortChange() – obsługa zmiany porządku sortowania
+  // ─── handleSortChange() – Obsługuje zmianę kierunku sortowania listy wpisów historii (rosnąco/malejąco) i przekazuje nową wartość do nadrzędnego callbacku
   //   @param {Event} e – zdarzenie zmiany selecta
   //   @returns {void}
-  // ─── handleSortChange() – TODO: opis funkcji
   const handleSortChange = (e) => {
     try {
       onSortChange(e.target.value);
