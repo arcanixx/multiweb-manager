@@ -2,7 +2,7 @@
 // FILE: searchIndex.js
 // PATH: src/utils/searchIndex.js
 // VERSION: 0.0.3
-// PURPOSE: Unified search (Ctrl+K) — indeks profili, projektów, zadań, notatek.
+// PURPOSE: Budowanie ujednoliconego indeksu wyszukiwania (profiles, projects, tasks, notes) dla globalnej palety komend (Ctrl+K).
 // FUNCTIONS: buildSearchIndex, searchAll
 // DEPENDS ON: logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -55,7 +55,7 @@ function match(text, q) {
 export function searchAll(index, query) {
   const q = String(query || "").toLowerCase().trim();
   if (!q) return { profiles: [], projects: [], tasks: [], notes: [] };
-  logDebug("searchIndex.searchAll", q);
+  logDebug("ui", "searchIndex.searchAll", q);
   
   // ─── filter() – Filtruje elementy indeksu sprawdzając wystąpienie query w pólach label lub sub
   const filter = (items) =>

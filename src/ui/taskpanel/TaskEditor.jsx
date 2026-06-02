@@ -48,7 +48,7 @@ export default function TaskEditor({ task, onCancel, onSaved }) {
   async function save() {
     try {
       if (!form.title.trim()) {
-        logWarn('TaskEditor: title is required');
+        logWarn('tasks', 'TaskEditor: title is required');
         window.showToast("error", t("tasks.editor.error.titleRequired"));
         return;
       }
@@ -56,17 +56,17 @@ export default function TaskEditor({ task, onCancel, onSaved }) {
       const payload = isEdit ? { id: task.id, patch: form } : form;
       const res = await window.electronAPI.invoke(channel, payload);
       if (res?.ok) {
-        logInfo(`TaskEditor: task ${isEdit ? 'updated' : 'created'}`);
+        logInfo('tasks', `TaskEditor: task ${isEdit ? 'updated' : 'created'}`);
         window.showToast("success", t("tasks.editor.saved"));
         onSaved();
       } else {
-        logError('TaskEditor: save failed', res?.error);
-        logWarn('Nie można zapisać zadania');
+        logError('tasks', 'TaskEditor: save failed', res?.error);
+        logWarn('tasks', 'Nie można zapisać zadania');
         window.showToast("error", t("tasks.editor.error.saveFailed"));
       }
     } catch (err) {
-      logError('TaskEditor.save exception', err);
-      logWarn('Wystąpił błąd podczas zapisu zadania');
+      logError('tasks', 'TaskEditor.save exception', err);
+      logWarn('tasks', 'Wystąpił błąd podczas zapisu zadania');
     }
   }
 

@@ -2,7 +2,7 @@
 // FILE: networkUtils.js
 // PATH: src/utils/networkUtils.js
 // VERSION: 0.0.3
-// PURPOSE: Narzędzia sieciowe – sprawdzanie dostępności URL (pingUrl).
+// PURPOSE: Funkcje pomocnicze do diagnostyki sieciowej i sprawdzania dostępności zewnętrznych zasobów.
 // FUNCTIONS: pingUrl
 // DEPENDS ON: logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -17,10 +17,10 @@ import { logInfo, logWarn } from './logger.js';
 export async function pingUrl(url) {
   try {
     const res = await fetch(url, { method: "HEAD" });
-    logInfo("pingUrl", { url, ok: res.ok });
+    logInfo("webview", "pingUrl result", { url, ok: res.ok });
     return res.ok;
   } catch (err) {
-    logWarn(`pingUrl failed for ${url}`);
+    logWarn("webview", `pingUrl failed for ${url}`, err.message);
     return false;
   }
 }

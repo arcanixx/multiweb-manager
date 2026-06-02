@@ -19,7 +19,7 @@ ipcMain.handle('tools:filePreview', async (_, filePath) => {
     const buffer = fs.readFileSync(filePath);
     return { ok: true, data: { ext, base64: buffer.toString('base64') } };
   } catch (err) {
-    logError('tools:filePreview failed', err);
+    logError('ipc', 'tools:filePreview failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -40,7 +40,7 @@ ipcMain.handle('tools:apiRequest', async (_, { url, method, headers, body }) => 
       }
     };
   } catch (err) {
-    logError('tools:apiRequest failed', err);
+    logError('ipc', 'tools:apiRequest failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -56,7 +56,7 @@ ipcMain.handle('tools:clipboard:get', async () => {
       }
     };
   } catch (err) {
-    logError('tools:clipboard:get failed', err);
+    logError('ipc', 'tools:clipboard:get failed', err);
     return { ok: false, error: err.message };
   }
 });

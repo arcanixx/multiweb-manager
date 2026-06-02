@@ -32,7 +32,7 @@ ipcMain.handle("aggregatedTasks:getAll", async () => {
     const projects = loadProjects();
     return { ok: true, data: enrich(tasks, projects) };
   } catch (err) {
-    logError("aggregatedTasks:getAll failed", err);
+    logError('ipc', "aggregatedTasks:getAll failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -50,7 +50,7 @@ ipcMain.handle("aggregatedTasks:filter", async (_, { status, priority }) => {
 
     return { ok: true, data: enrich(filtered, projects) };
   } catch (err) {
-    logError("aggregatedTasks:filter failed", err);
+    logError('ipc', "aggregatedTasks:filter failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -74,7 +74,7 @@ ipcMain.handle("aggregatedTasks:sort", async (_, { by }) => {
 
     return { ok: true, data: enriched };
   } catch (err) {
-    logError("aggregatedTasks:sort failed", err);
+    logError('ipc', "aggregatedTasks:sort failed", err);
     return { ok: false, error: err.message };
   }
 });

@@ -39,7 +39,7 @@ export default function JsonFormatter() {
       }
     } catch (err) {
       setError(err.message);
-      logError('Format error', err);
+      logError('tools', 'Format error', err);
     }
   };
 

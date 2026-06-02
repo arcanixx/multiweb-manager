@@ -32,7 +32,7 @@ ipcMain.handle('webview:setUserAgent', async (_, { id, userAgent }) => {
     wc.setUserAgent(userAgent || DEFAULT_SETTINGS.defaultUserAgent);
     return { ok: true };
   } catch (err) {
-    logError('webview:setUserAgent failed', err);
+    logError('ipc', 'webview:setUserAgent failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -56,7 +56,7 @@ ipcMain.handle('webview:openInWindow', async (_, { url, userAgent }) => {
     await win.loadURL(url);
     return { ok: true };
   } catch (err) {
-    logError('webview:openInWindow failed', err);
+    logError('ipc', 'webview:openInWindow failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -69,7 +69,7 @@ ipcMain.handle('webview:getUsage', async (_, id) => {
     const mem = wc.getResourceUsage();
     return { ok: true, data: mem };
   } catch (err) {
-    logError('webview:getUsage failed', err);
+    logError('ipc', 'webview:getUsage failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -83,7 +83,7 @@ ipcMain.handle('webview:sleep', async (_, id) => {
     wc.stop();
     return { ok: true };
   } catch (err) {
-    logError('webview:sleep failed', err);
+    logError('ipc', 'webview:sleep failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -97,7 +97,7 @@ ipcMain.handle('webview:wake', async (_, id) => {
     wc.setAudioMuted(false);
     return { ok: true };
   } catch (err) {
-    logError('webview:wake failed', err);
+    logError('ipc', 'webview:wake failed', err);
     return { ok: false, error: err.message };
   }
 });

@@ -26,7 +26,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'medium
     // ─── handleEscape() – Obsługuje naciśnięcie klawisza Escape i zamyka modal wywołując callback onClose, gdy modal jest aktualnie otwarty
     const handleEscape = (e) => {
       if (e.key === 'Escape' && isOpen) {
-        logInfo('Modal: closed via Escape key');
+        logInfo('ui', 'Modal: closed via Escape key');
         onClose?.();
       }
     };
@@ -34,13 +34,13 @@ export default function Modal({ isOpen, onClose, title, children, size = 'medium
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
-      logInfo('Modal: opened');
+      logInfo('ui', 'Modal: opened');
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = 'unset';
-      logInfo('Modal: closed');
+      logInfo('ui', 'Modal: closed');
     };
   }, [isOpen, onClose]);
 

@@ -2,7 +2,7 @@
 // FILE: useNotepad.js
 // PATH: src/hooks/useNotepad.js
 // VERSION: 0.0.3
-// PURPOSE: Hook do notesStore – lista notatek, dodawanie, edycja, usuwanie load()           pobiera wszystkie notatki (notes:getAll) add(note)        dodaje notatkę (notes:add) update(id,patch) aktualizuje notatkę (notes:update) remove(id)       usuwa notatkę (notes:delete)
+// PURPOSE: Hook React do zarządzania notatkami użytkownika – obsługa operacji CRUD (Create, Read, Update, Delete) przez mostek IPC.
 // FUNCTIONS: useNotepad
 // DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -25,15 +25,15 @@ export function useNotepad() {
       const res = await window.electronAPI.invoke("notes:getAll");
       if (res?.ok) {
         setNotes(res.data);
-        logInfo("useNotepad.load", res.data.length);
+        logInfo("store", "useNotepad.load success", res.data.length);
       } else {
-        logError("useNotepad.load failed", res?.error);
-        logWarn("Nie można załadować notatek");
+        logError("store", "useNotepad.load failed", res?.error);
+        logWarn("store", "Nie można załadować notatek");
       }
       setLoading(false);
     } catch (err) {
-      logError("useNotepad.load exception", err);
-      logWarn("Wystąpił błąd podczas ładowania notatek");
+      logError("store", "useNotepad.load exception", err.message);
+      logWarn("store", "Wystąpił błąd podczas ładowania notatek");
       setLoading(false);
     }
   }
@@ -45,16 +45,16 @@ export function useNotepad() {
     try {
       const res = await window.electronAPI.invoke("notes:add", note);
       if (res?.ok) {
-        logInfo("useNotepad.add success");
+        logInfo("store", "useNotepad.add success");
         await load();
       } else {
-        logError("useNotepad.add failed", res?.error);
-        logWarn("Nie można dodać notatki");
+        logError("store", "useNotepad.add failed", res?.error);
+        logWarn("store", "Nie można dodać notatki");
       }
       return res;
     } catch (err) {
-      logError("useNotepad.add exception", err);
-      logWarn("Wystąpił błąd podczas dodawania notatki");
+      logError("store", "useNotepad.add exception", err.message);
+      logWarn("store", "Wystąpił błąd podczas dodawania notatki");
       return { ok: false, error: err.message };
     }
   }
@@ -69,16 +69,16 @@ export function useNotepad() {
     try {
       const res = await window.electronAPI.invoke("notes:update", { id, patch });
       if (res?.ok) {
-        logInfo("useNotepad.update success");
+        logInfo("store", "useNotepad.update success", id);
         await load();
       } else {
-        logError("useNotepad.update failed", res?.error);
-        logWarn("Nie można zaktualizować notatki");
+        logError("store", "useNotepad.update failed", res?.error);
+        logWarn("store", "Nie można zaktualizować notatki");
       }
       return res;
     } catch (err) {
-      logError("useNotepad.update exception", err);
-      logWarn("Wystąpił błąd podczas aktualizacji notatki");
+      logError("store", "useNotepad.update exception", err.message);
+      logWarn("store", "Wystąpił błąd podczas aktualizacji notatki");
       return { ok: false, error: err.message };
     }
   }
@@ -92,16 +92,16 @@ export function useNotepad() {
     try {
       const res = await window.electronAPI.invoke("notes:delete", { id });
       if (res?.ok) {
-        logInfo("useNotepad.remove success");
+        logInfo("store", "useNotepad.remove success", id);
         await load();
       } else {
-        logError("useNotepad.remove failed", res?.error);
-        logWarn("Nie można usunąć notatki");
+        logError("store", "useNotepad.remove failed", res?.error);
+        logWarn("store", "Nie można usunąć notatki");
       }
       return res;
     } catch (err) {
-      logError("useNotepad.remove exception", err);
-      logWarn("Wystąpił błąd podczas usuwania notatki");
+      logError("store", "useNotepad.remove exception", err.message);
+      logWarn("store", "Wystąpił błąd podczas usuwania notatki");
       return { ok: false, error: err.message };
     }
   }

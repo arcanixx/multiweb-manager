@@ -2,9 +2,9 @@
 // FILE: Sidebar.jsx
 // PATH: src/ui/sidebar/Sidebar.jsx
 // VERSION: 0.0.3
-// PURPOSE: Główny panel boczny – nawigacja, profile, kategorie, narzędzia
+// PURPOSE: Główny panel nawigacyjny aplikacji – zarządza listą profili, hierarchią kategorii, narzędziami systemowymi oraz integracją z mostkiem IPC dla trwałości ustawień.
 // FUNCTIONS: Sidebar
-// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, ProfileModal, CategoryModal, ContextMenu, SidebarSearch, SidebarCategory, SidebarProfileItem, SidebarTools, SidebarWorkspaces, ConfirmModal.jsx
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, ProfileModal.jsx, CategoryModal.jsx, ContextMenu.jsx, SidebarSearch.jsx, SidebarCategory.jsx, SidebarProfileItem.jsx, SidebarTools.jsx, SidebarWorkspaces.jsx, ConfirmModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -48,100 +48,156 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
   const [profileToDelete, setProfileToDelete] = useState(null);
 
   useEffect(() => onModalOpenChange?.(modalOpen), [modalOpen, onModalOpenChange]);
+
+  // ─── useEffect – Inicjalizacja kategorii i stanu zwinięcia przy montowaniu komponentu
   useEffect(() => {
-    window.electronAPI.getSettings().then(s => {
-      setCategories(s.categories || []);
-      setCollapsed(s.collapsedCategories || {});
-    });
+    try {
+      window.electronAPI.getSettings().then(s => {
+        setCategories(s.categories || []);
+        setCollapsed(s.collapsedCategories || {});
+        logInfo('ui', 'Sidebar: categories and collapse state initialized');
+      }).catch(err => {
+        logError('ui', 'Sidebar: failed to load settings', err.message);
+      });
+    } catch (err) {
+      logError('ui', 'Sidebar: exception in settings loading', err.message);
+    }
   }, []);
 
-// ─── saveCategories() – zapisuje kategorie i ich stan zwinięcia
+  // ─── saveCategories() – zapisuje kategorie i ich stan zwinięcia
   //   @param {Array} cats – lista kategorii
   //   @param {Object} cols – stan zwiniętych kategorii
   const saveCategories = (cats, cols = collapsed) => {
-    setCategories(cats);
-    window.electronAPI.saveSettings({ categories: cats, collapsedCategories: cols });
+    try {
+      setCategories(cats);
+      window.electronAPI.saveSettings({ categories: cats, collapsedCategories: cols });
+      logInfo('settings', 'Sidebar: categories saved');
+    } catch (err) {
+      logError('settings', 'Sidebar: saveCategories failed', err.message);
+    }
   };
 
-// ─── saveProfiles() – zapisuje profile przez IPC
+  // ─── saveProfiles() – zapisuje profile przez IPC
   //   @param {Array} newProfiles – aktualizowana lista profili
   const saveProfiles = (newProfiles) => {
-    onProfilesChange(newProfiles);
-    window.electronAPI.saveProfiles(newProfiles);
+    try {
+      onProfilesChange(newProfiles);
+      window.electronAPI.saveProfiles(newProfiles);
+      logInfo('store', 'Sidebar: profiles saved');
+    } catch (err) {
+      logError('store', 'Sidebar: saveProfiles failed', err.message);
+    }
   };
 
-// ─── handleAddProfile() – otwiera modal dodawania nowego profilu
+  // ─── handleAddProfile() – otwiera modal dodawania nowego profilu
   const handleAddProfile = () => {
     setEditingProfile(null);
     setShowProfileModal(true);
+    logDebug('ui', 'Sidebar: opening profile modal (add)');
   };
 
-// ─── handleSaveProfile() – zapisuje profil (nowy lub edytowany)
+  // ─── handleSaveProfile() – zapisuje profil (nowy lub edytowany)
   //   @param {Object} profileData – dane profilu
   const handleSaveProfile = (profileData) => {
-    const exists = profiles.find(p => p.id === profileData.id);
-    const newProfiles = exists
-      ? profiles.map(p => p.id === profileData.id ? profileData : p)
-      : [...profiles, profileData];
-    saveProfiles(newProfiles);
-    setShowProfileModal(false);
-    onSelect({ ...profileData, type: 'webview' });
-    if (!exists) window.electronAPI.addHistory({ profileName: profileData.name, url: profileData.url });
+    try {
+      const exists = profiles.find(p => p.id === profileData.id);
+      const newProfiles = exists
+        ? profiles.map(p => p.id === profileData.id ? profileData : p)
+        : [...profiles, profileData];
+      
+      saveProfiles(newProfiles);
+      setShowProfileModal(false);
+      onSelect({ ...profileData, type: 'webview' });
+      
+      if (!exists) {
+        window.electronAPI.addHistory({ 
+          profileName: profileData.name, 
+          url: profileData.url 
+        }).catch(err => logError('store', 'Sidebar: failed to add history entry', err.message));
+      }
+      
+      logInfo('ui', `Sidebar: profile ${exists ? 'updated' : 'created'}`, profileData.id);
+    } catch (err) {
+      logError('ui', 'Sidebar: handleSaveProfile failed', err.message);
+    }
   };
 
-// ─── toggleFavorite() – przełącza status ulubionego dla profilu
+  // ─── toggleFavorite() – przełącza status ulubionego dla profilu
   //   @param {number} profileId – ID profilu
   const toggleFavorite = (profileId) => {
-    saveProfiles(profiles.map(p => p.id === profileId ? { ...p, favorite: !p.favorite } : p));
+    try {
+      saveProfiles(profiles.map(p => p.id === profileId ? { ...p, favorite: !p.favorite } : p));
+      logDebug('ui', 'Sidebar: favorite toggled', profileId);
+    } catch (err) {
+      logError('ui', 'Sidebar: toggleFavorite failed', err.message);
+    }
   };
 
   // ─── deleteProfile() – oryginalna funkcja usuwania
   const deleteProfile = (profileId) => {
-    const newProfiles = profiles.filter(p => p.id !== profileId);
-    saveProfiles(newProfiles);
-    if (activeItem?.id === profileId) {
-      onSelect(null);
+    try {
+      const newProfiles = profiles.filter(p => p.id !== profileId);
+      saveProfiles(newProfiles);
+      if (activeItem?.id === profileId) {
+        onSelect(null);
+      }
+      logInfo('ui', `Sidebar: deleted profile ${profileId}`);
+    } catch (err) {
+      logError('ui', 'Sidebar: deleteProfile failed', err.message);
     }
-    logInfo(`Sidebar: deleted profile ${profileId}`);
   };
 
   // ─── handleDeleteClick() – otwiera modal potwierdzenia
   const handleDeleteClick = (profileId) => {
     setProfileToDelete(profileId);
     setShowDeleteConfirm(true);
+    logDebug('ui', 'Sidebar: delete confirm triggered', profileId);
   };
 
   // ─── handleDeleteConfirm() – wykonuje usunięcie po potwierdzeniu
   const handleDeleteConfirm = () => {
-    if (profileToDelete) {
-      deleteProfile(profileToDelete);
+    try {
+      if (profileToDelete) {
+        deleteProfile(profileToDelete);
+      }
+      setShowDeleteConfirm(false);
+      setProfileToDelete(null);
+    } catch (err) {
+      logError('ui', 'Sidebar: handleDeleteConfirm failed', err.message);
     }
-    setShowDeleteConfirm(false);
-    setProfileToDelete(null);
   };
 
-// ─── toggleCollapse() – przełącza stan zwinięcia kategorii
+  // ─── toggleCollapse() – przełącza stan zwinięcia kategorii
   //   @param {string} catId – ID kategorii
   const toggleCollapse = (catId) => {
-    const newCollapsed = { ...collapsed, [catId]: !collapsed[catId] };
-    setCollapsed(newCollapsed);
-    saveCategories(categories, newCollapsed);
+    try {
+      const newCollapsed = { ...collapsed, [catId]: !collapsed[catId] };
+      setCollapsed(newCollapsed);
+      saveCategories(categories, newCollapsed);
+      logDebug('ui', 'Sidebar: category collapse toggled', catId);
+    } catch (err) {
+      logError('ui', 'Sidebar: toggleCollapse failed', err.message);
+    }
   };
 
-// ─── handleContext() – obsługuje menu kontekstowe dla profilu
+  // ─── handleContext() – obsługuje menu kontekstowe dla profilu
   //   @param {Event} e – zdarzenie myszy
   //   @param {Object} profile – profil dla którego otwarte menu
   const handleContext = (e, profile) => {
-    e.preventDefault();
-    const items = [
-      { icon: ICONS.EDIT, label: t('sidebar.edit_profile'), action: () => { setEditingProfile(profile); setShowProfileModal(true); } },
-      { icon: profile.favorite ? ICONS.UNPIN : ICONS.STAR, label: profile.favorite ? t('sidebar.unpin') : t('sidebar.pin'), action: () => toggleFavorite(profile.id) },
-      '---',
-      { icon: ICONS.TASKS, label: t('sidebar.open_tasks'), action: () => onOpenTaskPanel?.(profile) },
-      '---',
-      { icon: ICONS.DELETE, label: t('sidebar.delete_profile'), action: () => handleDeleteClick(profile.id), danger: true },
-    ];
-    setContextMenu({ x: e.clientX, y: e.clientY, items });
+    try {
+      e.preventDefault();
+      const items = [
+        { icon: ICONS.EDIT, label: t('sidebar.edit_profile'), action: () => { setEditingProfile(profile); setShowProfileModal(true); } },
+        { icon: profile.favorite ? ICONS.UNPIN : ICONS.STAR, label: profile.favorite ? t('sidebar.unpin') : t('sidebar.pin'), action: () => toggleFavorite(profile.id) },
+        '---',
+        { icon: ICONS.TASKS, label: t('sidebar.open_tasks'), action: () => onOpenTaskPanel?.(profile) },
+        '---',
+        { icon: ICONS.DELETE, label: t('sidebar.delete_profile'), action: () => handleDeleteClick(profile.id), danger: true },
+      ];
+      setContextMenu({ x: e.clientX, y: e.clientY, items });
+    } catch (err) {
+      logError('ui', 'Sidebar: handleContext failed', err.message);
+    }
   };
 
   const searchLower = search.toLowerCase();
@@ -150,7 +206,7 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
   const byCategory = {};
   filtered.filter(p => !p.favorite).forEach(p => { const cat = p.category || ''; if (!byCategory[cat]) byCategory[cat] = []; byCategory[cat].push(p); });
 
-// ─── renderProfile() – renderuje pojedynczy profil jako SidebarProfileItem
+  // ─── renderProfile() – renderuje pojedynczy profil jako SidebarProfileItem
   //   @param {Object} p – obiekt profilu
   //   @returns {JSX.Element} – renderowany element profilu
   const renderProfile = (p) => {
@@ -184,11 +240,15 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
             <div key={catName}>
               <SidebarCategory name={catName} icon={catObj?.icon || ICONS.FOLDER} isCollapsed={isCollapsed}
                 onToggle={() => toggleCollapse(catId)} onContextMenu={(e) => {
-                  e.preventDefault();
-                  if (catObj) setContextMenu({ x: e.clientX, y: e.clientY, items: [
-                    { icon: ICONS.EDIT, label: t('sidebar.edit_category'), action: () => { setEditingCategory(catObj); setShowCategoryModal(true); } },
-                    { icon: ICONS.DELETE, label: t('sidebar.delete_category'), action: () => saveCategories(categories.filter(c => c.id !== catObj.id)), danger: true }
-                  ]});
+                  try {
+                    e.preventDefault();
+                    if (catObj) setContextMenu({ x: e.clientX, y: e.clientY, items: [
+                      { icon: ICONS.EDIT, label: t('sidebar.edit_category'), action: () => { setEditingCategory(catObj); setShowCategoryModal(true); } },
+                      { icon: ICONS.DELETE, label: t('sidebar.delete_category'), action: () => saveCategories(categories.filter(c => c.id !== catObj.id)), danger: true }
+                    ]});
+                  } catch (err) {
+                    logError('ui', 'Sidebar: category context menu failed', err.message);
+                  }
                 }} />
               {!isCollapsed && catProfiles.map(renderProfile)}
             </div>

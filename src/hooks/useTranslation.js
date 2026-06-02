@@ -2,7 +2,7 @@
 // FILE: useTranslation.js
 // PATH: src/hooks/useTranslation.js
 // VERSION: 0.0.3
-// PURPOSE: Hook do dostępu do tłumaczeń i helpData
+// PURPOSE: Hook React zapewniający dostęp do kontekstu tłumaczeń i danych pomocy.
 // FUNCTIONS: useTranslation
 // DEPENDS ON: react, translations.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -20,14 +20,14 @@ export function useTranslation() {
   try {
     const ctx = useContext(TranslationContext);
     if (!ctx) {
-      logError('useTranslation: TranslationContext is null');
+      logError("ui", "useTranslation: TranslationContext is null");
       throw new Error('useTranslation must be used within <TranslationProvider>');
     }
-    logInfo('useTranslation: context loaded');
+    logInfo("ui", "useTranslation context loaded");
     return ctx;
   } catch (err) {
-    logError('useTranslation exception', err);
-    logWarn('Wystąpił błąd podczas ładowania kontekstu tłumaczeń');
+    logError("ui", "useTranslation exception", err.message);
+    logWarn("ui", "Wystąpił błąd podczas ładowania kontekstu tłumaczeń");
     throw err;
   }
 }

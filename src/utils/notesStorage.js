@@ -37,7 +37,7 @@ export function loadNotesFromStorage() {
     const raw = localStorage.getItem(NOTES_STORAGE_KEY);
     if (raw) return JSON.parse(raw);
   } catch (e) {
-    logError('notesStorage: loadNotesFromStorage error', e);
+    logError('ui', 'notesStorage: loadNotesFromStorage error', e);
   }
   return null;
 }
@@ -53,6 +53,6 @@ export function saveNotesToStorage(notesState) {
     }
     localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(notesState));
   } catch (e) {
-    logError('notesStorage: saveNotesToStorage error', e);
+    logError('ui', 'notesStorage: saveNotesToStorage error', e);
   }
 }

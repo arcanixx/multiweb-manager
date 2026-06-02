@@ -39,7 +39,7 @@ ipcMain.handle("projects:getAll", async () => {
     const projects = loadProjects();
     return { ok: true, data: projects };
   } catch (err) {
-    logError("projects:getAll failed", err);
+    logError('ipc', "projects:getAll failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -61,7 +61,7 @@ ipcMain.handle("projects:getWithTasks", async (_, projectId) => {
       }
     };
   } catch (err) {
-    logError("projects:getWithTasks failed", err);
+    logError('ipc', "projects:getWithTasks failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -74,7 +74,7 @@ ipcMain.handle("projects:create", async (_, payload) => {
     saveProjects(updated);
     return { ok: true, data: updated };
   } catch (err) {
-    logError("projects:create failed", err);
+    logError('ipc', "projects:create failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -87,7 +87,7 @@ ipcMain.handle("projects:update", async (_, { id, patch }) => {
     saveProjects(updated);
     return { ok: true, data: updated };
   } catch (err) {
-    logError("projects:update failed", err);
+    logError('ipc', "projects:update failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -100,7 +100,7 @@ ipcMain.handle("projects:archive", async (_, id) => {
     saveProjects(updated);
     return { ok: true, data: updated };
   } catch (err) {
-    logError("projects:archive failed", err);
+    logError('ipc', "projects:archive failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -113,7 +113,7 @@ ipcMain.handle("projects:delete", async (_, id) => {
     saveProjects(updated);
     return { ok: true, data: updated };
   } catch (err) {
-    logError("projects:delete failed", err);
+    logError('ipc', "projects:delete failed", err);
     return { ok: false, error: err.message };
   }
 });

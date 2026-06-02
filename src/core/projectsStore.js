@@ -14,7 +14,14 @@ import { logInfo, logError, logWarn } from "../utils/logger.js";
 
 // ─── PROJECTS_FILE() – zwraca ścieżkę do pliku projektów w userData
 //   @returns {string} – pełna ścieżka do projects.json
-const PROJECTS_FILE = () => getUserDataPath("projects.json");
+const PROJECTS_FILE = () => {
+  try {
+    return getUserDataPath("projects.json");
+  } catch (err) {
+    logError("store", "projectsStore.PROJECTS_FILE failed", err.message);
+    return "projects.json";
+  }
+};
 
 // ─── loadProjects() – ładuje projekty z pliku lub z ustawień
 //   @returns {Array} – tablica projektów
@@ -26,8 +33,8 @@ export function loadProjects() {
     const fromSettings = loadSettings().projects;
     return Array.isArray(fromSettings) ? fromSettings : [];
   } catch (err) {
-    logError('loadProjects failed', err);
-    logWarn('Nie można załadować projektów – używam pustej tablicy');
+    logError("store", "projectsStore.loadProjects failed", err.message);
+    logWarn("store", "Nie można załadować projektów – używam pustej tablicy");
     return [];
   }
 }
@@ -39,11 +46,11 @@ export function saveProjects(projects) {
   try {
     writeJsonFile(PROJECTS_FILE(), { version: "0.0.3", data: projects });
     mergeSettings({ projects });
-    logInfo("projectsStore.saveProjects", projects.length);
+    logInfo("store", "projectsStore.saveProjects success", projects.length);
     return projects;
   } catch (err) {
-    logError('saveProjects failed', err);
-    logWarn('Nie można zapisać projektów');
+    logError("store", "projectsStore.saveProjects failed", err.message);
+    logWarn("store", "Nie można zapisać projektów");
     return projects;
   }
 }
@@ -52,8 +59,14 @@ export function saveProjects(projects) {
 //   @param {Object} project – obiekt projektu do dodania
 //   @returns {Array} – zaktualizowana tablica projektów
 export function createProject(project) {
-  const list = [...loadProjects(), project];
-  return saveProjects(list);
+  try {
+    const list = [...loadProjects(), project];
+    logInfo("store", "projectsStore.createProject success", project.id);
+    return saveProjects(list);
+  } catch (err) {
+    logError("store", "projectsStore.createProject failed", err.message);
+    return loadProjects();
+  }
 }
 
 // ─── updateProject() – aktualizuje istniejący projekt
@@ -61,22 +74,40 @@ export function createProject(project) {
 //   @param {Object} patch – obiekt z polami do zaktualizowania
 //   @returns {Array} – zaktualizowana tablica projektów
 export function updateProject(id, patch) {
-  const list = loadProjects().map((p) =>
-    p.id === id ? { ...p, ...patch } : p
-  );
-  return saveProjects(list);
+  try {
+    const list = loadProjects().map((p) =>
+      p.id === id ? { ...p, ...patch } : p
+    );
+    logInfo("store", "projectsStore.updateProject success", id);
+    return saveProjects(list);
+  } catch (err) {
+    logError("store", "projectsStore.updateProject failed", err.message);
+    return loadProjects();
+  }
 }
 
 // ─── archiveProject() – archiwizuje projekt (ustawia status: archived)
 //   @param {string} id – identyfikator projektu do zarchiwizowania
 //   @returns {Array} – zaktualizowana tablica projektów
 export function archiveProject(id) {
-  return updateProject(id, { status: "archived", archivedAt: Date.now() });
+  try {
+    logInfo("store", "projectsStore.archiveProject", id);
+    return updateProject(id, { status: "archived", archivedAt: Date.now() });
+  } catch (err) {
+    logError("store", "projectsStore.archiveProject failed", err.message);
+    return loadProjects();
+  }
 }
 
 // ─── deleteProject() – usuwa projekt po ID
 //   @param {string} id – identyfikator projektu do usunięcia
 //   @returns {Array} – zaktualizowana tablica projektów
 export function deleteProject(id) {
-  return saveProjects(loadProjects().filter((p) => p.id !== id));
+  try {
+    logInfo("store", "projectsStore.deleteProject success", id);
+    return saveProjects(loadProjects().filter((p) => p.id !== id));
+  } catch (err) {
+    logError("store", "projectsStore.deleteProject failed", err.message);
+    return loadProjects();
+  }
 }

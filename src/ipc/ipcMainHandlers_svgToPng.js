@@ -24,7 +24,7 @@ ipcMain.handle('tools:svgToPng', async (_, { svgPath, outputPath, width, height 
     fs.writeFileSync(outputPath, png);
     return { ok: true, data: outputPath };
   } catch (err) {
-    logError('tools:svgToPng failed', err);
+    logError('ipc', 'tools:svgToPng failed', err);
     return { ok: false, error: err.message };
   }
 });

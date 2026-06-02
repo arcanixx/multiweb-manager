@@ -25,14 +25,14 @@ export function Profiles() {
       const res = await window.electronAPI.invoke("profiles:getAll");
       if (res.ok) {
         setProfiles(res.data || []);
-        logInfo(`Profiles: loaded ${res.data?.length || 0} profiles`);
+        logInfo('ui', `Profiles: loaded ${res.data?.length || 0} profiles`);
       } else {
-        logError('Profiles: failed to load', res.error);
-        logWarn('Nie można załadować profili');
+        logError('ui', 'Profiles: failed to load', res.error);
+        logWarn('ui', 'Nie można załadować profili');
       }
     } catch (err) {
-      logError('Profiles: load failed', err);
-      logWarn('Wystąpił błąd podczas ładowania profili');
+      logError('ui', 'Profiles: load failed', err);
+      logWarn('ui', 'Wystąpił błąd podczas ładowania profili');
     } finally {
       setLoading(false);
     }

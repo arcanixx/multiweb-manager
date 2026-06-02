@@ -2,7 +2,7 @@
 // FILE: ClipboardHistoryModal.jsx
 // PATH: src/ui/notepad/ClipboardHistoryModal.jsx
 // VERSION: 0.0.3
-// PURPOSE: Modal historii schowka – integracja z clipboardStore, i18n
+// PURPOSE: Okno modalne prezentujące listę historycznych wpisów ze schowka systemowego – umożliwia przeglądanie i odzyskiwanie skopiowanych wcześniej fragmentów tekstu.
 // FUNCTIONS: ClipboardHistoryModal
 // DEPENDS ON: react, translations.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -23,12 +23,15 @@ export default function ClipboardHistoryModal({ onClose }) {
   // ─── useEffect – ładowanie historii schowka przy montowaniu
   useEffect(() => {
     try {
-      const h = window.electronAPI.getClipboardHistory();
-      setHistory(h);
-      logInfo(`ClipboardHistoryModal: loaded ${h.length} items`);
+      window.electronAPI.invoke('clipboard:getHistory').then(res => {
+        if (res?.ok) {
+          setHistory(res.data);
+          logInfo('ui', `ClipboardHistoryModal: loaded ${res.data.length} items`);
+        }
+      }).catch(err => logError('ui', 'ClipboardHistoryModal: IPC call failed', err.message));
     } catch (err) {
-      logError('ClipboardHistoryModal: failed to load clipboard history', err);
-      logWarn('Nie można załadować historii schowka');
+      logError('ui', 'ClipboardHistoryModal: failed to load clipboard history', err.message);
+      logWarn('ui', 'Nie można załadować historii schowka');
       setHistory([]);
     }
   }, []);

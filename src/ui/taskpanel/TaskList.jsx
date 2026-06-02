@@ -70,7 +70,7 @@ export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
             key={task.id}
             className="tasklist-item"
             onClick={() => {
-              logDebug(`TaskList: opening details for task ${task.id}`);
+              logDebug('tasks', `TaskList: opening details for task ${task.id}`);
               onOpenDetails(task);
             }}
           >

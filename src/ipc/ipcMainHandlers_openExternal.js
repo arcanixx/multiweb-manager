@@ -15,7 +15,7 @@ ipcMain.handle('shell:openExternal', async (_, url) => {
     await shell.openExternal(url);
     return { ok: true };
   } catch (err) {
-    logError('shell:openExternal failed', err);
+    logError('ipc', 'shell:openExternal failed', err);
     return { ok: false, error: err.message };
   }
 });

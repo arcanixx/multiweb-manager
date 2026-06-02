@@ -16,16 +16,16 @@ import { loadAndRunAllTests } from '../src/loaders/testsLoader.js';
 export async function runAllTests(options = {}) {
   // Inicjalizacja logWritera (tylko raz)
   await initLogWriter();
-  logInfo(`${ICONS.DEBUG} Running tests via loader...`);
+  logInfo('ui', `${ICONS.DEBUG} Running tests via loader...`);
   const { passed, failed, results } = await loadAndRunAllTests(options);
-  logInfo(`${ICONS.TEST_PASS} Tests completed: ${passed} passed, ${failed} failed`);
+  logInfo('ui', `${ICONS.TEST_PASS} Tests completed: ${passed} passed, ${failed} failed`);
   return { passed, failed, results };
 };
 // Automatyczne uruchomienie jeśli debugMode
 if (typeof window !== 'undefined' && window.electronAPI?.getDebugMode) {
   window.electronAPI.getDebugMode().then((debugMode) => {
     if (debugMode) {
-      logInfo('🐛 Debug mode enabled – running tests...');
+      logInfo('ui', '🐛 Debug mode enabled – running tests...');
       runAllTests();
     }
   });

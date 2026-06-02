@@ -55,6 +55,8 @@ let mainWindow = null;
 // =============================================================================
 // FUNKCJA TWORZENIA OKNA
 // =============================================================================
+
+// ─── createWindow() – Inicjalizuje główne okno BrowserWindow, ustawia CSP i ładuje URL
 export function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1400,
@@ -112,17 +114,19 @@ app.on("web-contents-created", (_, contents) => {
 // =============================================================================
 // STARTUP TESTS — uruchamia TestRunner gdy debugMode=true
 // =============================================================================
+
+// ─── runStartupTestsIfEnabled() – Sprawdza ustawienia debugMode i uruchamia testy integracyjne przy starcie
 export async function runStartupTestsIfEnabled() {
   try {
     const settings = loadSettings();
     const debugMode = settings.debugMode ?? DEFAULT_SETTINGS.debugMode;
     if (FEATURES.startupTests && debugMode) {
-      logInfo("Startup tests enabled — running TestRunner...");
+      logInfo("engine", "Startup tests enabled — running TestRunner...");
       const summary = await runAllTests({ logToFile: true, verbose: false });
-      logInfo("Startup tests finished", summary);
+      logInfo("engine", "Startup tests finished", summary);
     }
   } catch (err) {
-    logError("Startup tests failed", err);
+    logError("engine", "Startup tests failed", err.message);
   }
 }
 
@@ -130,6 +134,8 @@ export async function runStartupTestsIfEnabled() {
 // DISK SPACE WARNING
 // Ostrzega gdy wolne miejsce < 5% (tylko Windows)
 // =============================================================================
+
+// ─── checkDiskSpaceWarning() – Sprawdza dostępne miejsce na partycji danych użytkownika (tylko Windows)
 export function checkDiskSpaceWarning() {
   try {
     if (process.platform !== "win32") return;
@@ -146,12 +152,12 @@ export function checkDiskSpaceWarning() {
       const size = Number(sizeMatch[1]) || 1;
       const pctFree = (free / size) * 100;
       if (pctFree < 5) {
-        logError("Low disk space warning", { pctFree: pctFree.toFixed(1), drive: driveLetter });
+        logError("engine", "Low disk space warning", { pctFree: pctFree.toFixed(1), drive: driveLetter });
       }
     }
   } catch (err) {
     // Nie przerywamy startu — brak wmic to nie problem krytyczny
-    logError("checkDiskSpaceWarning failed", err.message);
+    logError("engine", "checkDiskSpaceWarning failed", err.message);
   }
 }
 
@@ -179,5 +185,5 @@ app.on('will-quit', () => {
 // GLOBAL ERROR HANDLERS
 // Logują błędy, które inaczej znikają bez śladu
 // =============================================================================
-process.on("uncaughtException", (err) => logError("uncaughtException", err));
-process.on("unhandledRejection", (reason) => logError("unhandledRejection", reason));
+process.on("uncaughtException", (err) => logError('ui', "uncaughtException", err));
+process.on("unhandledRejection", (reason) => logError('ui', "unhandledRejection", reason));

@@ -27,7 +27,7 @@ export default function HistoryExport({ entries }) {
   const exportToCSV = () => {
     try {
       if (entries.length === 0) {
-        logWarn('HistoryExport: no entries to export');
+        logWarn('ui', 'HistoryExport: no entries to export');
         return;
       }
 
@@ -53,11 +53,11 @@ export default function HistoryExport({ entries }) {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      logDebug('History exported to CSV');
-      logInfo(`HistoryExport: exported ${entries.length} entries to CSV`);
+      logDebug('ui', 'History exported to CSV');
+      logInfo('ui', `HistoryExport: exported ${entries.length} entries to CSV`);
     } catch (err) {
-      logError('HistoryExport: failed to export CSV', err);
-      logWarn('Wystąpił błąd podczas eksportu historii');
+      logError('ui', 'HistoryExport: failed to export CSV', err);
+      logWarn('ui', 'Wystąpił błąd podczas eksportu historii');
     }
   };
   return (

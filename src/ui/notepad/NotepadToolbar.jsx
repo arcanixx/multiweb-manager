@@ -30,11 +30,11 @@ export default function NotepadToolbar({ onSave, onSaveAs, onToggleFind, wordWra
   //   @returns {void}
   const handleSave = () => {
     try {
-      logInfo('NotepadToolbar: save triggered');
+      logInfo('ui', 'NotepadToolbar: save triggered');
       onSave?.();
     } catch (err) {
-      logError('NotepadToolbar: save failed', err);
-      logWarn('Wystąpił błąd podczas zapisu');
+      logError('ui', 'NotepadToolbar: save failed', err.message);
+      logWarn('ui', 'Wystąpił błąd podczas zapisu');
     }
   };
 
@@ -42,11 +42,11 @@ export default function NotepadToolbar({ onSave, onSaveAs, onToggleFind, wordWra
   //   @returns {void}
   const handleSaveAs = () => {
     try {
-      logInfo('NotepadToolbar: save as triggered');
+      logInfo('ui', 'NotepadToolbar: save as triggered');
       onSaveAs?.();
     } catch (err) {
-      logError('NotepadToolbar: save as failed', err);
-      logWarn('Wystąpił błąd podczas zapisu do pliku');
+      logError('ui', 'NotepadToolbar: save as failed', err.message);
+      logWarn('ui', 'Wystąpił błąd podczas zapisu do pliku');
     }
   };
 
@@ -54,11 +54,11 @@ export default function NotepadToolbar({ onSave, onSaveAs, onToggleFind, wordWra
   //   @returns {void}
   const handleToggleFind = () => {
     try {
-      logInfo('NotepadToolbar: toggle find triggered');
+      logInfo('ui', 'NotepadToolbar: toggle find triggered');
       onToggleFind?.();
     } catch (err) {
-      logError('NotepadToolbar: toggle find failed', err);
-      logWarn('Wystąpił błąd podczas przełączania wyszukiwania');
+      logError('ui', 'NotepadToolbar: toggle find failed', err.message);
+      logWarn('ui', 'Wystąpił błąd podczas przełączania wyszukiwania');
     }
   };
 
@@ -66,11 +66,11 @@ export default function NotepadToolbar({ onSave, onSaveAs, onToggleFind, wordWra
   //   @returns {void}
   const handleToggleWordWrap = () => {
     try {
-      logInfo('NotepadToolbar: toggle word wrap triggered');
+      logInfo('ui', 'NotepadToolbar: toggle word wrap triggered');
       onToggleWordWrap?.();
     } catch (err) {
-      logError('NotepadToolbar: toggle word wrap failed', err);
-      logWarn('Wystąpił błąd podczas przełączania zawijania wierszy');
+      logError('ui', 'NotepadToolbar: toggle word wrap failed', err.message);
+      logWarn('ui', 'Wystąpił błąd podczas przełączania zawijania wierszy');
     }
   };
 

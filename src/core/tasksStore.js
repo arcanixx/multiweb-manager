@@ -45,8 +45,8 @@ export function loadTasksSections(projectName) {
       done: t.done || []
     };
   } catch (err) {
-    logError('loadTasksSections failed', err);
-    logWarn(`Nie można załadować zadań dla projektu ${projectName}`);
+    logError('tasks', 'loadTasksSections failed', err);
+    logWarn('tasks', `Nie można załadować zadań dla projektu ${projectName}`);
     return EMPTY_SECTIONS();
   }
 }
@@ -74,11 +74,11 @@ export function saveTasksForProject(projectName, payload) {
       project: projectName,
       ...body
     });
-    logInfo("tasksStore.saveTasksForProject", projectName);
+    logInfo('tasks', "tasksStore.saveTasksForProject", projectName);
     return body;
   } catch (err) {
-    logError('saveTasksForProject failed', err);
-    logWarn(`Nie można zapisać zadań dla projektu ${projectName}`);
+    logError('tasks', 'saveTasksForProject failed', err);
+    logWarn('tasks', `Nie można zapisać zadań dla projektu ${projectName}`);
     return payload;
   }
 }
@@ -97,8 +97,8 @@ export function loadAllTasksGrouped() {
     }
     return out;
   } catch (err) {
-    logError('loadAllTasksGrouped failed', err);
-    logWarn('Nie można załadować wszystkich zadań');
+    logError('tasks', 'loadAllTasksGrouped failed', err);
+    logWarn('tasks', 'Nie można załadować wszystkich zadań');
     return {};
   }
 }
@@ -116,11 +116,11 @@ export function loadTasks() {
         }
       }
     }
-    logInfo("tasksStore.loadTasks", flat.length);
+    logInfo('tasks', "tasksStore.loadTasks", flat.length);
     return flat;
   } catch (err) {
-    logError('loadTasks failed', err);
-    logWarn('Nie można załadować płaskiej listy zadań');
+    logError('tasks', 'loadTasks failed', err);
+    logWarn('tasks', 'Nie można załadować płaskiej listy zadań');
     return [];
   }
 }

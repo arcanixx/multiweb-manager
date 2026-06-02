@@ -32,7 +32,7 @@ ipcMain.handle('webview:navigate', async (_, { id, url }) => {
     await wc.loadURL(url);
     return { ok: true };
   } catch (err) {
-    logError('webview:navigate failed', err);
+    logError('ipc', 'webview:navigate failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -43,7 +43,7 @@ ipcMain.handle('webview:reload', async (_, id) => {
     wc.reload();
     return { ok: true };
   } catch (err) {
-    logError('webview:reload failed', err);
+    logError('ipc', 'webview:reload failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -54,7 +54,7 @@ ipcMain.handle('webview:goBack', async (_, id) => {
     if (wc.canGoBack()) wc.goBack();
     return { ok: true };
   } catch (err) {
-    logError('webview:goBack failed', err);
+    logError('ipc', 'webview:goBack failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -66,7 +66,7 @@ ipcMain.handle('webview:goForward', async (_, id) => {
     if (wc.canGoForward()) wc.goForward();
     return { ok: true };
   } catch (err) {
-    logError('webview:goForward failed', err);
+    logError('ipc', 'webview:goForward failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -77,7 +77,7 @@ ipcMain.handle('webview:getURL', async (_, id) => {
     if (!wc) throw new Error('WEBVIEW_NOT_FOUND');
     return { ok: true, data: wc.getURL() };
   } catch (err) {
-    logError('webview:getURL failed', err);
+    logError('ipc', 'webview:getURL failed', err);
     return { ok: false, error: err.message };
   }
 });

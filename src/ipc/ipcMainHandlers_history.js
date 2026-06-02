@@ -24,7 +24,7 @@ ipcMain.handle("history:getAll", async () => {
     const history = loadHistory();
     return { ok: true, data: history };
   } catch (err) {
-    logError("history:getAll failed", err);
+    logError('ipc', "history:getAll failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -40,7 +40,7 @@ ipcMain.handle("history:add", async (_, entry) => {
     const updated = addHistoryEntry(entry);
     return { ok: true, data: updated };
   } catch (err) {
-    logError("history:add failed", err);
+    logError('ipc', "history:add failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -52,7 +52,7 @@ ipcMain.handle("history:clear", async () => {
     const empty = clearHistory();
     return { ok: true, data: empty };
   } catch (err) {
-    logError("history:clear failed", err);
+    logError('ipc', "history:clear failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -65,7 +65,7 @@ ipcMain.handle("history:getRecent", async () => {
     const recent = getRecentHistory(100);
     return { ok: true, data: recent };
   } catch (err) {
-    logError("history:getRecent failed", err);
+    logError('ipc', "history:getRecent failed", err);
     return { ok: false, error: err.message };
   }
 });

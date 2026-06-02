@@ -2,7 +2,7 @@
 // FILE: Notepad.jsx
 // PATH: src/ui/notepad/Notepad.jsx
 // VERSION: 0.0.3
-// PURPOSE: Główny komponent notatnika – loader podmodułów i integracja hooków
+// PURPOSE: Główny komponent interfejsu notatnika – koordynuje pracę zakładek, edytora oraz paneli wyszukiwania i statusu, integrując logikę z hookami useNotepadUI i useNotepadFindReplace.
 // FUNCTIONS: Notepad
 // DEPENDS ON: react, useNotepadUI.js, useNotepadFindReplace.js, NotepadTabs, NotepadToolbar, NotepadFindReplace, NotepadStatusBar, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -41,10 +41,10 @@ export default function Notepad() {
   const handleToggleFind = () => {
     try {
       setShowFind(v => !v);
-      logInfo(`Notepad: find panel toggled to ${!showFind}`);
+      logInfo('ui', `Notepad: find panel toggled to ${!showFind}`);
     } catch (err) {
-      logError('Notepad: toggle find failed', err);
-      logWarn('Wystąpił błąd podczas przełączania wyszukiwania');
+      logError('ui', 'Notepad: toggle find failed', err.message);
+      logWarn('ui', 'Wystąpił błąd podczas przełączania wyszukiwania');
     }
   };
 
@@ -53,10 +53,10 @@ export default function Notepad() {
   const handleToggleWordWrap = () => {
     try {
       setWordWrap(v => !v);
-      logInfo(`Notepad: word wrap toggled to ${!wordWrap}`);
+      logInfo('ui', `Notepad: word wrap toggled to ${!wordWrap}`);
     } catch (err) {
-      logError('Notepad: toggle word wrap failed', err);
-      logWarn('Wystąpił błąd podczas przełączania zawijania wierszy');
+      logError('ui', 'Notepad: toggle word wrap failed', err.message);
+      logWarn('ui', 'Wystąpił błąd podczas przełączania zawijania wierszy');
     }
   };
   return (

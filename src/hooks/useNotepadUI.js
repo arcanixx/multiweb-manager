@@ -2,7 +2,7 @@
 // FILE: useNotepadUI.js
 // PATH: src/hooks/useNotepadUI.js
 // VERSION: 0.0.3
-// PURPOSE: Hook zarządzania stanem notatnika – zakładki, autosave, zapis, klawisze
+// PURPOSE: Hook React do zarządzania interfejsem notatnika – obsługa zakładek, automatycznego zapisu oraz skrótów klawiszowych.
 // FUNCTIONS: useNotepadUI
 // DEPENDS ON: react, translations.js, notesStorage.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -145,7 +145,7 @@ export function useNotepadUI({ textareaRef }) {
   const saveToFile = useCallback(async () => {
     try {
       if (!window.electronAPI?.saveFile) {
-        logWarn("useNotepadUI.saveToFile: electronAPI.saveFile unavailable");
+        logWarn('ui', "useNotepadUI.saveToFile: electronAPI.saveFile unavailable");
         showToast(t('notepad.save_as_unavailable'));
         return;
       }
@@ -157,15 +157,15 @@ export function useNotepadUI({ textareaRef }) {
       });
 
       if (result?.ok) {
-        logInfo("useNotepadUI.saveToFile success");
+        logInfo("ui", "useNotepadUI.saveToFile success");
         showToast(t('notepad.saved_to_file'));
       } else {
-        logError("useNotepadUI.saveToFile failed", result?.error);
-        logWarn("Nie można zapisać pliku");
+        logError("ui", "useNotepadUI.saveToFile failed", result?.error);
+        logWarn("ui", "Nie można zapisać pliku");
       }
     } catch (err) {
-      logError("useNotepadUI.saveToFile exception", err);
-      logWarn("Wystąpił błąd podczas zapisu pliku");
+      logError("ui", "useNotepadUI.saveToFile exception", err.message);
+      logWarn("ui", "Wystąpił błąd podczas zapisu pliku");
     }
   }, [activeTabObj, showToast, t]);
 

@@ -33,8 +33,8 @@ function baseDefaults() {
     );
     extra = JSON.parse(raw).data || {};
   } catch (err) {
-    logError('baseDefaults failed', err);
-    logWarn('Nie można załadować domyślnych ustawień – używam DEFAULT_SETTINGS');
+    logError('settings', 'baseDefaults failed', err);
+    logWarn('settings', 'Nie można załadować domyślnych ustawień – używam DEFAULT_SETTINGS');
   }
   return {
     ...DEFAULT_SETTINGS,
@@ -51,8 +51,8 @@ export function loadSettings() {
     if (!stored || typeof stored !== "object") return baseDefaults();
     return { ...baseDefaults(), ...stored };
   } catch (err) {
-    logError('loadSettings failed', err);
-    logWarn('Nie można załadować ustawień – używam domyślnych');
+    logError('settings', 'loadSettings failed', err);
+    logWarn('settings', 'Nie można załadować ustawień – używam domyślnych');
     return baseDefaults();
   }
 }
@@ -63,11 +63,11 @@ export function loadSettings() {
 export function saveSettings(settings) {
   try {
     writeJsonFile(SETTINGS_FILE(), settings);
-    logInfo("settingsStore.saveSettings", Object.keys(settings).length);
+    logInfo('settings', "settingsStore.saveSettings", Object.keys(settings).length);
     return settings;
   } catch (err) {
-    logError('saveSettings failed', err);
-    logWarn('Nie można zapisać ustawień');
+    logError('settings', 'saveSettings failed', err);
+    logWarn('settings', 'Nie można zapisać ustawień');
     return settings;
   }
 }

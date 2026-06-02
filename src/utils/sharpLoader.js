@@ -15,7 +15,7 @@ export async function loadSharp() {
   try {
     return (await import('sharp')).default;
   } catch {
-    logWarn('sharpLoader: moduł sharp niedostępny – operacje na obrazach wyłączone');
+    logWarn('ui', 'sharpLoader: moduł sharp niedostępny – operacje na obrazach wyłączone');
     return null;
   }
 }

@@ -43,9 +43,9 @@ export default function TaskPanel({ projectId, onClose }) {
       ]);
       setTasks(tasksData || { active: [], backlog: [], done: [] });
       setProjects(projectsData);
-      logInfo(`TaskPanel: loaded tasks for project ${projectId}`);
+      logInfo('tasks', `TaskPanel: loaded tasks for project ${projectId}`);
     } catch (error) {
-      logError('TaskPanel: failed to load data', error);
+      logError('tasks', 'TaskPanel: failed to load data', error);
     } finally {
       setLoading(false);
     }
@@ -73,9 +73,9 @@ export default function TaskPanel({ projectId, onClose }) {
       }
       await saveTasksForProject(projectId, updatedTasks);
       setTasks(updatedTasks);
-      logInfo(`TaskPanel: task ${taskData.id ? 'updated' : 'added'}`);
+      logInfo('tasks', `TaskPanel: task ${taskData.id ? 'updated' : 'added'}`);
     } catch (error) {
-      logError('TaskPanel: failed to save task', error);
+      logError('tasks', 'TaskPanel: failed to save task', error);
     }
   };
 
@@ -101,9 +101,9 @@ export default function TaskPanel({ projectId, onClose }) {
       }
       await saveTasksForProject(projectId, updatedTasks);
       setTasks(updatedTasks);
-      logInfo(`TaskPanel: deleted task ${taskToDelete.id}`);
+      logInfo('tasks', `TaskPanel: deleted task ${taskToDelete.id}`);
     } catch (error) {
-      logError('TaskPanel: failed to delete task', error);
+      logError('tasks', 'TaskPanel: failed to delete task', error);
     } finally {
       setShowDeleteConfirm(false);
       setTaskToDelete(null);
@@ -127,9 +127,9 @@ export default function TaskPanel({ projectId, onClose }) {
       updatedTasks[newSection].push({ ...task, section: newSection });
       await saveTasksForProject(projectId, updatedTasks);
       setTasks(updatedTasks);
-      logInfo(`TaskPanel: moved task ${task.id} to ${newSection}`);
+      logInfo('tasks', `TaskPanel: moved task ${task.id} to ${newSection}`);
     } catch (error) {
-      logError('TaskPanel: failed to move task', error);
+      logError('tasks', 'TaskPanel: failed to move task', error);
     }
   };
 

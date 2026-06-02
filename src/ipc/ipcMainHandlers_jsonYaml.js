@@ -20,7 +20,7 @@ ipcMain.handle('tools:formatJSON', async (_, text) => {
     const formatted = JSON.stringify(parsed, null, 2);
     return { ok: true, data: formatted };
   } catch (err) {
-    logError('tools:formatJSON failed', err);
+    logError('ipc', 'tools:formatJSON failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -35,7 +35,7 @@ ipcMain.handle('tools:yamlToJson', async (_, text) => {
     const formatted = JSON.stringify(parsed, null, 2);
     return { ok: true, data: formatted };
   } catch (err) {
-    logError('tools:yamlToJson failed', err);
+    logError('ipc', 'tools:yamlToJson failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -50,7 +50,7 @@ ipcMain.handle('tools:jsonToYaml', async (_, text) => {
     const formatted = yaml.dump(parsed);
     return { ok: true, data: formatted };
   } catch (err) {
-    logError('tools:jsonToYaml failed', err);
+    logError('ipc', 'tools:jsonToYaml failed', err);
     return { ok: false, error: err.message };
   }
 });

@@ -2,7 +2,7 @@
 // FILE: workspacesStore.js
 // PATH: src/core/workspacesStore.js
 // VERSION: 0.0.3
-// PURPOSE: Zarządzanie workspace'ami użytkownika
+// PURPOSE: Zarządzanie przestrzeniami roboczymi (workspaces) użytkownika – ładowanie, zapisywanie oraz operacje typu upsert.
 // FUNCTIONS: getAllWorkspaces, saveWorkspace, saveWorkspaces, deleteWorkspace
 // DEPENDS ON: fs, path, electron, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -22,7 +22,7 @@ function loadStore() {
     }
     return JSON.parse(fs.readFileSync(WORKSPACES_FILE, "utf8"));
   } catch (err) {
-    logError("workspacesStore.loadStore error", err);
+    logError("store", "workspacesStore.loadStore failed", err.message);
     return { version: "0.0.3", data: [] };
   }
 }
@@ -31,55 +31,67 @@ function loadStore() {
 function saveStore(store) {
   try {
     fs.writeFileSync(WORKSPACES_FILE, JSON.stringify(store, null, 2), "utf8");
+    logInfo("store", "workspacesStore.saveStore success");
     return true;
   } catch (err) {
-    logError("workspacesStore.saveStore error", err);
+    logError("store", "workspacesStore.saveStore failed", err.message);
     return false;
   }
 }
 
 // ─── getAllWorkspaces() – Pobiera i zwraca tablicę wszystkich zdefiniowanych przestrzeni roboczych użytkownika
 export function getAllWorkspaces() {
-  return loadStore().data;
+  try {
+    return loadStore().data || [];
+  } catch (err) {
+    logError("store", "workspacesStore.getAllWorkspaces failed", err.message);
+    return [];
+  }
 }
-/**
- * Zapisuje workspace (upsert po id).
- * Jeśli workspace o danym id nie istnieje – dodaje go.
- * Jeśli istnieje – nadpisuje.
- */
 
 // ─── saveWorkspace() – Zapisuje lub aktualizuje (upsert) pojedynczą przestrzeń roboczą na podstawie jej identyfikatora, zapisuje stan w pliku i zwraca ten obiekt
 export function saveWorkspace(workspace) {
-  const store = loadStore();
-  const idx = store.data.findIndex(w => w.id === workspace.id);
+  try {
+    const store = loadStore();
+    const idx = store.data.findIndex(w => w.id === workspace.id);
 
-  if (idx === -1) {
-    store.data.push(workspace);
-  } else {
-    store.data[idx] = workspace;
+    if (idx === -1) {
+      store.data.push(workspace);
+    } else {
+      store.data[idx] = workspace;
+    }
+
+    saveStore(store);
+    logInfo("store", "workspacesStore.saveWorkspace success", workspace.id);
+    return workspace;
+  } catch (err) {
+    logError("store", "workspacesStore.saveWorkspace failed", err.message);
+    return workspace;
   }
-
-  saveStore(store);
-  logInfo("workspacesStore.saveWorkspace", workspace.id);
-  return workspace;
 }
-
-/** Zastępuje całą listę workspace'ów. */
 
 // ─── saveWorkspaces() – Nadpisuje całą listę przestrzeni roboczych nową tablicą obiektów, zapisuje ją na dysku i zwraca przekazaną tablicę
 export function saveWorkspaces(workspaces) {
-  saveStore({ version: "0.0.3", data: workspaces });
-  logInfo("workspacesStore.saveWorkspaces", workspaces.length);
-  return workspaces;
+  try {
+    saveStore({ version: "0.0.3", data: workspaces });
+    logInfo("store", "workspacesStore.saveWorkspaces success", workspaces.length);
+    return workspaces;
+  } catch (err) {
+    logError("store", "workspacesStore.saveWorkspaces failed", err.message);
+    return workspaces;
+  }
 }
-
-/** Usuwa workspace po id. */
 
 // ─── deleteWorkspace() – Usuwa przestrzeń roboczą o podanym identyfikatorze ze sklepu danych, zapisuje zmiany na dysku i zwraca true
 export function deleteWorkspace(id) {
-  const store = loadStore();
-  store.data = store.data.filter(w => w.id !== id);
-  saveStore(store);
-  logInfo("workspacesStore.deleteWorkspace", id);
-  return true;
+  try {
+    const store = loadStore();
+    store.data = store.data.filter(w => w.id !== id);
+    saveStore(store);
+    logInfo("store", "workspacesStore.deleteWorkspace success", id);
+    return true;
+  } catch (err) {
+    logError("store", "workspacesStore.deleteWorkspace failed", err.message);
+    return false;
+  }
 }

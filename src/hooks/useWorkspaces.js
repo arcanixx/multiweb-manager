@@ -2,14 +2,14 @@
 // FILE: useWorkspaces.js
 // PATH: src/hooks/useWorkspaces.js
 // VERSION: 0.0.3
-// PURPOSE: Hook do workspacesStore – lista, zapis, usuwanie load()           pobiera wszystkie workspace'y (workspaces:getAll) save(workspace)  zapisuje workspace (workspaces:save) remove(id)       usuwa workspace (workspaces:delete)
+// PURPOSE: Hook React do zarządzania przestrzeniami roboczymi (workspaces) użytkownika przez mostek IPC.
 // FUNCTIONS: useWorkspaces
 // DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { useEffect, useState } from "react";
-import { logInfo, logError, logWarn, logDebug } from "../utils/loggerRenderer.js";
+import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 
 // ─── useWorkspaces() – hook do zarządzania workspace'ami
 //   @returns {Object} – obiekt z workspaces, loading i funkcjami saveWorkspace, deleteWorkspace
@@ -25,15 +25,15 @@ export function useWorkspaces() {
       const res = await window.electronAPI.invoke("workspaces:getAll");
       if (res?.ok) {
         setWorkspaces(res.data);
-        logInfo("useWorkspaces.load", res.data.length);
+        logInfo("store", "useWorkspaces.load success", res.data.length);
       } else {
-        logError("useWorkspaces.load failed", res?.error);
-        logWarn("Nie można załadować workspace'ów");
+        logError("store", "useWorkspaces.load failed", res?.error);
+        logWarn("store", "Nie można załadować workspace'ów");
       }
       setLoading(false);
     } catch (err) {
-      logError("useWorkspaces.load exception", err);
-      logWarn("Wystąpił błąd podczas ładowania workspace'ów");
+      logError("store", "useWorkspaces.load exception", err.message);
+      logWarn("store", "Wystąpił błąd podczas ładowania workspace'ów");
       setLoading(false);
     }
   }
@@ -45,16 +45,16 @@ export function useWorkspaces() {
     try {
       const res = await window.electronAPI.invoke("workspaces:save", workspace);
       if (res?.ok) {
-        logInfo("useWorkspaces.save success");
+        logInfo("store", "useWorkspaces.save success", workspace.id);
         await load();
       } else {
-        logError("useWorkspaces.save failed", res?.error);
-        logWarn("Nie można zapisać workspace");
+        logError("store", "useWorkspaces.save failed", res?.error);
+        logWarn("store", "Nie można zapisać workspace");
       }
       return res;
     } catch (err) {
-      logError("useWorkspaces.save exception", err);
-      logWarn("Wystąpił błąd podczas zapisu workspace");
+      logError("store", "useWorkspaces.save exception", err.message);
+      logWarn("store", "Wystąpił błąd podczas zapisu workspace");
       return { ok: false, error: err.message };
     }
   }
@@ -66,16 +66,16 @@ export function useWorkspaces() {
     try {
       const res = await window.electronAPI.invoke("workspaces:delete", { id });
       if (res?.ok) {
-        logInfo("useWorkspaces.remove success");
+        logInfo("store", "useWorkspaces.remove success", id);
         await load();
       } else {
-        logError("useWorkspaces.remove failed", res?.error);
-        logWarn("Nie można usunąć workspace");
+        logError("store", "useWorkspaces.remove failed", res?.error);
+        logWarn("store", "Nie można usunąć workspace");
       }
       return res;
     } catch (err) {
-      logError("useWorkspaces.remove exception", err);
-      logWarn("Wystąpił błąd podczas usuwania workspace");
+      logError("store", "useWorkspaces.remove exception", err.message);
+      logWarn("store", "Wystąpił błąd podczas usuwania workspace");
       return { ok: false, error: err.message };
     }
   }

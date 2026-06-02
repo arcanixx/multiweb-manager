@@ -38,9 +38,9 @@ export default function CookieGrabber({ activeWebViewId }) {
     const result = await window.electronAPI?.getCookies?.(partition);
     if (!result?.ok) throw new Error(result?.error || 'Failed to get cookies');
     setCookies(result.data || []);
-    logDebug(`CookieGrabber: grabbed ${result.data?.length || 0} cookies`);
+    logDebug('tools', `CookieGrabber: grabbed ${result.data?.length || 0} cookies`);
   } catch (err) {
-    logError('CookieGrabber failed', err);
+    logError('tools', 'CookieGrabber failed', err);
     setError(err.message);
   } finally {
     setLoading(false);
@@ -51,14 +51,14 @@ export default function CookieGrabber({ activeWebViewId }) {
   const handleCopyCookie = (cookie) => {
     const text = `${cookie.name}=${cookie.value}`;
     navigator.clipboard.writeText(text);
-    logDebug(`CookieGrabber: copied ${cookie.name}`);
+    logDebug('tools', `CookieGrabber: copied ${cookie.name}`);
   };
 
   // ─── handleCopyAll() – kopiuję wszystkie cookies do schowka
   const handleCopyAll = () => {
     const all = cookies.map(c => `${c.name}=${c.value}`).join('; ');
     navigator.clipboard.writeText(all);
-    logDebug('CookieGrabber: copied all cookies');
+    logDebug('tools', 'CookieGrabber: copied all cookies');
   };
 
   // ─── handleExportJson() – eksportuje cookies do pliku JSON
@@ -71,7 +71,7 @@ export default function CookieGrabber({ activeWebViewId }) {
     a.download = `cookies-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    logDebug('CookieGrabber: exported to JSON');
+    logDebug('tools', 'CookieGrabber: exported to JSON');
   };
 
   return (

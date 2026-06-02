@@ -39,7 +39,7 @@ export default function AggregatedTasks() {
       setCollapsed(settings.collapsedTaskProjects || {});
       log('AggregatedTasks: loaded, projects:', Object.keys(data || {}).length);
     } catch (err) {
-      logError('AggregatedTasks: load failed', err.message);
+      logError('tasks', 'AggregatedTasks: load failed', err.message);
     } finally {
       setLoading(false);
     }

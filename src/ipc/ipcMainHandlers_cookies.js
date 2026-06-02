@@ -16,7 +16,7 @@ ipcMain.handle('tools:getCookies', async (_, partition) => {
     const cookies = await ses.cookies.get({});
     return { ok: true, data: cookies };
   } catch (err) {
-    logError('tools:getCookies failed', err);
+    logError('ipc', 'tools:getCookies failed', err);
     return { ok: false, error: err.message };
   }
 });

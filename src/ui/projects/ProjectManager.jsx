@@ -35,9 +35,9 @@ export default function ProjectManager() {
       setLoading(true);
       const projectsData = await loadProjects();
       setProjects(projectsData);
-      logInfo('ProjectManager: loaded projects');
+      logInfo('ui', 'ProjectManager: loaded projects');
     } catch (error) {
-      logError('ProjectManager: failed to load projects', error);
+      logError('ui', 'ProjectManager: failed to load projects', error);
     } finally {
       setLoading(false);
     }
@@ -52,18 +52,18 @@ export default function ProjectManager() {
           p.id === editingProject.id ? { ...projectData, id: editingProject.id } : p
         );
         await updateProject(editingProject.id, projectData);
-        logInfo(`ProjectManager: updated project ${editingProject.id}`);
+        logInfo('ui', `ProjectManager: updated project ${editingProject.id}`);
       } else {
         const newProject = { ...projectData, id: Date.now() };
         updatedProjects = [...projects, newProject];
         await saveProjects(updatedProjects);
-        logInfo(`ProjectManager: added project ${newProject.id}`);
+        logInfo('ui', `ProjectManager: added project ${newProject.id}`);
       }
       setProjects(updatedProjects);
       setShowProjectModal(false);
       setEditingProject(null);
     } catch (error) {
-      logError('ProjectManager: failed to save project', error);
+      logError('ui', 'ProjectManager: failed to save project', error);
     }
   };
 
@@ -79,9 +79,9 @@ export default function ProjectManager() {
     try {
       await deleteProject(projectToDelete.id);
       setProjects(projects.filter(p => p.id !== projectToDelete.id));
-      logInfo(`ProjectManager: deleted project ${projectToDelete.id}`);
+      logInfo('ui', `ProjectManager: deleted project ${projectToDelete.id}`);
     } catch (error) {
-      logError('ProjectManager: failed to delete project', error);
+      logError('ui', 'ProjectManager: failed to delete project', error);
     } finally {
       setShowDeleteConfirm(false);
       setProjectToDelete(null);

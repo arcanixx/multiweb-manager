@@ -29,11 +29,11 @@ export default function TabsSection() {
         if (window.electronAPI?.getSleepTimeout) {
           const result = await window.electronAPI.getSleepTimeout();
           setSleepTimeoutMinutes(result.data || 15);
-          logInfo('TabsSection: sleep timeout loaded');
+          logInfo('settings', 'TabsSection: sleep timeout loaded');
         }
       } catch (err) {
-        logError('TabsSection: failed to load timeout', err);
-        logWarn('Nie można załadować timeoutu usypiania zakładek');
+        logError('settings', 'TabsSection: failed to load timeout', err);
+        logWarn('settings', 'Nie można załadować timeoutu usypiania zakładek');
       }
     };
     loadTimeout();
@@ -48,11 +48,11 @@ export default function TabsSection() {
       if (window.electronAPI?.setSleepTimeout) {
         await window.electronAPI.setSleepTimeout(minutes);
       }
-      logDebug(`Sleep tabs timeout set to ${minutes} minutes`);
-      logInfo(`TabsSection: timeout set to ${minutes} minutes`);
+      logDebug('settings', `Sleep tabs timeout set to ${minutes} minutes`);
+      logInfo('settings', `TabsSection: timeout set to ${minutes} minutes`);
     } catch (err) {
-      logError('TabsSection: failed to set timeout', err);
-      logWarn('Wystąpił błąd podczas ustawiania timeoutu');
+      logError('settings', 'TabsSection: failed to set timeout', err);
+      logWarn('settings', 'Wystąpił błąd podczas ustawiania timeoutu');
     }
   };
 

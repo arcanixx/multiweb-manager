@@ -18,7 +18,7 @@ ipcMain.handle("workspaces:getAll", async () => {
   try {
     return { ok: true, data: getAllWorkspaces() };
   } catch (err) {
-    logError("workspaces:getAll", err);
+    logError('ipc', "workspaces:getAll", err);
     return { ok: false, error: err.message };
   }
 });
@@ -30,7 +30,7 @@ ipcMain.handle("workspaces:save", async (_, workspaces) => {
     saveWorkspaces(workspaces);
     return { ok: true, data: workspaces };
   } catch (err) {
-    logError("workspaces:save", err);
+    logError('ipc', "workspaces:save", err);
     return { ok: false, error: err.message };
   }
 });

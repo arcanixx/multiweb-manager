@@ -20,6 +20,7 @@ let cached = null;
 //   @returns {Object} – sparsowany obiekt z biblioteką aplikacji
 function readLibrary() {
   if (cached) return cached;
+
   try {
     const raw = fs.readFileSync(
       path.join(__dirname, "../data/app-library.json"),
@@ -28,8 +29,8 @@ function readLibrary() {
     cached = JSON.parse(raw);
     return cached;
   } catch (err) {
-    logError('readLibrary failed', err);
-    logWarn('Nie można załadować biblioteki aplikacji – używam pustego obiektu');
+    logError("store", "appLibraryStore.readLibrary failed", err.message);
+    logWarn("store", "Nie można załadować biblioteki aplikacji – używam pustego obiektu");
     return { categories: [] };
   }
 }
@@ -38,7 +39,7 @@ function readLibrary() {
 //   @returns {Array} – tablica kategorii aplikacji
 export function loadAppLibrary() {
   const lib = readLibrary();
-  logInfo("appLibraryStore.load", lib.categories?.length || 0);
+  logInfo("store", "appLibraryStore.loadAppLibrary success", lib.categories?.length || 0);
   return lib.categories || [];
 }
 
@@ -48,6 +49,7 @@ export function loadAppLibrary() {
 export function filterApps(query) {
   const q = String(query || "").toLowerCase().trim();
   if (!q) return [];
+
   return loadAppLibrary().flatMap((cat) =>
     (cat.apps || []).map((app) => ({ ...app, categoryId: cat.id }))
   ).filter(

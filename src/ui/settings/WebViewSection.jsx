@@ -33,12 +33,12 @@ export default function WebViewSection() {
           const res = await window.electronAPI.getGlobalAdBlocker();
           if (res?.ok) {
             setAdBlockerEnabled(res.data === true);
-            logInfo('WebViewSection: adBlocker state loaded');
+            logInfo('settings', 'WebViewSection: adBlocker state loaded');
           }
         }
       } catch (err) {
-        logError('WebViewSection: failed to load adBlocker state', err);
-        logWarn('Nie można załadować stanu AdBlockera');
+        logError('settings', 'WebViewSection: failed to load adBlocker state', err);
+        logWarn('settings', 'Nie można załadować stanu AdBlockera');
       }
     };
     load();
@@ -52,12 +52,12 @@ export default function WebViewSection() {
       setAdBlockerEnabled(newState);
       if (window.electronAPI?.setGlobalAdBlocker) {
         await window.electronAPI.setGlobalAdBlocker(newState);
-        logDebug(`WebViewSection: global adBlocker set to ${newState}`);
-        logInfo(`WebViewSection: adBlocker ${newState ? 'enabled' : 'disabled'}`);
+        logDebug('settings', `WebViewSection: global adBlocker set to ${newState}`);
+        logInfo('settings', `WebViewSection: adBlocker ${newState ? 'enabled' : 'disabled'}`);
       }
     } catch (err) {
-      logError('WebViewSection: adBlocker toggle failed', err);
-      logWarn('Wystąpił błąd podczas przełączania AdBlockera');
+      logError('settings', 'WebViewSection: adBlocker toggle failed', err);
+      logWarn('settings', 'Wystąpił błąd podczas przełączania AdBlockera');
     }
   };
 

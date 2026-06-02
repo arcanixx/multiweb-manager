@@ -17,7 +17,7 @@ let toastHandler = null;
 //   @returns {void}
 export function registerToastHandler(fn) {
   toastHandler = fn;
-  logDebug("registerToastHandler: handler registered");
+  logDebug('ui', "registerToastHandler: handler registered");
 }
 
 // ─── showToast() – wyświetla toast w UI i loguje
@@ -25,11 +25,11 @@ export function registerToastHandler(fn) {
 //   @param {string} message – treść wiadomości
 //   @returns {void}
 export function showToast(type, message) {
-  logInfo("showToast", { type, message });
+  logInfo('ui', "showToast", { type, message });
   if (toastHandler) {
     toastHandler(type, message);
   } else {
-    logWarn("showToast: no handler registered");
+    logWarn('ui', "showToast: no handler registered");
   }
 }
 
@@ -40,6 +40,6 @@ export function showToast(type, message) {
 export function showSystemNotification(title, body) {
   if (typeof Notification !== "undefined" && Notification.permission === "granted") {
     new Notification(title, { body });
-    logDebug("showSystemNotification", { title });
+    logDebug('ui', "showSystemNotification", { title });
   }
 }

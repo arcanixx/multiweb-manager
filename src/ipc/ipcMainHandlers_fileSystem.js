@@ -17,7 +17,7 @@ ipcMain.handle('fs:readFile', async (_, filePath) => {
     const data = fs.readFileSync(filePath, 'utf8');
     return { ok: true, data };
   } catch (err) {
-    logError('fs:readFile failed', err);
+    logError('ipc', 'fs:readFile failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -26,7 +26,7 @@ ipcMain.handle('fs:writeFile', async (_, { filePath, content }) => {
     fs.writeFileSync(filePath, content, 'utf8');
     return { ok: true };
   } catch (err) {
-    logError('fs:writeFile failed', err);
+    logError('ipc', 'fs:writeFile failed', err);
     return { ok: false, error: err.message };
   }
 });

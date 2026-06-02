@@ -44,7 +44,7 @@ export default function UpdateChecker() {
         showToast(t('updateChecker.coming_soon'), 'info');
       }
     } catch (err) {
-      logError('UpdateChecker: check failed', err);
+      logError('ui', 'UpdateChecker: check failed', err);
       showToast(t('notifications.error', { message: err.message }), 'warn');
     } finally {
       setChecking(false);

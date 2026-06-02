@@ -2,34 +2,26 @@
 // FILE: validators.js
 // PATH: src/utils/validators.js
 // VERSION: 0.0.3
-// PURPOSE: Walidatory danych – string, obiekt, tablica (ensureString, ensureObject).
+// PURPOSE: Walidatory typów danych wykorzystywane przy sprawdzaniu poprawności payloadów IPC i stanów magazynów.
 // FUNCTIONS: ensureString, ensureObject
-// DEPENDS ON: -
+// DEPENDS ON: logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-// ----------------------------------------------------------------
-// ensureString() – waliduje, że value jest niepustym stringiem
-// ----------------------------------------------------------------
+import { logError } from "./logger.js";
+
 // ─── ensureString() – waliduje, że wartość jest niepustym stringiem
-//   @param {*} value - wartość do walidacji
-//   @param {string} name - nazwa pola dla komunikatu błędu
-//   @throws {Error} - jeśli value nie jest niepustym stringiem
 export function ensureString(value, name) {
   if (typeof value !== "string" || !value.trim()) {
+    logError("ui", `Validation failed: ${name} is not a valid string`);
     throw new Error(`${name}_INVALID`);
   }
 }
 
-// ----------------------------------------------------------------
-// ensureObject() – waliduje, że value jest niepustym obiektem
-// ----------------------------------------------------------------
 // ─── ensureObject() – waliduje, że wartość jest niepustym obiektem
-//   @param {*} value - wartość do walidacji
-//   @param {string} name - nazwa pola dla komunikatu błędu
-//   @throws {Error} - jeśli value nie jest niepustym obiektem
 export function ensureObject(value, name) {
   if (!value || typeof value !== "object") {
+    logError("ui", `Validation failed: ${name} is not a valid object`);
     throw new Error(`${name}_INVALID`);
   }
 }

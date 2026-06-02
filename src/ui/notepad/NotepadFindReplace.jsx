@@ -31,11 +31,11 @@ export default function NotepadFindReplace({ findText, onFindTextChange, replace
   //   @returns {void}
   const handleFind = () => {
     try {
-      logInfo('NotepadFindReplace: find triggered');
+      logInfo('ui', 'NotepadFindReplace: find triggered');
       onFind?.();
     } catch (err) {
-      logError('NotepadFindReplace: find failed', err);
-      logWarn('Wystąpił błąd podczas wyszukiwania');
+      logError('ui', 'NotepadFindReplace: find failed', err.message);
+      logWarn('ui', 'Wystąpił błąd podczas wyszukiwania');
     }
   };
 
@@ -43,11 +43,11 @@ export default function NotepadFindReplace({ findText, onFindTextChange, replace
   //   @returns {void}
   const handleReplace = () => {
     try {
-      logInfo('NotepadFindReplace: replace triggered');
+      logInfo('ui', 'NotepadFindReplace: replace triggered');
       onReplace?.();
     } catch (err) {
-      logError('NotepadFindReplace: replace failed', err);
-      logWarn('Wystąpił błąd podczas zastępowania');
+      logError('ui', 'NotepadFindReplace: replace failed', err.message);
+      logWarn('ui', 'Wystąpił błąd podczas zastępowania');
     }
   };
 
@@ -55,11 +55,11 @@ export default function NotepadFindReplace({ findText, onFindTextChange, replace
   //   @returns {void}
   const handleClose = () => {
     try {
-      logInfo('NotepadFindReplace: panel closed');
+      logInfo('ui', 'NotepadFindReplace: panel closed');
       onClose?.();
     } catch (err) {
-      logError('NotepadFindReplace: close failed', err);
-      logWarn('Wystąpił błąd podczas zamykania panelu');
+      logError('ui', 'NotepadFindReplace: close failed', err.message);
+      logWarn('ui', 'Wystąpił błąd podczas zamykania panelu');
     }
   };
 

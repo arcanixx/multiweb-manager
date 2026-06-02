@@ -22,7 +22,7 @@ ipcMain.handle('app:getInfo', async () => {
       }
     };
   } catch (err) {
-    logError('app:getInfo failed', err);
+    logError('ipc', 'app:getInfo failed', err);
     return { ok: false, error: err.message };
   }
 });

@@ -142,7 +142,7 @@ export default function Terminal() {
   // ─── handleClear() – czyści zawartość terminala
   const handleClear = () => {
     xtermRef.current?.clear();
-    logDebug('Terminal cleared');
+    logDebug('terminal', 'Terminal cleared');
   };
 
   // ─── handleRestart() – restartuje sesję terminala
@@ -152,7 +152,7 @@ export default function Terminal() {
     await window.electronAPI?.terminalStart?.();
     xtermRef.current?.clear();
     xtermRef.current?.write('\x1b[32m[Session restarted]\x1b[0m\r\n');
-    logDebug('Terminal restarted');
+    logDebug('terminal', 'Terminal restarted');
   };
 
   return (

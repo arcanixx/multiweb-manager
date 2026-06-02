@@ -17,7 +17,7 @@ export const webviewProfileMap = new Map(); // webContentsId → profileId
 export function registerWebView(tabId, webContentsId) {
   webviewMap.set(tabId, { webContentsId, registeredAt: Date.now() });
   webviewProfileMap.set(webContentsId, tabId);
-  logDebug(`WebView registered: ${tabId} -> ${webContentsId}`);
+  logDebug('engine', `WebView registered: ${tabId} -> ${webContentsId}`);
 }
 
 // ─── unregisterWebView() – Wyrejestrowuje i usuwa powiązania danego tabId oraz skojarzonego webContentsId z map rejestru WebView
@@ -26,7 +26,7 @@ export function unregisterWebView(tabId) {
   if (entry) {
     webviewProfileMap.delete(entry.webContentsId);
     webviewMap.delete(tabId);
-    logDebug(`WebView unregistered: ${tabId}`);
+    logDebug('engine', `WebView unregistered: ${tabId}`);
   }
 }
 

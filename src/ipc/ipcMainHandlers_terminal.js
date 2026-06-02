@@ -57,7 +57,7 @@ ipcMain.handle("terminal:create", async (_, { cwd }) => {
 
     return { ok: true, data: { terminalId } };
   } catch (err) {
-    logError("terminal:create failed", err);
+    logError('ipc', "terminal:create failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -74,7 +74,7 @@ ipcMain.handle("terminal:write", async (_, { terminalId, data }) => {
     term.write(data);
     return { ok: true };
   } catch (err) {
-    logError("terminal:write failed", err);
+    logError('ipc', "terminal:write failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -91,7 +91,7 @@ ipcMain.handle("terminal:resize", async (_, { terminalId, cols, rows }) => {
     term.resize(cols, rows);
     return { ok: true };
   } catch (err) {
-    logError("terminal:resize failed", err);
+    logError('ipc', "terminal:resize failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -105,7 +105,7 @@ ipcMain.handle("terminal:getBuffer", async (_, terminalId) => {
     const buffer = terminalBuffers[terminalId] || [];
     return { ok: true, data: buffer.join("") };
   } catch (err) {
-    logError("terminal:getBuffer failed", err);
+    logError('ipc', "terminal:getBuffer failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -125,7 +125,7 @@ ipcMain.handle("terminal:kill", async (_, terminalId) => {
 
     return { ok: true };
   } catch (err) {
-    logError("terminal:kill failed", err);
+    logError('ipc', "terminal:kill failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -166,7 +166,7 @@ ipcMain.handle("terminal:restart", async (_, { terminalId, cwd }) => {
 
     return { ok: true };
   } catch (err) {
-    logError("terminal:restart failed", err);
+    logError('ipc', "terminal:restart failed", err);
     return { ok: false, error: err.message };
   }
 });

@@ -38,7 +38,7 @@ export default function TaskModal({ task, availableProjects, currentProject, onS
   const handleSave = () => {
     try {
       if (!name.trim()) {
-        logWarn('TaskModal: name is required');
+        logWarn('tasks', 'TaskModal: name is required');
         return;
       }
       onSave({
@@ -52,10 +52,10 @@ export default function TaskModal({ task, availableProjects, currentProject, onS
         project: project || currentProject,
         pinned,
       });
-      logInfo(`TaskModal: task ${task ? 'updated' : 'created'}`);
+      logInfo('tasks', `TaskModal: task ${task ? 'updated' : 'created'}`);
     } catch (err) {
-      logError('TaskModal: save failed', err);
-      logWarn('Wystąpił błąd podczas zapisu zadania');
+      logError('tasks', 'TaskModal: save failed', err);
+      logWarn('tasks', 'Wystąpił błąd podczas zapisu zadania');
     }
   };
   return (

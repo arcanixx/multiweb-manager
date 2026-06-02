@@ -15,7 +15,7 @@ ipcMain.handle('dialog:openFile', async (_, options) => {
     const result = await dialog.showOpenDialog(options || {});
     return { ok: true, data: result };
   } catch (err) {
-    logError('dialog:openFile failed', err);
+    logError('ipc', 'dialog:openFile failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -24,7 +24,7 @@ ipcMain.handle('dialog:saveFile', async (_, options) => {
     const result = await dialog.showSaveDialog(options || {});
     return { ok: true, data: result };
   } catch (err) {
-    logError('dialog:saveFile failed', err);
+    logError('ipc', 'dialog:saveFile failed', err);
     return { ok: false, error: err.message };
   }
 });

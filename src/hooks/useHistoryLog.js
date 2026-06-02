@@ -2,7 +2,7 @@
 // FILE: useHistoryLog.js
 // PATH: src/hooks/useHistoryLog.js
 // VERSION: 0.0.3
-// PURPOSE: Hook do historyStore – logi akcji, filtrowanie, reload- load() pobiera wszystkie wpisy historii (history:getAll)
+// PURPOSE: Hook React do zarządzania i odświeżania logów historii aktywności użytkownika. Komunikuje się z historyStore przez mostek IPC.
 // FUNCTIONS: useHistoryLog
 // DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -25,15 +25,15 @@ export function useHistoryLog() {
       const res = await window.electronAPI.invoke("history:getAll");
       if (res?.ok) {
         setEntries(res.data);
-        logInfo("useHistoryLog.load", res.data.length);
+        logInfo("store", "useHistoryLog.load success", res.data.length);
       } else {
-        logError("useHistoryLog.load failed", res?.error);
-        logWarn("Nie można załadować historii");
+        logError("store", "useHistoryLog.load failed", res?.error);
+        logWarn("store", "Nie można załadować historii");
       }
       setLoading(false);
     } catch (err) {
-      logError("useHistoryLog.load exception", err);
-      logWarn("Wystąpił błąd podczas ładowania historii");
+      logError("store", "useHistoryLog.load exception", err.message);
+      logWarn("store", "Wystąpił błąd podczas ładowania historii");
       setLoading(false);
     }
   }

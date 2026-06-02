@@ -44,20 +44,20 @@ export default function PromptModal({
   // ─── handleConfirm() – Zatwierdza wartość wpisaną przez użytkownika i przekazuje ją do callbacku onConfirm, logując operację
   const handleConfirm = () => {
     try {
-      logInfo(`PromptModal: confirmed with value: ${value}`);
+      logInfo('ui', `PromptModal: confirmed with value: ${value}`);
       onConfirm?.(value);
     } catch (err) {
-      logError('PromptModal: confirm failed', err);
+      logError('ui', 'PromptModal: confirm failed', err);
     }
   };
 
   // ─── handleCancel() – Anuluje modal bez przekazywania wartości, wywołując callback onCancel i logując zdarzenie
   const handleCancel = () => {
     try {
-      logInfo('PromptModal: cancelled');
+      logInfo('ui', 'PromptModal: cancelled');
       onCancel?.();
     } catch (err) {
-      logError('PromptModal: cancel failed', err);
+      logError('ui', 'PromptModal: cancel failed', err);
     }
   };
 

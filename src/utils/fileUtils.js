@@ -2,7 +2,7 @@
 // FILE: fileUtils.js
 // PATH: src/utils/fileUtils.js
 // VERSION: 0.0.3
-// PURPOSE: Bezpieczne operacje I/O dla plików JSON – odczyt z fallbackiem i zapis z wyfiltrowaniem danych (readJsonSafe, writeJsonSafe).
+// PURPOSE: Uniwersalne i bezpieczne opakowanie natywnych funkcji I/O Node.js dla plików JSON z automatyczną obsługą błędów.
 // FUNCTIONS: readJsonSafe, writeJsonSafe
 // DEPENDS ON: fs, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -18,15 +18,15 @@ import { logInfo, logError, logWarn, logDebug } from './logger.js';
 export function readJsonSafe(filePath, fallback) {
   try {
     if (!fs.existsSync(filePath)) {
-      logDebug(`readJsonSafe: file not found ${filePath}`);
+      logDebug("store", `readJsonSafe: file not found ${filePath}`);
       return fallback;
     }
     const raw = fs.readFileSync(filePath, "utf8");
-    logInfo("readJsonSafe", filePath);
+    logInfo("store", "readJsonSafe success", filePath);
     return JSON.parse(raw);
   } catch (err) {
-    logError("readJsonSafe failed", { filePath, err });
-    logWarn("Nie można odczytać pliku JSON");
+    logError("store", "readJsonSafe failed", { filePath, error: err.message });
+    logWarn("store", "Nie można odczytać pliku JSON");
     return fallback;
   }
 }
@@ -39,11 +39,11 @@ export function writeJsonSafe(filePath, data) {
   try {
     const json = JSON.stringify(data, null, 2);
     fs.writeFileSync(filePath, json, "utf8");
-    logInfo("writeJsonSafe", filePath);
+    logInfo("store", "writeJsonSafe success", filePath);
     return true;
   } catch (err) {
-    logError("writeJsonSafe failed", { filePath, err });
-    logWarn("Nie można zapisać pliku JSON");
+    logError("store", "writeJsonSafe failed", { filePath, error: err.message });
+    logWarn("store", "Nie można zapisać pliku JSON");
     return false;
   }
 }

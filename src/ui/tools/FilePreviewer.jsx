@@ -36,9 +36,9 @@ export default function FilePreviewer() {
     try {
       const text = await droppedFile.text();
       setContent(text);
-      logDebug(`FilePreviewer: loaded ${droppedFile.name} (${droppedFile.size} bytes)`);
+      logDebug('tools', `FilePreviewer: loaded ${droppedFile.name} (${droppedFile.size} bytes)`);
     } catch (err) {
-      logError('FilePreviewer: failed to read file', err);
+      logError('tools', 'FilePreviewer: failed to read file', err);
       setError(t('tools.cannotReadFile'));
     }
   };

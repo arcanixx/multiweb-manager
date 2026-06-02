@@ -65,7 +65,7 @@ export default function StringCombiner() {
     if (validVars.length === 0) {
       setResult(baseText);
       setCount(1);
-      logInfo("StringCombiner: no variables, output = base text");
+      logInfo('tools', "StringCombiner: no variables, output = base text");
       return;
     }
 
@@ -79,7 +79,7 @@ export default function StringCombiner() {
     const output = lines.join("\n\n");
     setResult(output);
     setCount(combos.length);
-    logInfo(`StringCombiner: generated ${combos.length} combinations`);
+    logInfo('tools', `StringCombiner: generated ${combos.length} combinations`);
   }, [baseText, splitChar, variables]);
 
   // ─── addVariable() – dodaje nową zmienną z domyślną nazwą i wartością
@@ -122,7 +122,7 @@ export default function StringCombiner() {
       await navigator.clipboard.writeText(result);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      logInfo("StringCombiner: result copied to clipboard");
+      logInfo('tools', "StringCombiner: result copied to clipboard");
     } catch {
       const ta = document.createElement("textarea");
       ta.value = result;

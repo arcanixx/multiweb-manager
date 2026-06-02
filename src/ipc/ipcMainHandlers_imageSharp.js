@@ -21,7 +21,7 @@ ipcMain.handle('tools:image:resize', async (_, { inputPath, width, height, outpu
     await sharp(inputPath).resize(width, height).toFile(outputPath);
     return { ok: true, data: outputPath };
   } catch (err) {
-    logError('tools:image:resize failed', err);
+    logError('ipc', 'tools:image:resize failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -35,7 +35,7 @@ ipcMain.handle('tools:image:convert', async (_, { inputPath, format, outputPath 
     await sharp(inputPath).toFormat(format).toFile(outputPath);
     return { ok: true, data: outputPath };
   } catch (err) {
-    logError('tools:image:convert failed', err);
+    logError('ipc', 'tools:image:convert failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -49,7 +49,7 @@ ipcMain.handle('tools:image:compress', async (_, { inputPath, quality, outputPat
     await sharp(inputPath).jpeg({ quality }).toFile(outputPath);
     return { ok: true, data: outputPath };
   } catch (err) {
-    logError('tools:image:compress failed', err);
+    logError('ipc', 'tools:image:compress failed', err);
     return { ok: false, error: err.message };
   }
 });

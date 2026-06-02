@@ -32,12 +32,12 @@ export default function NotificationsSection() {
           if (res?.ok) {
             setSystemNotifications(res.data?.systemNotifications !== false);
             setPushbulletApiKey(res.data?.pushbulletApiKey || '');
-            logInfo('NotificationsSection: settings loaded from IPC');
+            logInfo('settings', 'NotificationsSection: settings loaded from IPC');
           }
         }
       } catch (err) {
-        logError('NotificationsSection: failed to load settings', err);
-        logWarn('Nie można załadować ustawień powiadomień — fallback na localStorage');
+        logError('settings', 'NotificationsSection: failed to load settings', err);
+        logWarn('settings', 'Nie można załadować ustawień powiadomień — fallback na localStorage');
         // Fallback na localStorage gdy IPC niedostępne
         const saved = localStorage.getItem('system_notifications');
         setSystemNotifications(saved !== 'false');
@@ -58,11 +58,11 @@ export default function NotificationsSection() {
       if (window.electronAPI?.invoke) {
         await window.electronAPI.invoke('settings:update', { systemNotifications: enabled });
       }
-      logDebug(`System notifications: ${enabled}`);
-      logInfo(`NotificationsSection: system notifications ${enabled ? 'enabled' : 'disabled'}`);
+      logDebug('settings', `System notifications: ${enabled}`);
+      logInfo('settings', `NotificationsSection: system notifications ${enabled ? 'enabled' : 'disabled'}`);
     } catch (err) {
-      logError('NotificationsSection: system notifications toggle failed', err);
-      logWarn('Wystąpił błąd podczas przełączania powiadomień systemowych');
+      logError('settings', 'NotificationsSection: system notifications toggle failed', err);
+      logWarn('settings', 'Wystąpił błąd podczas przełączania powiadomień systemowych');
     }
   };
   
@@ -73,11 +73,11 @@ export default function NotificationsSection() {
       if (window.electronAPI?.invoke) {
         await window.electronAPI.invoke('settings:update', { pushbulletApiKey });
       }
-      logDebug('Pushbullet API key saved');
-      logInfo('NotificationsSection: Pushbullet API key saved');
+      logDebug('settings', 'Pushbullet API key saved');
+      logInfo('settings', 'NotificationsSection: Pushbullet API key saved');
     } catch (err) {
-      logError('NotificationsSection: Pushbullet save failed', err);
-      logWarn('Wystąpił błąd podczas zapisu klucza API Pushbullet');
+      logError('settings', 'NotificationsSection: Pushbullet save failed', err);
+      logWarn('settings', 'Wystąpił błąd podczas zapisu klucza API Pushbullet');
     }
   };
   return (

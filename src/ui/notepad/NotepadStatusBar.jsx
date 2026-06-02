@@ -2,7 +2,7 @@
 // FILE: NotepadStatusBar.jsx
 // PATH: src/ui/notepad/NotepadStatusBar.jsx
 // VERSION: 0.0.3
-// PURPOSE: Pasek statusu notatnika (tytuł, znaki, wiersze, ostatni zapis)
+// PURPOSE: Pasek informacyjny u dołu notatnika – wyświetla metadane aktywnego dokumentu: statystyki znaków/wierszy oraz czas ostatniego autozapisu.
 // FUNCTIONS: NotepadStatusBar
 // DEPENDS ON: react, translations.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -36,8 +36,8 @@ export default function NotepadStatusBar({ title, content, lastSaved }) {
     try {
       return new Date(timestamp).toLocaleTimeString('pl-PL');
     } catch (err) {
-      logError('NotepadStatusBar: formatTime failed', err);
-      logWarn('Wystąpił błąd podczas formatowania godziny');
+      logError('ui', 'NotepadStatusBar: formatTime failed', err.message);
+      logWarn('ui', 'Wystąpił błąd podczas formatowania godziny');
       return '–';
     }
   };

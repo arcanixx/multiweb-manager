@@ -39,13 +39,13 @@ export default function TaskDetails({ task, onBack, onEdit }) {
       });
       if (res?.ok) {
         setLocal({ ...local, [field]: value });
-        logInfo(`TaskDetails: updated ${field}`);
+        logInfo('tasks', `TaskDetails: updated ${field}`);
       } else {
-        logWarn(`Nie można zaktualizować pola ${field}`);
+        logWarn('tasks', `Nie można zaktualizować pola ${field}`);
       }
     } catch (err) {
-      logError('TaskDetails.updateField failed', err);
-      logWarn('Wystąpił błąd podczas aktualizacji pola');
+      logError('tasks', 'TaskDetails.updateField failed', err);
+      logWarn('tasks', 'Wystąpił błąd podczas aktualizacji pola');
     }
   }
   return (

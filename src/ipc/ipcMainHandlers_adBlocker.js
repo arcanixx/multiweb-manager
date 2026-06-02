@@ -19,7 +19,7 @@ ipcMain.handle('adblocker:setGlobal', (_, enabled) => {
     setGlobalAdBlocker(enabled);
     return { ok: true };
   } catch (err) {
-    logError('adblocker:setGlobal failed', err);
+    logError('ipc', 'adblocker:setGlobal failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -28,7 +28,7 @@ ipcMain.handle('adblocker:getGlobal', () => {
   try {
     return { ok: true, data: getGlobalAdBlocker() };
   } catch (err) {
-    logError('adblocker:getGlobal failed', err);
+    logError('ipc', 'adblocker:getGlobal failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -40,7 +40,7 @@ ipcMain.handle('adblocker:setForProfile', (_, profileId, enabled) => {
     setProfileAdBlocker(profileId, enabled);
     return { ok: true };
   } catch (err) {
-    logError('adblocker:setForProfile failed', err);
+    logError('ipc', 'adblocker:setForProfile failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -49,7 +49,7 @@ ipcMain.handle('adblocker:getForProfile', (_, profileId) => {
   try {
     return { ok: true, data: getProfileAdBlocker(profileId) };
   } catch (err) {
-    logError('adblocker:getForProfile failed', err);
+    logError('ipc', 'adblocker:getForProfile failed', err);
     return { ok: false, error: err.message };
   }
 });

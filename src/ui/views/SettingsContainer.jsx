@@ -35,7 +35,7 @@ export default function SettingsContainer({ activeItem, settings, onSaveSettings
       return wrap(Settings, { settings, onSave: onSaveSettings });
     case 'help':
       if (!isFeatureEnabled('helpScreen')) {
-        logWarn('SettingsContainer: helpScreen feature is disabled');
+        logWarn('ui', 'SettingsContainer: helpScreen feature is disabled');
         return null;
       }
       return wrap(Help);
@@ -44,7 +44,7 @@ export default function SettingsContainer({ activeItem, settings, onSaveSettings
     case 'history':
       return wrap(HistoryLog);
     default:
-      logWarn(`SettingsContainer: unknown id "${activeItem.id}"`);
+      logWarn('ui', `SettingsContainer: unknown id "${activeItem.id}"`);
       return null;
   }
 }

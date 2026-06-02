@@ -42,7 +42,7 @@ export default function ImageTools() {
     const reader = new FileReader();
     reader.onload = (ev) => setPreview(ev.target.result);
     reader.readAsDataURL(file);
-    logDebug(`ImageTools: loaded ${file.name} (${file.size} bytes)`);
+    logDebug('tools', `ImageTools: loaded ${file.name} (${file.size} bytes)`);
   }, [t]);
   // ─── handleProcess() – przetwarza obraz wybraną operacją (resize, convert, compress)
   const handleProcess = async () => {
@@ -77,9 +77,9 @@ export default function ImageTools() {
       }
 
       setOutputPath(resultPath);
-      logDebug(`ImageTools: processed successfully → ${resultPath}`);
+      logDebug('tools', `ImageTools: processed successfully → ${resultPath}`);
     } catch (err) {
-      logError('ImageTools processing failed', err);
+      logError('tools', 'ImageTools processing failed', err);
       setError(err.message);
     } finally {
       setLoading(false);

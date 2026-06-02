@@ -28,11 +28,11 @@ export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTer
   //   @returns {void}
   const handleDelete = (projectId) => {
     try {
-      logInfo(`ProjectList: deleting project ${projectId}`);
+      logInfo('ui', `ProjectList: deleting project ${projectId}`);
       onDelete?.(projectId);
     } catch (err) {
-      logError('ProjectList: delete failed', err);
-      logWarn('Wystąpił błąd podczas usuwania projektu');
+      logError('ui', 'ProjectList: delete failed', err);
+      logWarn('ui', 'Wystąpił błąd podczas usuwania projektu');
     }
   };
 
@@ -41,11 +41,11 @@ export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTer
   //   @returns {void}
   const handleOpenTasks = (projectName) => {
     try {
-      logInfo(`ProjectList: opening tasks for ${projectName}`);
+      logInfo('ui', `ProjectList: opening tasks for ${projectName}`);
       onOpenTasks?.(projectName);
     } catch (err) {
-      logError('ProjectList: open tasks failed', err);
-      logWarn('Wystąpił błąd podczas otwierania zadań');
+      logError('ui', 'ProjectList: open tasks failed', err);
+      logWarn('ui', 'Wystąpił błąd podczas otwierania zadań');
     }
   };
 
@@ -54,11 +54,11 @@ export default function ProjectList({ projects, onDelete, onOpenTasks, onOpenTer
   //   @returns {void}
   const handleOpenTerminal = (terminalConfig) => {
     try {
-      logInfo(`ProjectList: opening terminal for ${terminalConfig.cwd}`);
+      logInfo('ui', `ProjectList: opening terminal for ${terminalConfig.cwd}`);
       onOpenTerminal?.(terminalConfig);
     } catch (err) {
-      logError('ProjectList: open terminal failed', err);
-      logWarn('Wystąpił błąd podczas otwierania terminala');
+      logError('ui', 'ProjectList: open terminal failed', err);
+      logWarn('ui', 'Wystąpił błąd podczas otwierania terminala');
     }
   };
 

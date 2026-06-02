@@ -2,35 +2,17 @@
 // FILE: logWriter.js
 // PATH: src/utils/logWriter.js
 // VERSION: 0.0.3
-// PURPOSE: Zapis logów testów do pliku (tylko przy failu, gdy debugMode=true i logsEnabled=true).
+// PURPOSE: Zarządzanie utrwalaniem logów błędów i wyników testów w systemie plików (userData) poprzez mostek IPC.
 // FUNCTIONS: initLogWriter, appendTestFailLog, getLogsContent, clearLogsFile
 // DEPENDS ON: logger.js, config.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { logInfo, logError, logWarn, logDebug } from './logger.js';
+import { logInfo, logError, logWarn, logDebug } from "./logger.js";
 import { DEFAULT_SETTINGS } from '../config.js';
 
 let logsEnabled = false;
 let debugMode = false;
-
-// ─── initLogWriter() – inicjalizuje system logowania testów
-//   @returns {Promise<void>}
-
-// ─── askForLogPermission() – prosi użytkownika o zgodę na logowanie
-//   @returns {Promise<boolean>} czy zgodę przyznano
-
-// ─── appendTestFailLog() – dodaje wpis o błędzie testu do pliku
-//   @param {string} moduleName – nazwa modułu
-//   @param {string} testName – nazwa testu
-//   @param {string} details – szczegóły błędu
-//   @returns {Promise<void>}
-
-// ─── getLogsContent() – pobiera zawartość pliku logów
-//   @returns {Promise<string|null>}
-
-// ─── clearLogsFile() – czyści plik logów
-//   @returns {Promise<boolean>}
 
 // ─── initLogWriter() – inicjalizuje system logowania testów
 //   @returns {Promise<void>}
@@ -40,30 +22,32 @@ export async function initLogWriter() {
     const settings = settingsRes?.ok ? settingsRes.data : DEFAULT_SETTINGS;
     debugMode = settings.debugMode === true;
     logsEnabled = settings.logsEnabled === true;
-    logDebug(`initLogWriter: debugMode=${debugMode}, logsEnabled=${logsEnabled}`);
+    logDebug("store", `initLogWriter: debugMode=${debugMode}, logsEnabled=${logsEnabled}`);
+
     // Jeśli debugMode jest wyłączony – nie robimy nic
     if (!debugMode) {
       logsEnabled = false;
-      logInfo('initLogWriter: debug mode disabled, skipping log setup');
+      logInfo("store", "initLogWriter: debug mode disabled, skipping log setup");
       return;
     }
+
     // Jeśli to pierwsze uruchomienie i jeszcze nie wyraził zgody
     if (settings.firstRun && !logsEnabled) {
       const granted = await askForLogPermission();
       if (granted) {
         await window.electronAPI?.saveSettings?.({ logsEnabled: true });
         logsEnabled = true;
-        logInfo('initLogWriter: log permission granted');
+        logInfo("store", "initLogWriter: log permission granted");
       } else {
         await window.electronAPI?.saveSettings?.({ logsEnabled: false });
         logsEnabled = false;
-        logWarn('initLogWriter: log permission denied');
+        logWarn("store", "initLogWriter: log permission denied");
       }
       await window.electronAPI?.saveSettings?.({ firstRun: false });
     }
   } catch (err) {
-    logError('initLogWriter failed', err);
-    logWarn('Nie udało się zainicjować zapisu logów');
+    logError("store", "initLogWriter failed", err.message);
+    logWarn("store", "Nie udało się zainicjować zapisu logów");
     logsEnabled = false;
   }
 }
@@ -117,13 +101,13 @@ export async function appendTestFailLog(moduleName, testName, details) {
       timestamp: Date.now()
     });
     if (!result || !result.ok) {
-      logWarn('appendTestFailLog: IPC call failed');
+      logWarn("store", "appendTestFailLog: IPC call failed");
       throw new Error(t('logs.unknownError', { error: result?.error || '' }));
     }
-    logDebug(`appendTestFailLog: logged failure for ${moduleName}.${testName}`);
+    logDebug("store", `appendTestFailLog: logged failure for ${moduleName}.${testName}`);
   } catch (err) {
-    logError('appendTestFailLog failed', err);
-    logWarn('Nie udało się zapisać logu testu');
+    logError("store", "appendTestFailLog failed", err.message);
+    logWarn("store", "Nie udało się zapisać logu testu");
   }
 }
 
@@ -134,14 +118,14 @@ export async function getLogsContent() {
   try {
     const result = await window.electronAPI?.getLogsFile?.();
     if (result?.ok) {
-      logDebug('getLogsContent: logs retrieved');
+      logDebug("store", "getLogsContent: logs retrieved");
       return result.data;
     }
-    logWarn('getLogsContent: no logs available');
+    logWarn("store", "getLogsContent: no logs available");
     return null;
   } catch (err) {
-    logError('getLogsContent failed', err);
-    logWarn('Nie udało się odczytać logów');
+    logError("store", "getLogsContent failed", err.message);
+    logWarn("store", "Nie udało się odczytać logów");
     return null;
   }
 }
@@ -153,12 +137,12 @@ export async function clearLogsFile() {
   try {
     const result = await window.electronAPI?.clearLogsFile?.();
     if (result?.ok) {
-      logInfo('clearLogsFile: logs cleared');
+      logInfo("store", "clearLogsFile: logs cleared");
     }
     return result?.ok === true;
   } catch (err) {
-    logError('clearLogsFile failed', err);
-    logWarn('Nie udało się wyczyścić logów');
+    logError("store", "clearLogsFile failed", err.message);
+    logWarn("store", "Nie udało się wyczyścić logów");
     return false;
   }
 }

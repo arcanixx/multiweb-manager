@@ -39,7 +39,7 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
           .map(f => ({ file: f, status: "pending", error: null }))
       ].slice(0, MAX_FILES);
       setFiles(all);
-      logInfo(`RemoveBg: ${all.length} files queued`);
+      logInfo('tools', `RemoveBg: ${all.length} files queued`);
     },
     [files]
   );
@@ -78,7 +78,7 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
    const processImages = async () => {
     if (!apiKey) {
       showNotification(t('removebg.no_api_key'), 'warning');
-      logError("RemoveBg: no API key");
+      logError('tools', "RemoveBg: no API key");
       return;
     }
     if (!files.length) return;
@@ -123,7 +123,7 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
         );
         doneCount++;
         setDone(doneCount);
-        logInfo(`RemoveBg: done for ${file.name}`);
+        logInfo('tools', `RemoveBg: done for ${file.name}`);
       } catch (err) {
         const errMsg = err.response?.data
           ? `HTTP ${err.response.status}`
@@ -136,12 +136,12 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
         );
         errCount++;
         setErrors(errCount);
-        logError(`RemoveBg: failed for ${file.name}: ${errMsg}`);
+        logError('tools', `RemoveBg: failed for ${file.name}: ${errMsg}`);
       }
     }
 
     setProcessing(false);
-    logInfo(`RemoveBg: batch done. ${doneCount} ok, ${errCount} errors`);
+    logInfo('tools', `RemoveBg: batch done. ${doneCount} ok, ${errCount} errors`);
   };
 
   const pendingCount = files.filter(f => f.status === "pending").length;

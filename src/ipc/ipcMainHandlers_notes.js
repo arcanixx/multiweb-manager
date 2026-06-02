@@ -20,7 +20,7 @@ ipcMain.handle("notes:getAll", async () => {
   try {
     return { ok: true, data: getAllNotes() };
   } catch (err) {
-    logError("notes:getAll", err);
+    logError('ipc', "notes:getAll", err);
     return { ok: false, error: err.message };
   }
 });
@@ -30,7 +30,7 @@ ipcMain.handle("notes:add", async (_, note) => {
     if (!note.id || typeof note.id !== 'string') throw new Error('NOTE_INVALID_ID');
     return { ok: true, data: addNote(note) };
   } catch (err) {
-    logError("notes:add", err);
+    logError('ipc', "notes:add", err);
     return { ok: false, error: err.message };
   }
 });
@@ -40,7 +40,7 @@ ipcMain.handle("notes:update", async (_, { id, patch }) => {
     if (!patch || typeof patch !== 'object') throw new Error('NOTE_INVALID_PATCH');
     return { ok: true, data: updateNote(id, patch) };
   } catch (err) {
-    logError("notes:update", err);
+    logError('ipc', "notes:update", err);
     return { ok: false, error: err.message };
   }
 });
@@ -50,7 +50,7 @@ ipcMain.handle("notes:delete", async (_, id) => {
     deleteNote(id);
     return { ok: true };
   } catch (err) {
-    logError("notes:delete", err);
+    logError('ipc', "notes:delete", err);
     return { ok: false, error: err.message };
   }
 });

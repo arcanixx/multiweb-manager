@@ -37,7 +37,7 @@ export default function RegexTester() {
     setMatches(results);
   } catch (err) {
     setError(err.message);
-    logError('Regex error', err);
+    logError('tools', 'Regex error', err);
   }
 };
   return (

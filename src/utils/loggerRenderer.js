@@ -24,6 +24,6 @@ export {
   logDebug,         // alias log()
   logInfo,          // alias log() (main-compatible)
   logWarn,          // alias warn()
-  logError,         // WebViewTab.jsx: logError(msg, meta)
+  logError,         // WebViewTab.jsx: logError('ui', msg, meta)
   getLogFilePath,   // Settings.jsx: ścieżka do pliku logów (zwraca null w rendererze)
 } from "./logger.js";

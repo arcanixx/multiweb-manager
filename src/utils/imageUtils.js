@@ -2,7 +2,7 @@
 // FILE: imageUtils.js
 // PATH: src/utils/imageUtils.js
 // VERSION: 0.0.3
-// PURPOSE: Operacje na obrazach – resize, konwersja formatów, kompresja JPEG (resizeImage, convertImage, compressJpeg).
+// PURPOSE: Funkcje pomocnicze do manipulacji plikami graficznymi (resize, format conversion) oparte na silniku sharp.
 // FUNCTIONS: resizeImage, convertImage, compressJpeg
 // DEPENDS ON: sharp, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -20,11 +20,11 @@ import { logInfo, logError, logWarn, logDebug } from './logger.js';
 export async function resizeImage(inputPath, width, height, outputPath) {
   try {
     await sharp(inputPath).resize(width, height).toFile(outputPath);
-    logInfo("resizeImage", { inputPath, width, height, outputPath });
+    logInfo("tools", "resizeImage success", { inputPath, width, height, outputPath });
     return outputPath;
   } catch (err) {
-    logError("resizeImage failed", { inputPath, err });
-    logWarn("Nie można zmienić rozmiaru obrazu");
+    logError("tools", "resizeImage failed", { inputPath, error: err.message });
+    logWarn("tools", "Nie można zmienić rozmiaru obrazu");
     throw err;
   }
 }
@@ -38,11 +38,11 @@ export async function resizeImage(inputPath, width, height, outputPath) {
 export async function convertImage(inputPath, format, outputPath) {
   try {
     await sharp(inputPath).toFormat(format).toFile(outputPath);
-    logInfo("convertImage", { inputPath, format, outputPath });
+    logInfo("tools", "convertImage success", { inputPath, format, outputPath });
     return outputPath;
   } catch (err) {
-    logError("convertImage failed", { inputPath, format, err });
-    logWarn("Nie można skonwertować obrazu");
+    logError("tools", "convertImage failed", { inputPath, format, error: err.message });
+    logWarn("tools", "Nie można skonwertować obrazu");
     throw err;
   }
 }
@@ -56,11 +56,11 @@ export async function convertImage(inputPath, format, outputPath) {
 export async function compressJpeg(inputPath, quality, outputPath) {
   try {
     await sharp(inputPath).jpeg({ quality }).toFile(outputPath);
-    logInfo("compressJpeg", { inputPath, quality, outputPath });
+    logInfo("tools", "compressJpeg success", { inputPath, quality, outputPath });
     return outputPath;
   } catch (err) {
-    logError("compressJpeg failed", { inputPath, quality, err });
-    logWarn("Nie można skompresować obrazu JPEG");
+    logError("tools", "compressJpeg failed", { inputPath, quality, error: err.message });
+    logWarn("tools", "Nie można skompresować obrazu JPEG");
     throw err;
   }
 }

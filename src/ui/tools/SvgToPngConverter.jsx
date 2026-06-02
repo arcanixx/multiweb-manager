@@ -38,7 +38,7 @@ export default function SvgToPngConverter() {
     // Odczytaj SVG do preview
     const text = await file.text();
     setSvgContent(text);
-    logDebug(`SvgToPng: loaded ${file.name}`);
+    logDebug('tools', `SvgToPng: loaded ${file.name}`);
   }, [t]);
 
    // ─── handleConvert() – Konwertuje załadowany plik SVG na PNG przy użyciu podanej szerokości i wysokości, a następnie ustawia ścieżkę wyjściową do pobrania.
@@ -58,9 +58,9 @@ export default function SvgToPngConverter() {
       const resultPath = await svgToPng(inputPath, tempOutput, width, height);
 
       setOutputPath(resultPath);
-      logDebug(`SvgToPng: converted successfully → ${resultPath}`);
+      logDebug('tools', `SvgToPng: converted successfully → ${resultPath}`);
     } catch (err) {
-      logError('SvgToPng conversion failed', err);
+      logError('tools', 'SvgToPng conversion failed', err);
       setError(err.message);
     } finally {
       setLoading(false);

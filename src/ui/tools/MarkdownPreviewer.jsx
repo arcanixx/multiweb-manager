@@ -37,10 +37,10 @@ export default function MarkdownPreviewer() {
         .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
         .replace(/\n\n/g, '</p><p>')
         .replace(/^(?!<[a-z])/gm, '<p>$&</p>');
-      logDebug(`MarkdownPreviewer: converted ${md.length} chars to HTML`);
+      logDebug('tools', `MarkdownPreviewer: converted ${md.length} chars to HTML`);
       return `<div class="markdown-body">${result}</div>`;
     } catch (err) {
-      logError('MarkdownPreviewer: convertToHtml failed', err);
+      logError('tools', 'MarkdownPreviewer: convertToHtml failed', err);
       return '<div class="markdown-body"></div>';
     }
   };

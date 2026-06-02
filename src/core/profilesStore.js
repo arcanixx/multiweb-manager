@@ -22,7 +22,7 @@ const PROFILES_FILE = () => {
   try {
     return getUserDataPath("profiles.json");
   } catch (err) {
-    logError("profilesStore: Failed to get user data path", err);
+    logError("store", "profilesStore.PROFILES_FILE: Failed to get user data path", err.message);
     return "profiles.json"; // fallback
   }
 };
@@ -37,8 +37,8 @@ function defaultProfiles() {
     );
     return JSON.parse(raw).data || [];
   } catch (err) {
-    logError('defaultProfiles failed', err);
-    logWarn('Nie można załadować domyślnych profili – używam pustej tablicy');
+    logError("store", "profilesStore.defaultProfiles failed", err.message);
+    logWarn("store", "Nie można załadować domyślnych profili – używam pustej tablicy");
     return [];
   }
 }
@@ -46,31 +46,48 @@ function defaultProfiles() {
 // ─── loadProfiles() – ładuje profile z pliku lub zwraca domyślne
 //   @returns {Array} – tablica profili
 export function loadProfiles() {
-  const stored = readJsonFile(PROFILES_FILE(), null);
-  if (Array.isArray(stored)) return stored;
-  if (stored?.data && Array.isArray(stored.data)) return stored.data;
-  const defaults = defaultProfiles();
-  if (defaults.length) saveProfiles(defaults);
-  return defaults;
+  try {
+    const stored = readJsonFile(PROFILES_FILE(), null);
+    if (Array.isArray(stored)) return stored;
+    if (stored?.data && Array.isArray(stored.data)) return stored.data;
+
+    const defaults = defaultProfiles();
+    if (defaults.length) saveProfiles(defaults);
+    return defaults;
+  } catch (err) {
+    logError("store", "profilesStore.loadProfiles failed", err.message);
+    return [];
+  }
 }
 
 // ─── saveProfiles() – zapisuje profile do pliku
 //   @param {Array} profiles – tablica profili do zapisania
 //   @returns {Array} – zapisana tablica profili
 export function saveProfiles(profiles) {
-  writeJsonFile(PROFILES_FILE(), { version: "0.0.3", data: profiles });
-  logInfo("profilesStore.saveProfiles", profiles.length);
-  return profiles;
+  try {
+    writeJsonFile(PROFILES_FILE(), { version: "0.0.3", data: profiles });
+    logInfo("store", "profilesStore.saveProfiles success", profiles.length);
+    return profiles;
+  } catch (err) {
+    logError("store", "profilesStore.saveProfiles failed", err.message);
+    return profiles;
+  }
 }
 
 // ─── createProfile() – dodaje nowy profil
 //   @param {Object} profile – obiekt profilu do dodania
 //   @returns {Array} – zaktualizowana tablica profili
 export function createProfile(profile) {
-  const list = loadProfiles();
-  const next = [...list, profile];
-  saveProfiles(next);
-  return next;
+  try {
+    const list = loadProfiles();
+    const next = [...list, profile];
+    saveProfiles(next);
+    logInfo("store", "profilesStore.createProfile success", profile.id);
+    return next;
+  } catch (err) {
+    logError("store", "profilesStore.createProfile failed", err.message);
+    return loadProfiles();
+  }
 }
 
 // ─── updateProfile() – aktualizuje istniejący profil
@@ -78,17 +95,29 @@ export function createProfile(profile) {
 //   @param {Object} patch – obiekt z polami do zaktualizowania
 //   @returns {Array} – zaktualizowana tablica profili
 export function updateProfile(id, patch) {
-  const list = loadProfiles();
-  const next = list.map((p) => (p.id === id ? { ...p, ...patch } : p));
-  saveProfiles(next);
-  return next;
+  try {
+    const list = loadProfiles();
+    const next = list.map((p) => (p.id === id ? { ...p, ...patch } : p));
+    saveProfiles(next);
+    logInfo("store", "profilesStore.updateProfile success", id);
+    return next;
+  } catch (err) {
+    logError("store", "profilesStore.updateProfile failed", err.message);
+    return loadProfiles();
+  }
 }
 
 // ─── deleteProfile() – usuwa profil po ID
 //   @param {string} id – identyfikator profilu do usunięcia
 //   @returns {Array} – zaktualizowana tablica profili
 export function deleteProfile(id) {
-  const next = loadProfiles().filter((p) => p.id !== id);
-  saveProfiles(next);
-  return next;
+  try {
+    const next = loadProfiles().filter((p) => p.id !== id);
+    saveProfiles(next);
+    logInfo("store", "profilesStore.deleteProfile success", id);
+    return next;
+  } catch (err) {
+    logError("store", "profilesStore.deleteProfile failed", err.message);
+    return loadProfiles();
+  }
 }

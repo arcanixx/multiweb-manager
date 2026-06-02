@@ -42,12 +42,12 @@ export default function MiniPostman() {
         setLoading(false);
         return;
       }
-      logDebug(`MiniPostman: ${method} ${url}`);
+      logDebug('tools', `MiniPostman: ${method} ${url}`);
       const result = await apiRequest(url, method, parsedHeaders, body);
       setResponse(result);
-      logDebug(`MiniPostman: response status ${result.status}`);
+      logDebug('tools', `MiniPostman: response status ${result.status}`);
     } catch (err) {
-      logError('MiniPostman request failed', err);
+      logError('tools', 'MiniPostman request failed', err);
       setError(err.message);
     } finally {
       setLoading(false);

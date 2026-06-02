@@ -30,7 +30,7 @@ ipcMain.handle('webview:screenshot', async (_, id) => {
     const image = await wc.capturePage();
     return { ok: true, data: image.toPNG() };
   } catch (err) {
-    logError('webview:screenshot failed', err);
+    logError('ipc', 'webview:screenshot failed', err);
     return { ok: false, error: err.message };
   }
 });

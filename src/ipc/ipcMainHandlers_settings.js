@@ -25,7 +25,7 @@ ipcMain.handle("settings:get", async () => {
     const settings = loadSettings();
     return { ok: true, data: settings };
   } catch (err) {
-    logError("settings:get failed", err);
+    logError('ipc', "settings:get failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -42,7 +42,7 @@ ipcMain.handle("settings:update", async (_, patch) => {
     // mergeSettings() wewnętrznie wywołuje saveSettings() — nie zapisujemy drugi raz
     return { ok: true, data: updated };
   } catch (err) {
-    logError("settings:update failed", err);
+    logError('ipc', "settings:update failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -55,7 +55,7 @@ ipcMain.handle("settings:reset", async () => {
     const reset = resetSettings();
     return { ok: true, data: reset };
   } catch (err) {
-    logError("settings:reset failed", err);
+    logError('ipc', "settings:reset failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -70,7 +70,7 @@ ipcMain.handle("settings:export", async (_, exportPath) => {
     fs.writeFileSync(exportPath, json, "utf8");
     return { ok: true };
   } catch (err) {
-    logError("settings:export failed", err);
+    logError('ipc', "settings:export failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -92,7 +92,7 @@ ipcMain.handle("settings:import", async (_, importPath) => {
     // mergeSettings() wewnętrznie wywołuje saveSettings() — nie zapisujemy drugi raz
     return { ok: true, data: merged };
   } catch (err) {
-    logError("settings:import failed", err);
+    logError('ipc', "settings:import failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -104,7 +104,7 @@ ipcMain.handle("settings:getDefaults", async () => {
   try {
     return { ok: true, data: DEFAULT_SETTINGS };
   } catch (err) {
-    logError("settings:getDefaults failed", err);
+    logError('ipc', "settings:getDefaults failed", err);
     return { ok: false, error: err.message };
   }
 });

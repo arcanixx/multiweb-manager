@@ -31,10 +31,10 @@ export default function HistoryFilters({ filterLevel, onFilterChange, sortOrder,
   const handleFilterChange = (e) => {
     try {
       onFilterChange(e.target.value);
-      logInfo(`HistoryFilters: filter changed to ${e.target.value}`);
+      logInfo('ui', `HistoryFilters: filter changed to ${e.target.value}`);
     } catch (err) {
-      logError('HistoryFilters: filter change failed', err);
-      logWarn('Wystąpił błąd podczas zmiany filtru');
+      logError('ui', 'HistoryFilters: filter change failed', err);
+      logWarn('ui', 'Wystąpił błąd podczas zmiany filtru');
     }
   };
 
@@ -44,10 +44,10 @@ export default function HistoryFilters({ filterLevel, onFilterChange, sortOrder,
   const handleSortChange = (e) => {
     try {
       onSortChange(e.target.value);
-      logInfo(`HistoryFilters: sort changed to ${e.target.value}`);
+      logInfo('ui', `HistoryFilters: sort changed to ${e.target.value}`);
     } catch (err) {
-      logError('HistoryFilters: sort change failed', err);
-      logWarn('Wystąpił błąd podczas zmiany sortowania');
+      logError('ui', 'HistoryFilters: sort change failed', err);
+      logWarn('ui', 'Wystąpił błąd podczas zmiany sortowania');
     }
   };
 
@@ -56,10 +56,10 @@ export default function HistoryFilters({ filterLevel, onFilterChange, sortOrder,
   const handleClear = () => {
     try {
       onClear();
-      logInfo('HistoryFilters: history cleared');
+      logInfo('ui', 'HistoryFilters: history cleared');
     } catch (err) {
-      logError('HistoryFilters: clear failed', err);
-      logWarn('Wystąpił błąd podczas czyszczenia historii');
+      logError('ui', 'HistoryFilters: clear failed', err);
+      logWarn('ui', 'Wystąpił błąd podczas czyszczenia historii');
     }
   };
 

@@ -77,9 +77,9 @@ export default function WebViewTab({ profile, isActive, onTitleChange, onLoadErr
     try {
       await window.electronAPI?.clearProfileCache?.(profile.id);
       reload();
-      logInfo(`WebViewTab: cache cleared for profile ${profile.id}`);
+      logInfo('webview', `WebViewTab: cache cleared for profile ${profile.id}`);
     } catch (err) {
-      logError('WebViewTab: clearCache failed', err);
+      logError('webview', 'WebViewTab: clearCache failed', err);
     }
   };
 
@@ -88,12 +88,12 @@ export default function WebViewTab({ profile, isActive, onTitleChange, onLoadErr
       const result = await window.electronAPI?.captureWebView?.(webviewRef.current?.getWebContentsId());
       if (result?.ok && result.data) {
         // copy to clipboard
-        logInfo('WebViewTab: screenshot taken');
+        logInfo('webview', 'WebViewTab: screenshot taken');
       } else {
-        logWarn('WebViewTab: screenshot failed');
+        logWarn('webview', 'WebViewTab: screenshot failed');
       }
     } catch (err) {
-      logError('WebViewTab: screenshot error', err);
+      logError('webview', 'WebViewTab: screenshot error', err);
     }
   };
 
@@ -103,9 +103,9 @@ export default function WebViewTab({ profile, isActive, onTitleChange, onLoadErr
         url: url,
         profile: profile
       });
-      logInfo(`WebViewTab: opened in single app mode for ${profile.id}`);
+      logInfo('webview', `WebViewTab: opened in single app mode for ${profile.id}`);
     } catch (err) {
-      logError('WebViewTab: openSingleAppMode failed', err);
+      logError('webview', 'WebViewTab: openSingleAppMode failed', err);
     }
   };
 
@@ -114,11 +114,11 @@ export default function WebViewTab({ profile, isActive, onTitleChange, onLoadErr
       const webContentsId = webviewRef.current?.getWebContentsId();
       const result = await window.electronAPI?.getWebViewResourceInfo?.(webContentsId);
 if (result?.ok && result.data) {
-         logInfo(`WebViewTab: resource info: ${JSON.stringify(result.data)}`);
+         logInfo('webview', `WebViewTab: resource info: ${JSON.stringify(result.data)}`);
          window.showToast(`RAM: ${result.data.ram}MB, CPU: ${result.data.cpu}%`, 'info');
       }
     } catch (err) {
-      logError('WebViewTab: resource monitor failed', err);
+      logError('webview', 'WebViewTab: resource monitor failed', err);
     }
   };
 
@@ -130,7 +130,7 @@ if (result?.ok && result.data) {
     setError(null);
     updateNavigationState();
     webviewRef.current?.getTitle().then(setTitle).catch(() => {});
-    logDebug(`WebViewTab: finished loading ${profile.id}`);
+    logDebug('webview', `WebViewTab: finished loading ${profile.id}`);
   }, [profile.id, updateNavigationState]);
 
   const handleDidFailLoad = useCallback((event) => {
@@ -138,40 +138,40 @@ if (result?.ok && result.data) {
     const errorDescription = event.errorDescription;
     setIsLoading(false);
     setError({ code: errorCode, description: errorDescription });
-    logError(`WebViewTab: fail load ${profile.id}`, { errorCode, errorDescription });
+    logError('webview', `WebViewTab: fail load ${profile.id}`, { errorCode, errorDescription });
     if (onLoadError) onLoadError(profile.id, errorCode);
   }, [profile.id, onLoadError]);
 
   const handleDidStartLoading = useCallback(() => {
     setIsLoading(true);
     setError(null);
-    logDebug(`WebViewTab: started loading ${profile.id}`);
+    logDebug('webview', `WebViewTab: started loading ${profile.id}`);
   }, [profile.id]);
 
   const handleDidStopLoading = useCallback(() => {
     setIsLoading(false);
     updateNavigationState();
-    logDebug(`WebViewTab: stopped loading ${profile.id}`);
+    logDebug('webview', `WebViewTab: stopped loading ${profile.id}`);
   }, [profile.id, updateNavigationState]);
 
   const handleDidNavigateInPage = useCallback(() => {
     updateNavigationState();
     webviewRef.current?.getTitle().then(setTitle).catch(() => {});
-    logDebug(`WebViewTab: navigated in page ${profile.id}`);
+    logDebug('webview', `WebViewTab: navigated in page ${profile.id}`);
   }, [profile.id, updateNavigationState]);
 
   const handlePageTitleUpdated = useCallback((event) => {
     const newTitle = event.title;
     setTitle(newTitle);
     if (onTitleChange) onTitleChange(profile.id, newTitle);
-    logDebug(`WebViewTab: title updated to ${newTitle}`);
+    logDebug('webview', `WebViewTab: title updated to ${newTitle}`);
   }, [profile.id, onTitleChange]);
 
   const handleConsoleMessage = useCallback((event) => {
     const { level, message, line, sourceId } = event;
-    if (level === 0) logDebug(`WebView console: ${message}`);
-    else if (level === 1) logWarn(`WebView console warning: ${message}`);
-    else if (level === 2) logError(`WebView console error: ${message}`, { line, sourceId });
+    if (level === 0) logDebug('webview', `WebView console: ${message}`);
+    else if (level === 1) logWarn('webview', `WebView console warning: ${message}`);
+    else if (level === 2) logError('webview', `WebView console error: ${message}`, { line, sourceId });
   }, []);
 
   // =========================================================================
@@ -180,7 +180,7 @@ if (result?.ok && result.data) {
   useEffect(() => {
     if (webviewRef.current) {
       webviewRef.current.setZoomFactor(zoomFactor);
-      logDebug(`WebViewTab: zoom factor set to ${zoomFactor} for ${profile.id}`);
+      logDebug('webview', `WebViewTab: zoom factor set to ${zoomFactor} for ${profile.id}`);
     }
   }, [zoomFactor, profile.id]);
 
@@ -212,7 +212,7 @@ if (result?.ok && result.data) {
         webview.removeEventListener(name, handler);
       });
       window.removeEventListener('wheel', handleZoomDelta);
-      logDebug(`WebViewTab: cleaned up events for ${profile.id}`);
+      logDebug('webview', `WebViewTab: cleaned up events for ${profile.id}`);
     };
   }, [
     handleDidFinishLoad,

@@ -2,7 +2,7 @@
 // FILE: App.jsx
 // PATH: src/App.jsx
 // VERSION: 0.0.3
-// PURPOSE: Główny punkt wejścia aplikacji - zarządza stanem globalnym, inicjalizacją i motywem.
+// PURPOSE: Główny komponent root aplikacji React – inicjalizuje system logowania, ładuje profile i ustawienia użytkownika, zarządza motywem graficznym (dark/light) oraz obsługuje globalne skróty klawiszowe i stan sieci.
 // FUNCTIONS: App
 // DEPENDS ON: react, config.js, translations.js, loggerRenderer.js, urlUtils.js, MainLayout.jsx, Spinner.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -77,14 +77,18 @@ export default function App() {
   // ─── applyTheme() – ustawia klasę dark na <html> w zależności od motywu
   //   @param {string} theme – 'dark' | 'light' | 'system'
   function applyTheme(theme) {
-    const html = document.documentElement;
-    if (theme === 'dark') {
-      html.classList.add('dark');
-    } else if (theme === 'light') {
-      html.classList.remove('dark');
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      html.classList.toggle('dark', prefersDark);
+    try {
+      const html = document.documentElement;
+      if (theme === 'dark') {
+        html.classList.add('dark');
+      } else if (theme === 'light') {
+        html.classList.remove('dark');
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        html.classList.toggle('dark', prefersDark);
+      }
+    } catch (err) {
+      console.error('[App] applyTheme failed:', err);
     }
   }
 

@@ -14,7 +14,7 @@ import { logDebug, logError } from "../utils/logger.js";
 // ─── apiRequest() – Wykonuje asynchroniczne żądanie HTTP o podanych parametrach (URL, metoda, nagłówki, treść), loguje szczegóły i zwraca status oraz dane odpowiedzi
 export async function apiRequest(url, method, headers, body) {
   try {
-    logDebug(`apiClient.apiRequest: ${method} ${url}`);
+    logDebug('tools', `apiClient.apiRequest: ${method} ${url}`);
     const res = await fetch(url, {
       method,
       headers,
@@ -25,10 +25,10 @@ export async function apiRequest(url, method, headers, body) {
       headers: Object.fromEntries(res.headers.entries()),
       body: await res.text()
     };
-    logDebug(`apiClient.apiRequest: response status ${result.status}`);
+    logDebug('tools', `apiClient.apiRequest: response status ${result.status}`);
     return result;
   } catch (err) {
-    logError("apiClient.apiRequest failed", err);
+    logError('tools', "apiClient.apiRequest failed", err);
     throw err;
   }
 }

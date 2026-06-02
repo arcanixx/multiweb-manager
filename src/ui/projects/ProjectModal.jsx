@@ -28,12 +28,12 @@ export default function ProjectModal({ onSave, onClose }) {
   const handleSave = () => {
     try {
       if (name.trim() && path.trim()) {
-        logInfo(`ProjectModal: saving project ${name.trim()}`);
+        logInfo('ui', `ProjectModal: saving project ${name.trim()}`);
         onSave({ name: name.trim(), path: path.trim() });
       }
     } catch (err) {
-      logError('ProjectModal: save failed', err);
-      logWarn('Wystąpił błąd podczas zapisu projektu');
+      logError('ui', 'ProjectModal: save failed', err);
+      logWarn('ui', 'Wystąpił błąd podczas zapisu projektu');
     }
   };
 
@@ -41,11 +41,11 @@ export default function ProjectModal({ onSave, onClose }) {
   //   @returns {void}
   const handleClose = () => {
     try {
-      logInfo('ProjectModal: closed');
+      logInfo('ui', 'ProjectModal: closed');
       onClose?.();
     } catch (err) {
-      logError('ProjectModal: close failed', err);
-      logWarn('Wystąpił błąd podczas zamykania modala');
+      logError('ui', 'ProjectModal: close failed', err);
+      logWarn('ui', 'Wystąpił błąd podczas zamykania modala');
     }
   };
   return (

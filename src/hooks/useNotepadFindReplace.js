@@ -2,7 +2,7 @@
 // FILE: useNotepadFindReplace.js
 // PATH: src/hooks/useNotepadFindReplace.js
 // VERSION: 0.0.3
-// PURPOSE: Hook logiki znajdź/zastąp dla notatnika
+// PURPOSE: Hook React obsługujący logikę wyszukiwania i zastępowania tekstu w edytorze notatnika.
 // FUNCTIONS: useNotepadFindReplace
 // DEPENDS ON: react, translations.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -44,11 +44,11 @@ export function useNotepadFindReplace({ contentRef, textareaRef, setContent, set
         const ta = textareaRef.current;
         ta.focus();
         ta.setSelectionRange(matches[0].index, matches[0].index + findText.length);
-        logInfo("useNotepadFindReplace.handleFind", { count: matches.length });
+        logInfo("ui", "useNotepadFindReplace.handleFind success", { count: matches.length });
       }
     } catch (err) {
-      logError("useNotepadFindReplace.handleFind failed", err);
-      logWarn("Wystąpił błąd podczas wyszukiwania tekstu");
+      logError("ui", "useNotepadFindReplace.handleFind failed", err.message);
+      logWarn("ui", "Wystąpił błąd podczas wyszukiwania tekstu");
     }
   }, [findText, contentRef, textareaRef]);
 
@@ -66,10 +66,10 @@ export function useNotepadFindReplace({ contentRef, textareaRef, setContent, set
       setDirty(true);
       setFindCount(0);
       showToast(t('notepad.replaced'));
-      logInfo("useNotepadFindReplace.handleReplace", { from: findText, to: replaceText });
+      logInfo("ui", "useNotepadFindReplace.handleReplace success", { from: findText, to: replaceText });
     } catch (err) {
-      logError("useNotepadFindReplace.handleReplace failed", err);
-      logWarn("Wystąpił błąd podczas zastępowania tekstu");
+      logError("ui", "useNotepadFindReplace.handleReplace failed", err.message);
+      logWarn("ui", "Wystąpił błąd podczas zastępowania tekstu");
     }
   }, [findText, replaceText, contentRef, setContent, setDirty, showToast, t]);
 

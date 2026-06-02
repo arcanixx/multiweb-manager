@@ -28,7 +28,7 @@ ipcMain.handle('webview:clearCache', async (_, id) => {
     await wc.session.clearCache();
     return { ok: true };
   } catch (err) {
-    logError('webview:clearCache failed', err);
+    logError('ipc', 'webview:clearCache failed', err);
     return { ok: false, error: err.message };
   }
 });

@@ -16,7 +16,7 @@ ipcMain.handle('path:join', async (_, parts) => {
     const result = path.join(...parts);
     return { ok: true, data: result };
   } catch (err) {
-    logError('path:join failed', err);
+    logError('ipc', 'path:join failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -24,7 +24,7 @@ ipcMain.handle('path:dirname', async (_, filePath) => {
   try {
     return { ok: true, data: path.dirname(filePath) };
   } catch (err) {
-    logError('path:dirname failed', err);
+    logError('ipc', 'path:dirname failed', err);
     return { ok: false, error: err.message };
   }
 });

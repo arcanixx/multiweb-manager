@@ -35,9 +35,9 @@ export default function HistoryLog() {
       const historyData = await loadHistory();
       setHistory(historyData);
       setFilteredHistory(historyData);
-      logInfo('HistoryLog: loaded history');
+      logInfo('ui', 'HistoryLog: loaded history');
     } catch (error) {
-      logError('HistoryLog: failed to load history', error);
+      logError('ui', 'HistoryLog: failed to load history', error);
     } finally {
       setLoading(false);
     }
@@ -49,9 +49,9 @@ export default function HistoryLog() {
       await clearHistory();
       setHistory([]);
       setFilteredHistory([]);
-      logInfo('HistoryLog: cleared history');
+      logInfo('ui', 'HistoryLog: cleared history');
     } catch (error) {
-      logError('HistoryLog: failed to clear history', error);
+      logError('ui', 'HistoryLog: failed to clear history', error);
     }
     setShowClearConfirm(false);
   };

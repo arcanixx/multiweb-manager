@@ -2,7 +2,7 @@
 // FILE: adBlocker.js
 // PATH: src/engine/adBlocker.js
 // VERSION: 0.0.3
-// PURPOSE: Logika blokowania reklam (global + per profile)
+// PURPOSE: Implementacja blokowania reklam na poziomie sieciowym (webRequest) – wspiera ustawienia globalne i nadpisywanie per-profil.
 // FUNCTIONS: isAdUrl, setGlobalAdBlocker, getGlobalAdBlocker, setProfileAdBlocker, getProfileAdBlocker, initAdBlocker
 // DEPENDS ON: electron, config.js, logger.js, webviewRegistry.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -30,11 +30,9 @@ export function isAdUrl(url) {
 //   @param {boolean} enabled – czy włączyć globalny adblocker
 export function setGlobalAdBlocker(enabled) {
   globalAdBlocker = enabled;
-  logDebug(`AdBlocker global set to: ${enabled}`);
+  logDebug("engine", `AdBlocker global set to: ${enabled}`);
 }
-/**
- * Zwraca globalny stan AdBlockera
- */
+
 // ─── getGlobalAdBlocker() – zwraca globalny stan AdBlockera
 //   @returns {boolean} – stan globalnego adblockera
 export function getGlobalAdBlocker() {
@@ -48,10 +46,10 @@ export function setProfileAdBlocker(profileId, enabled) {
   try {
     if (!profileId) throw new Error('setProfileAdBlocker: brak profileId');
     profileAdBlockers.set(profileId, enabled);
-    logDebug(`AdBlocker for profile ${profileId} set to: ${enabled}`);
+    logDebug("engine", `AdBlocker for profile ${profileId} set to: ${enabled}`);
   } catch (err) {
-    logError('setProfileAdBlocker failed', err);
-    logWarn(`Nie można ustawić AdBlockera dla profilu ${profileId}`);
+    logError("engine", "setProfileAdBlocker failed", err.message);
+    logWarn("engine", `Nie można ustawić AdBlockera dla profilu ${profileId}`);
   }
 }
 
@@ -63,7 +61,7 @@ export function getProfileAdBlocker(profileId) {
     const value = profileAdBlockers.get(profileId);
     return value !== undefined ? value : globalAdBlocker;
   } catch (err) {
-    logError('getProfileAdBlocker failed', err);
+    logError("engine", "getProfileAdBlocker failed", err.message);
     return globalAdBlocker;
   }
 }
@@ -71,7 +69,7 @@ export function getProfileAdBlocker(profileId) {
 // ─── initAdBlocker() – inicjalizuje AdBlockera (rejestruje onBeforeRequest)
 export function initAdBlocker() {
   if (!isFeatureEnabled('adBlocker')) {
-    logInfo('AdBlocker is disabled by feature flag.');
+    logInfo("engine", "AdBlocker is disabled by feature flag.");
     return;
   }
   session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
@@ -81,10 +79,10 @@ export function initAdBlocker() {
       shouldBlock = profileAdBlockers.get(profileId);
     }
     if (shouldBlock && isAdUrl(details.url)) {
-      logDebug(`AdBlocked: ${details.url} (profile: ${profileId || 'global'})`);
+      logDebug("engine", `AdBlocked: ${details.url} (profile: ${profileId || 'global'})`);
       return callback({ cancel: true });
     }
     callback({});
   });
-  logDebug('AdBlocker initialized');
+  logDebug("engine", "AdBlocker initialized");
 }

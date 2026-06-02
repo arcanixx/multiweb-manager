@@ -55,7 +55,7 @@ export default function ClipboardHistory() {
 //   @param {string} text – tekst do skopiowania
   const handleCopy = async (text) => {
     await navigator.clipboard.writeText(text);
-    logDebug('ClipboardHistory: copied to clipboard', { textLength: text.length });
+    logDebug('tools', 'ClipboardHistory: copied to clipboard', { textLength: text.length });
   };
 
   // ─── handlePin() – przypięcie wpisu do listy pinned
@@ -64,7 +64,7 @@ export default function ClipboardHistory() {
     const entry = history.find(h => h.id === id);
     if (entry && !pinned.find(p => p.id === id)) {
       setPinned(prev => [...prev, entry]);
-      logDebug('ClipboardHistory: pinned entry', { id });
+      logDebug('tools', 'ClipboardHistory: pinned entry', { id });
     }
   };
 
@@ -78,7 +78,7 @@ export default function ClipboardHistory() {
   const handleClear = () => {
     setHistory([]);
     setPinned([]);
-    logDebug('ClipboardHistory: cleared all history');
+    logDebug('tools', 'ClipboardHistory: cleared all history');
   };
 
   const filteredHistory = history.filter(h =>

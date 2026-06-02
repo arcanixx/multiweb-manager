@@ -2,22 +2,24 @@
 // FILE: urlUtils.js
 // PATH: src/utils/urlUtils.js
 // VERSION: 0.0.3
-// PURPOSE: Normalizacja URL dla WebView — zawsze pełny adres z https://. Blokuje niebezpieczne schematy: javascript:, file:, data: (URL sanitization).
+// PURPOSE: Narzędzia do walidacji, normalizacji i sanityzacji adresów URL dla modułu WebView.
 // FUNCTIONS: normalizeWebUrl, isValidWebUrl, isSafeUrl
-// DEPENDS ON: -
+// DEPENDS ON: logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-/**
- * @param {string} raw
- * @returns {string|null} gotowy URL lub null gdy pusty / niepoprawny
- */
+import { logError } from "./logger.js";
 
-// ─── normalizeWebUrl() – normalizuje URL, dodając https:// jeśli brak protokolu
-//   @param {string} raw - surowy adres URL
-//   @returns {string|null} - pełny URL lub null gdy niepoprawny
+// ─── normalizeWebUrl(raw) – Normalizuje surowy adres URL, dodając brakujący protokół i weryfikując format (localhost, IP, domeny)
 export function normalizeWebUrl(raw) {
-  if (raw == null || typeof raw !== 'string') return null;
+  if (raw == null || typeof raw !== 'string') {
+    logError("webview", "urlUtils.normalizeWebUrl received invalid input type", { 
+      type: typeof raw, 
+      value: raw 
+    });
+    return null;
+  }
+
   let u = raw.trim();
   if (!u) return null;
   // ─── Blokada niebezpiecznych schematów przed normalizacją ───
@@ -32,22 +34,21 @@ export function normalizeWebUrl(raw) {
     if (host === 'localhost' || host.endsWith('.localhost')) return parsed.href;
     if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host)) return parsed.href;
     if (!host.includes('.')) return null;
+
     return parsed.href;
-  } catch {
+  } catch (err) {
+    logError("webview", "urlUtils.normalizeWebUrl failed", { raw, error: err.message });
     return null;
   }
 }
 
-// ─── isValidWebUrl() – sprawdza czy URL jest poprawny przez normalizeWebUrl
-//   @param {string} raw - surowy adres URL
-//   @returns {boolean} - true jeśli URL jest poprawny
+// ─── isValidWebUrl(raw) – Weryfikuje poprawność formatu adresu URL przez normalizeWebUrl
 export function isValidWebUrl(raw) {
   return normalizeWebUrl(raw) !== null;
 }
 
 // ─── isSafeUrl() – blokuje niebezpieczne schematy URL (javascript:, file:, data: itp.)
-//   Wywoływane przed normalizeWebUrl() i w WebViewTab przed loadURL().
-//   @param {string} raw – surowy URL wpisany przez użytkownika
+
 //   @returns {boolean} – true jeśli URL jest bezpieczny, false jeśli zablokowany
 export function isSafeUrl(raw) {
   if (!raw || typeof raw !== 'string') return false;

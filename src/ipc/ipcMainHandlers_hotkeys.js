@@ -18,7 +18,7 @@ ipcMain.handle('hotkeys:getAll', async () => {
   try {
     return { ok: true, data: getAllHotkeys() };
   } catch (err) {
-    logError('hotkeys:getAll failed', err);
+    logError('ipc', 'hotkeys:getAll failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -29,7 +29,7 @@ ipcMain.handle('hotkeys:save', async (_, hotkeys) => {
     saveHotkeys(hotkeys);
     return { ok: true };
   } catch (err) {
-    logError('hotkeys:save failed', err);
+    logError('ipc', 'hotkeys:save failed', err);
     return { ok: false, error: err.message };
   }
 });
@@ -42,7 +42,7 @@ ipcMain.handle('hotkeys:register', async (_, hotkeys) => {
     registerHotkeysFromList(hotkeys);
     return { ok: true };
   } catch (err) {
-    logError('hotkeys:register failed', err);
+    logError('ipc', 'hotkeys:register failed', err);
     return { ok: false, error: err.message };
   }
 });

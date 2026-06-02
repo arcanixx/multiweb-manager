@@ -32,12 +32,12 @@ export default function GeneralSection() {
             const theme = res.data?.theme || 'system';
             setDarkMode(theme === 'dark');
             setDebugMode(res.data?.debugMode === true);
-            logInfo('GeneralSection: settings loaded from IPC');
+            logInfo('settings', 'GeneralSection: settings loaded from IPC');
           }
         }
       } catch (err) {
-        logError('GeneralSection: failed to load settings', err);
-        logWarn('Nie można załadować ustawień — fallback na localStorage');
+        logError('settings', 'GeneralSection: failed to load settings', err);
+        logWarn('settings', 'Nie można załadować ustawień — fallback na localStorage');
         // Fallback na localStorage gdy IPC niedostępne
         setDarkMode(localStorage.getItem('theme') === 'dark');
       }
@@ -55,11 +55,11 @@ export default function GeneralSection() {
       if (window.electronAPI?.invoke) {
         await window.electronAPI.invoke('settings:update', { theme: newMode ? 'dark' : 'light' });
       }
-      logDebug(`Dark mode toggled: ${newMode ? 'dark' : 'light'}`);
-      logInfo(`GeneralSection: dark mode ${newMode ? 'enabled' : 'disabled'}`);
+      logDebug('settings', `Dark mode toggled: ${newMode ? 'dark' : 'light'}`);
+      logInfo('settings', `GeneralSection: dark mode ${newMode ? 'enabled' : 'disabled'}`);
     } catch (err) {
-      logError('GeneralSection: dark mode toggle failed', err);
-      logWarn('Wystąpił błąd podczas przełączania trybu ciemnego');
+      logError('settings', 'GeneralSection: dark mode toggle failed', err);
+      logWarn('settings', 'Wystąpił błąd podczas przełączania trybu ciemnego');
     }
   };
 
@@ -72,11 +72,11 @@ export default function GeneralSection() {
       if (window.electronAPI?.setDebugMode) {
         await window.electronAPI.setDebugMode(newMode);
       }
-      logDebug(`Debug mode toggled: ${newMode}`);
-      logInfo(`GeneralSection: debug mode ${newMode ? 'enabled' : 'disabled'}`);
+      logDebug('settings', `Debug mode toggled: ${newMode}`);
+      logInfo('settings', `GeneralSection: debug mode ${newMode ? 'enabled' : 'disabled'}`);
     } catch (err) {
-      logError('GeneralSection: debug mode toggle failed', err);
-      logWarn('Wystąpił błąd podczas przełączania trybu debug');
+      logError('settings', 'GeneralSection: debug mode toggle failed', err);
+      logWarn('settings', 'Wystąpił błąd podczas przełączania trybu debug');
     }
   };
 
@@ -88,11 +88,11 @@ export default function GeneralSection() {
     try {
       const newLang = e.target.value;
       setLanguage(newLang);
-      logDebug(`Language changed to: ${newLang}`);
-      logInfo(`GeneralSection: language changed to ${newLang}`);
+      logDebug('settings', `Language changed to: ${newLang}`);
+      logInfo('settings', `GeneralSection: language changed to ${newLang}`);
     } catch (err) {
-      logError('GeneralSection: language change failed', err);
-      logWarn('Wystąpił błąd podczas zmiany języka');
+      logError('settings', 'GeneralSection: language change failed', err);
+      logWarn('settings', 'Wystąpił błąd podczas zmiany języka');
     }
   };
 

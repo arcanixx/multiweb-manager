@@ -21,7 +21,7 @@ export function getUserDataPath(...segments) {
   try {
     return path.join(app.getPath("userData"), ...segments);
   } catch (err) {
-    logError("persistence.getUserDataPath failed", err);
+    logError("store", "persistence.getUserDataPath failed", err.message);
     // Fallback path for testing environments
     return path.join("userData", ...segments);
   }
@@ -36,7 +36,7 @@ export function readJsonFile(filePath, fallback) {
     if (!fs.existsSync(filePath)) return fallback;
     return JSON.parse(fs.readFileSync(filePath, "utf8"));
   } catch (err) {
-    logError("persistence.readJsonFile", { filePath, err });
+    logError("store", "persistence.readJsonFile failed", { filePath, error: err.message });
     return fallback;
   }
 }
@@ -49,10 +49,10 @@ export function writeJsonFile(filePath, data) {
   try {
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
-    logInfo("persistence.writeJsonFile success", { filePath });
+    logInfo("store", "persistence.writeJsonFile success", { filePath });
     return true;
   } catch (err) {
-    logError("persistence.writeJsonFile", { filePath, err });
+    logError("store", "persistence.writeJsonFile failed", { filePath, error: err.message });
     return false;
   }
 }

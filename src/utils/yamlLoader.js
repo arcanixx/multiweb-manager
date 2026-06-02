@@ -15,7 +15,7 @@ export async function loadYaml() {
   try {
     return (await import('js-yaml')).default;
   } catch {
-    logWarn('yamlLoader: moduł js-yaml niedostępny – operacje YAML wyłączone');
+    logWarn('ui', 'yamlLoader: moduł js-yaml niedostępny – operacje YAML wyłączone');
     return null;
   }
 }

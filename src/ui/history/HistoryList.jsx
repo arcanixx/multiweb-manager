@@ -31,8 +31,8 @@ export default function HistoryList({ entries }) {
         hour: '2-digit', minute: '2-digit'
       });
     } catch (err) {
-      logError('HistoryList.formatTime failed', err);
-      logWarn('Wystąpił błąd podczas formatowania daty');
+      logError('ui', 'HistoryList.formatTime failed', err);
+      logWarn('ui', 'Wystąpił błąd podczas formatowania daty');
       return iso;
     }
   };

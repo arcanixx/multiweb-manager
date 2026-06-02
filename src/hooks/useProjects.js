@@ -2,7 +2,7 @@
 // FILE: useProjects.js
 // PATH: src/hooks/useProjects.js
 // VERSION: 0.0.3
-// PURPOSE: Hook do projectsStore – lista projektów, CRUD load()           pobiera wszystkie projekty (projects:getAll) add(project)     dodaje projekt (projects:add) update(id,patch) aktualizuje projekt (projects:update) remove(id)       usuwa projekt (projects:delete)
+// PURPOSE: Hook React do zarządzania projektami użytkownika – obsługa operacji CRUD przez mostek IPC.
 // FUNCTIONS: useProjects
 // DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -25,15 +25,15 @@ export function useProjects() {
       const res = await window.electronAPI.invoke("projects:getAll");
       if (res?.ok) {
         setProjects(res.data);
-        logInfo("useProjects.load", res.data.length);
+        logInfo("store", "useProjects.load success", res.data.length);
       } else {
-        logError("useProjects.load failed", res?.error);
-        logWarn("Nie można załadować projektów");
+        logError("store", "useProjects.load failed", res?.error);
+        logWarn("store", "Nie można załadować projektów");
       }
       setLoading(false);
     } catch (err) {
-      logError("useProjects.load exception", err);
-      logWarn("Wystąpił błąd podczas ładowania projektów");
+      logError("store", "useProjects.load exception", err.message);
+      logWarn("store", "Wystąpił błąd podczas ładowania projektów");
       setLoading(false);
     }
   }
@@ -45,16 +45,16 @@ export function useProjects() {
     try {
       const res = await window.electronAPI.invoke("projects:add", project);
       if (res?.ok) {
-        logInfo("useProjects.add success");
+        logInfo("store", "useProjects.add success", project.id);
         await load();
       } else {
-        logError("useProjects.add failed", res?.error);
-        logWarn("Nie można dodać projektu");
+        logError("store", "useProjects.add failed", res?.error);
+        logWarn("store", "Nie można dodać projektu");
       }
       return res;
     } catch (err) {
-      logError("useProjects.add exception", err);
-      logWarn("Wystąpił błąd podczas dodawania projektu");
+      logError("store", "useProjects.add exception", err.message);
+      logWarn("store", "Wystąpił błąd podczas dodawania projektu");
       return { ok: false, error: err.message };
     }
   }
@@ -67,16 +67,16 @@ export function useProjects() {
     try {
       const res = await window.electronAPI.invoke("projects:update", { id, patch });
       if (res?.ok) {
-        logInfo("useProjects.update success");
+        logInfo("store", "useProjects.update success", id);
         await load();
       } else {
-        logError("useProjects.update failed", res?.error);
-        logWarn("Nie można zaktualizować projektu");
+        logError("store", "useProjects.update failed", res?.error);
+        logWarn("store", "Nie można zaktualizować projektu");
       }
       return res;
     } catch (err) {
-      logError("useProjects.update exception", err);
-      logWarn("Wystąpił błąd podczas aktualizacji projektu");
+      logError("store", "useProjects.update exception", err.message);
+      logWarn("store", "Wystąpił błąd podczas aktualizacji projektu");
       return { ok: false, error: err.message };
     }
   }
@@ -88,16 +88,16 @@ export function useProjects() {
     try {
       const res = await window.electronAPI.invoke("projects:delete", { id });
       if (res?.ok) {
-        logInfo("useProjects.remove success");
+        logInfo("store", "useProjects.remove success", id);
         await load();
       } else {
-        logError("useProjects.remove failed", res?.error);
-        logWarn("Nie można usunąć projektu");
+        logError("store", "useProjects.remove failed", res?.error);
+        logWarn("store", "Nie można usunąć projektu");
       }
       return res;
     } catch (err) {
-      logError("useProjects.remove exception", err);
-      logWarn("Wystąpił błąd podczas usuwania projektu");
+      logError("store", "useProjects.remove exception", err.message);
+      logWarn("store", "Wystąpił błąd podczas usuwania projektu");
       return { ok: false, error: err.message };
     }
   }

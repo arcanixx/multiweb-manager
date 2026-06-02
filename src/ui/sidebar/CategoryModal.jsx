@@ -2,9 +2,9 @@
 // FILE: CategoryModal.jsx
 // PATH: src/ui/sidebar/CategoryModal.jsx
 // VERSION: 0.0.3
-// PURPOSE: Modal dodawania/edycji kategorii
+// PURPOSE: Formularz modalny do zarządzania kategoriami profili – umożliwia tworzenie nowych i edycję istniejących sekcji grupujących w Sidebarze.
 // FUNCTIONS: CategoryModal
-// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, ModalPortal
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, ModalPortal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -25,6 +25,18 @@ export default function CategoryModal({ category, onSave, onClose }) {
   const { t } = useContext(TranslationContext);
   const [name, setName] = useState(category?.name || '');
   const [icon, setIcon] = useState(category?.icon || '📁');
+
+  // ─── handleSave() – Waliduje dane wejściowe i przekazuje obiekt kategorii do nadrzędnego callbacku zapisu
+  const handleSave = () => {
+    try {
+      if (!name.trim()) return;
+      onSave({ id: category?.id || Date.now().toString(), name: name.trim(), icon });
+      logInfo('ui', `CategoryModal: category ${category ? 'updated' : 'created'} successfully`);
+    } catch (err) {
+      logError('ui', 'CategoryModal: handleSave failed', err.message);
+    }
+  };
+
   return (
     <ModalPortal onClose={onClose}>
       <div className="modal-box" style={{ minWidth: 320, maxWidth: 400 }} onMouseDown={e => e.stopPropagation()}>
@@ -46,7 +58,7 @@ export default function CategoryModal({ category, onSave, onClose }) {
         </div>
         <div style={{ display: 'flex', gap: 8, marginTop: 20, justifyContent: 'flex-end' }}>
           <button className="btn btn-secondary" onClick={onClose}>{t('common.cancel')}</button>
-          <button className="btn btn-primary" onClick={() => name.trim() && onSave({ id: category?.id || Date.now().toString(), name: name.trim(), icon })} disabled={!name.trim()}>
+          <button className="btn btn-primary" onClick={handleSave} disabled={!name.trim()}>
             {ICONS.SAVE} {t('common.save')}
           </button>
         </div>

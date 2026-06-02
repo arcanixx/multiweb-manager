@@ -2,7 +2,7 @@
 // FILE: useTasks.js
 // PATH: src/hooks/useTasks.js
 // VERSION: 0.0.3
-// PURPOSE: Hook do tasksStore – pobieranie, dodawanie, aktualizacja, usuwanie load()        pobiera wszystkie taski (tasks:getAll) add(task)     dodaje task (tasks:add) update(id, patch) aktualizuje task (tasks:update) remove(id)    usuwa task (tasks:delete)
+// PURPOSE: Hook React do zarządzania zadaniami użytkownika – obsługa operacji CRUD przez mostek IPC.
 // FUNCTIONS: useTasks
 // DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -25,15 +25,15 @@ export function useTasks() {
       const res = await window.electronAPI.invoke("tasks:getAll");
       if (res?.ok) {
         setTasks(res.data);
-        logInfo("useTasks.load", res.data.length);
+        logInfo("tasks", "useTasks.load success", res.data.length);
       } else {
-        logError("useTasks.load failed", res?.error);
-        logWarn("Nie można załadować zadań");
+        logError("tasks", "useTasks.load failed", res?.error);
+        logWarn("tasks", "Nie można załadować zadań");
       }
       setLoading(false);
     } catch (err) {
-      logError("useTasks.load exception", err);
-      logWarn("Wystąpił błąd podczas ładowania zadań");
+      logError("tasks", "useTasks.load exception", err.message);
+      logWarn("tasks", "Wystąpił błąd podczas ładowania zadań");
       setLoading(false);
     }
   }
@@ -45,16 +45,16 @@ export function useTasks() {
     try {
       const res = await window.electronAPI.invoke("tasks:add", task);
       if (res?.ok) {
-        logInfo("useTasks.add success");
+        logInfo("tasks", "useTasks.add success", task.id);
         await load();
       } else {
-        logError("useTasks.add failed", res?.error);
-        logWarn("Nie można dodać zadania");
+        logError("tasks", "useTasks.add failed", res?.error);
+        logWarn("tasks", "Nie można dodać zadania");
       }
       return res;
     } catch (err) {
-      logError("useTasks.add exception", err);
-      logWarn("Wystąpił błąd podczas dodawania zadania");
+      logError("tasks", "useTasks.add exception", err.message);
+      logWarn("tasks", "Wystąpił błąd podczas dodawania zadania");
       return { ok: false, error: err.message };
     }
   }
@@ -67,16 +67,16 @@ export function useTasks() {
     try {
       const res = await window.electronAPI.invoke("tasks:update", { id, patch });
       if (res?.ok) {
-        logInfo("useTasks.update success");
+        logInfo("tasks", "useTasks.update success", id);
         await load();
       } else {
-        logError("useTasks.update failed", res?.error);
-        logWarn("Nie można zaktualizować zadania");
+        logError("tasks", "useTasks.update failed", res?.error);
+        logWarn("tasks", "Nie można zaktualizować zadania");
       }
       return res;
     } catch (err) {
-      logError("useTasks.update exception", err);
-      logWarn("Wystąpił błąd podczas aktualizacji zadania");
+      logError("tasks", "useTasks.update exception", err.message);
+      logWarn("tasks", "Wystąpił błąd podczas aktualizacji zadania");
       return { ok: false, error: err.message };
     }
   }
@@ -88,16 +88,16 @@ export function useTasks() {
     try {
       const res = await window.electronAPI.invoke("tasks:delete", { id });
       if (res?.ok) {
-        logInfo("useTasks.remove success");
+        logInfo("tasks", "useTasks.remove success", id);
         await load();
       } else {
-        logError("useTasks.remove failed", res?.error);
-        logWarn("Nie można usunąć zadania");
+        logError("tasks", "useTasks.remove failed", res?.error);
+        logWarn("tasks", "Nie można usunąć zadania");
       }
       return res;
     } catch (err) {
-      logError("useTasks.remove exception", err);
-      logWarn("Wystąpił błąd podczas usuwania zadania");
+      logError("tasks", "useTasks.remove exception", err.message);
+      logWarn("tasks", "Wystąpił błąd podczas usuwania zadania");
       return { ok: false, error: err.message };
     }
   }

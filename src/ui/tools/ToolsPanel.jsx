@@ -41,7 +41,7 @@ export default function ToolsPanel({ removeBgApiKey, plan = "free", activeWebVie
    //   @param {string} toolId – identyfikator narzędzia do aktywacji
    const handleSetActiveTool = (toolId) => {
     setActiveTool(toolId);
-    logDebug(`ToolsPanel: switched to ${toolId}`);
+    logDebug('tools', `ToolsPanel: switched to ${toolId}`);
   };
   const allTools = [
     { id: "removebg", icon: ICONS.REMOVEBG, label: t("tools.removebg"), feature: null },

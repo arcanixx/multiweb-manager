@@ -56,7 +56,7 @@ export default function WebViewToolbar({
 
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(url);
-    logDebug(`WebViewToolbar: URL copied to clipboard`);
+    logDebug('webview', `WebViewToolbar: URL copied to clipboard`);
     if (onCopyUrl) onCopyUrl();
   };
 

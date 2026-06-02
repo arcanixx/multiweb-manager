@@ -2,9 +2,9 @@
 // FILE: AppLibraryBrowser.jsx
 // PATH: src/ui/appLibrary/AppLibraryBrowser.jsx
 // VERSION: 0.0.3
-// PURPOSE: Pełny widok App Library – przeglądarka aplikacji z kategoriami, wyszukiwarką
+// PURPOSE: Główny widok biblioteki aplikacji (App Library) – umożliwia przeglądanie skatalogowanych usług webowych, ich wyszukiwanie oraz szybkie dodawanie do profili użytkownika. Współpracuje z appLibraryStore.
 // FUNCTIONS: AppLibraryBrowser
-// DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons, appLibraryStore
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer.js, icons.js, appLibraryStore.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -33,11 +33,11 @@ export default function AppLibraryBrowser({ onAddProfile }) {
     try {
       const lib = loadAppLibrary();
       setCategories(lib);
-      logDebug(`AppLibraryBrowser: loaded ${lib.length} categories`);
-      logInfo('AppLibraryBrowser: library loaded successfully');
+      logDebug('ui', `AppLibraryBrowser: loaded ${lib.length} categories`);
+      logInfo('ui', 'AppLibraryBrowser: library loaded successfully');
     } catch (err) {
-      logError('AppLibraryBrowser: failed to load library', err);
-      logWarn('Nie można załadować biblioteki aplikacji');
+      logError('ui', 'AppLibraryBrowser: failed to load library', err.message);
+      logWarn('ui', 'Nie można załadować biblioteki aplikacji');
     } finally {
       setLoading(false);
     }
@@ -50,10 +50,10 @@ export default function AppLibraryBrowser({ onAddProfile }) {
         const results = searchAppLibrary(searchQuery);
         setSearchResults(results);
         setSelectedCategory(null);
-        logInfo(`AppLibraryBrowser: found ${results.length} results for "${searchQuery}"`);
+        logInfo('ui', `AppLibraryBrowser: found ${results.length} results for "${searchQuery}"`);
       } catch (err) {
-        logError('AppLibraryBrowser: search failed', err);
-        logWarn('Wystąpił błąd podczas wyszukiwania aplikacji');
+        logError('ui', 'AppLibraryBrowser: search failed', err.message);
+        logWarn('ui', 'Wystąpił błąd podczas wyszukiwania aplikacji');
         setSearchResults([]);
       }
     } else {
@@ -69,12 +69,12 @@ export default function AppLibraryBrowser({ onAddProfile }) {
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);
     setSearchQuery('');
-    logInfo(`AppLibraryBrowser: category selected ${categoryId}`);
+    logInfo('ui', `AppLibraryBrowser: category selected ${categoryId}`);
   };
 
   // ─── handleAddApp() – Obsługuje dodawanie wybranej aplikacji z biblioteki do profili użytkownika poprzez wywołanie zewnętrznego callbacku onAddProfile
   const handleAddApp = (app) => {
-    logDebug(`AppLibraryBrowser: adding app ${app.name}`);
+    logDebug('ui', `AppLibraryBrowser: adding app ${app.name}`);
     onAddProfile?.(app);
   };
 

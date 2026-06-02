@@ -72,7 +72,7 @@ export default function MainLayout({
         : profileOrProject?.taskProject || profileOrProject?.name || 'default';
     setCurrentProject(name);
     setShowTaskPanel(true);
-    logInfo('MainLayout: TaskPanel opened for', name);
+    logInfo('ui', 'MainLayout: TaskPanel opened for', name);
   };
 
   // Nasłuchiwanie sygnału quit z procesu głównego

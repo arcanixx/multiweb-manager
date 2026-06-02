@@ -27,7 +27,7 @@ export async function loadAllIpcHandlers() {
       (f) => f.startsWith("ipcMainHandlers_") && f.endsWith(".js")
     );
   } catch (err) {
-    logError("ipcLoader: cannot read ipc directory", err.message);
+    logError('ipc', "ipcLoader: cannot read ipc directory", err.message);
     return { loaded: [], skipped: [], errors: [] };
   }
   const loaded = [];
@@ -42,13 +42,13 @@ export async function loadAllIpcHandlers() {
       const filePath = pathToFileURL(join(ipcDir, file)).href;
       await import(filePath);
       loaded.push(file);
-      logInfo(`ipcLoader: loaded ${file}`);
+      logInfo('ipc', `ipcLoader: loaded ${file}`);
     } catch (err) {
       errors.push({ file, error: err.message });
-      logError(`ipcLoader: failed to load ${file}`, err.message);
+      logError('ipc', `ipcLoader: failed to load ${file}`, err.message);
     }
   }
 
-  logInfo(`ipcLoader: ${loaded.length} handlers loaded, ${skipped.length} skipped, ${errors.length} errors`);
+  logInfo('ipc', `ipcLoader: ${loaded.length} handlers loaded, ${skipped.length} skipped, ${errors.length} errors`);
   return { loaded, skipped, errors };
 }

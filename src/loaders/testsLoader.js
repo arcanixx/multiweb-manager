@@ -28,7 +28,7 @@ export async function loadAndRunAllTests(options = {}) {
       (f) => f.startsWith("TestRunner_") && f.endsWith(".js")
     );
   } catch (err) {
-    logError("testsLoader: cannot read tests directory", err.message);
+    logError('ui', "testsLoader: cannot read tests directory", err.message);
     return { passed: 0, failed: 0, results: {} };
   }
   let totalPassed = 0;
@@ -46,24 +46,24 @@ export async function loadAndRunAllTests(options = {}) {
       );
 
       if (!runFn) {
-        logError(`testsLoader: no run* function found in ${file}`);
+        logError('ui', `testsLoader: no run* function found in ${file}`);
         results[file] = { passed: 0, failed: 0, error: "no run function" };
         continue;
       }
 
-      logInfo(`testsLoader: running ${file} → ${runFn.name}()`);
+      logInfo('ui', `testsLoader: running ${file} → ${runFn.name}()`);
       const result = await runFn(options);
       results[file] = result;
       totalPassed += result?.passed || 0;
       totalFailed += result?.failed || 0;
 
     } catch (err) {
-      logError(`testsLoader: failed to load/run ${file}`, err.message);
+      logError('ui', `testsLoader: failed to load/run ${file}`, err.message);
       results[file] = { passed: 0, failed: 0, error: err.message };
       totalFailed++;
     }
   }
 
-  logInfo(`testsLoader: total ${totalPassed} passed, ${totalFailed} failed across ${files.length} modules`);
+  logInfo('ui', `testsLoader: total ${totalPassed} passed, ${totalFailed} failed across ${files.length} modules`);
   return { passed: totalPassed, failed: totalFailed, results };
 }

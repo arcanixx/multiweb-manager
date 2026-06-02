@@ -32,7 +32,7 @@ export function registerWebViewExtraHandlers() {
       if (payload.debug) win.webContents.openDevTools();
       return { ok: true };
     } catch (err) {
-      logError('Single App Mode error', err);
+      logError('ipc', 'Single App Mode error', err);
       return { ok: false, error: err.message };
     }
   });
@@ -47,7 +47,7 @@ export function registerWebViewExtraHandlers() {
       const image = await target.capturePage();
       return { ok: true, data: image.toPNG() };
     } catch (err) {
-      logError('Screenshot error', err);
+      logError('ipc', 'Screenshot error', err);
       return { ok: false, error: err.message };
     }
   });
@@ -70,7 +70,7 @@ export function registerWebViewExtraHandlers() {
         }
       };
     } catch (err) {
-      logError('Resource monitor error', err);
+      logError('ipc', 'Resource monitor error', err);
       return { ok: false, error: err.message };
     }
   });

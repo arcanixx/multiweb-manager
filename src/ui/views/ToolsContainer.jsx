@@ -42,7 +42,7 @@ export default function ToolsContainer({ activeItem, settings, onOpenTasks }) {
     case 'terminal':
       return wrap(Terminal, { cwd: activeItem.cwd });
     default:
-      logWarn(`ToolsContainer: unknown tool id "${activeItem.id}"`);
+      logWarn('ui', `ToolsContainer: unknown tool id "${activeItem.id}"`);
       return <div style={{ padding: 32 }}>Nieznane narzędzie: {activeItem.id}</div>;
   }
 }

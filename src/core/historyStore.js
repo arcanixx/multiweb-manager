@@ -15,10 +15,11 @@ import { logInfo, logError } from "../utils/logger.js";
 // Ścieżka do pliku historii w userData – stała (nie funkcja)
 // Uwaga: getUserDataPath jest bezpieczne po app.whenReady()
 let HISTORY_FILE_PATH;
+
 try {
   HISTORY_FILE_PATH = getUserDataPath("history.json");
 } catch (err) {
-  logError("historyStore: Failed to get user data path", err);
+  logError("store", "historyStore: Failed to get user data path", err.message);
   HISTORY_FILE_PATH = "history.json"; // Fallback path
 }
 
@@ -30,7 +31,7 @@ function loadRaw() {
     const stored = readJsonFile(HISTORY_FILE_PATH, { version: "0.0.3", data: [] });
     return Array.isArray(stored) ? stored : stored.data || [];
   } catch (err) {
-    logError("historyStore.loadRaw failed", err);
+    logError("store", "historyStore.loadRaw failed", err.message);
     return [];
   }
 }
@@ -44,7 +45,7 @@ function saveRaw(entries) {
     writeJsonFile(HISTORY_FILE_PATH, { version: "0.0.3", data: trimmed });
     return trimmed;
   } catch (err) {
-    logError("historyStore.saveRaw failed", err);
+    logError("store", "historyStore.saveRaw failed", err.message);
     return entries.slice(0, LIMITS.maxHistoryEntries || 5000);
   }
 }
@@ -79,7 +80,7 @@ export function addHistoryEntry(entry) {
   };
   const next = [row, ...list];
   saveRaw(next);
-  logInfo("historyStore.add", row.id);
+  logInfo("store", "historyStore.addHistoryEntry success", row.id);
   return next;
 }
 

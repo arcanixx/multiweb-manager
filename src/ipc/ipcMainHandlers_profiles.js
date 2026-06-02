@@ -39,7 +39,7 @@ ipcMain.handle("profiles:getAll", async () => {
     const profiles = loadProfiles();
     return { ok: true, data: profiles };
   } catch (err) {
-    logError("profiles:getAll failed", err);
+    logError('ipc', "profiles:getAll failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -51,7 +51,7 @@ ipcMain.handle("profiles:create", async (_, payload) => {
     saveProfiles(newList);
     return { ok: true, data: newList };
   } catch (err) {
-    logError("profiles:create failed", err);
+    logError('ipc', "profiles:create failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -64,7 +64,7 @@ ipcMain.handle("profiles:update", async (_, { id, patch }) => {
     saveProfiles(updated);
     return { ok: true, data: updated };
   } catch (err) {
-    logError("profiles:update failed", err);
+    logError('ipc', "profiles:update failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -77,7 +77,7 @@ ipcMain.handle("profiles:delete", async (_, id) => {
     saveProfiles(updated);
     return { ok: true, data: updated };
   } catch (err) {
-    logError("profiles:delete failed", err);
+    logError('ipc', "profiles:delete failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -90,7 +90,7 @@ ipcMain.handle("profiles:touch", async (_, id) => {
     saveProfiles(updated);
     return { ok: true, data: updated };
   } catch (err) {
-    logError("profiles:touch failed", err);
+    logError('ipc', "profiles:touch failed", err);
     return { ok: false, error: err.message };
   }
 });

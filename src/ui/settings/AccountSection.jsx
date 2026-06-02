@@ -22,11 +22,11 @@ export default function AccountSection() {
   //   @returns {void}
   const handleSignInClick = () => {
     try {
-      logInfo('AccountSection: sign in button clicked (placeholder)');
+      logInfo('settings', 'AccountSection: sign in button clicked (placeholder)');
       // Placeholder – w przyszłości będzie tu logika logowania
     } catch (err) {
-      logError('AccountSection: sign in click failed', err);
-      logWarn('Wystąpił błąd podczas obsługi przycisku logowania');
+      logError('settings', 'AccountSection: sign in click failed', err);
+      logWarn('settings', 'Wystąpił błąd podczas obsługi przycisku logowania');
     }
   };
 
@@ -34,11 +34,11 @@ export default function AccountSection() {
   //   @returns {void}
   const handleSyncClick = () => {
     try {
-      logInfo('AccountSection: sync button clicked (placeholder)');
+      logInfo('settings', 'AccountSection: sync button clicked (placeholder)');
       // Placeholder – w przyszłości będzie tu logika synchronizacji
     } catch (err) {
-      logError('AccountSection: sync click failed', err);
-      logWarn('Wystąpił błąd podczas obsługi przycisku synchronizacji');
+      logError('settings', 'AccountSection: sync click failed', err);
+      logWarn('settings', 'Wystąpił błąd podczas obsługi przycisku synchronizacji');
     }
   };
 

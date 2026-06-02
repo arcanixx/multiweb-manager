@@ -2,7 +2,7 @@
 // FILE: hotkeysManager.js
 // PATH: src/engine/hotkeysManager.js
 // VERSION: 0.0.3
-// PURPOSE: Zarządzanie globalnymi skrótami klawiszowymi (globalShortcut)
+// PURPOSE: Zarządzanie globalnymi skrótami klawiszowymi w procesie głównym. Obsługuje rejestrację w OS i dispatch zdarzeń IPC do renderera.
 // FUNCTIONS: setMainWindow, unregisterAllHotkeys, registerGlobalHotkeys, getAllHotkeys, saveHotkeys, registerHotkeysFromList
 // DEPENDS ON: electron, config.js, logger.js, electron-store
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -10,7 +10,7 @@
 
 import { globalShortcut } from 'electron';
 import { isFeatureEnabled } from '../config.js';
-import { logDebug, logWarn, logError } from '../utils/logger.js';
+import { logDebug, logWarn, logError, logInfo } from '../utils/logger.js';
 import Store from 'electron-store';
 let registeredHotkeys = [];
 let mainWindow = null;
@@ -26,13 +26,13 @@ export function unregisterAllHotkeys() {
     try { globalShortcut.unregister(hk); } catch(e) {}
   });
   registeredHotkeys = [];
-  logDebug('All hotkeys unregistered');
+  logDebug("engine", "All hotkeys unregistered");
 }
 
 // ─── registerGlobalHotkeys() – Rejestruje przekazaną listę skrótów klawiszowych w systemie operacyjnym; po ich naciśnięciu wysyła odpowiednie powiadomienie IPC do procesu renderowania
 export async function registerGlobalHotkeys(hotkeys) {
   if (!isFeatureEnabled('hotkeysManager')) {
-    logDebug('hotkeysManager: feature disabled, skipping registration');
+    logDebug("engine", "hotkeysManager: feature disabled, skipping registration");
     return;
   }
   unregisterAllHotkeys();
@@ -52,30 +52,41 @@ export async function registerGlobalHotkeys(hotkeys) {
             action,
             text
           });
-          logDebug(`Hotkey triggered: ${shortcut} -> ${name}`);
+          logDebug("engine", `Hotkey triggered: ${shortcut} -> ${name}`);
         }
       });
 
       if (success) registeredHotkeys.push(shortcut);
-      else logWarn(`Failed to register hotkey: ${shortcut}`);
+      else logWarn("engine", `Failed to register hotkey: ${shortcut}`);
     } catch (err) {
-      logError(`Hotkey registration error: ${shortcut}`, err);
+      logError("engine", `Hotkey registration error: ${shortcut}`, err.message);
     }
   }
 }
 
 // ─── getAllHotkeys() – Odczytuje konfigurację i listę skrótów klawiszowych z trwałego magazynu (electron-store) o nazwie 'hotkeys' i zwraca je w postaci tablicy
 export async function getAllHotkeys() {
-  const store = new Store({ name: 'hotkeys', defaults: { hotkeys: [] } });
-  return store.get('hotkeys', []);
+  try {
+    const store = new Store({ name: 'hotkeys', defaults: { hotkeys: [] } });
+    return store.get('hotkeys', []);
+  } catch (err) {
+    logError("engine", "hotkeysManager.getAllHotkeys failed", err.message);
+    return [];
+  }
 }
 
 // ─── saveHotkeys() – Zapisuje nową listę skrótów klawiszowych do bazy danych (electron-store), wywołuje proces ich globalnej rejestracji w systemie i zwraca zapisaną listę
 export async function saveHotkeys(hotkeys) {
-  const store = new Store({ name: 'hotkeys', defaults: { hotkeys: [] } });
-  store.set('hotkeys', hotkeys);
-  await registerGlobalHotkeys(hotkeys);
-  return hotkeys;
+  try {
+    const store = new Store({ name: 'hotkeys', defaults: { hotkeys: [] } });
+    store.set('hotkeys', hotkeys);
+    await registerGlobalHotkeys(hotkeys);
+    logInfo("engine", "Hotkeys saved and re-registered", hotkeys.length);
+    return hotkeys;
+  } catch (err) {
+    logError("engine", "hotkeysManager.saveHotkeys failed", err.message);
+    return hotkeys;
+  }
 }
 
 // ─── registerHotkeysFromList() – Uruchamia proces rejestracji globalnych skrótów klawiszowych bezpośrednio na przekazanej liście, bez modyfikacji danych zapisanych w bazie

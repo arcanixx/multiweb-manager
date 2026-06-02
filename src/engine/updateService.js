@@ -12,6 +12,6 @@ import { logInfo } from "../utils/logger.js";
 
 // ─── checkForUpdates() – Sprawdza dostępność nowej wersji aplikacji; obecnie działa jako zaślepka (mockup) zwracająca brak aktualizacji
 export async function checkForUpdates() {
-  logInfo("updateService: checkForUpdates — coming soon");
+  logInfo('engine', "updateService: checkForUpdates — coming soon");
   return { available: false, version: "0.0.3", message: "Coming soon" };
 }

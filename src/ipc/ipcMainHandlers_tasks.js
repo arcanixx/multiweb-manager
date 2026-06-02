@@ -22,7 +22,7 @@ ipcMain.handle("tasks:getAll", async (_, projectName) => {
     }
     return { ok: true, data: loadAllTasksGrouped() };
   } catch (err) {
-    logError("tasks:getAll", err);
+    logError('ipc', "tasks:getAll", err);
     return { ok: false, error: err.message };
   }
 });
@@ -33,7 +33,7 @@ ipcMain.handle("tasks:saveSections", async (_, { projectName, sections }) => {
     saveTasksForProject(projectName, { tasks: sections });
     return { ok: true };
   } catch (err) {
-    logError("tasks:saveSections", err);
+    logError('ipc', "tasks:saveSections", err);
     return { ok: false, error: err.message };
   }
 });

@@ -31,7 +31,7 @@ export function registerLogsHandlers() {
       }
       return { ok: true };
     } catch (err) {
-      logError('append-log-file error', err);
+      logError('ipc', 'append-log-file error', err);
       return { ok: false, error: err.message };
     }
   });
@@ -42,7 +42,7 @@ export function registerLogsHandlers() {
       const content = fs.readFileSync(logFile, 'utf8');
       return { ok: true, data: content };
     } catch (err) {
-      logError('get-logs-file error', err);
+      logError('ipc', 'get-logs-file error', err);
       return { ok: false, error: err.message };
     }
   });
@@ -53,7 +53,7 @@ export function registerLogsHandlers() {
       if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
       return { ok: true };
     } catch (err) {
-      logError('clear-logs-file error', err);
+      logError('ipc', 'clear-logs-file error', err);
       return { ok: false, error: err.message };
     }
   });
@@ -70,7 +70,7 @@ export function registerLogsHandlers() {
     const content = fs.readFileSync(logPath, 'utf8');
     return { ok: true, data: { path: logPath, content } };
   } catch (err) {
-    logError('logs:getFile failed', err);
+    logError('ipc', 'logs:getFile failed', err);
     return { ok: false, error: err.message };
   }
 });

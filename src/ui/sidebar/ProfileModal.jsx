@@ -2,15 +2,15 @@
 // FILE: ProfileModal.jsx
 // PATH: src/ui/sidebar/ProfileModal.jsx
 // VERSION: 0.0.3
-// PURPOSE: Modal dodawania/edycji profilu
+// PURPOSE: Zaawansowany formularz modalny do konfiguracji profili WebView – obsługuje parametry URL, ikony, przypisanie do kategorii oraz przełączniki adblockera i powiadomień.
 // FUNCTIONS: ProfileModal
-// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, urlUtils.js, ModalPortal, notificationsManager.js
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, urlUtils.js, ModalPortal.jsx, notificationsManager.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useState, useContext } from 'react';
 import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
-import { TranslationContext } from '../../utils/translations.js';
+import { TranslationContext } from '../../utils/trCanslations.js';
 import { ICONS } from '../../utils/icons.js';
 import { normalizeWebUrl } from '../../utils/urlUtils.js';
 import ModalPortal from '../system/ModalPortal';
@@ -39,12 +39,12 @@ export default function ProfileModal({ profile, categories, onSave, onClose }) {
   const handleSave = () => {
     try {
       if (!name.trim() || !url.trim()) {
-        logWarn('ProfileModal: validation failed - name or url empty');
+        logWarn('ui', 'ProfileModal: validation failed - name or url empty');
         return;
       }
       const finalUrl = normalizeWebUrl(url);
       if (!finalUrl) {
-        logError('ProfileModal: invalid URL format');
+        logError('ui', 'ProfileModal: invalid URL format');
         showNotification(t('profile_modal.invalid_url'), 'error');
         return;
       }
@@ -55,10 +55,10 @@ export default function ProfileModal({ profile, categories, onSave, onClose }) {
         zoom: profile?.zoom || 1, partition: profile?.partition || `persist:profile-${id}`,
         adBlock, notifs
       });
-      logInfo(`ProfileModal: profile ${isEdit ? 'updated' : 'created'} ${id}`);
+      logInfo('ui', `ProfileModal: profile ${isEdit ? 'updated' : 'created'} ${id}`);
     } catch (err) {
-      logError('ProfileModal: save failed', err);
-      logWarn('Wystąpił błąd podczas zapisu profilu');
+      logError('ui', 'ProfileModal: save failed', err.message);
+      logWarn('ui', 'Wystąpił błąd podczas zapisu profilu');
     }
   };
   return (

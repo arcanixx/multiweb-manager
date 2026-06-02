@@ -27,11 +27,11 @@ export default function ConfirmModal({ isOpen, title, message, onConfirm, onCanc
   //   @returns {void}
   const handleConfirm = () => {
     try {
-      logInfo('ConfirmModal: user confirmed');
+      logInfo('ui', 'ConfirmModal: user confirmed');
       onConfirm?.();
     } catch (err) {
-      logError('ConfirmModal: confirm failed', err);
-      logWarn('Wystąpił błąd podczas potwierdzania');
+      logError('ui', 'ConfirmModal: confirm failed', err);
+      logWarn('ui', 'Wystąpił błąd podczas potwierdzania');
     }
   };
 
@@ -39,11 +39,11 @@ export default function ConfirmModal({ isOpen, title, message, onConfirm, onCanc
   //   @returns {void}
   const handleCancel = () => {
     try {
-      logInfo('ConfirmModal: user cancelled');
+      logInfo('ui', 'ConfirmModal: user cancelled');
       onCancel?.();
     } catch (err) {
-      logError('ConfirmModal: cancel failed', err);
-      logWarn('Wystąpił błąd podczas anulowania');
+      logError('ui', 'ConfirmModal: cancel failed', err);
+      logWarn('ui', 'Wystąpił błąd podczas anulowania');
     }
   };
 
