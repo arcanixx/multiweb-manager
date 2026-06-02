@@ -2,7 +2,7 @@
 // FILE: App.jsx
 // PATH: src/App.jsx
 // VERSION: 0.0.3
-// PURPOSE: Główny komponent root aplikacji React – inicjalizuje system logowania, ładuje profile i ustawienia użytkownika, zarządza motywem graficznym (dark/light) oraz obsługuje globalne skróty klawiszowe i stan sieci.
+// PURPOSE: Główny komponent root aplikacji React – inicjalizuje system logowania, ładuje ustawienia użytkownika, zarządza motywem graficznym (dark/light) oraz obsługuje globalne skróty klawiszowe i stan sieci.
 // FUNCTIONS: App
 // DEPENDS ON: react, config.js, translations.js, loggerRenderer.js, urlUtils.js, MainLayout.jsx, Spinner.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -35,7 +35,6 @@ class AppErrorBoundary extends React.Component {
     return { hasError: true, error };
   }
   componentDidCatch(error, info) {
-    // logError niedostępny w class component — używamy console jako fallback
     console.error('[AppErrorBoundary] Uncaught error:', error, info);
   }
   render() {
@@ -68,7 +67,6 @@ class AppErrorBoundary extends React.Component {
 export default function App() {
   const { t, loaded } = useContext(TranslationContext);
 
-  const [profiles,   setProfiles]   = useState([]);
   const [settings,   setSettings]   = useState({});
   const [activeItem, setActiveItem] = useState(null);
   const [netToast,      setNetToast]      = useState(null);
@@ -99,28 +97,15 @@ export default function App() {
     setTimeout(() => setNetToast(null), 4000);
   };
 
-  // ─── useEffect – inicjalizacja: logger, profile, ustawienia, eventy sieci ──
+  // ─── useEffect – inicjalizacja: logger, ustawienia, eventy sieci ──
   useEffect(() => {
-    // Preload modułów często używanych
     import('./ui/help/Help.jsx');
     import('./ui/notepad/Notepad.jsx');
     import('./ui/settings/Settings.jsx');
 
     try {
-      // Logger
       initLogger().then(() => logInfo('ui', 'App: logger initialized'));
 
-      // Profile
-      window.electronAPI.getProfiles().then((p) => {
-        const list = (p || []).map((prof) => {
-          const normalized = normalizeWebUrl(prof.url);
-          return normalized && normalized !== prof.url ? { ...prof, url: normalized } : prof;
-        });
-        setProfiles(list);
-        logInfo('ui', `App: profiles loaded (${list.length})`);
-      }).catch((err) => logError('ui', 'App: failed to load profiles', err.message));
-
-      // Ustawienia
       window.electronAPI.getSettings().then((s) => {
         const merged = s || {};
         setSettings(merged);
@@ -132,7 +117,6 @@ export default function App() {
       console.error('[App] Init failed:', err);
     }
 
-    // Sieć
     const handleOnline  = () => showToastMsg(t('notifications.online'),  'online');
     const handleOffline = () => showToastMsg(t('notifications.offline'), 'offline');
     window.addEventListener('online',  handleOnline);
@@ -187,17 +171,14 @@ export default function App() {
     }
   };
 
-  // Czekaj na załadowanie tłumaczeń
   if (!loaded) return <Spinner />;
 
   return (
     <AppErrorBoundary>
       <MainLayout
-        profiles={profiles}
         activeItem={activeItem}
         settings={settings}
         onSelect={setActiveItem}
-        onProfilesChange={setProfiles}
         onSaveSettings={handleSaveSettings}
         netToast={netToast}
         netToastType={netToastType}

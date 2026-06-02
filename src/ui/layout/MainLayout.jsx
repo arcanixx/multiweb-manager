@@ -31,21 +31,17 @@ function NetToast({ message, type }) {
 }
 
 // ─── MainLayout() – główny układ: Sidebar po lewej, ContentRenderer po prawej
-//   @param {Array}    props.profiles        – lista profili
 //   @param {Object}   props.activeItem      – aktywny element
 //   @param {Object}   props.settings        – ustawienia aplikacji
 //   @param {Function} props.onSelect        – callback wyboru elementu z Sidebaru
-//   @param {Function} props.onProfilesChange – callback zmiany profili
 //   @param {Function} props.onSaveSettings  – callback zapisu ustawień
 //   @param {string}   props.netToast        – treść powiadomienia sieciowego
 //   @param {string}   props.netToastType    – typ powiadomienia sieciowego
 //   @returns {JSX.Element}
 export default function MainLayout({
-  profiles,
   activeItem,
   settings,
   onSelect,
-  onProfilesChange,
   onSaveSettings,
   netToast,
   netToastType,
@@ -104,10 +100,8 @@ export default function MainLayout({
     <div className="flex h-screen app-root" style={{ background: 'var(--bg-primary)' }}>
       {/* ── Sidebar ─────────────────────────────────────────────────────── */}
       <Sidebar
-        profiles={profiles}
         onSelect={onSelect}
         activeItem={activeItem}
-        onProfilesChange={onProfilesChange}
         onOpenTaskPanel={handleOpenTaskPanel}
         onModalOpenChange={setSidebarModalOpen}
       />

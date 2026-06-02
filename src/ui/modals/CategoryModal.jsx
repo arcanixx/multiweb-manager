@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: CategoryModal.jsx
-// PATH: src/ui/sidebar/CategoryModal.jsx
+// PATH: src/ui/modals/CategoryModal.jsx
 // VERSION: 0.0.3
 // PURPOSE: Formularz modalny do zarządzania kategoriami profili – umożliwia tworzenie nowych i edycję istniejących sekcji grupujących w Sidebarze.
 // FUNCTIONS: CategoryModal
@@ -20,7 +20,6 @@ import ModalPortal from '../system/ModalPortal';
 //   @param {Function} props.onSave – callback zapisu kategorii
 //   @param {Function} props.onClose – callback zamknięcia modala
 //   @returns {JSX.Element} – renderowany modal kategorii
-
 export default function CategoryModal({ category, onSave, onClose }) {
   const { t } = useContext(TranslationContext);
   const [name, setName] = useState(category?.name || '');

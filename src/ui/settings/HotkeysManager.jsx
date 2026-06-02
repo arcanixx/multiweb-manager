@@ -2,9 +2,9 @@
 // FILE: HotkeysManager.jsx
 // PATH: src/ui/settings/HotkeysManager.jsx
 // VERSION: 0.0.3
-// PURPOSE: Interfejs zarządzania globalnymi skrótami klawiszowymi aplikacji. Umożliwia definiowanie akcji systemowych (screenshot, monitor) oraz wstawianie predefiniowanych snippetów tekstowych.
+// PURPOSE: Kontener zarządzania skrótami klawiszowymi – ładuje dane, orkiestruje logikę CRUD i renderuje podkomponenty.
 // FUNCTIONS: HotkeysManager
-// DEPENDS ON: react, config.js, translations.js, loggerRenderer, ConfirmModal, Modal, notificationsManager.js
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, HotkeysList, HotkeyModal, ConfirmModal, notificationsManager.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -12,8 +12,9 @@ import React, { useState, useEffect } from 'react';
 import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { logDebug, logError, logInfo, logWarn } from '../../utils/loggerRenderer';
+import HotkeysList from './HotkeysList';
+import HotkeyModal from './HotkeyModal';
 import ConfirmModal from '../modals/ConfirmModal';
-import Modal from '../modals/Modal';
 import { showNotification } from '../../utils/notificationsManager.js';
 
 // UWAGA: DEFAULT_HOTKEYS celowo pozostaje w tym pliku – jest fallbackiem ściśle
@@ -26,7 +27,7 @@ const DEFAULT_HOTKEYS = [
 ];
 
 // ─── HotkeysManager() – zarządzanie skrótami klawiszowymi z edycją i zapisem
-//   @returns {JSX.Element} – renderowany interfejs menedżera skrótów
+// @returns {JSX.Element|null} – renderowany interfejs menedżera skrótów
 export default function HotkeysManager() {
   const { t } = React.useContext(TranslationContext);
   const [hotkeys, setHotkeys] = useState([]);
@@ -37,7 +38,6 @@ export default function HotkeysManager() {
 
   // ─── useEffect – ładowanie skrótów przy montowaniu
   useEffect(() => {
-    // ─── loadHotkeys() – ładuję skróty z storage lub używam domyślnych
     const loadHotkeys = async () => {
       try {
         if (window.electronAPI?.getHotkeys) {
@@ -65,10 +65,6 @@ export default function HotkeysManager() {
   }, []);
 
   // ─── showConfirm() – wyświetla modal potwierdzenia
-  //   @param {string} title – tytuł modala
-  //   @param {string} message – treść komunikatu
-  //   @param {Function} onConfirm – callback potwierdzenia
-  //   @returns {void}
   const showConfirm = (title, message, onConfirm) => {
     try {
       logDebug('ui', 'HotkeysManager: showing confirm modal');
@@ -80,8 +76,6 @@ export default function HotkeysManager() {
   };
 
   // ─── saveHotkeys() – zapisuje skróty do storage i rejestruje globalnie
-  //   @param {Array} newHotkeys – lista skrótów do zapisu
-  //   @returns {Promise<void>}
   const saveHotkeys = async (newHotkeys) => {
     try {
       setHotkeys(newHotkeys);
@@ -101,7 +95,6 @@ export default function HotkeysManager() {
   };
 
   // ─── handleAdd() – otwiera modal dodawania nowego skrótu
-  //   @returns {void}
   const handleAdd = () => {
     try {
       setEditingHotkey({
@@ -121,8 +114,6 @@ export default function HotkeysManager() {
   };
 
   // ─── handleEdit() – otwiera modal edycji skrótu
-  //   @param {Object} hotkey – edytowany skrót
-  //   @returns {void}
   const handleEdit = (hotkey) => {
     try {
       setEditingHotkey({ ...hotkey });
@@ -135,8 +126,6 @@ export default function HotkeysManager() {
   };
 
   // ─── handleDelete() – usuwa skrót po potwierdzeniu
-  //   @param {string} id – identyfikator skrótu do usunięcia
-  //   @returns {void}
   const handleDelete = (id) => {
     showConfirm(
       t('hotkeys.deleteConfirmTitle'),
@@ -155,7 +144,6 @@ export default function HotkeysManager() {
   };
 
   // ─── handleSave() – zapisuje edytowany skrót z walidacją
-  //   @returns {Promise<void>}
   const handleSave = async () => {
     try {
       if (!editingHotkey.shortcut || !editingHotkey.name) {
@@ -164,7 +152,6 @@ export default function HotkeysManager() {
         return;
       }
 
-      // Sprawdź duplikaty
       const exists = hotkeys.some(h => h.id !== editingHotkey.id && h.shortcut === editingHotkey.shortcut);
       if (exists) {
         showNotification(t('hotkeys.duplicateError'), 'error');
@@ -191,9 +178,6 @@ export default function HotkeysManager() {
   };
 
   // ─── handleToggleEnabled() – przełącza aktywność skrótu
-  //   @param {string} id – identyfikator skrótu
-  //   @param {boolean} enabled – nowy stan aktywności
-  //   @returns {Promise<void>}
   const handleToggleEnabled = async (id, enabled) => {
     try {
       const newHotkeys = hotkeys.map(h => h.id === id ? { ...h, enabled } : h);
@@ -205,19 +189,9 @@ export default function HotkeysManager() {
     }
   };
 
-  // ─── parseShortcut() – parsowanie skrótu (placeholder dla przyszłej walidacji)
-  //   @param {string} shortcut – skrót w formacie tekstowym
-  //   @returns {string} – sparsowany skrót
-  const parseShortcut = (shortcut) => {
-    try {
-      // Użytkownik wpisuje np. "Ctrl+Shift+S" – bez walidacji, przekazujemy dalej
-      // W przyszłości można dodać walidację formatu
-      return shortcut;
-    } catch (err) {
-      logError('settings', 'HotkeysManager: parse shortcut failed', err.message);
-      logWarn('settings', 'Wystąpił błąd podczas parsowania skrótu');
-      return '';
-    }
+  // ─── handleModalChange() – aktualizuje pole edytowanego skrótu
+  const handleModalChange = (field, value) => {
+    setEditingHotkey(prev => ({ ...prev, [field]: value }));
   };
 
   if (!isFeatureEnabled('hotkeysManager')) return null;
@@ -237,95 +211,20 @@ export default function HotkeysManager() {
         </button>
       </div>
 
-      <table className="hotkeys-table">
-        <thead>
-          <tr>
-            <th>{t('hotkeys.shortcut')}</th>
-            <th>{t('hotkeys.name')}</th>
-            <th>{t('hotkeys.text')}</th>
-            <th>{t('hotkeys.enabled')}</th>
-            <th>{t('hotkeys.actions')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {hotkeys.map(hk => (
-            <tr key={hk.id} className={!hk.enabled ? 'disabled' : ''}>
-              <td><code>{hk.shortcut}</code></td>
-              <td>{hk.name}</td>
-              <td className="hotkey-text-preview">{hk.text?.substring(0, 30) || '-'}</td>
-              <td>
-                <input
-                  type="checkbox"
-                  checked={hk.enabled}
-                  onChange={(e) => handleToggleEnabled(hk.id, e.target.checked)}
-                />
-              </td>
-              <td>
-                <button onClick={() => handleEdit(hk)}>✏️</button>
-                <button onClick={() => handleDelete(hk.id)}>🗑️</button>
-              </td>
-            </tr>
-          ))}
-          {hotkeys.length === 0 && (
-            <tr>
-              <td colSpan="5" style={{ textAlign: 'center' }}>{t('hotkeys.noHotkeys')}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      <HotkeysList
+        hotkeys={hotkeys}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onToggle={handleToggleEnabled}
+      />
 
-      {/* MODAL DODAWANIA/EDYCJI */}
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingHotkey?.id ? t('hotkeys.edit') : t('hotkeys.add')}>
-        <div className="hotkey-modal-form">
-          <div className="form-group">
-            <label>{t('hotkeys.name')}</label>
-            <input
-              type="text"
-              value={editingHotkey?.name || ''}
-              onChange={(e) => setEditingHotkey({ ...editingHotkey, name: e.target.value })}
-              placeholder={t('hotkeys.namePlaceholder')}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>{t('hotkeys.shortcut')}</label>
-            <input
-              type="text"
-              value={editingHotkey?.shortcut || ''}
-              onChange={(e) => setEditingHotkey({ ...editingHotkey, shortcut: e.target.value })}
-              placeholder="Ctrl+Shift+S"
-            />
-            <span className="form-hint">{t('hotkeys.shortcutHint')}</span>
-          </div>
-
-          <div className="form-group">
-            <label>{t('hotkeys.text')}</label>
-            <textarea
-              value={editingHotkey?.text || ''}
-              onChange={(e) => setEditingHotkey({ ...editingHotkey, text: e.target.value })}
-              rows={4}
-              placeholder={t('hotkeys.textPlaceholder')}
-            />
-            <span className="form-hint">{t('hotkeys.textHint')}</span>
-          </div>
-
-          <div className="form-group">
-            <label>
-              <input
-                type="checkbox"
-                checked={editingHotkey?.enabled !== false}
-                onChange={(e) => setEditingHotkey({ ...editingHotkey, enabled: e.target.checked })}
-              />
-              {t('hotkeys.enabled')}
-            </label>
-          </div>
-
-          <div className="form-actions">
-            <button onClick={() => setModalOpen(false)}>{t('common.cancel')}</button>
-            <button onClick={handleSave} className="btn-primary">{t('common.save')}</button>
-          </div>
-        </div>
-      </Modal>
+      <HotkeyModal
+        isOpen={modalOpen}
+        hotkey={editingHotkey}
+        onClose={() => { setModalOpen(false); setEditingHotkey(null); }}
+        onSave={handleSave}
+        onChange={handleModalChange}
+      />
 
       <ConfirmModal
         isOpen={confirmState.isOpen}

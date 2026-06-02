@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: ProfileModal.jsx
-// PATH: src/ui/sidebar/ProfileModal.jsx
+// PATH: src/ui/modals/ProfileModal.jsx
 // VERSION: 0.0.3
 // PURPOSE: Zaawansowany formularz modalny do konfiguracji profili WebView – obsługuje parametry URL, ikony, przypisanie do kategorii oraz przełączniki adblockera i powiadomień.
 // FUNCTIONS: ProfileModal
@@ -23,7 +23,6 @@ import { showNotification } from '../../utils/notificationsManager.js';
 //   @param {Function} props.onSave – callback zapisu profilu
 //   @param {Function} props.onClose – callback zamknięcia modala
 //   @returns {JSX.Element} – renderowany modal profilu
-
 export default function ProfileModal({ profile, categories, onSave, onClose }) {
   const { t } = useContext(TranslationContext);
   const [name, setName] = useState(profile?.name || '');
