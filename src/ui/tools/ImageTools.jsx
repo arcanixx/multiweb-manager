@@ -10,10 +10,10 @@
 
 import React, { useState, useCallback } from 'react';
 import { isFeatureEnabled } from '../../config.js';
-import { TranslationContext } from '../utils/translations.js';
-import { logDebug, logError } from 'src/utils/loggerRenderer';
-import { ICONS } from 'src/utils/icons';
-import { resizeImage, convertImage, compressJpeg } from 'src/utils/imageUtils';
+import { TranslationContext } from '../../utils/translations.js';
+import { logDebug, logError } from '../../utils/loggerRenderer';
+import { ICONS } from '../../utils/icons';
+import { resizeImage, convertImage, compressJpeg } from '../../utils/imageUtils';
 
 export default function ImageTools() {
   const { t } = React.useContext(TranslationContext);
@@ -28,7 +28,6 @@ export default function ImageTools() {
   const [format, setFormat] = useState('png');
   const [quality, setQuality] = useState(80);
 
-  
   const handleFileDrop = useCallback(async (e) => {
     e.preventDefault();
     const file = e.dataTransfer?.files[0] || e.target?.files[0];
@@ -54,7 +53,6 @@ export default function ImageTools() {
     
     setLoading(true);
     setError(null);
-    if (!isFeatureEnabled('imageTools')) return null;
     try {
       // Użyj electronAPI do zapisu pliku tymczasowego
       const inputPath = await window.electronAPI?.saveTempFile?.(inputFile);
@@ -93,6 +91,8 @@ export default function ImageTools() {
     if (!outputPath) return;
     await window.electronAPI?.showSaveDialog?.(outputPath);
   };
+
+  if (!isFeatureEnabled('imageTools')) return null;
 
   return (
     <div className="tool-container image-tools">

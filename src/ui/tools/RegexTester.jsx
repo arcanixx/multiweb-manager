@@ -10,9 +10,9 @@
 
 import React, { useState } from 'react';
 import { isFeatureEnabled } from '../../config.js';
-import { TranslationContext } from '../utils/translations.js';
-import { logError } from 'src/utils/loggerRenderer';
-import { testRegex } from 'src/tools/regexEngine';
+import { TranslationContext } from '../../utils/translations.js';
+import { logError } from '../../utils/loggerRenderer';
+import { testRegex } from '../../tools/regexEngine';
 
 export default function RegexTester() {
   const { t } = React.useContext(TranslationContext);

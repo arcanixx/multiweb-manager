@@ -11,6 +11,7 @@
 // =============================================================================
 
 import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
+import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { logError, logInfo, logDebug, logWarn } from '../../utils/loggerRenderer.js';
 import WebViewToolbar from './WebViewToolbar.jsx';
@@ -114,9 +115,9 @@ export default function WebViewTab({ profile, isActive, onTitleChange, onLoadErr
     try {
       const webContentsId = webviewRef.current?.getWebContentsId();
       const result = await window.electronAPI?.getWebViewResourceInfo?.(webContentsId);
-      if (result?.ok && result.data) {
-        logInfo(`WebViewTab: resource info: ${JSON.stringify(result.data)}`);
-        // TODO: show toast with RAM/CPU
+if (result?.ok && result.data) {
+         logInfo(`WebViewTab: resource info: ${JSON.stringify(result.data)}`);
+         window.showToast(`RAM: ${result.data.ram}MB, CPU: ${result.data.cpu}%`, 'info');
       }
     } catch (err) {
       logError('WebViewTab: resource monitor failed', err);
@@ -252,9 +253,9 @@ export default function WebViewTab({ profile, isActive, onTitleChange, onLoadErr
         onZoomReset={zoomReset}
         onDevTools={openDevTools}
         onClearCache={clearCache}
-        onScreenshot={takeScreenshot}
-        onSingleAppMode={openSingleAppMode}
-        onResourceMonitor={showResourceMonitor}
+        onScreenshot={isFeatureEnabled('screenshotWebView') ? takeScreenshot : undefined}
+        onSingleAppMode={isFeatureEnabled('singleAppMode') ? openSingleAppMode : undefined}
+        onResourceMonitor={isFeatureEnabled('resourceMonitor') ? showResourceMonitor : undefined}
       />
 
       {error && (

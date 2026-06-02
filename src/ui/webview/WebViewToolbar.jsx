@@ -86,9 +86,9 @@ export default function WebViewToolbar({
 
       <button onClick={onDevTools} title={t('webview.devTools')}>{ICONS.DEVTOOLS}</button>
       <button onClick={onClearCache} title={t('webview.clearCache')}>{ICONS.CLEAR_CACHE}</button>
-      <button onClick={onScreenshot} title={t('webview.screenshot')}>{ICONS.SCREENSHOT}</button>
-      <button onClick={onSingleAppMode} title={t('webview.singleAppMode')}>{ICONS.SINGLE_APP}</button>
-      <button onClick={onResourceMonitor} title={t('webview.resourceMonitor')}>{ICONS.RESOURCE_MONITOR}</button>
+      <button onClick={onScreenshot} disabled={!onScreenshot} title={t('webview.screenshot')}>{ICONS.SCREENSHOT}</button>
+      <button onClick={onSingleAppMode} disabled={!onSingleAppMode} title={t('webview.singleAppMode')}>{ICONS.SINGLE_APP}</button>
+      <button onClick={onResourceMonitor} disabled={!onResourceMonitor} title={t('webview.resourceMonitor')}>{ICONS.RESOURCE_MONITOR}</button>
     </div>
   );
 }

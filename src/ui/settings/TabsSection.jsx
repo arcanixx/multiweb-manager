@@ -9,9 +9,10 @@
 // =============================================================================
 
 import React, { useState, useEffect } from 'react';
-import { TranslationContext } from '../utils/translations.js';
-import { logDebug, logInfo, logError, logWarn } from 'src/utils/loggerRenderer';
-import { ICONS } from 'src/utils/icons';
+import { isFeatureEnabled } from '../../config.js';
+import { TranslationContext } from '../../utils/translations.js';
+import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer';
+import { ICONS } from '../../utils/icons';
 
 // ─── TabsSection() – sekcja ustawień zakładek (timeout usypiania nieaktywnych kart)
 //   @returns {JSX.Element} – renderowana sekcja ustawień zakładek
@@ -54,6 +55,9 @@ export default function TabsSection() {
       logWarn('Wystąpił błąd podczas ustawiania timeoutu');
     }
   };
+
+  if (!isFeatureEnabled('sleepTabs')) return null;
+
   return (
     <section className="settings-section">
       <h2>{ICONS.TABS} {t('settings.tabs')}</h2>

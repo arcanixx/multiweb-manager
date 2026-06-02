@@ -10,10 +10,10 @@
 
 import React, { useState } from 'react';
 import { isFeatureEnabled } from '../../config.js';
-import { TranslationContext } from '../utils/translations.js';
-import { logDebug, logError } from 'src/utils/loggerRenderer';
-import { ICONS } from 'src/utils/icons';
-import { apiRequest } from 'src/tools/apiClient';
+import { TranslationContext } from '../../utils/translations.js';
+import { logDebug, logError } from '../../utils/loggerRenderer';
+import { ICONS } from '../../utils/icons';
+import { apiRequest } from '../../tools/apiClient';
 
 export default function MiniPostman() {
   const { t } = React.useContext(TranslationContext);

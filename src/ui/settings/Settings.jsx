@@ -9,16 +9,15 @@
 // =============================================================================
 
 import React from 'react';
-import { isFeatureEnabled } from '../../config.js';
-import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import GeneralSection from './GeneralSection';
 import WebViewSection from './WebViewSection';
 import TabsSection from './TabsSection';
 import NotificationsSection from './NotificationsSection';
 import HotkeysManager from './HotkeysManager';
+import DebugModulesSection from './DebugModulesSection';
 import DataLogsSection from './DataLogsSection';
 import AccountSection from './AccountSection';
-import { TranslationContext } from '../utils/translations.js';
+import { TranslationContext } from '../../utils/translations.js';
 
 // ─── Settings() – kontener wszystkich sekcji ustawień aplikacji
 //   @returns {JSX.Element} – renderowany interfejs ustawień
@@ -33,6 +32,7 @@ export default function Settings() {
       <TabsSection />
       <NotificationsSection />
       <HotkeysManager />
+      <DebugModulesSection />
       <DataLogsSection />
       <AccountSection />
     </div>

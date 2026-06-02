@@ -9,12 +9,16 @@
 // =============================================================================
 
 import os from "os";
-import { DEFAULT_SETTINGS } from "../config.js";
+import { DEFAULT_SETTINGS, isFeatureEnabled } from "../config.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
 
 // ─── getSystemUsage() – zwraca aktualne użycie CPU i RAM z progami ostrzeżeń
 //   @returns {Object} – obiekt z cpuPercent, ramPercent, warnAt, criticalAt
 export function getSystemUsage() {
+  if (!isFeatureEnabled('resourceMonitor')) {
+    logInfo('resourceMonitor: feature disabled, returning null data');
+    return { cpuPercent: 0, ramPercent: 0, warnAt: DEFAULT_SETTINGS.resourceMonitor.warnAt, criticalAt: DEFAULT_SETTINGS.resourceMonitor.criticalAt };
+  }
   try {
     // --- CPU: średnia ze wszystkich rdzeni ---
     const cpus = os.cpus();

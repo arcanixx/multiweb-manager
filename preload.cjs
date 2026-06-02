@@ -21,8 +21,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveNotes:  (notes) => ipcRenderer.invoke('save-notes', notes),
   
   // ─── Settings ─────────────────────────────────────────────────
-  getSettings:  ()      => ipcRenderer.invoke('get-settings'),
-  saveSettings: (patch) => ipcRenderer.invoke('save-settings', patch),
+  getSettings:  ()      => ipcRenderer.invoke('settings:get'),
+  saveSettings: (patch) => ipcRenderer.invoke('settings:update', patch),
+  resetSettings: () => ipcRenderer.invoke('settings:reset'),
+  setDebugMode: (enabled) => ipcRenderer.invoke('settings:update', { debugMode: enabled }),
+  setDebugModule: (moduleName, enabled) => ipcRenderer.invoke('settings:update', {
+    debugModules: { [moduleName]: enabled }
+  }),
   
   // ─── Tasks ────────────────────────────────────────────────────
   getTasks:    (project)       => ipcRenderer.invoke('get-tasks', project),

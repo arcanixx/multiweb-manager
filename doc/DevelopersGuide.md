@@ -369,6 +369,24 @@ Również jako screenshot w assets/multiweb_manager_architecture_graph.png
 
 ---
 
+## 1t. System Logowania (Per-Module Debug)
+
+W wersji 0.0.4 wprowadzono mechanizm filtrowania logów. Pozwala on na niezależne włączanie/wyłączanie logów dla konkretnych części aplikacji bez konieczności restartu.
+
+### Konfiguracja (`src/config.js`)
+Obiekt `DEBUG_MODULES` definiuje domyślne stany logowania dla poszczególnych modułów.
+
+### Użycie w kodzie
+Zaleca się tagowanie logów nazwą modułu:
+```javascript
+import { logInfo, logError } from './utils/loggerRenderer.js';
+
+logInfo('webview', 'Ładowanie strony...', url);
+logError('engine', 'Błąd rejestracji hotkeya', err);
+```
+
+---
+
 # 2. SIDEBAR / PROFILE MANAGER / APP LIBRARY (2a–2g)
 
 ## 2a. App Library (lista gotowych aplikacji)

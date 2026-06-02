@@ -1,4 +1,4 @@
-﻿# Instrukcje dla Agenta AI
+﻿﻿# Instrukcje dla Agenta AI
 
 # 🤖 MULTIWEB MANAGER — System Architektury i Jakości AI
 
@@ -79,7 +79,11 @@ Aplikacja posiada scentralizowany system logów w procesie renderera (React). Za
 | Komponenty React (`*.jsx`) | ZAWSZE importuj **wyłącznie** z `src/utils/loggerRenderer.js` |
 | Czyste skrypty pomocnicze (`*.js`) | Używaj bezpośrednio `src/utils/logger.js` |
 
-**Konwencja Nazewnictwa:** Stosuj standardowe, ujednolicone metody: `logDebug()`, `logInfo()`, `logWarn()`, `logError()`. Przed użyciem jakiejkolwiek metody sprawdź jej obecność w `loggerRenderer.js` lub `logger.js`.
+**Konwencja Nazewnictwa:** Stosuj ujednolicone metody: `logDebug()`, `logInfo()`, `logWarn()`, `logError()`. 
+
+**DEBUG_MODULES:** Każde wywołanie loggera POWINNO zawierać nazwę modułu jako pierwszy parametr (np. `logInfo('ui', 'Message')`). 
+Dostępne moduły: `webview`, `terminal`, `tasks`, `tools`, `settings`, `engine`, `store`, `ipc`, `ui`. 
+Jeśli moduł nie zostanie podany, logger domyślnie przypisze go do kategorii `ui`.
 
 ### LogWriter — automatyczny zapis logów testów
 
@@ -97,6 +101,46 @@ Nie wymaga ręcznej ingerencji w testy.
 - użytkownik wyraził zgodę (lub przełącznik w Settings włączony)
 
 Plik logów ograniczony do **500 linii** (FIFO).
+
+---
+
+## 🔧 FEATURE FLAGS — WŁĄCZANIE/WYŁĄCZANIE MODUŁÓW (DEBUG)
+
+Obiekt `FEATURES` w `src/config.js` steruje warunkowym ładowaniem modułów. Szczegółowa dokumentacja: `doc/DevelopersGuide.md` sekcja 17.
+
+### Zasada hooków — BEZWZGLĘDNE
+
+W komponentach React warunek `if (!isFeatureEnabled('...')) return null;` musi wystąpić **PO wszystkich hookach** (`useState`, `useEffect`, `useContext`, `useCallback`, `useRef`). Naruszenie powoduje błąd `React Hook called conditionally`.
+
+```jsx
+// ✅ ZAWSZE TAK:
+export default function Komponent() {
+  const { t } = useContext(TranslationContext);
+  const [s, setS] = useState(null);
+  if (!isFeatureEnabled('klucz')) return null; // ✅ po hookach
+  return <div>...</div>;
+}
+```
+
+### Mapowanie kluczy FEATURES → pliki (skrót)
+
+| Klucz | Główny plik |
+|---|---|
+| `helpScreen` | `Help.jsx` |
+| `appLibrary` | `AppLibraryBrowser.jsx` |
+| `sleepTabs` | `sleepTabsManager.js` |
+| `adBlocker` | `adBlocker.js` |
+| `singleAppMode`, `screenshotWebView`, `resourceMonitor` | `WebViewTab.jsx` (przez props) |
+| Wszystkie narzędzia Tools | odpowiedni `*.jsx` + `ToolsPanel.jsx` |
+| `hotkeysManager` | `HotkeysManager.jsx` + `Settings.jsx` |
+| `exportImport`, `logsAccess` | `DataLogsSection.jsx` |
+
+### Dodaj nowy feature flag — checklista
+- [ ] Wpis w `FEATURES` w `src/config.js`
+- [ ] `import { isFeatureEnabled }` w docelowym pliku
+- [ ] Warunek PO hookach (React) lub na początku funkcji (JS)
+- [ ] W `ToolsPanel.jsx`: pole `feature: 'klucz'` w `allTools` (jeśli tool)
+- [ ] Aktualizacja tabeli w `doc/DevelopersGuide.md` sekcja 17.4
 
 ---
 
@@ -214,6 +258,7 @@ Wszystkie ikony importuj **WYŁĄCZNIE** z pliku fasady `src/utils/icons.js` (re
 - [ ] IPC handlery mają walidację + `try/catch` + `{ ok, data, error }`
 - [ ] Nowe funkcje mają testy w `tests/TestRunner_*.js`
 - [ ] Zmiany UI są dopisane do `pending_updates_for_Definition_Mockups_UI_UX.md` (nie do głównego pliku)
+- [ ] Jeśli nowy moduł ma flagę w FEATURES — `isFeatureEnabled` dodany PO hookach, wpis w `DevelopersGuide.md` sekcja 17.4
 - [ ] Nie robisz automatycznych commitów
 
 ---

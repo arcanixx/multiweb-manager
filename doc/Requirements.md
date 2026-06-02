@@ -1913,4 +1913,15 @@
 
 ---
 
+### [DEBUG_MODULES – per‑modułowe logowanie błędów] :
+- **ID:** ARCH_REQ-043
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Wprowadzenie mechanizmu `DEBUG_MODULES` w `config.js`, który pozwala niezależnie włączać/wyłączać logowanie (`logDebug`, `logError`, `logWarn`, `logInfo`) dla poszczególnych modułów aplikacji, gdy `settings.debugMode === true`. Domyślnie wszystkie moduły logują. Użytkownik (lub developer) może wyłączyć logowanie dla wybranego modułu bez restartu aplikacji (zmiana przez UI Settings lub przez konsolę).
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.4
+- **Komentarz:** Obecnie `debugMode` włącza logowanie we wszystkich modułach jednocześnie – przy poszukiwaniu błędu w jednym module logi z pozostałych zaśmiecają konsolę. Dotyczy: `src/utils/logger.js`, `src/utils/loggerRenderer.js`, `src/config.js`, `src/ui/settings/DebugModulesSection.jsx` (nowy komponent) oraz wszystkich miejsc wywołujących `logDebug`, `logInfo`, `logWarn`, `logError` (dostosowanie nagłówka lub dodanie parametru `module`).
+
+---
+
 *Koniec dokumentu wymagań — wersja 0.0.3*

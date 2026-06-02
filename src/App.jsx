@@ -2,22 +2,30 @@
 // FILE: App.jsx
 // PATH: src/App.jsx
 // VERSION: 0.0.3
-// PURPOSE: Główny komponent — Sidebar + content, lazy moduły z src/ui/*. Zawiera AppErrorBoundary dla obsługi krytycznych błędów React.
-// FUNCTIONS: App
-// DEPENDS ON: icons.js, react, Sidebar, ConfirmModal, loggerRenderer, urlUtils, translations.js
+// PURPOSE: Główny punkt wejścia aplikacji - zarządza stanem globalnym, inicjalizacją i motywem.
+// FUNCTIONS: App, AppErrorBoundary
+// DEPENDS ON: react, MainLayout, loggerRenderer, urlUtils, TranslationContext, config.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { ICONS } from './utils/icons.js';
-import React, { useState, useEffect, lazy, Suspense, useContext } from 'react';
-import Sidebar from './ui/sidebar/Sidebar';
-import ConfirmModal from './ui/modals/ConfirmModal';
-import { logInfo as log, initLogger, setDebugMode, logDebug, logError, logWarn } from './utils/loggerRenderer';
-import { normalizeWebUrl } from './utils/urlUtils';
+import React, { useState, useEffect, useContext } from 'react';
+import { isFeatureEnabled } from './config.js';
 import { TranslationContext } from './utils/translations.js';
+import {
+  initLogger,
+  setDebugMode,
+  logInfo,
+  logDebug,
+  logError,
+  logWarn,
+} from './utils/loggerRenderer.js';
+import { normalizeWebUrl } from './utils/urlUtils.js';
+import MainLayout from './ui/layout/MainLayout.jsx';
+import { Spinner } from './ui/views/Spinner.jsx';
 
-// ─── AppErrorBoundary – przechwytuje błędy React w drzewie komponentów
-//   Zapobiega białemu ekranowi — wyświetla czytelny komunikat błędu.
+// =============================================================================
+// ─── AppErrorBoundary – przechwytuje błędy React, zapobiega białemu ekranowi
+// =============================================================================
 class AppErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -27,16 +35,24 @@ class AppErrorBoundary extends React.Component {
     return { hasError: true, error };
   }
   componentDidCatch(error, info) {
-    // logError nie jest dostępne bezpośrednio w class component — używamy console jako fallback
+    // logError niedostępny w class component — używamy console jako fallback
     console.error('[AppErrorBoundary] Uncaught error:', error, info);
   }
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: 32, color: 'var(--text-primary, #fff)', background: 'var(--bg-primary, #1e1e1e)', minHeight: '100vh' }}>
+        <div style={{
+          padding: 32, color: 'var(--text-primary, #fff)',
+          background: 'var(--bg-primary, #1e1e1e)', minHeight: '100vh',
+        }}>
           <h2>⚠️ Wystąpił krytyczny błąd aplikacji</h2>
-          <pre style={{ fontSize: 12, opacity: 0.7, marginTop: 12 }}>{this.state.error?.message}</pre>
-          <button onClick={() => this.setState({ hasError: false, error: null })} style={{ marginTop: 16 }}>
+          <pre style={{ fontSize: 12, opacity: 0.7, marginTop: 12 }}>
+            {this.state.error?.message}
+          </pre>
+          <button
+            onClick={() => this.setState({ hasError: false, error: null })}
+            style={{ marginTop: 16 }}
+          >
             Spróbuj ponownie
           </button>
         </div>
@@ -46,129 +62,97 @@ class AppErrorBoundary extends React.Component {
   }
 }
 
-const WebViewTab = lazy(() => import('./ui/webview/WebViewTab'));
-const Notepad = lazy(() => import('./ui/notepad/Notepad'));
-const ProjectManager = lazy(() => import('./ui/projects/ProjectManager'));
-const RemoveBgTool = lazy(() => import('./ui/tools/RemoveBgTool'));
-const StringCombiner = lazy(() => import('./ui/tools/StringCombiner'));
-const Terminal = lazy(() => import('./ui/terminal/Terminal'));
-const Settings = lazy(() => import('./ui/settings/Settings'));
-const Help = lazy(() => import('./ui/help/Help'));
-const TaskPanel = lazy(() => import('./ui/taskpanel/TaskPanel'));
-const AggregatedTasks = lazy(() => import('./ui/tasks/AggregatedTasks'));
-const HistoryLog = lazy(() => import('./ui/history/HistoryLog'));
-
-// ─── Spinner() – komponent wskaźnika ładowania
-//   @returns {JSX.Element} – renderowany wskaźnik
-function Spinner() {
-  return (
-    <div className="flex items-center justify-center h-full text-slate-400">
-      <span style={{ fontSize: 28, animation: 'spin 1s linear infinite', display: 'inline-block' }}>⟳</span>
-    </div>
-  );
-}
-
-// ─── NetToast() – komponent wyświetlający powiadomienia o stanie połączenia sieciowego
-//   @param {string} message - treść komunikatu
-//   @param {string} type - typ powiadomienia: 'online' | 'offline' | 'warning'
-//   @returns {JSX.Element|null} - renderowane powiadomienie lub null
-function NetToast({ message, type }) {
-  if (!message) return null;
-  const cls =
-    type === 'online' ? 'toast toast-success' :
-    type === 'offline' ? 'toast toast-error' :
-    'toast toast-warning';
-  return <div className={cls}>{message}</div>;
-}
-
+// =============================================================================
+// ─── App() – ładuje dane startowe i przekazuje je do MainLayout
+// =============================================================================
 export default function App() {
   const { t, loaded } = useContext(TranslationContext);
-  const [activeItem, setActiveItem] = useState(null);
-  const [profiles, setProfiles] = useState([]);
-  const [settings, setSettings] = useState({});
-  const [showTaskPanel, setShowTaskPanel] = useState(false);
-  const [currentProject, setCurrentProject] = useState('');
-  const [netToast, setNetToast] = useState(null);
-  const [netToastType, setNetToastType] = useState('offline');
-  const [sidebarModalOpen, setSidebarModalOpen] = useState(false);
-  const [confirmState, setConfirmState] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
-  // ─── showConfirm() – wyświetla modal potwierdzenia z tytułem, wiadomością i callbackiem
-  //   @param {string} title - tytuł modala
-  //   @param {string} message - treść wiadomości
-  //   @param {Function} onConfirm - funkcja wywoływana po potwierdzeniu
-  const showConfirm = (title, message, onConfirm) => {
-    setConfirmState({ isOpen: true, title, message, onConfirm });
+  const [profiles,   setProfiles]   = useState([]);
+  const [settings,   setSettings]   = useState({});
+  const [activeItem, setActiveItem] = useState(null);
+  const [netToast,      setNetToast]      = useState(null);
+  const [netToastType,  setNetToastType]  = useState('offline');
+
+  // ─── applyTheme() – ustawia klasę dark na <html> w zależności od motywu
+  //   @param {string} theme – 'dark' | 'light' | 'system'
+  function applyTheme(theme) {
+    const html = document.documentElement;
+    if (theme === 'dark') {
+      html.classList.add('dark');
+    } else if (theme === 'light') {
+      html.classList.remove('dark');
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      html.classList.toggle('dark', prefersDark);
+    }
+  }
+
+  // ─── showToastMsg() – wyświetla chwilowe powiadomienie sieciowe
+  const showToastMsg = (msg, type) => {
+    setNetToast(msg);
+    setNetToastType(type);
+    setTimeout(() => setNetToast(null), 4000);
   };
 
+  // ─── useEffect – inicjalizacja: logger, profile, ustawienia, eventy sieci ──
   useEffect(() => {
-    import('./ui/help/Help');
-    import('./ui/notepad/Notepad');
-    import('./ui/settings/Settings');
-    initLogger().then(() => log('App: logger initialized'));
+    // Preload modułów często używanych
+    import('./ui/help/Help.jsx');
+    import('./ui/notepad/Notepad.jsx');
+    import('./ui/settings/Settings.jsx');
 
-    window.electronAPI.getProfiles().then((p) => {
-      const list = (p || []).map((prof) => {
-        const normalized = normalizeWebUrl(prof.url);
-        if (normalized && normalized !== prof.url) {
-          return { ...prof, url: normalized };
-        }
-        return prof;
-      });
-      setProfiles(list);
-      log('App: profiles loaded', list.length);
-    });
+    try {
+      // Logger
+      initLogger().then(() => logInfo('ui', 'App: logger initialized'));
 
-    window.electronAPI.getSettings().then((s) => {
-      const merged = s || {};
-      setSettings(merged);
-      setDebugMode(merged.debugMode !== false);
-      applyTheme(merged.theme || 'system');
-    });
+      // Profile
+      window.electronAPI.getProfiles().then((p) => {
+        const list = (p || []).map((prof) => {
+          const normalized = normalizeWebUrl(prof.url);
+          return normalized && normalized !== prof.url ? { ...prof, url: normalized } : prof;
+        });
+        setProfiles(list);
+        logInfo('ui', `App: profiles loaded (${list.length})`);
+      }).catch((err) => logError('ui', 'App: failed to load profiles', err));
 
-    // ─── showToastMsg() – wyświetla chwilowe powiadomienie z komunikatem i typem
-    //   @param {string} msg - treść powiadomienia
-    //   @param {string} type - typ powiadomienia: 'online' | 'offline' | 'warning'
-    const showToastMsg = (msg, type) => {
-      setNetToast(msg);
-      setNetToastType(type);
-      setTimeout(() => setNetToast(null), 4000);
-    };
+      // Ustawienia
+      window.electronAPI.getSettings().then((s) => {
+        const merged = s || {};
+        setSettings(merged);
+        setDebugMode(merged.debugMode !== false);
+        applyTheme(merged.theme || 'system');
+        logInfo('settings', 'App: settings loaded');
+      }).catch((err) => logError('settings', 'App: failed to load settings', err));
+    } catch (err) {
+      console.error('[App] Init failed:', err);
+    }
 
-    // ─── handleOnline() – obsługuje zdarzenie przejścia do trybu online, wyświetla toast
-    const handleOnline = () => showToastMsg(t('notifications.online'), 'online');
-    // ─── handleOffline() – obsługuje zdarzenie przejścia do trybu offline, wyświetla toast
+    // Sieć
+    const handleOnline  = () => showToastMsg(t('notifications.online'),  'online');
     const handleOffline = () => showToastMsg(t('notifications.offline'), 'offline');
-    window.addEventListener('online', handleOnline);
+    window.addEventListener('online',  handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    window.electronAPI.onCheckBeforeQuit?.(() => {
-      showConfirm(
-        t('app.close_confirm_title'),
-        t('app.close_confirm_message'),
-        () => window.electronAPI.confirmQuit()
-      );
-    });
-
     return () => {
-      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('online',  handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Nasłuchiwanie hotkeyów
+  // ─── useEffect – hotkeys (obsługa akcji z globalnych skrótów) ─────────────
   useEffect(() => {
+    if (!isFeatureEnabled('hotkeysManager')) return;
     if (!window.electronAPI?.onHotkeyTrigger) return;
 
     const dispose = window.electronAPI.onHotkeyTrigger(async (data) => {
-      logDebug(`Hotkey triggered: ${data.id}`, data);
+      logDebug('engine', `App: hotkey triggered ${data.id} (action: ${data.action})`);
 
       if (data.action === 'insertText' && data.text) {
         try {
           await navigator.clipboard.writeText(data.text);
-          // showToast – można dodać globalny system toastów
         } catch (err) {
-          logError('Failed to insert text', err);
+          logError('engine', 'App: failed to insert text via hotkey', err);
         }
       } else if (data.action === 'screenshot') {
         window.dispatchEvent(new CustomEvent('hotkey-screenshot'));
@@ -180,138 +164,40 @@ export default function App() {
     return () => dispose?.();
   }, []);
 
+  // ─── useEffect – zmiana motywu przy zmianie ustawień ─────────────────────
   useEffect(() => {
     if (settings.theme) applyTheme(settings.theme);
   }, [settings.theme]);
 
-  // ─── applyTheme() – ustawia klasę dark na elemencie html w zależności od motywu
-  //   @param {string} theme - 'dark' | 'light' | 'system'
-  function applyTheme(theme) {
-    const html = document.documentElement;
-    if (theme === 'dark') html.classList.add('dark');
-    else if (theme === 'light') html.classList.remove('dark');
-    else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      html.classList.toggle('dark', prefersDark);
-    }
-  }
-
-  // ─── handleSaveSettings() – zapisuje ustawienia aplikacji, aktualizuje motyw i tryb debug
+  // ─── handleSaveSettings() – zapisuje patch ustawień, odświeża motyw + debug
   const handleSaveSettings = async (patch) => {
-    const merged = { ...settings, ...patch };
-    setSettings(merged);
-    await window.electronAPI.saveSettings(patch);
-    setDebugMode(merged.debugMode !== false);
-    applyTheme(merged.theme || 'system');
+    try {
+      const merged = { ...settings, ...patch };
+      setSettings(merged);
+      await window.electronAPI.saveSettings(patch);
+      setDebugMode(merged.debugMode !== false);
+      applyTheme(merged.theme || 'system');
+      logInfo('settings', 'App: settings saved');
+    } catch (err) {
+      logError('settings', 'App: failed to save settings', err);
+    }
   };
 
-  // ─── renderContent() – renderuje aktywny komponent w zależności od wybranego elementu
-  //   @returns {JSX.Element} – zawartość główna aplikacji
-  const renderContent = () => {
-    if (!activeItem) {
-      return (
-        <div className="flex flex-col items-center justify-center h-full" style={{ color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>{ICONS.DEFAULT}</div>
-          <div style={{ fontSize: 16, fontWeight: 600 }}>{t('app.welcome_title')}</div>
-          <div style={{ fontSize: 13, marginTop: 6 }}>{t('app.welcome_subtitle')}</div>
-        </div>
-      );
-    }
-
-    // ─── wrap() – opakowuje komponent w Suspense z wskaźnikiem ładowania
-    //   @param {React.Component} Component - komponent do opakowania
-    //   @param {Object} props - właściwości przekazywane do komponentu
-    //   @returns {JSX.Element} – komponent w Suspense
-    const wrap = (Component, props = {}) => (
-      <Suspense fallback={<Spinner />}>
-        <Component {...props} />
-      </Suspense>
-    );
-
-    if (activeItem.type === 'special') {
-      switch (activeItem.id) {
-        case 'notepad': return wrap(Notepad);
-        case 'projectManager': return wrap(ProjectManager, { onOpenTasks: (project) => { setCurrentProject(project); setShowTaskPanel(true); } });
-        case 'removebg': return wrap(RemoveBgTool, { apiKey: settings.removeBgApiKey, plan: settings.removeBgPlan || 'free' });
-        case 'stringCombiner': return wrap(StringCombiner);
-        case 'terminal': return wrap(Terminal, { cwd: activeItem.cwd });
-        case 'settings': return wrap(Settings, { settings, onSave: handleSaveSettings });
-        case 'help': return wrap(Help);
-        case 'aggregatedTasks': return wrap(AggregatedTasks);
-        case 'history': return wrap(HistoryLog);
-        default: return <div style={{ padding: 32 }}>Nieznane narzędzie: {activeItem.id}</div>;
-      }
-    }
-
-    if (activeItem.type === 'webview' || activeItem.url) {
-      const profile = activeItem.type === 'webview' ? activeItem : { ...activeItem, type: 'webview' };
-      return wrap(WebViewTab, { profile, isActive: true, suspended: sidebarModalOpen });
-    }
-
-    return <div style={{ padding: 32 }}>Nieznany element: {activeItem.name || activeItem.id}</div>;
-  };
-
-  // ─── handleOpenTaskPanel() – otwiera panel zadań dla wybranego projektu/profilu
-  //   @param {string|Object} profileOrProject - nazwa projektu lub obiekt profilu
-  const handleOpenTaskPanel = (profileOrProject) => {
-    const name = typeof profileOrProject === 'string' ? profileOrProject : profileOrProject?.taskProject || profileOrProject?.name || 'default';
-    setCurrentProject(name);
-    setShowTaskPanel(true);
-    log('App: TaskPanel opened for', name);
-  };
-
-  const isWebViewActive = activeItem && (activeItem.type === 'webview' || (activeItem.url && activeItem.type !== 'special'));
-
-  useEffect(() => {
-    document.body.classList.toggle('tools-active', !isWebViewActive);
-    return () => document.body.classList.remove('tools-active');
-  }, [isWebViewActive]);
-
+  // Czekaj na załadowanie tłumaczeń
   if (!loaded) return <Spinner />;
 
   return (
     <AppErrorBoundary>
-      <div className="flex h-screen app-root" style={{ background: 'var(--bg-primary)' }}>
-        <Sidebar
-          profiles={profiles}
-          onSelect={setActiveItem}
-          activeItem={activeItem}
-          onProfilesChange={setProfiles}
-          onOpenTaskPanel={handleOpenTaskPanel}
-          onModalOpenChange={setSidebarModalOpen}
-        />
-        <main
-          className={`main-area flex flex-col overflow-hidden ${isWebViewActive ? 'main-area--webview' : 'main-area--module'}`}
-          style={{ minWidth: 0, flex: 1, minHeight: 0 }}
-        >
-          <div
-            className="module-view"
-            style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}
-            key={activeItem ? `${activeItem.type}-${activeItem.id || activeItem.name}` : 'home'}
-          >
-            {renderContent()}
-          </div>
-        </main>
-        <Suspense fallback={null}>
-          <TaskPanel
-            projectName={currentProject}
-            visible={showTaskPanel}
-            onClose={() => setShowTaskPanel(false)}
-            availableProjects={(settings.projects || []).map((p) => p.name)}
-          />
-        </Suspense>
-        <NetToast message={netToast} type={netToastType} />
-        <ConfirmModal
-          isOpen={confirmState.isOpen}
-          title={confirmState.title}
-          message={confirmState.message}
-          onConfirm={() => {
-            confirmState.onConfirm?.();
-            setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null });
-          }}
-          onCancel={() => setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null })}
-        />
-      </div>
+      <MainLayout
+        profiles={profiles}
+        activeItem={activeItem}
+        settings={settings}
+        onSelect={setActiveItem}
+        onProfilesChange={setProfiles}
+        onSaveSettings={handleSaveSettings}
+        netToast={netToast}
+        netToastType={netToastType}
+      />
     </AppErrorBoundary>
   );
 }

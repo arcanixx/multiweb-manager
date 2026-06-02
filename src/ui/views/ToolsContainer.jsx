@@ -1,0 +1,48 @@
+// =============================================================================
+// FILE: ToolsContainer.jsx
+// PATH: src/ui/views/ToolsContainer.jsx
+// VERSION: 0.0.3
+// PURPOSE: Kontener renderowania narzędzi specjalnych (Notepad, ProjectManager, RemoveBg, itp.)
+// FUNCTIONS: ToolsContainer
+// DEPENDS ON: react, Notepad, ProjectManager, RemoveBgTool, StringCombiner, Terminal
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+// =============================================================================
+
+import React, { lazy, Suspense } from 'react';
+import { logWarn } from '../../utils/loggerRenderer.js';
+import { Spinner } from './Spinner.jsx';
+
+const Notepad        = lazy(() => import('../notepad/Notepad'));
+const ProjectManager = lazy(() => import('../projects/ProjectManager'));
+const RemoveBgTool   = lazy(() => import('../tools/RemoveBgTool'));
+const StringCombiner = lazy(() => import('../tools/StringCombiner'));
+const Terminal       = lazy(() => import('../terminal/Terminal'));
+
+// ─── ToolsContainer() – renderuje odpowiednie narzędzie na podstawie activeItem.id
+//   @param {Object} props.activeItem – aktywny element specjalny
+//   @param {Object} props.settings   – ustawienia aplikacji (apiKey, plan itp.)
+//   @param {Function} props.onOpenTasks – callback otwierający TaskPanel dla projektu
+//   @returns {JSX.Element|null}
+export default function ToolsContainer({ activeItem, settings, onOpenTasks }) {
+  const wrap = (Component, props = {}) => (
+    <Suspense fallback={<Spinner />}>
+      <Component {...props} />
+    </Suspense>
+  );
+
+  switch (activeItem.id) {
+    case 'notepad':
+      return wrap(Notepad);
+    case 'projectManager':
+      return wrap(ProjectManager, { onOpenTasks });
+    case 'removebg':
+      return wrap(RemoveBgTool, { apiKey: settings.removeBgApiKey, plan: settings.removeBgPlan || 'free' });
+    case 'stringCombiner':
+      return wrap(StringCombiner);
+    case 'terminal':
+      return wrap(Terminal, { cwd: activeItem.cwd });
+    default:
+      logWarn(`ToolsContainer: unknown tool id "${activeItem.id}"`);
+      return <div style={{ padding: 32 }}>Nieznane narzędzie: {activeItem.id}</div>;
+  }
+}

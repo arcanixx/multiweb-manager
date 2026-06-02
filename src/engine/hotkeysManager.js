@@ -9,6 +9,7 @@
 // =============================================================================
 
 import { globalShortcut } from 'electron';
+import { isFeatureEnabled } from '../config.js';
 import { logDebug, logWarn, logError } from '../utils/logger.js';
 import Store from 'electron-store';
 let registeredHotkeys = [];
@@ -33,6 +34,10 @@ export function unregisterAllHotkeys() {
 
 // ─── registerGlobalHotkeys() – Rejestruje przekazaną listę skrótów klawiszowych w systemie operacyjnym; po ich naciśnięciu wysyła odpowiednie powiadomienie IPC do procesu renderowania
 export async function registerGlobalHotkeys(hotkeys) {
+  if (!isFeatureEnabled('hotkeysManager')) {
+    logDebug('hotkeysManager: feature disabled, skipping registration');
+    return;
+  }
   unregisterAllHotkeys();
   for (const hk of hotkeys) {
     if (!hk.enabled || !hk.shortcut) continue;

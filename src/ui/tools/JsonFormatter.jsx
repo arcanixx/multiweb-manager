@@ -10,8 +10,8 @@
 
 import React, { useState, useContext } from 'react';
 import { isFeatureEnabled } from '../../config.js';
-import { TranslationContext } from '../utils/translations.js';
-import { logError } from 'src/utils/loggerRenderer';
+import { TranslationContext } from '../../utils/translations.js';
+import { logError } from '../../utils/loggerRenderer';
 
 export default function JsonFormatter() {
   const { t } = useContext(TranslationContext);

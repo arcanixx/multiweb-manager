@@ -3,11 +3,10 @@
 // PATH: src/utils/loggerRenderer.js
 // VERSION: 0.0.3
 // PURPOSE: Cienki wrapper re-eksportujący logger.js dla procesu renderera (React).
-// FUNCTIONS: -
-// DEPENDS ON: loggerRenderer, logger.js
+// FUNCTIONS: initLogger, setDebugMode, isDebugMode, log, warn, error, logDebug, logInfo, logWarn, logError, getLogFilePath, setDebugModule
+// DEPENDS ON: logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
-
 // Re-eksport wszystkiego z logger.js
 // Dzięki temu zarówno:
 //   import { log, warn, error } from './loggerRenderer'
@@ -16,6 +15,7 @@
 export {
   initLogger,       // App.jsx: initLogger() przy starcie
   setDebugMode,     // App.jsx, Settings.jsx: zmiana trybu debug bez reload
+  setDebugModule,   // DebugModulesSection.jsx: zmiana modułu bez reload
   isDebugMode,      // opcjonalny odczyt stanu debug
   log,              // standardowe INFO
   warn,             // ostrzeżenia WARN
@@ -26,4 +26,3 @@ export {
   logError,         // WebViewTab.jsx: logError(msg, meta)
   getLogFilePath,   // Settings.jsx: ścieżka do pliku logów (zwraca null w rendererze)
 } from "./logger.js";
-

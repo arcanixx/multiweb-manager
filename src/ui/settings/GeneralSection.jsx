@@ -10,7 +10,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { isFeatureEnabled } from '../../config.js';
-import { TranslationContext } from '../utils/translations.js';
+import { TranslationContext } from '../../utils/translations.js';
 import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer';
 import { ICONS } from '../../utils/icons';
 

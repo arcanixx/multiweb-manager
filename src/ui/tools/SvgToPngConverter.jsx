@@ -10,10 +10,10 @@
 
 import React, { useState, useCallback } from 'react';
 import { isFeatureEnabled } from '../../config.js';
-import { TranslationContext } from '../utils/translations.js';
-import { logDebug, logError } from 'src/utils/loggerRenderer';
-import { ICONS } from 'src/utils/icons';
-import { svgToPng } from 'src/tools/svgToPng';
+import { TranslationContext } from '../../utils/translations.js';
+import { logDebug, logError } from '../../utils/loggerRenderer';
+import { ICONS } from '../../utils/icons';
+import { svgToPng } from '../../tools/svgToPng';
 
 export default function SvgToPngConverter() {
   const { t } = React.useContext(TranslationContext);

@@ -10,11 +10,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { isFeatureEnabled } from '../../config.js';
-import { TranslationContext } from '../utils/translations.js';
+import { TranslationContext } from '../../utils/translations.js';
 import { logDebug, logError, logInfo, logWarn } from '../../utils/loggerRenderer';
-import { ICONS } from 'src/utils/icons';
+import { ICONS } from '../../utils/icons';
 
-import { loadAppLibrary, searchAppLibrary, getAppsByCategory } from 'src/core/appLibraryStore'; // getAppsByCategory to helper do filtrowania aplikacji po kategorii, loadAppLibrary i searchAppLibrary to funkcje do pobierania danych z appLibraryStore
+import { loadAppLibrary, searchAppLibrary, getAppsByCategory } from '../../core/appLibraryStore'; // getAppsByCategory to helper do filtrowania aplikacji po kategorii, loadAppLibrary i searchAppLibrary to funkcje do pobierania danych z appLibraryStore
 
 // ─── AppLibraryBrowser() – komponent przeglądarki aplikacji z kategoriami i wyszukiwarką
 //   @param {Object} props – właściwości komponentu
@@ -60,9 +60,9 @@ export default function AppLibraryBrowser({ onAddProfile }) {
       setSearchResults([]);
     }
   }, [searchQuery]);
-  
+
   if (!isFeatureEnabled("appLibrary")) return null;
-  
+
   // ─── handleCategoryClick() – Obsługuje zdarzenie kliknięcia kategorii aplikacji; ustawia wybraną kategorię jako aktywny filtr i resetuje pole wyszukiwania
   //   @param {string} categoryId – identyfikator kategorii
   //   @returns {void}

@@ -10,7 +10,6 @@
 
 import React, { useContext } from 'react';
 import { isFeatureEnabled } from '../../config.js';
-import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS, SIDEBAR_ICON_MAP } from '../../utils/icons.js';
 

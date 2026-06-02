@@ -9,7 +9,8 @@
 // =============================================================================
 
 import React, { useState, useEffect } from 'react';
-import { TranslationContext } from '../utils/translations.js';
+import { isFeatureEnabled } from '../../config.js';
+import { TranslationContext } from '../../utils/translations.js';
 import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer';
 import { ICONS } from '../../utils/icons';
 
@@ -59,6 +60,8 @@ export default function WebViewSection() {
       logWarn('Wystąpił błąd podczas przełączania AdBlockera');
     }
   };
+
+  if (!isFeatureEnabled('adBlocker')) return null;
 
   return (
     <section className="settings-section">

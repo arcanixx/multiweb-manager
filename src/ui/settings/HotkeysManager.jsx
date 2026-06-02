@@ -10,8 +10,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { isFeatureEnabled } from '../../config.js';
-import { TranslationContext } from '../utils/translations.js';
-import { logDebug, logError, logInfo, logWarn } from 'src/utils/loggerRenderer';
+import { TranslationContext } from '../../utils/translations.js';
+import { logDebug, logError, logInfo, logWarn } from '../../utils/loggerRenderer';
 import ConfirmModal from '../modals/ConfirmModal';
 import Modal from '../modals/Modal';
 import { showNotification } from '../../utils/notificationsManager.js';

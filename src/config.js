@@ -2,7 +2,7 @@
 // FILE: config.js
 // PATH: src/config.js
 // VERSION: 0.0.3
-// PURPOSE: Centralna konfiguracja aplikacji – feature flags, API endpoints,
+// PURPOSE: Centralna konfiguracja aplikacji - flagi funkcji, limity i domyślne ustawienia.
 // FUNCTIONS: isFeatureEnabled, isToolEnabled, getDefaultSetting, getLimit
 // DEPENDS ON: -
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -47,6 +47,22 @@ export const RESOURCE_CRITICAL_AT = 90;
 export const CPU_WARN_AT = 50;
 export const CPU_CRITICAL_AT = 80;
 export const DEFAULT_PROFILE_CATEGORY = "AI";
+
+// =============================================================================
+// DEBUG MODULES — per-modułowe logowanie dla debugMode
+// =============================================================================
+
+export const DEBUG_MODULES = {
+  webview: true,
+  terminal: true,
+  tasks: true,
+  tools: true,
+  settings: true,
+  engine: true,
+  store: true,
+  ipc: true,
+  ui: true
+};
 
 // =============================================================================
 // FEATURE FLAGS — włączanie/wyłączanie modułów dla DEBUG
@@ -127,6 +143,7 @@ export const DEFAULT_SETTINGS = {
   language: DEFAULT_LANGUAGE,                 // 'pl' | 'en'
   theme: "dark",                  // 'dark' | 'light' | 'system'
   debugMode: DEBUG_DEFAULT,
+  debugModules: { ...DEBUG_MODULES },
   firstRun: true,
   logsEnabled: false,
   logsMaxLines: 500,
