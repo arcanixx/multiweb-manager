@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Współdzielony komponent wizualny wskaźnika ładowania (loader). Wykorzystywany jako fallback dla React Suspense oraz podczas asynchronicznych operacji I/O.
 // FUNCTIONS: Spinner
-// DEPENDS ON: react
+// DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

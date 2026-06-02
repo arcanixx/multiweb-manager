@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Wyspecjalizowany komponent prezentujący zadanie w widoku zagregowanym (dashboard). Obsługuje wizualizację priorytetów, znaczników wersji oraz statusu wykonania (skreślenie).
 // FUNCTIONS: AggregatedTaskItem
-// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+// DEPENDS ON: loggerRenderer.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -22,7 +22,7 @@ const PRIORITY_COLORS = { A: '#ef4444', B: '#f97316', C: '#eab308', D: '#3b82f6'
 //   @param {string} props.section – nazwa sekcji (active/backlog/done)
 //   @returns {JSX.Element} – renderowany element zadania
 export default function AggregatedTaskItem({ task, section }) {
-  
+
   // ─── getPriorityColor() – wyznacza kolor indykatora na podstawie priorytetu zadania
   const getPriorityColor = () => {
     try {

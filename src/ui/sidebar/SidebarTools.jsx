@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Sekcja narzędzi specjalnych w Sidebarze
 // FUNCTIONS: SidebarTools
-// DEPENDS ON: react, config.js, translations.js, icons.js
+// DEPENDS ON: react, config.js, translations.js, icons.js, constants.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

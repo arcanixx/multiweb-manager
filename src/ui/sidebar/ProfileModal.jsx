@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Zaawansowany formularz modalny do konfiguracji profili WebView – obsługuje parametry URL, ikony, przypisanie do kategorii oraz przełączniki adblockera i powiadomień.
 // FUNCTIONS: ProfileModal
-// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, urlUtils.js, ModalPortal.jsx, notificationsManager.js
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, urlUtils.js, ModalPortal, notificationsManager.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

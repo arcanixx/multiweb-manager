@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Pojedynczy profil w Sidebarze (ikona, nazwa, indykatory)
 // FUNCTIONS: SidebarProfileItem
-// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+// DEPENDS ON: react, translations.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny panel nawigacyjny aplikacji – zarządza listą profili, hierarchią kategorii, narzędziami systemowymi oraz integracją z mostkiem IPC dla trwałości ustawień.
 // FUNCTIONS: Sidebar
-// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, ProfileModal.jsx, CategoryModal.jsx, ContextMenu.jsx, SidebarSearch.jsx, SidebarCategory.jsx, SidebarProfileItem.jsx, SidebarTools.jsx, SidebarWorkspaces.jsx, ConfirmModal.jsx
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, ProfileModal, CategoryModal, ContextMenu, SidebarSearch, SidebarCategory, SidebarProfileItem, SidebarTools, SidebarWorkspaces, ConfirmModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -104,18 +104,18 @@ export default function Sidebar({ profiles, onSelect, activeItem, onProfilesChan
       const newProfiles = exists
         ? profiles.map(p => p.id === profileData.id ? profileData : p)
         : [...profiles, profileData];
-      
+
       saveProfiles(newProfiles);
       setShowProfileModal(false);
       onSelect({ ...profileData, type: 'webview' });
-      
+
       if (!exists) {
-        window.electronAPI.addHistory({ 
-          profileName: profileData.name, 
-          url: profileData.url 
+        window.electronAPI.addHistory({
+          profileName: profileData.name,
+          url: profileData.url
         }).catch(err => logError('store', 'Sidebar: failed to add history entry', err.message));
       }
-      
+
       logInfo('ui', `Sidebar: profile ${exists ? 'updated' : 'created'}`, profileData.id);
     } catch (err) {
       logError('ui', 'Sidebar: handleSaveProfile failed', err.message);
