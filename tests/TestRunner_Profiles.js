@@ -2,7 +2,7 @@
 // FILE: TestRunner_Profiles.js
 // PATH: tests/TestRunner_Profiles.js
 // VERSION: 0.0.3
-// PURPOSE: Testy jednostkowe dla modułu Profiles (Sidebar, App Library)
+// PURPOSE: Zestaw testów jednostkowych i integracyjnych dla zarządzania profilami WebView. Weryfikuje strukturę danych, poprawność kategorii oraz mechanizmy sortowania chronologicznego.
 // FUNCTIONS: runProfilesTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -48,7 +48,7 @@ const tests = [
   }
 ];
 
+// ─── runProfilesTests() – Inicjalizuje i uruchamia proces testowy dla modułu Profiles
 export async function runProfilesTests() {
   return runTests('Profiles', tests);
 }
-

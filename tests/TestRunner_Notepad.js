@@ -2,7 +2,7 @@
 // FILE: TestRunner_Notepad.js
 // PATH: tests/TestRunner_Notepad.js
 // VERSION: 0.0.3
-// PURPOSE: Testy jednostkowe dla Notepad (multi-tab, autosave)
+// PURPOSE: Zestaw testów dla modułu notatnika. Weryfikuje integralność danych kart, poprawność mechanizmu autozapisu (dirty checking) oraz logikę przełączania kontekstu między dokumentami.
 // FUNCTIONS: runNotepadTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -44,8 +44,7 @@ const tests = [
     }
   }
 ];
+// ─── runNotepadTests() – Inicjalizuje i uruchamia proces testowy dla edytora notatek
 export async function runNotepadTests() {
   return runTests('Notepad', tests);
 }
-
-

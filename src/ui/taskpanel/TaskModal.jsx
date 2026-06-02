@@ -2,7 +2,7 @@
 // FILE: TaskModal.jsx
 // PATH: src/ui/taskpanel/TaskModal.jsx
 // VERSION: 0.0.3
-// PURPOSE: Modal dodawania/edycji zadania (nazwa, opis, priorytet, sekcja, projekt, wersja, komentarz, pin)
+// PURPOSE: Formularz modalny do kompleksowego zarządzania zadaniem. Obsługuje edycję metadanych takich jak: priorytet, sekcja, przypisanie do projektu oraz dodatkowe notatki i wersjonowanie.
 // FUNCTIONS: TaskModal
 // DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -54,7 +54,7 @@ export default function TaskModal({ task, availableProjects, currentProject, onS
       });
       logInfo('tasks', `TaskModal: task ${task ? 'updated' : 'created'}`);
     } catch (err) {
-      logError('tasks', 'TaskModal: save failed', err);
+      logError('tasks', 'TaskModal: save failed', err.message);
       logWarn('tasks', 'Wystąpił błąd podczas zapisu zadania');
     }
   };

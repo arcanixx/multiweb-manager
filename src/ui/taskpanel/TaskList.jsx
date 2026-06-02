@@ -2,7 +2,7 @@
 // FILE: TaskList.jsx
 // PATH: src/ui/taskpanel/TaskList.jsx
 // VERSION: 0.0.3
-// PURPOSE: Lista zadań – grupowanie po statusie, sortowanie po priorytecie,
+// PURPOSE: Główny komponent listy zadań (Kanban/List view) – odpowiada za dynamiczne filtrowanie, grupowanie według statusu (TODO, IN_PROGRESS, BLOCKED, DONE) oraz wyzwalanie akcji edycji i podglądu.
 // FUNCTIONS: TaskList
 // DEPENDS ON: react, loggerRenderer.js, constants.js, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.

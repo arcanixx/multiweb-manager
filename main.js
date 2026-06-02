@@ -185,5 +185,5 @@ app.on('will-quit', () => {
 // GLOBAL ERROR HANDLERS
 // Logują błędy, które inaczej znikają bez śladu
 // =============================================================================
-process.on("uncaughtException", (err) => logError('ui', "uncaughtException", err));
-process.on("unhandledRejection", (reason) => logError('ui', "unhandledRejection", reason));
+process.on("uncaughtException", (err) => logError('engine', "uncaughtException", err.message));
+process.on("unhandledRejection", (reason) => logError('engine', "unhandledRejection", reason.message || reason));

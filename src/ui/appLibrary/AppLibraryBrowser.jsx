@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny widok biblioteki aplikacji (App Library) – umożliwia przeglądanie skatalogowanych usług webowych, ich wyszukiwanie oraz szybkie dodawanie do profili użytkownika. Współpracuje z appLibraryStore.
 // FUNCTIONS: AppLibraryBrowser
-// DEPENDS ON: react, config.js, translations.js, loggerRenderer.js, icons.js, appLibraryStore.js
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons, appLibraryStore
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

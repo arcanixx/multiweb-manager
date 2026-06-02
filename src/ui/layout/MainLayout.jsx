@@ -2,7 +2,7 @@
 // FILE: MainLayout.jsx
 // PATH: src/ui/layout/MainLayout.jsx
 // VERSION: 0.0.3
-// PURPOSE: Główny układ aplikacji — Sidebar + panel treści + TaskPanel + toasty + ConfirmModal
+// PURPOSE: Główny szkielet interfejsu użytkownika (Shell) – definiuje siatkę aplikacji, koordynuje nawigację boczną, obszar roboczy (ContentRenderer) oraz integruje globalne mechanizmy modalne i powiadomienia sieciowe.
 // FUNCTIONS: MainLayout
 // DEPENDS ON: react, translations.js, loggerRenderer.js, Sidebar.jsx, ContentRenderer.jsx, ConfirmModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -10,7 +10,7 @@
 
 import React, { useState, useEffect, useContext, Suspense, lazy } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
-import { logInfo, logDebug } from '../../utils/loggerRenderer.js';
+import { logInfo, logDebug, logError } from '../../utils/loggerRenderer.js';
 import Sidebar from '../sidebar/Sidebar.jsx';
 import { ContentRenderer } from '../views/ContentRenderer.jsx';
 import ConfirmModal from '../modals/ConfirmModal.jsx';
@@ -60,7 +60,11 @@ export default function MainLayout({
 
   // ─── showConfirm() – otwiera modal potwierdzenia
   const showConfirm = (title, message, onConfirm) => {
-    setConfirmState({ isOpen: true, title, message, onConfirm });
+    try {
+      setConfirmState({ isOpen: true, title, message, onConfirm });
+    } catch (err) {
+      logError('ui', 'MainLayout: showConfirm failed', err.message);
+    }
   };
 
   // ─── handleOpenTaskPanel() – otwiera TaskPanel dla projektu / profilu

@@ -2,7 +2,7 @@
 // FILE: TabsSection.jsx
 // PATH: src/ui/settings/TabsSection.jsx
 // VERSION: 0.0.3
-// PURPOSE: Sekcja ustawień zakładek (Sleep Tabs timeout)
+// PURPOSE: Sekcja konfiguracji zarządzania kartami – pozwala na ustawienie czasu bezczynności, po którym nieaktywne WebView są uśpiane w celu oszczędzania zasobów systemowych (RAM/CPU).
 // FUNCTIONS: TabsSection
 // DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -32,7 +32,7 @@ export default function TabsSection() {
           logInfo('settings', 'TabsSection: sleep timeout loaded');
         }
       } catch (err) {
-        logError('settings', 'TabsSection: failed to load timeout', err);
+        logError('settings', 'TabsSection: failed to load timeout', err.message);
         logWarn('settings', 'Nie można załadować timeoutu usypiania zakładek');
       }
     };
@@ -48,10 +48,9 @@ export default function TabsSection() {
       if (window.electronAPI?.setSleepTimeout) {
         await window.electronAPI.setSleepTimeout(minutes);
       }
-      logDebug('settings', `Sleep tabs timeout set to ${minutes} minutes`);
       logInfo('settings', `TabsSection: timeout set to ${minutes} minutes`);
     } catch (err) {
-      logError('settings', 'TabsSection: failed to set timeout', err);
+      logError('settings', 'TabsSection: failed to set timeout', err.message);
       logWarn('settings', 'Wystąpił błąd podczas ustawiania timeoutu');
     }
   };

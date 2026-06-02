@@ -2,7 +2,7 @@
 // FILE: TestRunner_History.js
 // PATH: tests/TestRunner_History.js
 // VERSION: 0.0.3
-// PURPOSE: Testy jednostkowe dla HistoryLog
+// PURPOSE: Testy integralności logów aktywności użytkownika. Sprawdza walidację poziomów logowania, mechanizmy filtrowania zdarzeń oraz poprawność przycinania historii do zdefiniowanych limitów (FIFO).
 // FUNCTIONS: runHistoryTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -45,6 +45,7 @@ const tests = [
     }
   }
 ];
+// ─── runHistoryTests() – Inicjalizuje i uruchamia proces testowy dla modułu historii
 export async function runHistoryTests() {
   return runTests('History', tests);
 }

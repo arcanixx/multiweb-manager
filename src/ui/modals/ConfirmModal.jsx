@@ -2,7 +2,7 @@
 // FILE: ConfirmModal.jsx
 // PATH: src/ui/modals/ConfirmModal.jsx
 // VERSION: 0.0.3
-// PURPOSE: Modal potwierdzenia (zastępuje window.confirm)
+// PURPOSE: Generyczny komponent modalny służący do potwierdzania akcji krytycznych (np. usuwanie). Zapewnia spójność wizualną i zastępuje natywną funkcję window.confirm.
 // FUNCTIONS: ConfirmModal
 // DEPENDS ON: react, translations.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -30,7 +30,7 @@ export default function ConfirmModal({ isOpen, title, message, onConfirm, onCanc
       logInfo('ui', 'ConfirmModal: user confirmed');
       onConfirm?.();
     } catch (err) {
-      logError('ui', 'ConfirmModal: confirm failed', err);
+      logError('ui', 'ConfirmModal: confirm failed', err.message);
       logWarn('ui', 'Wystąpił błąd podczas potwierdzania');
     }
   };
@@ -42,7 +42,7 @@ export default function ConfirmModal({ isOpen, title, message, onConfirm, onCanc
       logInfo('ui', 'ConfirmModal: user cancelled');
       onCancel?.();
     } catch (err) {
-      logError('ui', 'ConfirmModal: cancel failed', err);
+      logError('ui', 'ConfirmModal: cancel failed', err.message);
       logWarn('ui', 'Wystąpił błąd podczas anulowania');
     }
   };

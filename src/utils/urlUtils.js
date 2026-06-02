@@ -53,6 +53,8 @@ export function isValidWebUrl(raw) {
 export function isSafeUrl(raw) {
   if (!raw || typeof raw !== 'string') return false;
   const u = raw.trim().toLowerCase();
+  // UWAGA: BLOCKED_SCHEMES celowo pozostaje w tej funkcji – używana wyłącznie tutaj,
+  // nie ma sensu przenosić do constants.js.
   const BLOCKED_SCHEMES = [
     'javascript:',
     'vbscript:',

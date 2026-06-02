@@ -33,9 +33,19 @@ export default function TaskSection({ title, iconColor, tasks, onMoveToDone, onM
   const { t } = useContext(TranslationContext);
   const [collapsed, setCollapsed] = useState(false);
   const sortedTasks = [...tasks].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+
+  // ─── handleToggle() – przełącza stan zwinięcia sekcji zadań
+  const handleToggle = () => {
+    try {
+      setCollapsed(!collapsed);
+    } catch (err) {
+      logError('tasks', 'TaskSection: toggle failed', err.message);
+    }
+  };
+
   return (
     <div style={{ marginBottom: 12 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', marginBottom: 6, padding: '2px 4px', borderRadius: 4 }} onClick={() => setCollapsed(!collapsed)}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', marginBottom: 6, padding: '2px 4px', borderRadius: 4 }} onClick={handleToggle}>
         <div style={{ width: 8, height: 8, borderRadius: 2, background: iconColor, flexShrink: 0 }} />
         <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)', flex: 1 }}>{title}</span>
         <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{tasks.length}</span>

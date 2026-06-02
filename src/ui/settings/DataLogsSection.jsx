@@ -38,9 +38,9 @@ export default function DataLogsSection() {
         }
         setDebugMode(settings.debugMode === true);
         setLogsEnabled(settings.logsEnabled === true);
-        logInfo('settings', 'DataLogsSection: settings loaded');
+        logInfo('settings', 'DataLogsSection: settings loaded from IPC');
       } catch (err) {
-        logError('settings', 'DataLogsSection: failed to load settings', err);
+        logError('settings', 'DataLogsSection: failed to load settings', err.message);
         logWarn('settings', 'Nie można załadować ustawień');
       }
     };
@@ -54,10 +54,10 @@ export default function DataLogsSection() {
   //   @returns {void}
   const showConfirm = (title, message, onConfirm) => {
     try {
-      logInfo('settings', 'DataLogsSection: showing confirm modal');
+      logDebug('ui', 'DataLogsSection: showing confirm modal');
       setConfirmState({ isOpen: true, title, message, onConfirm });
     } catch (err) {
-      logError('settings', 'DataLogsSection: show confirm failed', err);
+      logError('ui', 'DataLogsSection: show confirm failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas wyświetlania modala potwierdzenia');
     }
   };
@@ -69,7 +69,6 @@ export default function DataLogsSection() {
       if (window.electronAPI?.exportSettings) {
         const result = await window.electronAPI.exportSettings();
         if (result.ok) {
-          logDebug('settings', 'Settings exported successfully');
           logInfo('settings', 'DataLogsSection: settings exported successfully');
         } else {
           logError('settings', 'DataLogsSection: export failed', result.error);
@@ -77,7 +76,7 @@ export default function DataLogsSection() {
         }
       }
     } catch (err) {
-      logError('settings', 'DataLogsSection: export failed', err);
+      logError('settings', 'DataLogsSection: export failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas eksportu ustawień');
     }
   };
@@ -89,7 +88,6 @@ export default function DataLogsSection() {
       if (window.electronAPI?.importSettings) {
         const result = await window.electronAPI.importSettings();
         if (result.ok) {
-          logDebug('settings', 'Settings imported successfully');
           logInfo('settings', 'DataLogsSection: settings imported successfully');
           setTimeout(() => window.location.reload(), 1000);
         } else {
@@ -98,7 +96,7 @@ export default function DataLogsSection() {
         }
       }
     } catch (err) {
-      logError('settings', 'DataLogsSection: import failed', err);
+      logError('settings', 'DataLogsSection: import failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas importu ustawień');
     }
   };
@@ -109,11 +107,10 @@ export default function DataLogsSection() {
     try {
       if (window.electronAPI?.openLogsFolder) {
         await window.electronAPI.openLogsFolder();
-        logDebug('settings', 'Logs folder opened');
         logInfo('settings', 'DataLogsSection: logs folder opened');
       }
     } catch (err) {
-      logError('settings', 'DataLogsSection: open logs folder failed', err);
+      logError('settings', 'DataLogsSection: open logs folder failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas otwierania folderu z logami');
     }
   };
@@ -134,7 +131,7 @@ export default function DataLogsSection() {
           logInfo('settings', 'DataLogsSection: all settings reset');
           window.location.reload();
         } catch (err) {
-          logError('settings', 'DataLogsSection: reset failed', err);
+          logError('settings', 'DataLogsSection: reset failed', err.message);
           logWarn('settings', 'Wystąpił błąd podczas resetowania ustawień');
         }
       }
@@ -155,7 +152,7 @@ export default function DataLogsSection() {
         logWarn('settings', 'Nie można wyświetlić logów');
       }
     } catch (err) {
-      logError('settings', 'DataLogsSection: view logs failed', err);
+      logError('settings', 'DataLogsSection: view logs failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas wyświetlania logów');
     }
   };
@@ -168,7 +165,7 @@ export default function DataLogsSection() {
       setLogsContent('');
       logInfo('settings', 'DataLogsSection: logs cleared');
     } catch (err) {
-      logError('settings', 'DataLogsSection: clear logs failed', err);
+      logError('settings', 'DataLogsSection: clear logs failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas czyszczenia logów');
     }
   };
@@ -182,7 +179,7 @@ export default function DataLogsSection() {
       await window.electronAPI?.invoke?.('settings:update', { logsEnabled: newValue });
       logInfo('settings', `DataLogsSection: logs ${newValue ? 'enabled' : 'disabled'}`);
     } catch (err) {
-      logError('settings', 'DataLogsSection: toggle logs failed', err);
+      logError('settings', 'DataLogsSection: toggle logs failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas przełączania logów');
     }
   };

@@ -2,7 +2,7 @@
 // FILE: ToolsPanel.jsx
 // PATH: src/ui/tools/ToolsPanel.jsx
 // VERSION: 0.0.3
-// PURPOSE: Kontener narzędzi – przełączanie między wszystkimi toolami
+// PURPOSE: Główny panel narzędziowy aplikacji (Tools Panel) – dostarcza interfejs oparty na zakładkach do obsługi narzędzi pomocniczych (JSON Formatter, Regex Tester, Clipboard History, Image Tools, Mini Postman, Cookie Grabber itp.). Obsługuje dynamiczne ładowanie na podstawie flag funkcji (feature flags).
 // FUNCTIONS: ToolsPanel
 // DEPENDS ON: react, config.js, translations.js, icons, loggerRenderer, RemoveBgTool.jsx, StringCombiner.jsx, JsonFormatter.jsx, RegexTester.jsx, MarkdownPreviewer.jsx, ClipboardHistory.jsx, ImageTools.jsx, SvgToPngConverter.jsx, MiniPostman.jsx, FilePreviewer.jsx, CookieGrabber.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -41,7 +41,7 @@ export default function ToolsPanel({ removeBgApiKey, plan = "free", activeWebVie
    //   @param {string} toolId – identyfikator narzędzia do aktywacji
    const handleSetActiveTool = (toolId) => {
     setActiveTool(toolId);
-    logDebug('tools', `ToolsPanel: switched to ${toolId}`);
+    logDebug('ui', `ToolsPanel: switched to ${toolId}`);
   };
   const allTools = [
     { id: "removebg", icon: ICONS.REMOVEBG, label: t("tools.removebg"), feature: null },

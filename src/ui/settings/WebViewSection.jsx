@@ -2,7 +2,7 @@
 // FILE: WebViewSection.jsx
 // PATH: src/ui/settings/WebViewSection.jsx
 // VERSION: 0.0.3
-// PURPOSE: Sekcja ustawień WebView — AdBlocker globalny, User Agent, tryb Single App, edytowalny pasek adresu. Szkielet do rozbudowy wg Definition_Mockups_UI_UX.md sekcja 8.
+// PURPOSE: Konfiguracja silnika przeglądarki (WebView) – zarządza globalnym blokowaniem reklam, maskowaniem tożsamości przeglądarki (User Agent) oraz trybami wyświetlania okien.
 // FUNCTIONS: WebViewSection
 // DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -33,12 +33,12 @@ export default function WebViewSection() {
           const res = await window.electronAPI.getGlobalAdBlocker();
           if (res?.ok) {
             setAdBlockerEnabled(res.data === true);
-            logInfo('settings', 'WebViewSection: adBlocker state loaded');
+            logInfo('webview', 'WebViewSection: adBlocker state loaded');
           }
         }
       } catch (err) {
-        logError('settings', 'WebViewSection: failed to load adBlocker state', err);
-        logWarn('settings', 'Nie można załadować stanu AdBlockera');
+        logError('webview', 'WebViewSection: failed to load adBlocker state', err.message);
+        logWarn('webview', 'Nie można załadować stanu AdBlockera');
       }
     };
     load();
@@ -52,12 +52,11 @@ export default function WebViewSection() {
       setAdBlockerEnabled(newState);
       if (window.electronAPI?.setGlobalAdBlocker) {
         await window.electronAPI.setGlobalAdBlocker(newState);
-        logDebug('settings', `WebViewSection: global adBlocker set to ${newState}`);
-        logInfo('settings', `WebViewSection: adBlocker ${newState ? 'enabled' : 'disabled'}`);
+        logInfo('webview', `WebViewSection: adBlocker ${newState ? 'enabled' : 'disabled'}`);
       }
     } catch (err) {
-      logError('settings', 'WebViewSection: adBlocker toggle failed', err);
-      logWarn('settings', 'Wystąpił błąd podczas przełączania AdBlockera');
+      logError('webview', 'WebViewSection: adBlocker toggle failed', err.message);
+      logWarn('webview', 'Wystąpił błąd podczas przełączania AdBlockera');
     }
   };
 

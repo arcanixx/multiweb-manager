@@ -2,7 +2,7 @@
 // FILE: TestRunner_Settings.js
 // PATH: tests/TestRunner_Settings.js
 // VERSION: 0.0.3
-// PURPOSE: Testy jednostkowe dla Settings (merge, export/import)
+// PURPOSE: Zestaw testów dla silnika ustawień. Weryfikuje bezpieczeństwo głębokiego łączenia (merge) konfiguracji, stabilność przełączania motywów oraz poprawność schematu danych przy imporcie/eksporcie.
 // FUNCTIONS: runSettingsTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -46,8 +46,7 @@ const tests = [
     }
   }
 ];
+// ─── runSettingsTests() – Inicjalizuje i uruchamia proces testowy dla systemu ustawień
 export async function runSettingsTests() {
   return runTests('Settings', tests);
 }
-
-

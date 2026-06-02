@@ -47,7 +47,7 @@ export default function PromptModal({
       logInfo('ui', `PromptModal: confirmed with value: ${value}`);
       onConfirm?.(value);
     } catch (err) {
-      logError('ui', 'PromptModal: confirm failed', err);
+      logError('ui', 'PromptModal: confirm failed', err.message);
     }
   };
 
@@ -57,7 +57,7 @@ export default function PromptModal({
       logInfo('ui', 'PromptModal: cancelled');
       onCancel?.();
     } catch (err) {
-      logError('ui', 'PromptModal: cancel failed', err);
+      logError('ui', 'PromptModal: cancel failed', err.message);
     }
   };
 

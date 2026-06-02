@@ -2,7 +2,7 @@
 // FILE: HotkeysManager.jsx
 // PATH: src/ui/settings/HotkeysManager.jsx
 // VERSION: 0.0.3
-// PURPOSE: Zarządzanie skrótami klawiszowymi (globalShortcut + snippet text)
+// PURPOSE: Interfejs zarządzania globalnymi skrótami klawiszowymi aplikacji. Umożliwia definiowanie akcji systemowych (screenshot, monitor) oraz wstawianie predefiniowanych snippetów tekstowych.
 // FUNCTIONS: HotkeysManager
 // DEPENDS ON: react, config.js, translations.js, loggerRenderer, ConfirmModal, Modal, notificationsManager.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -16,6 +16,9 @@ import ConfirmModal from '../modals/ConfirmModal';
 import Modal from '../modals/Modal';
 import { showNotification } from '../../utils/notificationsManager.js';
 
+// UWAGA: DEFAULT_HOTKEYS celowo pozostaje w tym pliku – jest fallbackiem ściśle
+// powiązanym z logiką ładowania i resetowania komponentu HotkeysManager.
+// Nie przenosić do constants.js.
 const DEFAULT_HOTKEYS = [
   { id: 'hk-1', shortcut: 'Ctrl+Shift+S', name: 'Screenshot WebView', text: '', enabled: true, action: 'screenshot' },
   { id: 'hk-2', shortcut: 'Ctrl+Shift+M', name: 'Resource Monitor', text: '', enabled: true, action: 'monitor' },
@@ -51,7 +54,7 @@ export default function HotkeysManager() {
           logWarn('settings', 'HotkeysManager: electronAPI.getHotkeys not available');
         }
       } catch (err) {
-        logError('settings', 'HotkeysManager: failed to load hotkeys', err);
+        logError('settings', 'HotkeysManager: failed to load hotkeys', err.message);
         logWarn('settings', 'Nie można załadować skrótów klawiszowych');
         setHotkeys(DEFAULT_HOTKEYS);
       } finally {
@@ -68,10 +71,10 @@ export default function HotkeysManager() {
   //   @returns {void}
   const showConfirm = (title, message, onConfirm) => {
     try {
-      logInfo('settings', 'HotkeysManager: showing confirm modal');
+      logDebug('ui', 'HotkeysManager: showing confirm modal');
       setConfirmState({ isOpen: true, title, message, onConfirm });
     } catch (err) {
-      logError('settings', 'HotkeysManager: show confirm failed', err);
+      logError('ui', 'HotkeysManager: show confirm failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas wyświetlania modala potwierdzenia');
     }
   };
@@ -91,7 +94,7 @@ export default function HotkeysManager() {
         logInfo('settings', 'HotkeysManager: global hotkeys registered');
       }
     } catch (err) {
-      logError('settings', 'HotkeysManager: save hotkeys failed', err);
+      logError('settings', 'HotkeysManager: save hotkeys failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas zapisu skrótów');
       throw err;
     }
@@ -112,7 +115,7 @@ export default function HotkeysManager() {
       setModalOpen(true);
       logInfo('settings', 'HotkeysManager: adding new hotkey');
     } catch (err) {
-      logError('settings', 'HotkeysManager: add hotkey failed', err);
+      logError('settings', 'HotkeysManager: add hotkey failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas dodawania skrótu');
     }
   };
@@ -126,7 +129,7 @@ export default function HotkeysManager() {
       setModalOpen(true);
       logInfo('settings', `HotkeysManager: editing hotkey ${hotkey.id}`);
     } catch (err) {
-      logError('settings', 'HotkeysManager: edit hotkey failed', err);
+      logError('settings', 'HotkeysManager: edit hotkey failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas edycji skrótu');
     }
   };
@@ -144,7 +147,7 @@ export default function HotkeysManager() {
           await saveHotkeys(newHotkeys);
           logInfo('settings', `HotkeysManager: deleted hotkey ${id}`);
         } catch (err) {
-          logError('settings', 'HotkeysManager: delete hotkey failed', err);
+          logError('settings', 'HotkeysManager: delete hotkey failed', err.message);
           logWarn('settings', 'Wystąpił błąd podczas usuwania skrótu');
         }
       }
@@ -182,7 +185,7 @@ export default function HotkeysManager() {
       setModalOpen(false);
       setEditingHotkey(null);
     } catch (err) {
-      logError('settings', 'HotkeysManager: save hotkey failed', err);
+      logError('settings', 'HotkeysManager: save hotkey failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas zapisu skrótu');
     }
   };
@@ -197,7 +200,7 @@ export default function HotkeysManager() {
       await saveHotkeys(newHotkeys);
       logInfo('settings', `HotkeysManager: ${enabled ? 'enabled' : 'disabled'} hotkey ${id}`);
     } catch (err) {
-      logError('settings', 'HotkeysManager: toggle enabled failed', err);
+      logError('settings', 'HotkeysManager: toggle enabled failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas przełączania aktywności skrótu');
     }
   };
@@ -209,10 +212,9 @@ export default function HotkeysManager() {
     try {
       // Użytkownik wpisuje np. "Ctrl+Shift+S" – bez walidacji, przekazujemy dalej
       // W przyszłości można dodać walidację formatu
-      logDebug('settings', `HotkeysManager: parsing shortcut ${shortcut}`);
       return shortcut;
     } catch (err) {
-      logError('settings', 'HotkeysManager: parse shortcut failed', err);
+      logError('settings', 'HotkeysManager: parse shortcut failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas parsowania skrótu');
       return '';
     }

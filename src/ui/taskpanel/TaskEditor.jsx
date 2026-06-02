@@ -2,7 +2,7 @@
 // FILE: TaskEditor.jsx
 // PATH: src/ui/taskpanel/TaskEditor.jsx
 // VERSION: 0.0.3
-// PURPOSE: Modal dodawania/edycji zadania – walidacja, zapis,
+// PURPOSE: Wyspecjalizowany edytor zadań (inline lub modal) obsługujący walidację danych wejściowych, komunikację z tasksStore przez IPC oraz integrację z systemem toastów.
 // FUNCTIONS: TaskEditor
 // DEPENDS ON: react, loggerRenderer.js, constants.js, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -60,12 +60,12 @@ export default function TaskEditor({ task, onCancel, onSaved }) {
         window.showToast("success", t("tasks.editor.saved"));
         onSaved();
       } else {
-        logError('tasks', 'TaskEditor: save failed', res?.error);
+        logError('tasks', 'TaskEditor: save failed', res?.error || 'Unknown IPC error');
         logWarn('tasks', 'Nie można zapisać zadania');
         window.showToast("error", t("tasks.editor.error.saveFailed"));
       }
     } catch (err) {
-      logError('tasks', 'TaskEditor.save exception', err);
+      logError('tasks', 'TaskEditor.save exception', err.message);
       logWarn('tasks', 'Wystąpił błąd podczas zapisu zadania');
     }
   }

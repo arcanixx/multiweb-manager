@@ -142,20 +142,20 @@ const tests = [
     }
   }
   // Cookies Grabber
-  {
-  name: 'Cookie Grabber – getCookies returns array',
-  run: async () => {
-    if (!window.electronAPI?.getCookies) {
-      return { ok: false, details: 'getCookies not available' };
+  ,{
+    name: 'Cookie Grabber – getCookies returns array',
+    run: async () => {
+      if (!window.electronAPI?.getCookies) {
+        return { ok: false, details: 'getCookies not available' };
+      }
+      const result = await window.electronAPI.getCookies(null);
+      const ok = result?.ok === true && Array.isArray(result?.data);
+      return { ok, details: ok ? '' : 'Invalid response structure' };
     }
-    const result = await window.electronAPI.getCookies(null);
-    const ok = result?.ok === true && Array.isArray(result?.data);
-    return { ok, details: ok ? '' : 'Invalid response structure' };
   }
 ];
 
-	export async function runToolsTests() {
+// ─── runToolsTests() – Uruchamia zestaw testów jednostkowych dla narzędzi pomocniczych (JSON, Regex, Markdown, Clipboard)
+export async function runToolsTests() {
   return runTests('Tools', tests);
 }
-
-

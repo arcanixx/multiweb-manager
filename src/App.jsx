@@ -118,7 +118,7 @@ export default function App() {
         });
         setProfiles(list);
         logInfo('ui', `App: profiles loaded (${list.length})`);
-      }).catch((err) => logError('ui', 'App: failed to load profiles', err));
+      }).catch((err) => logError('ui', 'App: failed to load profiles', err.message));
 
       // Ustawienia
       window.electronAPI.getSettings().then((s) => {
@@ -127,7 +127,7 @@ export default function App() {
         setDebugMode(merged.debugMode !== false);
         applyTheme(merged.theme || 'system');
         logInfo('settings', 'App: settings loaded');
-      }).catch((err) => logError('settings', 'App: failed to load settings', err));
+      }).catch((err) => logError('settings', 'App: failed to load settings', err.message));
     } catch (err) {
       console.error('[App] Init failed:', err);
     }
@@ -156,7 +156,7 @@ export default function App() {
         try {
           await navigator.clipboard.writeText(data.text);
         } catch (err) {
-          logError('engine', 'App: failed to insert text via hotkey', err);
+          logError('engine', 'App: failed to insert text via hotkey', err.message);
         }
       } else if (data.action === 'screenshot') {
         window.dispatchEvent(new CustomEvent('hotkey-screenshot'));
@@ -183,7 +183,7 @@ export default function App() {
       applyTheme(merged.theme || 'system');
       logInfo('settings', 'App: settings saved');
     } catch (err) {
-      logError('settings', 'App: failed to save settings', err);
+      logError('settings', 'App: failed to save settings', err.message);
     }
   };
 

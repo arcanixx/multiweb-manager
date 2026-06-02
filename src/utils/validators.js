@@ -10,6 +10,10 @@
 
 import { logError } from "./logger.js";
 
+// UWAGA: Ten plik nie zawiera eksportowalnych stałych wzorców (URL_PATTERN, EMAIL_PATTERN itp.).
+// Walidacja opiera się na logice funkcji – funkcje ensureString i ensureObject pozostają
+// w tym pliku i nie powinny być przenoszone do constants.js.
+
 // ─── ensureString() – waliduje, że wartość jest niepustym stringiem
 export function ensureString(value, name) {
   if (typeof value !== "string" || !value.trim()) {

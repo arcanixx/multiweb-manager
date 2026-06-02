@@ -11,7 +11,8 @@
 import React, { useContext } from 'react';
 import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../../utils/translations.js';
-import { ICONS, SIDEBAR_ICON_MAP } from '../../utils/icons.js';
+import { ICONS } from '../../utils/icons.js';
+import { SIDEBAR_ICON_MAP } from '../../constants.js';
 
 // ─── SPECIAL_TOOLS – stała z listą narzędzi specjalnych w sidebarze
 //   @returns {Array} – tablica obiektów z id i kluczem tłumaczenia

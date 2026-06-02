@@ -2,15 +2,13 @@
 // FILE: AggregatedTaskItem.jsx
 // PATH: src/ui/tasks/AggregatedTaskItem.jsx
 // VERSION: 0.0.3
-// PURPOSE: Pojedyncze zadanie w widoku zbiorczym
+// PURPOSE: Wyspecjalizowany komponent prezentujący zadanie w widoku zagregowanym (dashboard). Obsługuje wizualizację priorytetów, znaczników wersji oraz statusu wykonania (skreślenie).
 // FUNCTIONS: AggregatedTaskItem
 // DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useContext } from 'react';
-import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
-import { TranslationContext } from '../../utils/translations.js';
+import { logError } from '../utils/loggerRenderer.js';
 import { ICONS } from '../../utils/icons.js';
 
 // ─── PRIORITY_COLORS – mapa kolorów priorytetów zadań
@@ -23,10 +21,19 @@ const PRIORITY_COLORS = { A: '#ef4444', B: '#f97316', C: '#eab308', D: '#3b82f6'
 //   @param {Object} props.task – obiekt zadania
 //   @param {string} props.section – nazwa sekcji (active/backlog/done)
 //   @returns {JSX.Element} – renderowany element zadania
-
 export default function AggregatedTaskItem({ task, section }) {
-  const { t } = useContext(TranslationContext);
-  const pColor = PRIORITY_COLORS[task.priority] || '#94a3b8';
+  
+  // ─── getPriorityColor() – wyznacza kolor indykatora na podstawie priorytetu zadania
+  const getPriorityColor = () => {
+    try {
+      return PRIORITY_COLORS[task.priority] || '#94a3b8';
+    } catch (err) {
+      logError('ui', 'AggregatedTaskItem: color resolution failed', err.message);
+      return '#94a3b8';
+    }
+  };
+
+  const pColor = getPriorityColor();
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: 8, padding: '4px 8px', borderRadius: 4, fontSize: 12,

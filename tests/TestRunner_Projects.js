@@ -2,7 +2,7 @@
 // FILE: TestRunner_Projects.js
 // PATH: tests/TestRunner_Projects.js
 // VERSION: 0.0.3
-// PURPOSE: Testy jednostkowe dla ProjectManager
+// PURPOSE: Zestaw testów dla modułu projektów. Weryfikuje mechanizmy archiwizacji, strukturę obiektów projektowych oraz poprawność agregacji liczby zadań przypisanych do konkretnych projektów.
 // FUNCTIONS: runProjectsTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -46,7 +46,7 @@ const tests = [
     }
   }
 ];
+// ─── runProjectsTests() – Inicjalizuje i uruchamia proces testowy dla menedżera projektów
 export async function runProjectsTests() {
   return runTests('Projects', tests);
 }
-

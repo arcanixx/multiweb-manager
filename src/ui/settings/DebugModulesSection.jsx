@@ -51,7 +51,7 @@ export default function DebugModulesSection() {
           logWarn('settings', 'DebugModulesSection: failed to load settings');
         }
       } catch (err) {
-        logError('settings', 'DebugModulesSection: failed to load settings', err);
+        logError('settings', 'DebugModulesSection: failed to load settings', err.message);
         setSettings({ debugMode: false, debugModules: { ...DEBUG_MODULES } });
       }
     };
@@ -90,7 +90,7 @@ export default function DebugModulesSection() {
 
       logInfo('settings', `DebugModulesSection: module ${moduleName} set to ${enabled}`);
     } catch (err) {
-      logError('settings', 'DebugModulesSection: toggle failed', err);
+      logError('settings', 'DebugModulesSection: toggle failed', err.message);
     }
   };
 

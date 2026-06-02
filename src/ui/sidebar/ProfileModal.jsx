@@ -9,8 +9,8 @@
 // =============================================================================
 
 import React, { useState, useContext } from 'react';
-import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
-import { TranslationContext } from '../../utils/trCanslations.js';
+import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { normalizeWebUrl } from '../../utils/urlUtils.js';
 import ModalPortal from '../system/ModalPortal';

@@ -36,7 +36,7 @@ export default function NotificationsSection() {
           }
         }
       } catch (err) {
-        logError('settings', 'NotificationsSection: failed to load settings', err);
+        logError('settings', 'NotificationsSection: failed to load settings', err.message);
         logWarn('settings', 'Nie można załadować ustawień powiadomień — fallback na localStorage');
         // Fallback na localStorage gdy IPC niedostępne
         const saved = localStorage.getItem('system_notifications');
@@ -58,10 +58,9 @@ export default function NotificationsSection() {
       if (window.electronAPI?.invoke) {
         await window.electronAPI.invoke('settings:update', { systemNotifications: enabled });
       }
-      logDebug('settings', `System notifications: ${enabled}`);
       logInfo('settings', `NotificationsSection: system notifications ${enabled ? 'enabled' : 'disabled'}`);
     } catch (err) {
-      logError('settings', 'NotificationsSection: system notifications toggle failed', err);
+      logError('settings', 'NotificationsSection: system notifications toggle failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas przełączania powiadomień systemowych');
     }
   };
@@ -73,10 +72,9 @@ export default function NotificationsSection() {
       if (window.electronAPI?.invoke) {
         await window.electronAPI.invoke('settings:update', { pushbulletApiKey });
       }
-      logDebug('settings', 'Pushbullet API key saved');
       logInfo('settings', 'NotificationsSection: Pushbullet API key saved');
     } catch (err) {
-      logError('settings', 'NotificationsSection: Pushbullet save failed', err);
+      logError('settings', 'NotificationsSection: Pushbullet save failed', err.message);
       logWarn('settings', 'Wystąpił błąd podczas zapisu klucza API Pushbullet');
     }
   };

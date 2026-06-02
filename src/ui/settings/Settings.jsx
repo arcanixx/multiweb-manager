@@ -2,7 +2,7 @@
 // FILE: Settings.jsx
 // PATH: src/ui/settings/Settings.jsx
 // VERSION: 0.0.3
-// PURPOSE: Import plików Settings w poszczególnych modułach, export settings-container
+// PURPOSE: Główny kontener widoku ustawień aplikacji. Agreguje wszystkie sekcje konfiguracyjne (General, WebView, Tabs, Notifications, Hotkeys, Debug, Data) w jeden ustrukturyzowany interfejs użytkownika.
 // FUNCTIONS: Settings
 // DEPENDS ON: react, GeneralSection, WebViewSection, TabsSection, NotificationsSection, HotkeysManager, DebugModulesSection, DataLogsSection, AccountSection, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.

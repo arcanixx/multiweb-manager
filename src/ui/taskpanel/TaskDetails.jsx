@@ -2,7 +2,7 @@
 // FILE: TaskDetails.jsx
 // PATH: src/ui/taskpanel/TaskDetails.jsx
 // VERSION: 0.0.3
-// PURPOSE: Szczegóły zadania – pełny widok, zmiana statusu,
+// PURPOSE: Widok szczegółowy pojedynczego zadania. Umożliwia szybką edycję statusu i priorytetu bezpośrednio z poziomu podglądu oraz synchronizację tych zmian przez IPC.
 // FUNCTIONS: TaskDetails
 // DEPENDS ON: react, loggerRenderer.js, constants.js, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -44,7 +44,7 @@ export default function TaskDetails({ task, onBack, onEdit }) {
         logWarn('tasks', `Nie można zaktualizować pola ${field}`);
       }
     } catch (err) {
-      logError('tasks', 'TaskDetails.updateField failed', err);
+      logError('tasks', 'TaskDetails.updateField failed', err.message);
       logWarn('tasks', 'Wystąpił błąd podczas aktualizacji pola');
     }
   }

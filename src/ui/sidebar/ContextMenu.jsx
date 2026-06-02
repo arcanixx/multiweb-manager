@@ -9,7 +9,6 @@
 // =============================================================================
 
 import React, { useRef, useEffect, useContext } from 'react';
-import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 

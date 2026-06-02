@@ -2,7 +2,7 @@
 // FILE: TaskItem.jsx
 // PATH: src/ui/taskpanel/TaskItem.jsx
 // VERSION: 0.0.3
-// PURPOSE: Pojedyncze zadanie w liście (z akcjami)
+// PURPOSE: Interaktywny element listy zadań w panelu projektu. Dostarcza pełny zestaw akcji CRUD (edycja, usuwanie, pinowanie) oraz szybkie przyciski zmiany stanu (Move to Active/Backlog/Done).
 // FUNCTIONS: TaskItem
 // DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -33,6 +33,17 @@ const PRIORITY_COLORS = { A: '#ef4444', B: '#f97316', C: '#eab308', D: '#3b82f6'
 
 export default function TaskItem({ task, section, onMoveToDone, onMoveToBacklog, onMoveToActive, onPin, onDelete, onEdit, onOpenComment }) {
   const { t } = useContext(TranslationContext);
+
+  // ─── handleAction() – opakowuje wywołania akcji w try-catch i loguje moduł tasks
+  const handleAction = (actionName, callback, ...args) => {
+    try {
+      logDebug('tasks', `TaskItem: performing action ${actionName}`, { taskId: task.id });
+      callback(...args);
+    } catch (err) {
+      logError('tasks', `TaskItem: action ${actionName} failed`, err.message);
+    }
+  };
+
   const pColor = PRIORITY_COLORS[task.priority] || '#94a3b8';
   return (
     <div style={{

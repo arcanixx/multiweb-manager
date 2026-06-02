@@ -2,7 +2,7 @@
 // FILE: AccountSection.jsx
 // PATH: src/ui/settings/AccountSection.jsx
 // VERSION: 0.0.3
-// PURPOSE: Sekcja konta użytkownika (placeholder – na później synchronizacja)
+// PURPOSE: Sekcja zarządzania profilem użytkownika – obecnie służy jako placeholder dla nadchodzącej funkcji synchronizacji danych w chmurze (Cloud Sync) planowanej w v0.0.4.
 // FUNCTIONS: AccountSection
 // DEPENDS ON: react, translations.js, src, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -22,11 +22,11 @@ export default function AccountSection() {
   //   @returns {void}
   const handleSignInClick = () => {
     try {
-      logInfo('settings', 'AccountSection: sign in button clicked (placeholder)');
+      logInfo('ui', 'AccountSection: sign in button clicked (placeholder)');
       // Placeholder – w przyszłości będzie tu logika logowania
     } catch (err) {
-      logError('settings', 'AccountSection: sign in click failed', err);
-      logWarn('settings', 'Wystąpił błąd podczas obsługi przycisku logowania');
+      logError('ui', 'AccountSection: sign in click failed', err.message);
+      logWarn('ui', 'Wystąpił błąd podczas obsługi przycisku logowania');
     }
   };
 
@@ -34,11 +34,11 @@ export default function AccountSection() {
   //   @returns {void}
   const handleSyncClick = () => {
     try {
-      logInfo('settings', 'AccountSection: sync button clicked (placeholder)');
+      logInfo('ui', 'AccountSection: sync button clicked (placeholder)');
       // Placeholder – w przyszłości będzie tu logika synchronizacji
     } catch (err) {
-      logError('settings', 'AccountSection: sync click failed', err);
-      logWarn('settings', 'Wystąpił błąd podczas obsługi przycisku synchronizacji');
+      logError('ui', 'AccountSection: sync click failed', err.message);
+      logWarn('ui', 'Wystąpił błąd podczas obsługi przycisku synchronizacji');
     }
   };
 

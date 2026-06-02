@@ -47,6 +47,8 @@ export const APP_CATEGORIES_MAP = {
 
 // ---------------------------------------------------------------------------
 // SIDEBAR_ICON_MAP – mapowanie ID kafelka na klucz ICONS
+// UWAGA: Ta stała celowo pozostaje w constants.js (nie przenosić do icons.js ani config.js)
+// – jest używana w wielu miejscach i nie jest bezpośrednio związana z logiką komponentu
 // ---------------------------------------------------------------------------
 export const SIDEBAR_ICON_MAP = {
   notepad:        "NOTEPAD",

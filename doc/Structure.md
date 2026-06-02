@@ -111,7 +111,8 @@ root/
 │   ├── 📁 core/
 │   │   ├── 📜 accountsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/core/accountsStore.js
 │   │   │                                               PURPOSE: Zarządzanie kontami użytkownika (Google, GitHub, AI,
-│   │   │                                                        itp.).
+│   │   │                                                        itp.) – obsługa trwałości i operacji CRUD na danych
+│   │   │                                                        kont.
 │   │   │                                               FUNCTIONS: getAllAccounts, addAccount, updateAccount,
 │   │   │                                                          deleteAccount
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
@@ -126,8 +127,8 @@ root/
 │   │   │                                               DEPENDS ON: fs, path, url, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 clipboardStore.js ❗                 <!-- VERSION: 0.0.3 PATH: src/core/clipboardStore.js
-│   │   │                                               PURPOSE: Historia schowka systemowego – przechowuje ostatnie N
-│   │   │                                                        wpisów.
+│   │   │                                               PURPOSE: Zarządzanie historią schowka systemowego – dodawanie,
+│   │   │                                                        pobieranie i czyszczenie wpisów tekstowych.
 │   │   │                                               FUNCTIONS: addClipboardEntry, getClipboardHistory,
 │   │   │                                                          clearClipboardHistory
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js
@@ -141,7 +142,8 @@ root/
 │   │   │                                               DEPENDS ON: config.js, persistence.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 notesStore.js ❗                     <!-- VERSION: 0.0.3 PATH: src/core/notesStore.js
-│   │   │                                               PURPOSE: Zarządzanie notatkami użytkownika
+│   │   │                                               PURPOSE: Zarządzanie notatkami użytkownika – ładowanie,
+│   │   │                                                        zapisywanie oraz operacje CRUD na danych notatek.
 │   │   │                                               FUNCTIONS: getAllNotes, addNote, updateNote, deleteNote
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
@@ -168,8 +170,8 @@ root/
 │   │   │                                               DEPENDS ON: persistence.js, settingsStore.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 resourceMonitor.js ❗                <!-- VERSION: 0.0.3 PATH: src/core/resourceMonitor.js
-│   │   │                                               PURPOSE: Monitor zasobów systemowych – odczyt użycia CPU i RAM z
-│   │   │                                                        wartościami limitów z ostrzeżeniami (getSystemUsage).
+│   │   │                                               PURPOSE: Serwis monitorujący zużycie zasobów systemowych
+│   │   │                                                        (CPU/RAM) przez aplikację i system operacyjny.
 │   │   │                                               FUNCTIONS: getSystemUsage
 │   │   │                                               DEPENDS ON: os, config.js, logger.js
 │   │   │                                               -->
@@ -188,7 +190,9 @@ root/
 │   │   │                                               DEPENDS ON: fs, persistence.js, logger.js
 │   │   │                                               -->
 │   │   └── 📜 workspacesStore.js ❗                <!-- VERSION: 0.0.3 PATH: src/core/workspacesStore.js
-│   │                                                   PURPOSE: Zarządzanie workspace'ami użytkownika
+│   │                                                   PURPOSE: Zarządzanie przestrzeniami roboczymi (workspaces)
+│   │                                                            użytkownika – ładowanie, zapisywanie oraz operacje typu
+│   │                                                            upsert.
 │   │                                                   FUNCTIONS: getAllWorkspaces, saveWorkspace, saveWorkspaces,
 │   │                                                              deleteWorkspace
 │   │                                                   DEPENDS ON: fs, path, electron, logger.js
@@ -217,23 +221,27 @@ root/
 │   │                                                   -->
 │   ├── 📁 engine/
 │   │   ├── 📜 adBlocker.js ❗                      <!-- VERSION: 0.0.3 PATH: src/engine/adBlocker.js
-│   │   │                                               PURPOSE: Logika blokowania reklam (global + per profile)
+│   │   │                                               PURPOSE: Implementacja blokowania reklam na poziomie sieciowym
+│   │   │                                                        (webRequest) – wspiera ustawienia globalne i
+│   │   │                                                        nadpisywanie per-profil.
 │   │   │                                               FUNCTIONS: isAdUrl, setGlobalAdBlocker, getGlobalAdBlocker,
 │   │   │                                                          setProfileAdBlocker, getProfileAdBlocker,
 │   │   │                                                          initAdBlocker
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js, webviewRegistry.js
 │   │   │                                               -->
 │   │   ├── 📜 hotkeysManager.js ❗                 <!-- VERSION: 0.0.3 PATH: src/engine/hotkeysManager.js
-│   │   │                                               PURPOSE: Zarządzanie globalnymi skrótami klawiszowymi
-│   │   │                                                        (globalShortcut)
+│   │   │                                               PURPOSE: Zarządzanie globalnymi skrótami klawiszowymi w procesie
+│   │   │                                                        głównym. Obsługuje rejestrację w OS i dispatch zdarzeń
+│   │   │                                                        IPC do renderera.
 │   │   │                                               FUNCTIONS: setMainWindow, unregisterAllHotkeys,
 │   │   │                                                          registerGlobalHotkeys, getAllHotkeys, saveHotkeys,
 │   │   │                                                          registerHotkeysFromList
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js, electron-store
 │   │   │                                               -->
 │   │   ├── 📜 sleepTabsManager.js ❗               <!-- VERSION: 0.0.3 PATH: src/engine/sleepTabsManager.js
-│   │   │                                               PURPOSE: Logika usypiania nieaktywnych WebView (timeout z
-│   │   │                                                        settings/config).
+│   │   │                                               PURPOSE: Logika zarządzania stanem bezczynności WebView –
+│   │   │                                                        obliczanie timeoutów i weryfikacja gotowości do
+│   │   │                                                        uśpienia.
 │   │   │                                               FUNCTIONS: getSleepTimeoutMs, shouldSleepTab, markTabActive,
 │   │   │                                                          getSleepPlaceholderState
 │   │   │                                               DEPENDS ON: config.js, logger.js
@@ -252,71 +260,61 @@ root/
 │   │                                                   -->
 │   ├── 📁 hooks/
 │   │   ├── 📜 useHistoryLog.js ❗                  <!-- VERSION: 0.0.3 PATH: src/hooks/useHistoryLog.js
-│   │   │                                               PURPOSE: Hook do historyStore – logi akcji, filtrowanie, reload-
-│   │   │                                                        load() pobiera wszystkie wpisy historii
-│   │   │                                                        (history:getAll)
+│   │   │                                               PURPOSE: Hook React do zarządzania i odświeżania logów historii
+│   │   │                                                        aktywności użytkownika. Komunikuje się z historyStore
+│   │   │                                                        przez mostek IPC.
 │   │   │                                               FUNCTIONS: useHistoryLog
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useNotepad.js ❗                     <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepad.js
-│   │   │                                               PURPOSE: Hook do notesStore – lista notatek, dodawanie, edycja,
-│   │   │                                                        usuwanie load()           pobiera wszystkie notatki
-│   │   │                                                        (notes:getAll) add(note)        dodaje notatkę
-│   │   │                                                        (notes:add) update(id,patch) aktualizuje notatkę
-│   │   │                                                        (notes:update) remove(id)       usuwa notatkę
-│   │   │                                                        (notes:delete)
+│   │   │                                               PURPOSE: Hook React do zarządzania notatkami użytkownika –
+│   │   │                                                        obsługa operacji CRUD (Create, Read, Update, Delete)
+│   │   │                                                        przez mostek IPC.
 │   │   │                                               FUNCTIONS: useNotepad
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useNotepadFindReplace.js ❗          <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadFindReplace.js
-│   │   │                                               PURPOSE: Hook logiki znajdź/zastąp dla notatnika
+│   │   │                                               PURPOSE: Hook React obsługujący logikę wyszukiwania i
+│   │   │                                                        zastępowania tekstu w edytorze notatnika.
 │   │   │                                               FUNCTIONS: useNotepadFindReplace
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useNotepadUI.js ❗                   <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadUI.js
-│   │   │                                               PURPOSE: Hook zarządzania stanem notatnika – zakładki, autosave,
-│   │   │                                                        zapis, klawisze
+│   │   │                                               PURPOSE: Hook React do zarządzania interfejsem notatnika –
+│   │   │                                                        obsługa zakładek, automatycznego zapisu oraz skrótów
+│   │   │                                                        klawiszowych.
 │   │   │                                               FUNCTIONS: useNotepadUI
 │   │   │                                               DEPENDS ON: react, translations.js, notesStorage.js,
 │   │   │                                                           loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useProjects.js ❗                    <!-- VERSION: 0.0.3 PATH: src/hooks/useProjects.js
-│   │   │                                               PURPOSE: Hook do projectsStore – lista projektów, CRUD load()   
-│   │   │                                                               pobiera wszystkie projekty (projects:getAll)
-│   │   │                                                        add(project)     dodaje projekt (projects:add)
-│   │   │                                                        update(id,patch) aktualizuje projekt (projects:update)
-│   │   │                                                        remove(id)       usuwa projekt (projects:delete)
+│   │   │                                               PURPOSE: Hook React do zarządzania projektami użytkownika –
+│   │   │                                                        obsługa operacji CRUD przez mostek IPC.
 │   │   │                                               FUNCTIONS: useProjects
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useSettings.js ❗                    <!-- VERSION: 0.0.3 PATH: src/hooks/useSettings.js
-│   │   │                                               PURPOSE: Hook do settingsStore – pobieranie i zapisywanie
-│   │   │                                                        ustawień load() pobiera ustawienia przez IPC
-│   │   │                                                        (settings:get) save(patch) wysyła patch przez IPC
-│   │   │                                                        (settings:update) i odświeża stan
+│   │   │                                               PURPOSE: Hook React do zarządzania ustawieniami użytkownika –
+│   │   │                                                        ładowanie, aktualizacja i synchronizacja stanu z
+│   │   │                                                        settingsStore przez mostek IPC.
 │   │   │                                               FUNCTIONS: useSettings
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useTasks.js ❗                       <!-- VERSION: 0.0.3 PATH: src/hooks/useTasks.js
-│   │   │                                               PURPOSE: Hook do tasksStore – pobieranie, dodawanie,
-│   │   │                                                        aktualizacja, usuwanie load()        pobiera wszystkie
-│   │   │                                                        taski (tasks:getAll) add(task)     dodaje task
-│   │   │                                                        (tasks:add) update(id, patch) aktualizuje task
-│   │   │                                                        (tasks:update) remove(id)    usuwa task (tasks:delete)
+│   │   │                                               PURPOSE: Hook React do zarządzania zadaniami użytkownika –
+│   │   │                                                        obsługa operacji CRUD przez mostek IPC.
 │   │   │                                               FUNCTIONS: useTasks
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useTranslation.js                   <!-- VERSION: 0.0.3 PATH: src/hooks/useTranslation.js
-│   │   │                                               PURPOSE: Hook do dostępu do tłumaczeń i helpData
+│   │   │                                               PURPOSE: Hook React zapewniający dostęp do kontekstu tłumaczeń i
+│   │   │                                                        danych pomocy.
 │   │   │                                               FUNCTIONS: useTranslation
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   └── 📜 useWorkspaces.js ❗                  <!-- VERSION: 0.0.3 PATH: src/hooks/useWorkspaces.js
-│   │                                                   PURPOSE: Hook do workspacesStore – lista, zapis, usuwanie load()
-│   │                                                                      pobiera wszystkie workspace'y
-│   │                                                            (workspaces:getAll) save(workspace)  zapisuje workspace
-│   │                                                            (workspaces:save) remove(id)       usuwa workspace
-│   │                                                            (workspaces:delete)
+│   │                                                   PURPOSE: Hook React do zarządzania przestrzeniami roboczymi
+│   │                                                            (workspaces) użytkownika przez mostek IPC.
 │   │                                                   FUNCTIONS: useWorkspaces
 │   │                                                   DEPENDS ON: react, loggerRenderer.js
 │   │                                                   -->
@@ -613,8 +611,10 @@ root/
 │   ├── 📁 ui/
 │   │   ├── 📁 appLibrary/
 │   │   │   └── ⚛️ AppLibraryBrowser.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/appLibrary/AppLibraryBrowser.jsx
-│   │   │                                               PURPOSE: Pełny widok App Library – przeglądarka aplikacji z
-│   │   │                                                        kategoriami, wyszukiwarką
+│   │   │                                               PURPOSE: Główny widok biblioteki aplikacji (App Library) –
+│   │   │                                                        umożliwia przeglądanie skatalogowanych usług webowych,
+│   │   │                                                        ich wyszukiwanie oraz szybkie dodawanie do profili
+│   │   │                                                        użytkownika. Współpracuje z appLibraryStore.
 │   │   │                                               FUNCTIONS: AppLibraryBrowser
 │   │   │                                               DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │                                                           icons, appLibraryStore
@@ -674,15 +674,19 @@ root/
 │   │   │                                               -->
 │   │   ├── 📁 layout/
 │   │   │   └── ⚛️ MainLayout.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/layout/MainLayout.jsx
-│   │   │                                               PURPOSE: Główny układ aplikacji — Sidebar + panel treści +
-│   │   │                                                        TaskPanel + toasty + ConfirmModal
+│   │   │                                               PURPOSE: Główny szkielet interfejsu użytkownika (Shell) –
+│   │   │                                                        definiuje siatkę aplikacji, koordynuje nawigację
+│   │   │                                                        boczną, obszar roboczy (ContentRenderer) oraz integruje
+│   │   │                                                        globalne mechanizmy modalne i powiadomienia sieciowe.
 │   │   │                                               FUNCTIONS: MainLayout
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js,
 │   │   │                                                           Sidebar.jsx, ContentRenderer.jsx, ConfirmModal.jsx
 │   │   │                                               -->
 │   │   ├── 📁 modals/
 │   │   │   ├── ⚛️ ConfirmModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/modals/ConfirmModal.jsx
-│   │   │   │                                           PURPOSE: Modal potwierdzenia (zastępuje window.confirm)
+│   │   │   │                                           PURPOSE: Generyczny komponent modalny służący do potwierdzania
+│   │   │   │                                                    akcji krytycznych (np. usuwanie). Zapewnia spójność
+│   │   │   │                                                    wizualną i zastępuje natywną funkcję window.confirm.
 │   │   │   │                                           FUNCTIONS: ConfirmModal
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
@@ -698,14 +702,17 @@ root/
 │   │   │                                               -->
 │   │   ├── 📁 notepad/
 │   │   │   ├── ⚛️ ClipboardHistoryModal.jsx ❗    <!-- VERSION: 0.0.3 PATH: src/ui/notepad/ClipboardHistoryModal.jsx
-│   │   │   │                                           PURPOSE: Modal historii schowka – integracja z clipboardStore,
-│   │   │   │                                                    i18n
+│   │   │   │                                           PURPOSE: Okno modalne prezentujące listę historycznych wpisów ze
+│   │   │   │                                                    schowka systemowego – umożliwia przeglądanie i
+│   │   │   │                                                    odzyskiwanie skopiowanych wcześniej fragmentów tekstu.
 │   │   │   │                                           FUNCTIONS: ClipboardHistoryModal
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ Notepad.jsx                    <!-- VERSION: 0.0.3 PATH: src/ui/notepad/Notepad.jsx
-│   │   │   │                                           PURPOSE: Główny komponent notatnika – loader podmodułów i
-│   │   │   │                                                    integracja hooków
+│   │   │   ├── ⚛️ Notepad.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/notepad/Notepad.jsx
+│   │   │   │                                           PURPOSE: Główny komponent interfejsu notatnika – koordynuje
+│   │   │   │                                                    pracę zakładek, edytora oraz paneli wyszukiwania i
+│   │   │   │                                                    statusu, integrując logikę z hookami useNotepadUI i
+│   │   │   │                                                    useNotepadFindReplace.
 │   │   │   │                                           FUNCTIONS: Notepad
 │   │   │   │                                           DEPENDS ON: react, useNotepadUI.js, useNotepadFindReplace.js,
 │   │   │   │                                                       NotepadTabs, NotepadToolbar, NotepadFindReplace,
@@ -717,13 +724,16 @@ root/
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ NotepadStatusBar.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadStatusBar.jsx
-│   │   │   │                                           PURPOSE: Pasek statusu notatnika (tytuł, znaki, wiersze, ostatni
-│   │   │   │                                                    zapis)
+│   │   │   │                                           PURPOSE: Pasek informacyjny u dołu notatnika – wyświetla
+│   │   │   │                                                    metadane aktywnego dokumentu: statystyki znaków/wierszy
+│   │   │   │                                                    oraz czas ostatniego autozapisu.
 │   │   │   │                                           FUNCTIONS: NotepadStatusBar
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ NotepadTabs.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadTabs.jsx
-│   │   │   │                                           PURPOSE: Zakładki notatnika – tworzenie, zamykanie, zmiana nazwy
+│   │   │   │                                           PURPOSE: Komponent zarządzający paskiem kart notatnika –
+│   │   │   │                                                    obsługuje przełączanie dokumentów, ich zamykanie,
+│   │   │   │                                                    zmianę nazwy oraz wizualizację stanu 'dirty'.
 │   │   │   │                                           FUNCTIONS: NotepadTabs
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js,
 │   │   │   │                                                       PromptModal.jsx
@@ -734,7 +744,7 @@ root/
 │   │   │                                               DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📁 profiles/
-│   │   │   └── ⚛️ Profiles.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/profiles/Profiles.jsx
+│   │   │   └── ⚛️ Profiles.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/profiles/Profiles.jsx
 │   │   │                                               PURPOSE: UI zarządzania profilami WebView — wyświetlanie listy
 │   │   │                                                        profili z danych IPC (load, wyświetlanie nazwy, URL,
 │   │   │                                                        obsługa błędów). Używa window.electronAPI.invoke
@@ -763,8 +773,10 @@ root/
 │   │   │                                               -->
 │   │   ├── 📁 settings/
 │   │   │   ├── ⚛️ AccountSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/AccountSection.jsx
-│   │   │   │                                           PURPOSE: Sekcja konta użytkownika (placeholder – na później
-│   │   │   │                                                    synchronizacja)
+│   │   │   │                                           PURPOSE: Sekcja zarządzania profilem użytkownika – obecnie służy
+│   │   │   │                                                    jako placeholder dla nadchodzącej funkcji
+│   │   │   │                                                    synchronizacji danych w chmurze (Cloud Sync) planowanej
+│   │   │   │                                                    w v0.0.4.
 │   │   │   │                                           FUNCTIONS: AccountSection
 │   │   │   │                                           DEPENDS ON: react, translations.js, src, loggerRenderer.js
 │   │   │   │                                           -->
@@ -783,14 +795,18 @@ root/
 │   │   │   │                                                       icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ GeneralSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/GeneralSection.jsx
-│   │   │   │                                           PURPOSE: Sekcja ustawień ogólnych (język, dark mode, debug)
+│   │   │   │                                           PURPOSE: Sekcja ustawień ogólnych aplikacji – zarządza wyborem
+│   │   │   │                                                    języka (i18n), motywem graficznym (Light/Dark) oraz
+│   │   │   │                                                    globalnym trybem debugowania (developer mode).
 │   │   │   │                                           FUNCTIONS: GeneralSection
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ HotkeysManager.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManager.jsx
-│   │   │   │                                           PURPOSE: Zarządzanie skrótami klawiszowymi (globalShortcut +
-│   │   │   │                                                    snippet text)
+│   │   │   │                                           PURPOSE: Interfejs zarządzania globalnymi skrótami klawiszowymi
+│   │   │   │                                                    aplikacji. Umożliwia definiowanie akcji systemowych
+│   │   │   │                                                    (screenshot, monitor) oraz wstawianie predefiniowanych
+│   │   │   │                                                    snippetów tekstowych.
 │   │   │   │                                           FUNCTIONS: HotkeysManager
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       ConfirmModal, Modal, notificationsManager.js
@@ -801,8 +817,10 @@ root/
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer, icons
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ Settings.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/settings/Settings.jsx
-│   │   │   │                                           PURPOSE: Import plików Settings w poszczególnych modułach,
-│   │   │   │                                                    export settings-container
+│   │   │   │                                           PURPOSE: Główny kontener widoku ustawień aplikacji. Agreguje
+│   │   │   │                                                    wszystkie sekcje konfiguracyjne (General, WebView,
+│   │   │   │                                                    Tabs, Notifications, Hotkeys, Debug, Data) w jeden
+│   │   │   │                                                    ustrukturyzowany interfejs użytkownika.
 │   │   │   │                                           FUNCTIONS: Settings
 │   │   │   │                                           DEPENDS ON: react, GeneralSection, WebViewSection, TabsSection,
 │   │   │   │                                                       NotificationsSection, HotkeysManager,
@@ -810,41 +828,49 @@ root/
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TabsSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/TabsSection.jsx
-│   │   │   │                                           PURPOSE: Sekcja ustawień zakładek (Sleep Tabs timeout)
+│   │   │   │                                           PURPOSE: Sekcja konfiguracji zarządzania kartami – pozwala na
+│   │   │   │                                                    ustawienie czasu bezczynności, po którym nieaktywne
+│   │   │   │                                                    WebView są uśpiane w celu oszczędzania zasobów
+│   │   │   │                                                    systemowych (RAM/CPU).
 │   │   │   │                                           FUNCTIONS: TabsSection
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ WebViewSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/WebViewSection.jsx
-│   │   │                                               PURPOSE: Sekcja ustawień WebView — AdBlocker globalny, User
-│   │   │                                                        Agent, tryb Single App, edytowalny pasek adresu.
-│   │   │                                                        Szkielet do rozbudowy wg Definition_Mockups_UI_UX.md
-│   │   │                                                        sekcja 8.
+│   │   │                                               PURPOSE: Konfiguracja silnika przeglądarki (WebView) – zarządza
+│   │   │                                                        globalnym blokowaniem reklam, maskowaniem tożsamości
+│   │   │                                                        przeglądarki (User Agent) oraz trybami wyświetlania
+│   │   │                                                        okien.
 │   │   │                                               FUNCTIONS: WebViewSection
 │   │   │                                               DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │                                                           icons
 │   │   │                                               -->
 │   │   ├── 📁 sidebar/
 │   │   │   ├── ⚛️ CategoryModal.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/CategoryModal.jsx
-│   │   │   │                                           PURPOSE: Modal dodawania/edycji kategorii
+│   │   │   │                                           PURPOSE: Formularz modalny do zarządzania kategoriami profili –
+│   │   │   │                                                    umożliwia tworzenie nowych i edycję istniejących sekcji
+│   │   │   │                                                    grupujących w Sidebarze.
 │   │   │   │                                           FUNCTIONS: CategoryModal
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
-│   │   │   │                                                       ModalPortal
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, ModalPortal
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ ContextMenu.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/ContextMenu.jsx
 │   │   │   │                                           PURPOSE: Menu kontekstowe (PPM) dla profilu
 │   │   │   │                                           FUNCTIONS: ContextMenu
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ ProfileModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/ProfileModal.jsx
-│   │   │   │                                           PURPOSE: Modal dodawania/edycji profilu
+│   │   │   │                                           PURPOSE: Zaawansowany formularz modalny do konfiguracji profili
+│   │   │   │                                                    WebView – obsługuje parametry URL, ikony, przypisanie
+│   │   │   │                                                    do kategorii oraz przełączniki adblockera i
+│   │   │   │                                                    powiadomień.
 │   │   │   │                                           FUNCTIONS: ProfileModal
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
 │   │   │   │                                                       urlUtils.js, ModalPortal, notificationsManager.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ Sidebar.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/Sidebar.jsx
-│   │   │   │                                           PURPOSE: Główny panel boczny – nawigacja, profile, kategorie,
-│   │   │   │                                                    narzędzia
+│   │   │   │                                           PURPOSE: Główny panel nawigacyjny aplikacji – zarządza listą
+│   │   │   │                                                    profili, hierarchią kategorii, narzędziami systemowymi
+│   │   │   │                                                    oraz integracją z mostkiem IPC dla trwałości ustawień.
 │   │   │   │                                           FUNCTIONS: Sidebar
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
 │   │   │   │                                                       ProfileModal, CategoryModal, ContextMenu,
@@ -855,28 +881,29 @@ root/
 │   │   │   │                                           PURPOSE: Nagłówek kategorii profilów (zwijanie/rozwijanie, menu
 │   │   │   │                                                    kontekstowe)
 │   │   │   │                                           FUNCTIONS: SidebarCategory
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ SidebarProfileItem.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileItem.jsx
 │   │   │   │                                           PURPOSE: Pojedynczy profil w Sidebarze (ikona, nazwa,
 │   │   │   │                                                    indykatory)
 │   │   │   │                                           FUNCTIONS: SidebarProfileItem
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ SidebarSearch.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarSearch.jsx
 │   │   │   │                                           PURPOSE: Wyszukiwarka profili w Sidebarze
 │   │   │   │                                           FUNCTIONS: SidebarSearch
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ SidebarTools.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarTools.jsx
 │   │   │   │                                           PURPOSE: Sekcja narzędzi specjalnych w Sidebarze
 │   │   │   │                                           FUNCTIONS: SidebarTools
-│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, icons.js,
+│   │   │   │                                                       constants.js
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ SidebarWorkspaces.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarWorkspaces.jsx
 │   │   │                                               PURPOSE: Sekcja workspace'ów w Sidebarze
 │   │   │                                               FUNCTIONS: SidebarWorkspaces
-│   │   │                                               DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │                                               DEPENDS ON: react, translations.js, icons.js
 │   │   │                                               -->
 │   │   ├── 📁 styles/
 │   │   │   ├── 🎨 components.css                  <!-- VERSION: 0.0.3 PATH: src/ui/styles/components.css
@@ -909,38 +936,53 @@ root/
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TaskDetails.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskDetails.jsx
-│   │   │   │                                           PURPOSE: Szczegóły zadania – pełny widok, zmiana statusu,
+│   │   │   │                                           PURPOSE: Widok szczegółowy pojedynczego zadania. Umożliwia
+│   │   │   │                                                    szybką edycję statusu i priorytetu bezpośrednio z
+│   │   │   │                                                    poziomu podglądu oraz synchronizację tych zmian przez
+│   │   │   │                                                    IPC.
 │   │   │   │                                           FUNCTIONS: TaskDetails
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, constants.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TaskEditor.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskEditor.jsx
-│   │   │   │                                           PURPOSE: Modal dodawania/edycji zadania – walidacja, zapis,
+│   │   │   │                                           PURPOSE: Wyspecjalizowany edytor zadań (inline lub modal)
+│   │   │   │                                                    obsługujący walidację danych wejściowych, komunikację z
+│   │   │   │                                                    tasksStore przez IPC oraz integrację z systemem
+│   │   │   │                                                    toastów.
 │   │   │   │                                           FUNCTIONS: TaskEditor
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, constants.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TaskItem.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskItem.jsx
-│   │   │   │                                           PURPOSE: Pojedyncze zadanie w liście (z akcjami)
+│   │   │   │                                           PURPOSE: Interaktywny element listy zadań w panelu projektu.
+│   │   │   │                                                    Dostarcza pełny zestaw akcji CRUD (edycja, usuwanie,
+│   │   │   │                                                    pinowanie) oraz szybkie przyciski zmiany stanu (Move to
+│   │   │   │                                                    Active/Backlog/Done).
 │   │   │   │                                           FUNCTIONS: TaskItem
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TaskList.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskList.jsx
-│   │   │   │                                           PURPOSE: Lista zadań – grupowanie po statusie, sortowanie po
-│   │   │   │                                                    priorytecie,
+│   │   │   │                                           PURPOSE: Główny komponent listy zadań (Kanban/List view) –
+│   │   │   │                                                    odpowiada za dynamiczne filtrowanie, grupowanie według
+│   │   │   │                                                    statusu (TODO, IN_PROGRESS, BLOCKED, DONE) oraz
+│   │   │   │                                                    wyzwalanie akcji edycji i podglądu.
 │   │   │   │                                           FUNCTIONS: TaskList
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, constants.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TaskModal.jsx ❗                <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskModal.jsx
-│   │   │   │                                           PURPOSE: Modal dodawania/edycji zadania (nazwa, opis, priorytet,
-│   │   │   │                                                    sekcja, projekt, wersja, komentarz, pin)
+│   │   │   │                                           PURPOSE: Formularz modalny do kompleksowego zarządzania
+│   │   │   │                                                    zadaniem. Obsługuje edycję metadanych takich jak:
+│   │   │   │                                                    priorytet, sekcja, przypisanie do projektu oraz
+│   │   │   │                                                    dodatkowe notatki i wersjonowanie.
 │   │   │   │                                           FUNCTIONS: TaskModal
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TaskPanel.jsx ❗                <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskPanel.jsx
-│   │   │   │                                           PURPOSE: Panel zadań projektu z filtrowaniem, przypinaniem i
-│   │   │   │                                                    sekcjami
+│   │   │   │                                           PURPOSE: Interfejs zarządzania zadaniami dla konkretnego
+│   │   │   │                                                    projektu. Obsługuje wizualizację tablicy Kanban
+│   │   │   │                                                    (Active, Backlog, Done), filtrowanie oraz
+│   │   │   │                                                    synchronizację z tasksStore.
 │   │   │   │                                           FUNCTIONS: TaskPanel
 │   │   │   │                                           DEPENDS ON: react, tasksStore.js, projectsStore.js,
 │   │   │   │                                                       translations.js, loggerRenderer.js, icons.js,
@@ -960,9 +1002,12 @@ root/
 │   │   │   │                                                       AggregatedTaskItem
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ AggregatedTaskItem.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTaskItem.jsx
-│   │   │   │                                           PURPOSE: Pojedyncze zadanie w widoku zbiorczym
+│   │   │   │                                           PURPOSE: Wyspecjalizowany komponent prezentujący zadanie w
+│   │   │   │                                                    widoku zagregowanym (dashboard). Obsługuje wizualizację
+│   │   │   │                                                    priorytetów, znaczników wersji oraz statusu wykonania
+│   │   │   │                                                    (skreślenie).
 │   │   │   │                                           FUNCTIONS: AggregatedTaskItem
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: loggerRenderer.js, icons.js
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ AggregatedTasks.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTasks.jsx
 │   │   │                                               PURPOSE: Widok zbiorczy zadań ze wszystkich projektów
@@ -1051,8 +1096,12 @@ root/
 │   │   │   │                                                       icons, svgToPng
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ ToolsPanel.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/tools/ToolsPanel.jsx
-│   │   │                                               PURPOSE: Kontener narzędzi – przełączanie między wszystkimi
-│   │   │                                                        toolami
+│   │   │                                               PURPOSE: Główny panel narzędziowy aplikacji (Tools Panel) –
+│   │   │                                                        dostarcza interfejs oparty na zakładkach do obsługi
+│   │   │                                                        narzędzi pomocniczych (JSON Formatter, Regex Tester,
+│   │   │                                                        Clipboard History, Image Tools, Mini Postman, Cookie
+│   │   │                                                        Grabber itp.). Obsługuje dynamiczne ładowanie na
+│   │   │                                                        podstawie flag funkcji (feature flags).
 │   │   │                                               FUNCTIONS: ToolsPanel
 │   │   │                                               DEPENDS ON: react, config.js, translations.js, icons,
 │   │   │                                                           loggerRenderer, RemoveBgTool.jsx, StringCombiner.jsx,
@@ -1078,10 +1127,11 @@ root/
 │   │   │   │                                           DEPENDS ON: react, config.js, loggerRenderer.js, Spinner.jsx
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ Spinner.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/views/Spinner.jsx
-│   │   │   │                                           PURPOSE: Współdzielony komponent wskaźnika ładowania (Suspense
-│   │   │   │                                                    fallback)
+│   │   │   │                                           PURPOSE: Współdzielony komponent wizualny wskaźnika ładowania
+│   │   │   │                                                    (loader). Wykorzystywany jako fallback dla React
+│   │   │   │                                                    Suspense oraz podczas asynchronicznych operacji I/O.
 │   │   │   │                                           FUNCTIONS: Spinner
-│   │   │   │                                           DEPENDS ON: react
+│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ ToolsContainer.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/views/ToolsContainer.jsx
 │   │   │   │                                           PURPOSE: Kontener renderowania narzędzi specjalnych (Notepad,
@@ -1121,9 +1171,9 @@ root/
 │   │                                                   -->
 │   ├── 📁 utils/
 │   │   ├── 📜 fileUtils.js                        <!-- VERSION: 0.0.3 PATH: src/utils/fileUtils.js
-│   │   │                                               PURPOSE: Bezpieczne operacje I/O dla plików JSON – odczyt z
-│   │   │                                                        fallbackiem i zapis z wyfiltrowaniem danych
-│   │   │                                                        (readJsonSafe, writeJsonSafe).
+│   │   │                                               PURPOSE: Uniwersalne i bezpieczne opakowanie natywnych funkcji
+│   │   │                                                        I/O Node.js dla plików JSON z automatyczną obsługą
+│   │   │                                                        błędów.
 │   │   │                                               FUNCTIONS: readJsonSafe, writeJsonSafe
 │   │   │                                               DEPENDS ON: fs, logger.js
 │   │   │                                               -->
@@ -1134,15 +1184,14 @@ root/
 │   │   │                                               DEPENDS ON: icons.js
 │   │   │                                               -->
 │   │   ├── 📜 imageUtils.js                       <!-- VERSION: 0.0.3 PATH: src/utils/imageUtils.js
-│   │   │                                               PURPOSE: Operacje na obrazach – resize, konwersja formatów,
-│   │   │                                                        kompresja JPEG (resizeImage, convertImage,
-│   │   │                                                        compressJpeg).
+│   │   │                                               PURPOSE: Funkcje pomocnicze do manipulacji plikami graficznymi
+│   │   │                                                        (resize, format conversion) oparte na silniku sharp.
 │   │   │                                               FUNCTIONS: resizeImage, convertImage, compressJpeg
 │   │   │                                               DEPENDS ON: sharp, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 logWriter.js                        <!-- VERSION: 0.0.3 PATH: src/utils/logWriter.js
-│   │   │                                               PURPOSE: Zapis logów testów do pliku (tylko przy failu, gdy
-│   │   │                                                        debugMode=true i logsEnabled=true).
+│   │   │                                               PURPOSE: Zarządzanie utrwalaniem logów błędów i wyników testów w
+│   │   │                                                        systemie plików (userData) poprzez mostek IPC.
 │   │   │                                               FUNCTIONS: initLogWriter, appendTestFailLog, getLogsContent,
 │   │   │                                                          clearLogsFile
 │   │   │                                               DEPENDS ON: logger.js, config.js
@@ -1162,8 +1211,8 @@ root/
 │   │   │                                               DEPENDS ON: loggerRenderer, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 networkUtils.js                     <!-- VERSION: 0.0.3 PATH: src/utils/networkUtils.js
-│   │   │                                               PURPOSE: Narzędzia sieciowe – sprawdzanie dostępności URL
-│   │   │                                                        (pingUrl).
+│   │   │                                               PURPOSE: Funkcje pomocnicze do diagnostyki sieciowej i
+│   │   │                                                        sprawdzania dostępności zewnętrznych zasobów.
 │   │   │                                               FUNCTIONS: pingUrl
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
@@ -1182,8 +1231,9 @@ root/
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
 │   │   ├── 📜 searchIndex.js                      <!-- VERSION: 0.0.3 PATH: src/utils/searchIndex.js
-│   │   │                                               PURPOSE: Unified search (Ctrl+K) — indeks profili, projektów,
-│   │   │                                                        zadań, notatek.
+│   │   │                                               PURPOSE: Budowanie ujednoliconego indeksu wyszukiwania
+│   │   │                                                        (profiles, projects, tasks, notes) dla globalnej palety
+│   │   │                                                        komend (Ctrl+K).
 │   │   │                                               FUNCTIONS: buildSearchIndex, searchAll
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
@@ -1195,7 +1245,9 @@ root/
 │   │   │                                               DEPENDS ON: komponenty z folderu sharp/
 │   │   │                                               -->
 │   │   ├── 📜 testrunner.js                       <!-- VERSION: 0.0.3 PATH: src/utils/testrunner.js
-│   │   │                                               PURPOSE: Moduł pomocniczy dla testów – asercje i logowanie.
+│   │   │                                               PURPOSE: Silnik do uruchamiania testów jednostkowych i
+│   │   │                                                        integracyjnych – asercje, liczniki wyników i
+│   │   │                                                        raportowanie PASS/FAIL.
 │   │   │                                               FUNCTIONS: initTestResults, assert, assertThrows, getTestResults,
 │   │   │                                                          logTestSummary
 │   │   │                                               DEPENDS ON: logger.js, icons.js
@@ -1206,18 +1258,17 @@ root/
 │   │   │                                               FUNCTIONS: TranslationProvider
 │   │   │                                               DEPENDS ON: react, config.js
 │   │   │                                               -->
-│   │   ├── 📜 urlUtils.js ❗                       <!-- VERSION: 0.0.3 PATH: src/utils/urlUtils.js
-│   │   │                                               PURPOSE: Normalizacja URL dla WebView — zawsze pełny adres z
-│   │   │                                                        https://. Blokuje niebezpieczne schematy: javascript:,
-│   │   │                                                        file:, data: (URL sanitization).
+│   │   ├── 📜 urlUtils.js                         <!-- VERSION: 0.0.3 PATH: src/utils/urlUtils.js
+│   │   │                                               PURPOSE: Narzędzia do walidacji, normalizacji i sanityzacji
+│   │   │                                                        adresów URL dla modułu WebView.
 │   │   │                                               FUNCTIONS: normalizeWebUrl, isValidWebUrl, isSafeUrl
-│   │   │                                               DEPENDS ON: -
+│   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 validators.js ❗                     <!-- VERSION: 0.0.3 PATH: src/utils/validators.js
-│   │   │                                               PURPOSE: Walidatory danych – string, obiekt, tablica
-│   │   │                                                        (ensureString, ensureObject).
+│   │   ├── 📜 validators.js                       <!-- VERSION: 0.0.3 PATH: src/utils/validators.js
+│   │   │                                               PURPOSE: Walidatory typów danych wykorzystywane przy sprawdzaniu
+│   │   │                                                        poprawności payloadów IPC i stanów magazynów.
 │   │   │                                               FUNCTIONS: ensureString, ensureObject
-│   │   │                                               DEPENDS ON: -
+│   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
 │   │   └── 📜 yamlLoader.js ❗                     <!-- VERSION: 0.0.3 PATH: src/utils/yamlLoader.js
 │   │                                                   PURPOSE: Leniwe ładowanie modułu js-yaml
@@ -1228,8 +1279,10 @@ root/
 │   │                                                   DEPENDS ON: komponenty z folderu yaml/
 │   │                                                   -->
 │   ├── ⚛️ App.jsx ❗                              <!-- VERSION: 0.0.3 PATH: src/App.jsx
-│   │                                                   PURPOSE: Główny punkt wejścia aplikacji - zarządza stanem
-│   │                                                            globalnym, inicjalizacją i motywem.
+│   │                                                   PURPOSE: Główny komponent root aplikacji React – inicjalizuje
+│   │                                                            system logowania, ładuje profile i ustawienia
+│   │                                                            użytkownika, zarządza motywem graficznym (dark/light)
+│   │                                                            oraz obsługuje globalne skróty klawiszowe i stan sieci.
 │   │                                                   FUNCTIONS: App
 │   │                                                   DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
 │   │                                                               urlUtils.js, MainLayout.jsx, Spinner.jsx
@@ -1298,7 +1351,10 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_History.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_History.js
-│   │                                                   PURPOSE: Testy jednostkowe dla HistoryLog
+│   │                                                   PURPOSE: Testy integralności logów aktywności użytkownika.
+│   │                                                            Sprawdza walidację poziomów logowania, mechanizmy
+│   │                                                            filtrowania zdarzeń oraz poprawność przycinania
+│   │                                                            historii do zdefiniowanych limitów (FIFO).
 │   │                                                   FUNCTIONS: runHistoryTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
@@ -1331,18 +1387,26 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Notepad.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Notepad.js
-│   │                                                   PURPOSE: Testy jednostkowe dla Notepad (multi-tab, autosave)
+│   │                                                   PURPOSE: Zestaw testów dla modułu notatnika. Weryfikuje
+│   │                                                            integralność danych kart, poprawność mechanizmu
+│   │                                                            autozapisu (dirty checking) oraz logikę przełączania
+│   │                                                            kontekstu między dokumentami.
 │   │                                                   FUNCTIONS: runNotepadTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Profiles.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Profiles.js
-│   │                                                   PURPOSE: Testy jednostkowe dla modułu Profiles (Sidebar, App
-│   │                                                            Library)
+│   │                                                   PURPOSE: Zestaw testów jednostkowych i integracyjnych dla
+│   │                                                            zarządzania profilami WebView. Weryfikuje strukturę
+│   │                                                            danych, poprawność kategorii oraz mechanizmy sortowania
+│   │                                                            chronologicznego.
 │   │                                                   FUNCTIONS: runProfilesTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Projects.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Projects.js
-│   │                                                   PURPOSE: Testy jednostkowe dla ProjectManager
+│   │                                                   PURPOSE: Zestaw testów dla modułu projektów. Weryfikuje
+│   │                                                            mechanizmy archiwizacji, strukturę obiektów
+│   │                                                            projektowych oraz poprawność agregacji liczby zadań
+│   │                                                            przypisanych do konkretnych projektów.
 │   │                                                   FUNCTIONS: runProjectsTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
@@ -1352,7 +1416,10 @@ root/
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Settings.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Settings.js
-│   │                                                   PURPOSE: Testy jednostkowe dla Settings (merge, export/import)
+│   │                                                   PURPOSE: Zestaw testów dla silnika ustawień. Weryfikuje
+│   │                                                            bezpieczeństwo głębokiego łączenia (merge)
+│   │                                                            konfiguracji, stabilność przełączania motywów oraz
+│   │                                                            poprawność schematu danych przy imporcie/eksporcie.
 │   │                                                   FUNCTIONS: runSettingsTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
@@ -1368,7 +1435,10 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Tasks.js                     <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Tasks.js
-│   │                                                   PURPOSE: Testy jednostkowe dla TaskPanel i AggregatedTasks
+│   │                                                   PURPOSE: Testy funkcjonalne systemu zarządzania zadaniami.
+│   │                                                            Sprawdza poprawność typów danych, wydajność filtrowania
+│   │                                                            priorytetów oraz sprawność wyszukiwarki pełnotekstowej
+│   │                                                            w obrębie zadań.
 │   │                                                   FUNCTIONS: runTasksTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
@@ -1418,8 +1488,8 @@ root/
 │                                                       -->
 ├── 📜 preload.cjs ❗                               <!-- VERSION: 0.0.3 PATH: preload.cjs
 │                                                       PURPOSE: Bridge IPC – eksponuje bezpieczne API dla renderera
-│                                                                (contextBridge). Zapewnia cleanup listenerów dla
-│                                                                terminala, logów, hotkeys.
+│                                                                (contextBridge). Definiuje metody komunikacji i
+│                                                                handlery zdarzeń z mechanizmem cleanup.
 │                                                       FUNCTIONS: -
 │                                                       DEPENDS ON: electron
 │                                                       -->
@@ -1532,7 +1602,8 @@ root/
 │   ├── 📁 core/
 │   │   ├── 📜 accountsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/core/accountsStore.js
 │   │   │                                               PURPOSE: Zarządzanie kontami użytkownika (Google, GitHub, AI,
-│   │   │                                                        itp.).
+│   │   │                                                        itp.) – obsługa trwałości i operacji CRUD na danych
+│   │   │                                                        kont.
 │   │   │                                               FUNCTIONS: getAllAccounts, addAccount, updateAccount,
 │   │   │                                                          deleteAccount
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
@@ -1547,8 +1618,8 @@ root/
 │   │   │                                               DEPENDS ON: fs, path, url, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 clipboardStore.js ❗                 <!-- VERSION: 0.0.3 PATH: src/core/clipboardStore.js
-│   │   │                                               PURPOSE: Historia schowka systemowego – przechowuje ostatnie N
-│   │   │                                                        wpisów.
+│   │   │                                               PURPOSE: Zarządzanie historią schowka systemowego – dodawanie,
+│   │   │                                                        pobieranie i czyszczenie wpisów tekstowych.
 │   │   │                                               FUNCTIONS: addClipboardEntry, getClipboardHistory,
 │   │   │                                                          clearClipboardHistory
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js
@@ -1562,7 +1633,8 @@ root/
 │   │   │                                               DEPENDS ON: config.js, persistence.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 notesStore.js ❗                     <!-- VERSION: 0.0.3 PATH: src/core/notesStore.js
-│   │   │                                               PURPOSE: Zarządzanie notatkami użytkownika
+│   │   │                                               PURPOSE: Zarządzanie notatkami użytkownika – ładowanie,
+│   │   │                                                        zapisywanie oraz operacje CRUD na danych notatek.
 │   │   │                                               FUNCTIONS: getAllNotes, addNote, updateNote, deleteNote
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
@@ -1589,8 +1661,8 @@ root/
 │   │   │                                               DEPENDS ON: persistence.js, settingsStore.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 resourceMonitor.js ❗                <!-- VERSION: 0.0.3 PATH: src/core/resourceMonitor.js
-│   │   │                                               PURPOSE: Monitor zasobów systemowych – odczyt użycia CPU i RAM z
-│   │   │                                                        wartościami limitów z ostrzeżeniami (getSystemUsage).
+│   │   │                                               PURPOSE: Serwis monitorujący zużycie zasobów systemowych
+│   │   │                                                        (CPU/RAM) przez aplikację i system operacyjny.
 │   │   │                                               FUNCTIONS: getSystemUsage
 │   │   │                                               DEPENDS ON: os, config.js, logger.js
 │   │   │                                               -->
@@ -1609,7 +1681,9 @@ root/
 │   │   │                                               DEPENDS ON: fs, persistence.js, logger.js
 │   │   │                                               -->
 │   │   └── 📜 workspacesStore.js ❗                <!-- VERSION: 0.0.3 PATH: src/core/workspacesStore.js
-│   │                                                   PURPOSE: Zarządzanie workspace'ami użytkownika
+│   │                                                   PURPOSE: Zarządzanie przestrzeniami roboczymi (workspaces)
+│   │                                                            użytkownika – ładowanie, zapisywanie oraz operacje typu
+│   │                                                            upsert.
 │   │                                                   FUNCTIONS: getAllWorkspaces, saveWorkspace, saveWorkspaces,
 │   │                                                              deleteWorkspace
 │   │                                                   DEPENDS ON: fs, path, electron, logger.js
@@ -1638,23 +1712,27 @@ root/
 │   │                                                   -->
 │   ├── 📁 engine/
 │   │   ├── 📜 adBlocker.js ❗                      <!-- VERSION: 0.0.3 PATH: src/engine/adBlocker.js
-│   │   │                                               PURPOSE: Logika blokowania reklam (global + per profile)
+│   │   │                                               PURPOSE: Implementacja blokowania reklam na poziomie sieciowym
+│   │   │                                                        (webRequest) – wspiera ustawienia globalne i
+│   │   │                                                        nadpisywanie per-profil.
 │   │   │                                               FUNCTIONS: isAdUrl, setGlobalAdBlocker, getGlobalAdBlocker,
 │   │   │                                                          setProfileAdBlocker, getProfileAdBlocker,
 │   │   │                                                          initAdBlocker
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js, webviewRegistry.js
 │   │   │                                               -->
 │   │   ├── 📜 hotkeysManager.js ❗                 <!-- VERSION: 0.0.3 PATH: src/engine/hotkeysManager.js
-│   │   │                                               PURPOSE: Zarządzanie globalnymi skrótami klawiszowymi
-│   │   │                                                        (globalShortcut)
+│   │   │                                               PURPOSE: Zarządzanie globalnymi skrótami klawiszowymi w procesie
+│   │   │                                                        głównym. Obsługuje rejestrację w OS i dispatch zdarzeń
+│   │   │                                                        IPC do renderera.
 │   │   │                                               FUNCTIONS: setMainWindow, unregisterAllHotkeys,
 │   │   │                                                          registerGlobalHotkeys, getAllHotkeys, saveHotkeys,
 │   │   │                                                          registerHotkeysFromList
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js, electron-store
 │   │   │                                               -->
 │   │   ├── 📜 sleepTabsManager.js ❗               <!-- VERSION: 0.0.3 PATH: src/engine/sleepTabsManager.js
-│   │   │                                               PURPOSE: Logika usypiania nieaktywnych WebView (timeout z
-│   │   │                                                        settings/config).
+│   │   │                                               PURPOSE: Logika zarządzania stanem bezczynności WebView –
+│   │   │                                                        obliczanie timeoutów i weryfikacja gotowości do
+│   │   │                                                        uśpienia.
 │   │   │                                               FUNCTIONS: getSleepTimeoutMs, shouldSleepTab, markTabActive,
 │   │   │                                                          getSleepPlaceholderState
 │   │   │                                               DEPENDS ON: config.js, logger.js
@@ -1673,71 +1751,61 @@ root/
 │   │                                                   -->
 │   ├── 📁 hooks/
 │   │   ├── 📜 useHistoryLog.js ❗                  <!-- VERSION: 0.0.3 PATH: src/hooks/useHistoryLog.js
-│   │   │                                               PURPOSE: Hook do historyStore – logi akcji, filtrowanie, reload-
-│   │   │                                                        load() pobiera wszystkie wpisy historii
-│   │   │                                                        (history:getAll)
+│   │   │                                               PURPOSE: Hook React do zarządzania i odświeżania logów historii
+│   │   │                                                        aktywności użytkownika. Komunikuje się z historyStore
+│   │   │                                                        przez mostek IPC.
 │   │   │                                               FUNCTIONS: useHistoryLog
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useNotepad.js ❗                     <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepad.js
-│   │   │                                               PURPOSE: Hook do notesStore – lista notatek, dodawanie, edycja,
-│   │   │                                                        usuwanie load()           pobiera wszystkie notatki
-│   │   │                                                        (notes:getAll) add(note)        dodaje notatkę
-│   │   │                                                        (notes:add) update(id,patch) aktualizuje notatkę
-│   │   │                                                        (notes:update) remove(id)       usuwa notatkę
-│   │   │                                                        (notes:delete)
+│   │   │                                               PURPOSE: Hook React do zarządzania notatkami użytkownika –
+│   │   │                                                        obsługa operacji CRUD (Create, Read, Update, Delete)
+│   │   │                                                        przez mostek IPC.
 │   │   │                                               FUNCTIONS: useNotepad
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useNotepadFindReplace.js ❗          <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadFindReplace.js
-│   │   │                                               PURPOSE: Hook logiki znajdź/zastąp dla notatnika
+│   │   │                                               PURPOSE: Hook React obsługujący logikę wyszukiwania i
+│   │   │                                                        zastępowania tekstu w edytorze notatnika.
 │   │   │                                               FUNCTIONS: useNotepadFindReplace
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useNotepadUI.js ❗                   <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadUI.js
-│   │   │                                               PURPOSE: Hook zarządzania stanem notatnika – zakładki, autosave,
-│   │   │                                                        zapis, klawisze
+│   │   │                                               PURPOSE: Hook React do zarządzania interfejsem notatnika –
+│   │   │                                                        obsługa zakładek, automatycznego zapisu oraz skrótów
+│   │   │                                                        klawiszowych.
 │   │   │                                               FUNCTIONS: useNotepadUI
 │   │   │                                               DEPENDS ON: react, translations.js, notesStorage.js,
 │   │   │                                                           loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useProjects.js ❗                    <!-- VERSION: 0.0.3 PATH: src/hooks/useProjects.js
-│   │   │                                               PURPOSE: Hook do projectsStore – lista projektów, CRUD load()   
-│   │   │                                                               pobiera wszystkie projekty (projects:getAll)
-│   │   │                                                        add(project)     dodaje projekt (projects:add)
-│   │   │                                                        update(id,patch) aktualizuje projekt (projects:update)
-│   │   │                                                        remove(id)       usuwa projekt (projects:delete)
+│   │   │                                               PURPOSE: Hook React do zarządzania projektami użytkownika –
+│   │   │                                                        obsługa operacji CRUD przez mostek IPC.
 │   │   │                                               FUNCTIONS: useProjects
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useSettings.js ❗                    <!-- VERSION: 0.0.3 PATH: src/hooks/useSettings.js
-│   │   │                                               PURPOSE: Hook do settingsStore – pobieranie i zapisywanie
-│   │   │                                                        ustawień load() pobiera ustawienia przez IPC
-│   │   │                                                        (settings:get) save(patch) wysyła patch przez IPC
-│   │   │                                                        (settings:update) i odświeża stan
+│   │   │                                               PURPOSE: Hook React do zarządzania ustawieniami użytkownika –
+│   │   │                                                        ładowanie, aktualizacja i synchronizacja stanu z
+│   │   │                                                        settingsStore przez mostek IPC.
 │   │   │                                               FUNCTIONS: useSettings
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useTasks.js ❗                       <!-- VERSION: 0.0.3 PATH: src/hooks/useTasks.js
-│   │   │                                               PURPOSE: Hook do tasksStore – pobieranie, dodawanie,
-│   │   │                                                        aktualizacja, usuwanie load()        pobiera wszystkie
-│   │   │                                                        taski (tasks:getAll) add(task)     dodaje task
-│   │   │                                                        (tasks:add) update(id, patch) aktualizuje task
-│   │   │                                                        (tasks:update) remove(id)    usuwa task (tasks:delete)
+│   │   │                                               PURPOSE: Hook React do zarządzania zadaniami użytkownika –
+│   │   │                                                        obsługa operacji CRUD przez mostek IPC.
 │   │   │                                               FUNCTIONS: useTasks
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useTranslation.js                   <!-- VERSION: 0.0.3 PATH: src/hooks/useTranslation.js
-│   │   │                                               PURPOSE: Hook do dostępu do tłumaczeń i helpData
+│   │   │                                               PURPOSE: Hook React zapewniający dostęp do kontekstu tłumaczeń i
+│   │   │                                                        danych pomocy.
 │   │   │                                               FUNCTIONS: useTranslation
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   └── 📜 useWorkspaces.js ❗                  <!-- VERSION: 0.0.3 PATH: src/hooks/useWorkspaces.js
-│   │                                                   PURPOSE: Hook do workspacesStore – lista, zapis, usuwanie load()
-│   │                                                                      pobiera wszystkie workspace'y
-│   │                                                            (workspaces:getAll) save(workspace)  zapisuje workspace
-│   │                                                            (workspaces:save) remove(id)       usuwa workspace
-│   │                                                            (workspaces:delete)
+│   │                                                   PURPOSE: Hook React do zarządzania przestrzeniami roboczymi
+│   │                                                            (workspaces) użytkownika przez mostek IPC.
 │   │                                                   FUNCTIONS: useWorkspaces
 │   │                                                   DEPENDS ON: react, loggerRenderer.js
 │   │                                                   -->
@@ -2034,8 +2102,10 @@ root/
 │   ├── 📁 ui/
 │   │   ├── 📁 appLibrary/
 │   │   │   └── ⚛️ AppLibraryBrowser.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/appLibrary/AppLibraryBrowser.jsx
-│   │   │                                               PURPOSE: Pełny widok App Library – przeglądarka aplikacji z
-│   │   │                                                        kategoriami, wyszukiwarką
+│   │   │                                               PURPOSE: Główny widok biblioteki aplikacji (App Library) –
+│   │   │                                                        umożliwia przeglądanie skatalogowanych usług webowych,
+│   │   │                                                        ich wyszukiwanie oraz szybkie dodawanie do profili
+│   │   │                                                        użytkownika. Współpracuje z appLibraryStore.
 │   │   │                                               FUNCTIONS: AppLibraryBrowser
 │   │   │                                               DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │                                                           icons, appLibraryStore
@@ -2095,15 +2165,19 @@ root/
 │   │   │                                               -->
 │   │   ├── 📁 layout/
 │   │   │   └── ⚛️ MainLayout.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/layout/MainLayout.jsx
-│   │   │                                               PURPOSE: Główny układ aplikacji — Sidebar + panel treści +
-│   │   │                                                        TaskPanel + toasty + ConfirmModal
+│   │   │                                               PURPOSE: Główny szkielet interfejsu użytkownika (Shell) –
+│   │   │                                                        definiuje siatkę aplikacji, koordynuje nawigację
+│   │   │                                                        boczną, obszar roboczy (ContentRenderer) oraz integruje
+│   │   │                                                        globalne mechanizmy modalne i powiadomienia sieciowe.
 │   │   │                                               FUNCTIONS: MainLayout
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js,
 │   │   │                                                           Sidebar.jsx, ContentRenderer.jsx, ConfirmModal.jsx
 │   │   │                                               -->
 │   │   ├── 📁 modals/
 │   │   │   ├── ⚛️ ConfirmModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/modals/ConfirmModal.jsx
-│   │   │   │                                           PURPOSE: Modal potwierdzenia (zastępuje window.confirm)
+│   │   │   │                                           PURPOSE: Generyczny komponent modalny służący do potwierdzania
+│   │   │   │                                                    akcji krytycznych (np. usuwanie). Zapewnia spójność
+│   │   │   │                                                    wizualną i zastępuje natywną funkcję window.confirm.
 │   │   │   │                                           FUNCTIONS: ConfirmModal
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
@@ -2119,14 +2193,17 @@ root/
 │   │   │                                               -->
 │   │   ├── 📁 notepad/
 │   │   │   ├── ⚛️ ClipboardHistoryModal.jsx ❗    <!-- VERSION: 0.0.3 PATH: src/ui/notepad/ClipboardHistoryModal.jsx
-│   │   │   │                                           PURPOSE: Modal historii schowka – integracja z clipboardStore,
-│   │   │   │                                                    i18n
+│   │   │   │                                           PURPOSE: Okno modalne prezentujące listę historycznych wpisów ze
+│   │   │   │                                                    schowka systemowego – umożliwia przeglądanie i
+│   │   │   │                                                    odzyskiwanie skopiowanych wcześniej fragmentów tekstu.
 │   │   │   │                                           FUNCTIONS: ClipboardHistoryModal
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ Notepad.jsx                    <!-- VERSION: 0.0.3 PATH: src/ui/notepad/Notepad.jsx
-│   │   │   │                                           PURPOSE: Główny komponent notatnika – loader podmodułów i
-│   │   │   │                                                    integracja hooków
+│   │   │   ├── ⚛️ Notepad.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/notepad/Notepad.jsx
+│   │   │   │                                           PURPOSE: Główny komponent interfejsu notatnika – koordynuje
+│   │   │   │                                                    pracę zakładek, edytora oraz paneli wyszukiwania i
+│   │   │   │                                                    statusu, integrując logikę z hookami useNotepadUI i
+│   │   │   │                                                    useNotepadFindReplace.
 │   │   │   │                                           FUNCTIONS: Notepad
 │   │   │   │                                           DEPENDS ON: react, useNotepadUI.js, useNotepadFindReplace.js,
 │   │   │   │                                                       NotepadTabs, NotepadToolbar, NotepadFindReplace,
@@ -2138,13 +2215,16 @@ root/
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ NotepadStatusBar.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadStatusBar.jsx
-│   │   │   │                                           PURPOSE: Pasek statusu notatnika (tytuł, znaki, wiersze, ostatni
-│   │   │   │                                                    zapis)
+│   │   │   │                                           PURPOSE: Pasek informacyjny u dołu notatnika – wyświetla
+│   │   │   │                                                    metadane aktywnego dokumentu: statystyki znaków/wierszy
+│   │   │   │                                                    oraz czas ostatniego autozapisu.
 │   │   │   │                                           FUNCTIONS: NotepadStatusBar
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ NotepadTabs.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadTabs.jsx
-│   │   │   │                                           PURPOSE: Zakładki notatnika – tworzenie, zamykanie, zmiana nazwy
+│   │   │   │                                           PURPOSE: Komponent zarządzający paskiem kart notatnika –
+│   │   │   │                                                    obsługuje przełączanie dokumentów, ich zamykanie,
+│   │   │   │                                                    zmianę nazwy oraz wizualizację stanu 'dirty'.
 │   │   │   │                                           FUNCTIONS: NotepadTabs
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js,
 │   │   │   │                                                       PromptModal.jsx
@@ -2155,7 +2235,7 @@ root/
 │   │   │                                               DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📁 profiles/
-│   │   │   └── ⚛️ Profiles.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/profiles/Profiles.jsx
+│   │   │   └── ⚛️ Profiles.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/profiles/Profiles.jsx
 │   │   │                                               PURPOSE: UI zarządzania profilami WebView — wyświetlanie listy
 │   │   │                                                        profili z danych IPC (load, wyświetlanie nazwy, URL,
 │   │   │                                                        obsługa błędów). Używa window.electronAPI.invoke
@@ -2184,8 +2264,10 @@ root/
 │   │   │                                               -->
 │   │   ├── 📁 settings/
 │   │   │   ├── ⚛️ AccountSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/AccountSection.jsx
-│   │   │   │                                           PURPOSE: Sekcja konta użytkownika (placeholder – na później
-│   │   │   │                                                    synchronizacja)
+│   │   │   │                                           PURPOSE: Sekcja zarządzania profilem użytkownika – obecnie służy
+│   │   │   │                                                    jako placeholder dla nadchodzącej funkcji
+│   │   │   │                                                    synchronizacji danych w chmurze (Cloud Sync) planowanej
+│   │   │   │                                                    w v0.0.4.
 │   │   │   │                                           FUNCTIONS: AccountSection
 │   │   │   │                                           DEPENDS ON: react, translations.js, src, loggerRenderer.js
 │   │   │   │                                           -->
@@ -2204,14 +2286,18 @@ root/
 │   │   │   │                                                       icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ GeneralSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/GeneralSection.jsx
-│   │   │   │                                           PURPOSE: Sekcja ustawień ogólnych (język, dark mode, debug)
+│   │   │   │                                           PURPOSE: Sekcja ustawień ogólnych aplikacji – zarządza wyborem
+│   │   │   │                                                    języka (i18n), motywem graficznym (Light/Dark) oraz
+│   │   │   │                                                    globalnym trybem debugowania (developer mode).
 │   │   │   │                                           FUNCTIONS: GeneralSection
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ HotkeysManager.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManager.jsx
-│   │   │   │                                           PURPOSE: Zarządzanie skrótami klawiszowymi (globalShortcut +
-│   │   │   │                                                    snippet text)
+│   │   │   │                                           PURPOSE: Interfejs zarządzania globalnymi skrótami klawiszowymi
+│   │   │   │                                                    aplikacji. Umożliwia definiowanie akcji systemowych
+│   │   │   │                                                    (screenshot, monitor) oraz wstawianie predefiniowanych
+│   │   │   │                                                    snippetów tekstowych.
 │   │   │   │                                           FUNCTIONS: HotkeysManager
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       ConfirmModal, Modal, notificationsManager.js
@@ -2222,8 +2308,10 @@ root/
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer, icons
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ Settings.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/settings/Settings.jsx
-│   │   │   │                                           PURPOSE: Import plików Settings w poszczególnych modułach,
-│   │   │   │                                                    export settings-container
+│   │   │   │                                           PURPOSE: Główny kontener widoku ustawień aplikacji. Agreguje
+│   │   │   │                                                    wszystkie sekcje konfiguracyjne (General, WebView,
+│   │   │   │                                                    Tabs, Notifications, Hotkeys, Debug, Data) w jeden
+│   │   │   │                                                    ustrukturyzowany interfejs użytkownika.
 │   │   │   │                                           FUNCTIONS: Settings
 │   │   │   │                                           DEPENDS ON: react, GeneralSection, WebViewSection, TabsSection,
 │   │   │   │                                                       NotificationsSection, HotkeysManager,
@@ -2231,41 +2319,49 @@ root/
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TabsSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/TabsSection.jsx
-│   │   │   │                                           PURPOSE: Sekcja ustawień zakładek (Sleep Tabs timeout)
+│   │   │   │                                           PURPOSE: Sekcja konfiguracji zarządzania kartami – pozwala na
+│   │   │   │                                                    ustawienie czasu bezczynności, po którym nieaktywne
+│   │   │   │                                                    WebView są uśpiane w celu oszczędzania zasobów
+│   │   │   │                                                    systemowych (RAM/CPU).
 │   │   │   │                                           FUNCTIONS: TabsSection
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ WebViewSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/WebViewSection.jsx
-│   │   │                                               PURPOSE: Sekcja ustawień WebView — AdBlocker globalny, User
-│   │   │                                                        Agent, tryb Single App, edytowalny pasek adresu.
-│   │   │                                                        Szkielet do rozbudowy wg Definition_Mockups_UI_UX.md
-│   │   │                                                        sekcja 8.
+│   │   │                                               PURPOSE: Konfiguracja silnika przeglądarki (WebView) – zarządza
+│   │   │                                                        globalnym blokowaniem reklam, maskowaniem tożsamości
+│   │   │                                                        przeglądarki (User Agent) oraz trybami wyświetlania
+│   │   │                                                        okien.
 │   │   │                                               FUNCTIONS: WebViewSection
 │   │   │                                               DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │                                                           icons
 │   │   │                                               -->
 │   │   ├── 📁 sidebar/
 │   │   │   ├── ⚛️ CategoryModal.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/CategoryModal.jsx
-│   │   │   │                                           PURPOSE: Modal dodawania/edycji kategorii
+│   │   │   │                                           PURPOSE: Formularz modalny do zarządzania kategoriami profili –
+│   │   │   │                                                    umożliwia tworzenie nowych i edycję istniejących sekcji
+│   │   │   │                                                    grupujących w Sidebarze.
 │   │   │   │                                           FUNCTIONS: CategoryModal
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
-│   │   │   │                                                       ModalPortal
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, ModalPortal
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ ContextMenu.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/ContextMenu.jsx
 │   │   │   │                                           PURPOSE: Menu kontekstowe (PPM) dla profilu
 │   │   │   │                                           FUNCTIONS: ContextMenu
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ ProfileModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/ProfileModal.jsx
-│   │   │   │                                           PURPOSE: Modal dodawania/edycji profilu
+│   │   │   │                                           PURPOSE: Zaawansowany formularz modalny do konfiguracji profili
+│   │   │   │                                                    WebView – obsługuje parametry URL, ikony, przypisanie
+│   │   │   │                                                    do kategorii oraz przełączniki adblockera i
+│   │   │   │                                                    powiadomień.
 │   │   │   │                                           FUNCTIONS: ProfileModal
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
 │   │   │   │                                                       urlUtils.js, ModalPortal, notificationsManager.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ Sidebar.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/Sidebar.jsx
-│   │   │   │                                           PURPOSE: Główny panel boczny – nawigacja, profile, kategorie,
-│   │   │   │                                                    narzędzia
+│   │   │   │                                           PURPOSE: Główny panel nawigacyjny aplikacji – zarządza listą
+│   │   │   │                                                    profili, hierarchią kategorii, narzędziami systemowymi
+│   │   │   │                                                    oraz integracją z mostkiem IPC dla trwałości ustawień.
 │   │   │   │                                           FUNCTIONS: Sidebar
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
 │   │   │   │                                                       ProfileModal, CategoryModal, ContextMenu,
@@ -2276,28 +2372,29 @@ root/
 │   │   │   │                                           PURPOSE: Nagłówek kategorii profilów (zwijanie/rozwijanie, menu
 │   │   │   │                                                    kontekstowe)
 │   │   │   │                                           FUNCTIONS: SidebarCategory
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ SidebarProfileItem.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileItem.jsx
 │   │   │   │                                           PURPOSE: Pojedynczy profil w Sidebarze (ikona, nazwa,
 │   │   │   │                                                    indykatory)
 │   │   │   │                                           FUNCTIONS: SidebarProfileItem
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ SidebarSearch.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarSearch.jsx
 │   │   │   │                                           PURPOSE: Wyszukiwarka profili w Sidebarze
 │   │   │   │                                           FUNCTIONS: SidebarSearch
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ SidebarTools.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarTools.jsx
 │   │   │   │                                           PURPOSE: Sekcja narzędzi specjalnych w Sidebarze
 │   │   │   │                                           FUNCTIONS: SidebarTools
-│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, icons.js,
+│   │   │   │                                                       constants.js
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ SidebarWorkspaces.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarWorkspaces.jsx
 │   │   │                                               PURPOSE: Sekcja workspace'ów w Sidebarze
 │   │   │                                               FUNCTIONS: SidebarWorkspaces
-│   │   │                                               DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │                                               DEPENDS ON: react, translations.js, icons.js
 │   │   │                                               -->
 │   │   ├── 📁 styles/
 │   │   │   ├── 🎨 components.css                  <!-- VERSION: 0.0.3 PATH: src/ui/styles/components.css
@@ -2330,38 +2427,53 @@ root/
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TaskDetails.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskDetails.jsx
-│   │   │   │                                           PURPOSE: Szczegóły zadania – pełny widok, zmiana statusu,
+│   │   │   │                                           PURPOSE: Widok szczegółowy pojedynczego zadania. Umożliwia
+│   │   │   │                                                    szybką edycję statusu i priorytetu bezpośrednio z
+│   │   │   │                                                    poziomu podglądu oraz synchronizację tych zmian przez
+│   │   │   │                                                    IPC.
 │   │   │   │                                           FUNCTIONS: TaskDetails
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, constants.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TaskEditor.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskEditor.jsx
-│   │   │   │                                           PURPOSE: Modal dodawania/edycji zadania – walidacja, zapis,
+│   │   │   │                                           PURPOSE: Wyspecjalizowany edytor zadań (inline lub modal)
+│   │   │   │                                                    obsługujący walidację danych wejściowych, komunikację z
+│   │   │   │                                                    tasksStore przez IPC oraz integrację z systemem
+│   │   │   │                                                    toastów.
 │   │   │   │                                           FUNCTIONS: TaskEditor
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, constants.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TaskItem.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskItem.jsx
-│   │   │   │                                           PURPOSE: Pojedyncze zadanie w liście (z akcjami)
+│   │   │   │                                           PURPOSE: Interaktywny element listy zadań w panelu projektu.
+│   │   │   │                                                    Dostarcza pełny zestaw akcji CRUD (edycja, usuwanie,
+│   │   │   │                                                    pinowanie) oraz szybkie przyciski zmiany stanu (Move to
+│   │   │   │                                                    Active/Backlog/Done).
 │   │   │   │                                           FUNCTIONS: TaskItem
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TaskList.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskList.jsx
-│   │   │   │                                           PURPOSE: Lista zadań – grupowanie po statusie, sortowanie po
-│   │   │   │                                                    priorytecie,
+│   │   │   │                                           PURPOSE: Główny komponent listy zadań (Kanban/List view) –
+│   │   │   │                                                    odpowiada za dynamiczne filtrowanie, grupowanie według
+│   │   │   │                                                    statusu (TODO, IN_PROGRESS, BLOCKED, DONE) oraz
+│   │   │   │                                                    wyzwalanie akcji edycji i podglądu.
 │   │   │   │                                           FUNCTIONS: TaskList
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, constants.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TaskModal.jsx ❗                <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskModal.jsx
-│   │   │   │                                           PURPOSE: Modal dodawania/edycji zadania (nazwa, opis, priorytet,
-│   │   │   │                                                    sekcja, projekt, wersja, komentarz, pin)
+│   │   │   │                                           PURPOSE: Formularz modalny do kompleksowego zarządzania
+│   │   │   │                                                    zadaniem. Obsługuje edycję metadanych takich jak:
+│   │   │   │                                                    priorytet, sekcja, przypisanie do projektu oraz
+│   │   │   │                                                    dodatkowe notatki i wersjonowanie.
 │   │   │   │                                           FUNCTIONS: TaskModal
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TaskPanel.jsx ❗                <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskPanel.jsx
-│   │   │   │                                           PURPOSE: Panel zadań projektu z filtrowaniem, przypinaniem i
-│   │   │   │                                                    sekcjami
+│   │   │   │                                           PURPOSE: Interfejs zarządzania zadaniami dla konkretnego
+│   │   │   │                                                    projektu. Obsługuje wizualizację tablicy Kanban
+│   │   │   │                                                    (Active, Backlog, Done), filtrowanie oraz
+│   │   │   │                                                    synchronizację z tasksStore.
 │   │   │   │                                           FUNCTIONS: TaskPanel
 │   │   │   │                                           DEPENDS ON: react, tasksStore.js, projectsStore.js,
 │   │   │   │                                                       translations.js, loggerRenderer.js, icons.js,
@@ -2381,9 +2493,12 @@ root/
 │   │   │   │                                                       AggregatedTaskItem
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ AggregatedTaskItem.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTaskItem.jsx
-│   │   │   │                                           PURPOSE: Pojedyncze zadanie w widoku zbiorczym
+│   │   │   │                                           PURPOSE: Wyspecjalizowany komponent prezentujący zadanie w
+│   │   │   │                                                    widoku zagregowanym (dashboard). Obsługuje wizualizację
+│   │   │   │                                                    priorytetów, znaczników wersji oraz statusu wykonania
+│   │   │   │                                                    (skreślenie).
 │   │   │   │                                           FUNCTIONS: AggregatedTaskItem
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: loggerRenderer.js, icons.js
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ AggregatedTasks.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTasks.jsx
 │   │   │                                               PURPOSE: Widok zbiorczy zadań ze wszystkich projektów
@@ -2472,8 +2587,12 @@ root/
 │   │   │   │                                                       icons, svgToPng
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ ToolsPanel.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/tools/ToolsPanel.jsx
-│   │   │                                               PURPOSE: Kontener narzędzi – przełączanie między wszystkimi
-│   │   │                                                        toolami
+│   │   │                                               PURPOSE: Główny panel narzędziowy aplikacji (Tools Panel) –
+│   │   │                                                        dostarcza interfejs oparty na zakładkach do obsługi
+│   │   │                                                        narzędzi pomocniczych (JSON Formatter, Regex Tester,
+│   │   │                                                        Clipboard History, Image Tools, Mini Postman, Cookie
+│   │   │                                                        Grabber itp.). Obsługuje dynamiczne ładowanie na
+│   │   │                                                        podstawie flag funkcji (feature flags).
 │   │   │                                               FUNCTIONS: ToolsPanel
 │   │   │                                               DEPENDS ON: react, config.js, translations.js, icons,
 │   │   │                                                           loggerRenderer, RemoveBgTool.jsx, StringCombiner.jsx,
@@ -2499,10 +2618,11 @@ root/
 │   │   │   │                                           DEPENDS ON: react, config.js, loggerRenderer.js, Spinner.jsx
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ Spinner.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/views/Spinner.jsx
-│   │   │   │                                           PURPOSE: Współdzielony komponent wskaźnika ładowania (Suspense
-│   │   │   │                                                    fallback)
+│   │   │   │                                           PURPOSE: Współdzielony komponent wizualny wskaźnika ładowania
+│   │   │   │                                                    (loader). Wykorzystywany jako fallback dla React
+│   │   │   │                                                    Suspense oraz podczas asynchronicznych operacji I/O.
 │   │   │   │                                           FUNCTIONS: Spinner
-│   │   │   │                                           DEPENDS ON: react
+│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ ToolsContainer.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/views/ToolsContainer.jsx
 │   │   │   │                                           PURPOSE: Kontener renderowania narzędzi specjalnych (Notepad,
@@ -2542,9 +2662,9 @@ root/
 │   │                                                   -->
 │   ├── 📁 utils/
 │   │   ├── 📜 fileUtils.js                        <!-- VERSION: 0.0.3 PATH: src/utils/fileUtils.js
-│   │   │                                               PURPOSE: Bezpieczne operacje I/O dla plików JSON – odczyt z
-│   │   │                                                        fallbackiem i zapis z wyfiltrowaniem danych
-│   │   │                                                        (readJsonSafe, writeJsonSafe).
+│   │   │                                               PURPOSE: Uniwersalne i bezpieczne opakowanie natywnych funkcji
+│   │   │                                                        I/O Node.js dla plików JSON z automatyczną obsługą
+│   │   │                                                        błędów.
 │   │   │                                               FUNCTIONS: readJsonSafe, writeJsonSafe
 │   │   │                                               DEPENDS ON: fs, logger.js
 │   │   │                                               -->
@@ -2555,15 +2675,14 @@ root/
 │   │   │                                               DEPENDS ON: icons.js
 │   │   │                                               -->
 │   │   ├── 📜 imageUtils.js                       <!-- VERSION: 0.0.3 PATH: src/utils/imageUtils.js
-│   │   │                                               PURPOSE: Operacje na obrazach – resize, konwersja formatów,
-│   │   │                                                        kompresja JPEG (resizeImage, convertImage,
-│   │   │                                                        compressJpeg).
+│   │   │                                               PURPOSE: Funkcje pomocnicze do manipulacji plikami graficznymi
+│   │   │                                                        (resize, format conversion) oparte na silniku sharp.
 │   │   │                                               FUNCTIONS: resizeImage, convertImage, compressJpeg
 │   │   │                                               DEPENDS ON: sharp, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 logWriter.js                        <!-- VERSION: 0.0.3 PATH: src/utils/logWriter.js
-│   │   │                                               PURPOSE: Zapis logów testów do pliku (tylko przy failu, gdy
-│   │   │                                                        debugMode=true i logsEnabled=true).
+│   │   │                                               PURPOSE: Zarządzanie utrwalaniem logów błędów i wyników testów w
+│   │   │                                                        systemie plików (userData) poprzez mostek IPC.
 │   │   │                                               FUNCTIONS: initLogWriter, appendTestFailLog, getLogsContent,
 │   │   │                                                          clearLogsFile
 │   │   │                                               DEPENDS ON: logger.js, config.js
@@ -2583,8 +2702,8 @@ root/
 │   │   │                                               DEPENDS ON: loggerRenderer, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 networkUtils.js                     <!-- VERSION: 0.0.3 PATH: src/utils/networkUtils.js
-│   │   │                                               PURPOSE: Narzędzia sieciowe – sprawdzanie dostępności URL
-│   │   │                                                        (pingUrl).
+│   │   │                                               PURPOSE: Funkcje pomocnicze do diagnostyki sieciowej i
+│   │   │                                                        sprawdzania dostępności zewnętrznych zasobów.
 │   │   │                                               FUNCTIONS: pingUrl
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
@@ -2603,8 +2722,9 @@ root/
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
 │   │   ├── 📜 searchIndex.js                      <!-- VERSION: 0.0.3 PATH: src/utils/searchIndex.js
-│   │   │                                               PURPOSE: Unified search (Ctrl+K) — indeks profili, projektów,
-│   │   │                                                        zadań, notatek.
+│   │   │                                               PURPOSE: Budowanie ujednoliconego indeksu wyszukiwania
+│   │   │                                                        (profiles, projects, tasks, notes) dla globalnej palety
+│   │   │                                                        komend (Ctrl+K).
 │   │   │                                               FUNCTIONS: buildSearchIndex, searchAll
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
@@ -2616,7 +2736,9 @@ root/
 │   │   │                                               DEPENDS ON: komponenty z folderu sharp/
 │   │   │                                               -->
 │   │   ├── 📜 testrunner.js                       <!-- VERSION: 0.0.3 PATH: src/utils/testrunner.js
-│   │   │                                               PURPOSE: Moduł pomocniczy dla testów – asercje i logowanie.
+│   │   │                                               PURPOSE: Silnik do uruchamiania testów jednostkowych i
+│   │   │                                                        integracyjnych – asercje, liczniki wyników i
+│   │   │                                                        raportowanie PASS/FAIL.
 │   │   │                                               FUNCTIONS: initTestResults, assert, assertThrows, getTestResults,
 │   │   │                                                          logTestSummary
 │   │   │                                               DEPENDS ON: logger.js, icons.js
@@ -2627,18 +2749,17 @@ root/
 │   │   │                                               FUNCTIONS: TranslationProvider
 │   │   │                                               DEPENDS ON: react, config.js
 │   │   │                                               -->
-│   │   ├── 📜 urlUtils.js ❗                       <!-- VERSION: 0.0.3 PATH: src/utils/urlUtils.js
-│   │   │                                               PURPOSE: Normalizacja URL dla WebView — zawsze pełny adres z
-│   │   │                                                        https://. Blokuje niebezpieczne schematy: javascript:,
-│   │   │                                                        file:, data: (URL sanitization).
+│   │   ├── 📜 urlUtils.js                         <!-- VERSION: 0.0.3 PATH: src/utils/urlUtils.js
+│   │   │                                               PURPOSE: Narzędzia do walidacji, normalizacji i sanityzacji
+│   │   │                                                        adresów URL dla modułu WebView.
 │   │   │                                               FUNCTIONS: normalizeWebUrl, isValidWebUrl, isSafeUrl
-│   │   │                                               DEPENDS ON: -
+│   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 validators.js ❗                     <!-- VERSION: 0.0.3 PATH: src/utils/validators.js
-│   │   │                                               PURPOSE: Walidatory danych – string, obiekt, tablica
-│   │   │                                                        (ensureString, ensureObject).
+│   │   ├── 📜 validators.js                       <!-- VERSION: 0.0.3 PATH: src/utils/validators.js
+│   │   │                                               PURPOSE: Walidatory typów danych wykorzystywane przy sprawdzaniu
+│   │   │                                                        poprawności payloadów IPC i stanów magazynów.
 │   │   │                                               FUNCTIONS: ensureString, ensureObject
-│   │   │                                               DEPENDS ON: -
+│   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
 │   │   └── 📜 yamlLoader.js ❗                     <!-- VERSION: 0.0.3 PATH: src/utils/yamlLoader.js
 │   │                                                   PURPOSE: Leniwe ładowanie modułu js-yaml
@@ -2649,8 +2770,10 @@ root/
 │   │                                                   DEPENDS ON: komponenty z folderu yaml/
 │   │                                                   -->
 │   ├── ⚛️ App.jsx ❗                              <!-- VERSION: 0.0.3 PATH: src/App.jsx
-│   │                                                   PURPOSE: Główny punkt wejścia aplikacji - zarządza stanem
-│   │                                                            globalnym, inicjalizacją i motywem.
+│   │                                                   PURPOSE: Główny komponent root aplikacji React – inicjalizuje
+│   │                                                            system logowania, ładuje profile i ustawienia
+│   │                                                            użytkownika, zarządza motywem graficznym (dark/light)
+│   │                                                            oraz obsługuje globalne skróty klawiszowe i stan sieci.
 │   │                                                   FUNCTIONS: App
 │   │                                                   DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
 │   │                                                               urlUtils.js, MainLayout.jsx, Spinner.jsx
@@ -2719,7 +2842,10 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_History.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_History.js
-│   │                                                   PURPOSE: Testy jednostkowe dla HistoryLog
+│   │                                                   PURPOSE: Testy integralności logów aktywności użytkownika.
+│   │                                                            Sprawdza walidację poziomów logowania, mechanizmy
+│   │                                                            filtrowania zdarzeń oraz poprawność przycinania
+│   │                                                            historii do zdefiniowanych limitów (FIFO).
 │   │                                                   FUNCTIONS: runHistoryTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
@@ -2752,18 +2878,26 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Notepad.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Notepad.js
-│   │                                                   PURPOSE: Testy jednostkowe dla Notepad (multi-tab, autosave)
+│   │                                                   PURPOSE: Zestaw testów dla modułu notatnika. Weryfikuje
+│   │                                                            integralność danych kart, poprawność mechanizmu
+│   │                                                            autozapisu (dirty checking) oraz logikę przełączania
+│   │                                                            kontekstu między dokumentami.
 │   │                                                   FUNCTIONS: runNotepadTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Profiles.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Profiles.js
-│   │                                                   PURPOSE: Testy jednostkowe dla modułu Profiles (Sidebar, App
-│   │                                                            Library)
+│   │                                                   PURPOSE: Zestaw testów jednostkowych i integracyjnych dla
+│   │                                                            zarządzania profilami WebView. Weryfikuje strukturę
+│   │                                                            danych, poprawność kategorii oraz mechanizmy sortowania
+│   │                                                            chronologicznego.
 │   │                                                   FUNCTIONS: runProfilesTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Projects.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Projects.js
-│   │                                                   PURPOSE: Testy jednostkowe dla ProjectManager
+│   │                                                   PURPOSE: Zestaw testów dla modułu projektów. Weryfikuje
+│   │                                                            mechanizmy archiwizacji, strukturę obiektów
+│   │                                                            projektowych oraz poprawność agregacji liczby zadań
+│   │                                                            przypisanych do konkretnych projektów.
 │   │                                                   FUNCTIONS: runProjectsTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
@@ -2773,7 +2907,10 @@ root/
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Settings.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Settings.js
-│   │                                                   PURPOSE: Testy jednostkowe dla Settings (merge, export/import)
+│   │                                                   PURPOSE: Zestaw testów dla silnika ustawień. Weryfikuje
+│   │                                                            bezpieczeństwo głębokiego łączenia (merge)
+│   │                                                            konfiguracji, stabilność przełączania motywów oraz
+│   │                                                            poprawność schematu danych przy imporcie/eksporcie.
 │   │                                                   FUNCTIONS: runSettingsTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
@@ -2789,7 +2926,10 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Tasks.js                     <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Tasks.js
-│   │                                                   PURPOSE: Testy jednostkowe dla TaskPanel i AggregatedTasks
+│   │                                                   PURPOSE: Testy funkcjonalne systemu zarządzania zadaniami.
+│   │                                                            Sprawdza poprawność typów danych, wydajność filtrowania
+│   │                                                            priorytetów oraz sprawność wyszukiwarki pełnotekstowej
+│   │                                                            w obrębie zadań.
 │   │                                                   FUNCTIONS: runTasksTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
@@ -2839,8 +2979,8 @@ root/
 │                                                       -->
 ├── 📜 preload.cjs ❗                               <!-- VERSION: 0.0.3 PATH: preload.cjs
 │                                                       PURPOSE: Bridge IPC – eksponuje bezpieczne API dla renderera
-│                                                                (contextBridge). Zapewnia cleanup listenerów dla
-│                                                                terminala, logów, hotkeys.
+│                                                                (contextBridge). Definiuje metody komunikacji i
+│                                                                handlery zdarzeń z mechanizmem cleanup.
 │                                                       FUNCTIONS: -
 │                                                       DEPENDS ON: electron
 │                                                       -->

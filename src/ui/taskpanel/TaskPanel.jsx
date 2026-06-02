@@ -2,7 +2,7 @@
 // FILE: TaskPanel.jsx
 // PATH: src/ui/taskpanel/TaskPanel.jsx
 // VERSION: 0.0.3
-// PURPOSE: Panel zadań projektu z filtrowaniem, przypinaniem i sekcjami
+// PURPOSE: Interfejs zarządzania zadaniami dla konkretnego projektu. Obsługuje wizualizację tablicy Kanban (Active, Backlog, Done), filtrowanie oraz synchronizację z tasksStore.
 // FUNCTIONS: TaskPanel
 // DEPENDS ON: react, tasksStore.js, projectsStore.js, translations.js, loggerRenderer.js, icons.js, ConfirmModal.jsx, TaskItem.jsx, TaskModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -45,7 +45,7 @@ export default function TaskPanel({ projectId, onClose }) {
       setProjects(projectsData);
       logInfo('tasks', `TaskPanel: loaded tasks for project ${projectId}`);
     } catch (error) {
-      logError('tasks', 'TaskPanel: failed to load data', error);
+      logError('tasks', 'TaskPanel: failed to load data', error.message);
     } finally {
       setLoading(false);
     }
@@ -75,7 +75,7 @@ export default function TaskPanel({ projectId, onClose }) {
       setTasks(updatedTasks);
       logInfo('tasks', `TaskPanel: task ${taskData.id ? 'updated' : 'added'}`);
     } catch (error) {
-      logError('tasks', 'TaskPanel: failed to save task', error);
+      logError('tasks', 'TaskPanel: failed to save task', error.message);
     }
   };
 
@@ -103,7 +103,7 @@ export default function TaskPanel({ projectId, onClose }) {
       setTasks(updatedTasks);
       logInfo('tasks', `TaskPanel: deleted task ${taskToDelete.id}`);
     } catch (error) {
-      logError('tasks', 'TaskPanel: failed to delete task', error);
+      logError('tasks', 'TaskPanel: failed to delete task', error.message);
     } finally {
       setShowDeleteConfirm(false);
       setTaskToDelete(null);
@@ -129,7 +129,7 @@ export default function TaskPanel({ projectId, onClose }) {
       setTasks(updatedTasks);
       logInfo('tasks', `TaskPanel: moved task ${task.id} to ${newSection}`);
     } catch (error) {
-      logError('tasks', 'TaskPanel: failed to move task', error);
+      logError('tasks', 'TaskPanel: failed to move task', error.message);
     }
   };
 

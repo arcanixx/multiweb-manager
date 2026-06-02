@@ -2,7 +2,7 @@
 // FILE: TestRunner_Tasks.js
 // PATH: tests/TestRunner_Tasks.js
 // VERSION: 0.0.3
-// PURPOSE: Testy jednostkowe dla TaskPanel i AggregatedTasks
+// PURPOSE: Testy funkcjonalne systemu zarządzania zadaniami. Sprawdza poprawność typów danych, wydajność filtrowania priorytetów oraz sprawność wyszukiwarki pełnotekstowej w obrębie zadań.
 // FUNCTIONS: runTasksTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -52,8 +52,7 @@ const tests = [
   }
 ];
 
+// ─── runTasksTests() – Inicjalizuje i uruchamia proces testowy dla systemu zadań
 export async function runTasksTests() {
   return runTests('Tasks', tests);
 }
-
-
