@@ -158,7 +158,7 @@ root/
 │   │   │                                                        deleteProfile).
 │   │   │                                               FUNCTIONS: loadProfiles, saveProfiles, createProfile,
 │   │   │                                                          updateProfile, deleteProfile
-│   │   │                                               DEPENDS ON: fs, path, url, persistence.js, logger.js, src
+│   │   │                                               DEPENDS ON: fs, path, url, persistence.js, logger.js, config.js
 │   │   │                                               -->
 │   │   ├── 📜 projectsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/core/projectsStore.js
 │   │   │                                               PURPOSE: Projekty (ProjectManager, AggregatedTasks) — plik
@@ -168,7 +168,8 @@ root/
 │   │   │                                               DEPENDS ON: persistence.js, settingsStore.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 resourceMonitor.js ❗                <!-- VERSION: 0.0.3 PATH: src/core/resourceMonitor.js
-│   │   │                                               PURPOSE: Monitor zasobów systemowych
+│   │   │                                               PURPOSE: Monitor zasobów systemowych – odczyt użycia CPU i RAM z
+│   │   │                                                        wartościami limitów z ostrzeżeniami (getSystemUsage).
 │   │   │                                               FUNCTIONS: getSystemUsage
 │   │   │                                               DEPENDS ON: os, config.js, logger.js
 │   │   │                                               -->
@@ -177,7 +178,8 @@ root/
 │   │   │                                                        do domyślnych.
 │   │   │                                               FUNCTIONS: loadSettings, saveSettings, mergeSettings,
 │   │   │                                                          updateSettings, resetSettings
-│   │   │                                               DEPENDS ON: fs, path, url, config.js, persistence.js, logger.js
+│   │   │                                               DEPENDS ON: lodash, fs, path, url, config.js, persistence.js,
+│   │   │                                                           logger.js
 │   │   │                                               -->
 │   │   ├── 📜 tasksStore.js ❗                     <!-- VERSION: 0.0.3 PATH: src/core/tasksStore.js
 │   │   │                                               PURPOSE: Zadania per projekt (TaskPanel, AggregatedTasks).
@@ -219,7 +221,7 @@ root/
 │   │   │                                               FUNCTIONS: isAdUrl, setGlobalAdBlocker, getGlobalAdBlocker,
 │   │   │                                                          setProfileAdBlocker, getProfileAdBlocker,
 │   │   │                                                          initAdBlocker
-│   │   │                                               DEPENDS ON: electron, logger.js, webviewRegistry.js
+│   │   │                                               DEPENDS ON: electron, config.js, logger.js, webviewRegistry.js
 │   │   │                                               -->
 │   │   ├── 📜 hotkeysManager.js ❗                 <!-- VERSION: 0.0.3 PATH: src/engine/hotkeysManager.js
 │   │   │                                               PURPOSE: Zarządzanie globalnymi skrótami klawiszowymi
@@ -227,7 +229,7 @@ root/
 │   │   │                                               FUNCTIONS: setMainWindow, unregisterAllHotkeys,
 │   │   │                                                          registerGlobalHotkeys, getAllHotkeys, saveHotkeys,
 │   │   │                                                          registerHotkeysFromList
-│   │   │                                               DEPENDS ON: electron, logger.js, electron-store
+│   │   │                                               DEPENDS ON: electron, config.js, logger.js, electron-store
 │   │   │                                               -->
 │   │   ├── 📜 sleepTabsManager.js ❗               <!-- VERSION: 0.0.3 PATH: src/engine/sleepTabsManager.js
 │   │   │                                               PURPOSE: Logika usypiania nieaktywnych WebView (timeout z
@@ -614,7 +616,8 @@ root/
 │   │   │                                               PURPOSE: Pełny widok App Library – przeglądarka aplikacji z
 │   │   │                                                        kategoriami, wyszukiwarką
 │   │   │                                               FUNCTIONS: AppLibraryBrowser
-│   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer, src
+│   │   │                                               DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │                                                           icons, appLibraryStore
 │   │   │                                               -->
 │   │   ├── 📁 help/
 │   │   │   ├── ⚛️ FAQ.jsx                        <!-- VERSION: 0.0.3 PATH: src/ui/help/FAQ.jsx
@@ -626,8 +629,8 @@ root/
 │   │   │   │                                           PURPOSE: Główny komponent pomocy – łączy sekcje (Profile, Tools,
 │   │   │   │                                                    Tasks, Shortcuts, FAQ)
 │   │   │   │                                           FUNCTIONS: Help
-│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, HelpSection,
-│   │   │   │                                                       ToolCard, Shortcut, FAQ
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, icons.js,
+│   │   │   │                                                       HelpSection, ToolCard, Shortcut, FAQ
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ HelpSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/help/HelpSection.jsx
 │   │   │   │                                           PURPOSE: Rozwijana sekcja pomocy (tytuł + treść)
@@ -668,6 +671,14 @@ root/
 │   │   │                                               DEPENDS ON: react, historyStore.js, translations.js,
 │   │   │                                                           loggerRenderer.js, icons.js, ConfirmModal.jsx,
 │   │   │                                                           HistoryFilters.jsx, HistoryList.jsx
+│   │   │                                               -->
+│   │   ├── 📁 layout/
+│   │   │   └── ⚛️ MainLayout.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/layout/MainLayout.jsx
+│   │   │                                               PURPOSE: Główny układ aplikacji — Sidebar + panel treści +
+│   │   │                                                        TaskPanel + toasty + ConfirmModal
+│   │   │                                               FUNCTIONS: MainLayout
+│   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js,
+│   │   │                                                           Sidebar.jsx, ContentRenderer.jsx, ConfirmModal.jsx
 │   │   │                                               -->
 │   │   ├── 📁 modals/
 │   │   │   ├── ⚛️ ConfirmModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/modals/ConfirmModal.jsx
@@ -761,20 +772,28 @@ root/
 │   │   │   │                                           PURPOSE: Sekcja danych i logów (eksport/import, otwieranie
 │   │   │   │                                                    folderu logów, logi testów)
 │   │   │   │                                           FUNCTIONS: DataLogsSection
-│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer, icons,
-│   │   │   │                                                       ConfirmModal, Modal
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons, ConfirmModal, Modal
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ DebugModulesSection.jsx ❗      <!-- VERSION: 0.0.3 PATH: src/ui/settings/DebugModulesSection.jsx
+│   │   │   │                                           PURPOSE: UI do zarządzania filtrowaniem logów per-moduł.
+│   │   │   │                                                    Widoczna tylko w trybie debugMode.
+│   │   │   │                                           FUNCTIONS: DebugModulesSection
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
+│   │   │   │                                                       icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ GeneralSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/GeneralSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja ustawień ogólnych (język, dark mode, debug)
 │   │   │   │                                           FUNCTIONS: GeneralSection
-│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer, icons
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ HotkeysManager.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManager.jsx
 │   │   │   │                                           PURPOSE: Zarządzanie skrótami klawiszowymi (globalShortcut +
 │   │   │   │                                                    snippet text)
 │   │   │   │                                           FUNCTIONS: HotkeysManager
-│   │   │   │                                           DEPENDS ON: react, translations.js, src, ConfirmModal, Modal,
-│   │   │   │                                                       notificationsManager.js
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       ConfirmModal, Modal, notificationsManager.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ NotificationsSection.jsx ❗     <!-- VERSION: 0.0.3 PATH: src/ui/settings/NotificationsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja powiadomień (toasty, system, Pushbullet)
@@ -785,15 +804,16 @@ root/
 │   │   │   │                                           PURPOSE: Import plików Settings w poszczególnych modułach,
 │   │   │   │                                                    export settings-container
 │   │   │   │                                           FUNCTIONS: Settings
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, GeneralSection,
-│   │   │   │                                                       WebViewSection, TabsSection, NotificationsSection,
-│   │   │   │                                                       HotkeysManager, DataLogsSection, AccountSection,
+│   │   │   │                                           DEPENDS ON: react, GeneralSection, WebViewSection, TabsSection,
+│   │   │   │                                                       NotificationsSection, HotkeysManager,
+│   │   │   │                                                       DebugModulesSection, DataLogsSection, AccountSection,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TabsSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/TabsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja ustawień zakładek (Sleep Tabs timeout)
 │   │   │   │                                           FUNCTIONS: TabsSection
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ WebViewSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/WebViewSection.jsx
 │   │   │                                               PURPOSE: Sekcja ustawień WebView — AdBlocker globalny, User
@@ -801,7 +821,8 @@ root/
 │   │   │                                                        Szkielet do rozbudowy wg Definition_Mockups_UI_UX.md
 │   │   │                                                        sekcja 8.
 │   │   │                                               FUNCTIONS: WebViewSection
-│   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer, icons
+│   │   │                                               DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │                                                           icons
 │   │   │                                               -->
 │   │   ├── 📁 sidebar/
 │   │   │   ├── ⚛️ CategoryModal.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/CategoryModal.jsx
@@ -850,7 +871,7 @@ root/
 │   │   │   ├── ⚛️ SidebarTools.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarTools.jsx
 │   │   │   │                                           PURPOSE: Sekcja narzędzi specjalnych w Sidebarze
 │   │   │   │                                           FUNCTIONS: SidebarTools
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ SidebarWorkspaces.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarWorkspaces.jsx
 │   │   │                                               PURPOSE: Sekcja workspace'ów w Sidebarze
@@ -962,47 +983,52 @@ root/
 │   │   │   ├── ⚛️ ClipboardHistory.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/tools/ClipboardHistory.jsx
 │   │   │   │                                           PURPOSE: Historia schowka z pinowaniem i wyszukiwarką
 │   │   │   │                                           FUNCTIONS: ClipboardHistory
-│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer, icons,
-│   │   │   │                                                       config.js
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ CookieGrabber.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/tools/CookieGrabber.jsx
 │   │   │   │                                           PURPOSE: Pobieranie cookies z aktywnego WebView – tabela,
 │   │   │   │                                                    kopiowanie, eksport
 │   │   │   │                                           FUNCTIONS: CookieGrabber
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ FilePreviewer.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/tools/FilePreviewer.jsx
 │   │   │   │                                           PURPOSE: Podgląd plików (RAW/PREVIEW) – TXT, JSON, HTML, SVG,
 │   │   │   │                                                    Markdown, obrazy
 │   │   │   │                                           FUNCTIONS: FilePreviewer
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons, markdownRenderer
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ ImageTools.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/tools/ImageTools.jsx
 │   │   │   │                                           PURPOSE: Kompresja, resize i konwersja obrazów (drag & drop,
 │   │   │   │                                                    preview)
 │   │   │   │                                           FUNCTIONS: ImageTools
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons, imageUtils
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ JsonFormatter.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/tools/JsonFormatter.jsx
 │   │   │   │                                           PURPOSE: Formatowanie i walidacja JSON/YAML/XML
 │   │   │   │                                           FUNCTIONS: JsonFormatter
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ MarkdownPreviewer.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/tools/MarkdownPreviewer.jsx
 │   │   │   │                                           PURPOSE: Podgląd Markdown na żywo (split view)
 │   │   │   │                                           FUNCTIONS: MarkdownPreviewer
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js
+│   │   │   │                                           DEPENDS ON: react, config.js, loggerRenderer.js, translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ MiniPostman.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/tools/MiniPostman.jsx
 │   │   │   │                                           PURPOSE: Lekki API tester (GET/POST/PUT/DELETE, nagłówki, body,
 │   │   │   │                                                    odpowiedź)
 │   │   │   │                                           FUNCTIONS: MiniPostman
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons, apiClient
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ RegexTester.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/tools/RegexTester.jsx
 │   │   │   │                                           PURPOSE: Testowanie wyrażeń regularnych
 │   │   │   │                                           FUNCTIONS: RegexTester
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       regexEngine
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ RemoveBgTool.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/tools/RemoveBgTool.jsx
 │   │   │   │                                           PURPOSE: Narzędzie do masowego usuwania tła ze zdjęć przez API
@@ -1021,21 +1047,66 @@ root/
 │   │   │   │                                           PURPOSE: Konwersja SVG → PNG z wyborem rozdzielczości (drag &
 │   │   │   │                                                    drop, preview)
 │   │   │   │                                           FUNCTIONS: SvgToPngConverter
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons, svgToPng
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ ToolsPanel.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/tools/ToolsPanel.jsx
 │   │   │                                               PURPOSE: Kontener narzędzi – przełączanie między wszystkimi
 │   │   │                                                        toolami
 │   │   │                                               FUNCTIONS: ToolsPanel
-│   │   │                                               DEPENDS ON: react, translations.js, icons, loggerRenderer
+│   │   │                                               DEPENDS ON: react, config.js, translations.js, icons,
+│   │   │                                                           loggerRenderer, RemoveBgTool.jsx, StringCombiner.jsx,
+│   │   │                                                           JsonFormatter.jsx, RegexTester.jsx,
+│   │   │                                                           MarkdownPreviewer.jsx, ClipboardHistory.jsx,
+│   │   │                                                           ImageTools.jsx, SvgToPngConverter.jsx,
+│   │   │                                                           MiniPostman.jsx, FilePreviewer.jsx,
+│   │   │                                                           CookieGrabber.jsx
+│   │   │                                               -->
+│   │   ├── 📁 views/
+│   │   │   ├── ⚛️ ContentRenderer.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/views/ContentRenderer.jsx
+│   │   │   │                                           PURPOSE: Router widoków — deleguje do WebViewContainer,
+│   │   │   │                                                    ToolsContainer lub SettingsContainer
+│   │   │   │                                           FUNCTIONS: ContentRenderer
+│   │   │   │                                           DEPENDS ON: react, icons.js, translations.js,
+│   │   │   │                                                       WebViewContainer.jsx, ToolsContainer.jsx,
+│   │   │   │                                                       SettingsContainer.jsx
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ SettingsContainer.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/views/SettingsContainer.jsx
+│   │   │   │                                           PURPOSE: Kontener renderowania ustawień, pomocy, historii i
+│   │   │   │                                                    zadań zagregowanych
+│   │   │   │                                           FUNCTIONS: SettingsContainer
+│   │   │   │                                           DEPENDS ON: react, config.js, loggerRenderer.js, Spinner.jsx
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ Spinner.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/views/Spinner.jsx
+│   │   │   │                                           PURPOSE: Współdzielony komponent wskaźnika ładowania (Suspense
+│   │   │   │                                                    fallback)
+│   │   │   │                                           FUNCTIONS: Spinner
+│   │   │   │                                           DEPENDS ON: react
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ ToolsContainer.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/views/ToolsContainer.jsx
+│   │   │   │                                           PURPOSE: Kontener renderowania narzędzi specjalnych (Notepad,
+│   │   │   │                                                    ProjectManager, RemoveBg, itp.)
+│   │   │   │                                           FUNCTIONS: ToolsContainer
+│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, Spinner.jsx
+│   │   │   │                                           -->
+│   │   │   └── ⚛️ WebViewContainer.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/views/WebViewContainer.jsx
+│   │   │                                               PURPOSE: Kontener renderowania WebView dla aktywnego profilu
+│   │   │                                               FUNCTIONS: WebViewContainer
+│   │   │                                               DEPENDS ON: react, Spinner.jsx
 │   │   │                                               -->
 │   │   ├── 📁 webview/
-│   │   │   └── ⚛️ WebViewTab.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewTab.jsx
-│   │   │                                               PURPOSE: Mini-przeglądarka profilu (webview + toolbar). Partycja
-│   │   │                                                        per profil,
-│   │   │                                               FUNCTIONS: WebViewTab
-│   │   │                                               DEPENDS ON: react, icons, translations.js, loggerRenderer,
-│   │   │                                                           urlUtils, config
+│   │   │   ├── ⚛️ WebViewTab.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewTab.jsx
+│   │   │   │                                           PURPOSE: Zakładka WebView – lifecycle, nawigacja, zoom,
+│   │   │   │                                                    recovery, logowanie błędów
+│   │   │   │                                           FUNCTIONS: WebViewTab
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
+│   │   │   │                                                       WebViewToolbar.jsx
+│   │   │   │                                           -->
+│   │   │   └── ⚛️ WebViewToolbar.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewToolbar.jsx
+│   │   │                                               PURPOSE: Pasek narzędzi WebView – przyciski i akcje (Back,
+│   │   │                                                        Forward, Reload, Zoom, itp.)
+│   │   │                                               FUNCTIONS: WebViewToolbar
+│   │   │                                               DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 🎨 index.css                           <!-- VERSION: 0.0.3 PATH: src/ui/index.css
 │   │   │                                               PURPOSE: Główny plik stylów – importuje layout, theme,
@@ -1077,12 +1148,12 @@ root/
 │   │   │                                               DEPENDS ON: logger.js, config.js
 │   │   │                                               -->
 │   │   ├── 📜 logger.js                           <!-- VERSION: 0.0.3 PATH: src/utils/logger.js
-│   │   │                                               PURPOSE: Moduł logowania dla procesu renderera (React). Loguje
-│   │   │                                                        tylko gdy
-│   │   │                                               FUNCTIONS: initLogger, setDebugMode, isDebugMode, log, warn,
-│   │   │                                                          error, logDebug, logInfo, logWarn, logError,
-│   │   │                                                          getLogFilePath
-│   │   │                                               DEPENDS ON: electron
+│   │   │                                               PURPOSE: Główna logika logowania z filtrowaniem per-modułowym.
+│   │   │                                                        Obsługuje proces Main i Renderer.
+│   │   │                                               FUNCTIONS: initLogger, setDebugMode, setDebugModule, isDebugMode,
+│   │   │                                                          log, warn, error, logDebug, logInfo, logWarn,
+│   │   │                                                          logError, getLogFilePath
+│   │   │                                               DEPENDS ON: config.js, electron
 │   │   │                                               -->
 │   │   ├── 📜 loggerRenderer.js                   <!-- VERSION: 0.0.3 PATH: src/utils/loggerRenderer.js
 │   │   │                                               PURPOSE: Cienki wrapper re-eksportujący logger.js dla procesu
@@ -1110,7 +1181,7 @@ root/
 │   │   │                                                          showSystemNotification
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 searchIndex.js ❗                    <!-- VERSION: 0.0.3 PATH: src/utils/searchIndex.js
+│   │   ├── 📜 searchIndex.js                      <!-- VERSION: 0.0.3 PATH: src/utils/searchIndex.js
 │   │   │                                               PURPOSE: Unified search (Ctrl+K) — indeks profili, projektów,
 │   │   │                                                        zadań, notatek.
 │   │   │                                               FUNCTIONS: buildSearchIndex, searchAll
@@ -1157,16 +1228,15 @@ root/
 │   │                                                   DEPENDS ON: komponenty z folderu yaml/
 │   │                                                   -->
 │   ├── ⚛️ App.jsx ❗                              <!-- VERSION: 0.0.3 PATH: src/App.jsx
-│   │                                                   PURPOSE: Główny komponent — Sidebar + content, lazy moduły z
-│   │                                                            src/ui/*. Zawiera AppErrorBoundary dla obsługi
-│   │                                                            krytycznych błędów React.
+│   │                                                   PURPOSE: Główny punkt wejścia aplikacji - zarządza stanem
+│   │                                                            globalnym, inicjalizacją i motywem.
 │   │                                                   FUNCTIONS: App
-│   │                                                   DEPENDS ON: icons.js, react, Sidebar, ConfirmModal,
-│   │                                                               loggerRenderer, urlUtils, translations.js
+│   │                                                   DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
+│   │                                                               urlUtils.js, MainLayout.jsx, Spinner.jsx
 │   │                                                   -->
-│   ├── 📜 config.js ❗                             <!-- VERSION: 0.0.3 PATH: src/config.js
-│   │                                                   PURPOSE: Centralna konfiguracja aplikacji – feature flags, API
-│   │                                                            endpoints,
+│   ├── 📜 config.js                               <!-- VERSION: 0.0.3 PATH: src/config.js
+│   │                                                   PURPOSE: Centralna konfiguracja aplikacji - flagi funkcji,
+│   │                                                            limity i domyślne ustawienia.
 │   │                                                   FUNCTIONS: isFeatureEnabled, isToolEnabled, getDefaultSetting,
 │   │                                                              getLimit
 │   │                                                   DEPENDS ON: -
@@ -1347,13 +1417,11 @@ root/
 │                                                       DEPENDS ON: -
 │                                                       -->
 ├── 📜 preload.cjs ❗                               <!-- VERSION: 0.0.3 PATH: preload.cjs
-│                                                       PURPOSE: Eksponuje API Electrona do renderera (React) przez
-│                                                                contextBridge. WAŻNE: Ten plik MUSI być CommonJS
-│                                                                (.cjs), bo Electron preload nie obsługuje ESM. Projekt
-│                                                                ma "type":"module" w package.json, stąd rozszerzenie
-│                                                                .cjs zamiast .js.
+│                                                       PURPOSE: Bridge IPC – eksponuje bezpieczne API dla renderera
+│                                                                (contextBridge). Zapewnia cleanup listenerów dla
+│                                                                terminala, logów, hotkeys.
 │                                                       FUNCTIONS: -
-│                                                       DEPENDS ON: -
+│                                                       DEPENDS ON: electron
 │                                                       -->
 └── 📄 readme.md                                   <!-- VERSION: 0.0.3 PATH: readme.md
                                                         PURPOSE: Dokumentacja specyfikacji projektowej
@@ -1511,7 +1579,7 @@ root/
 │   │   │                                                        deleteProfile).
 │   │   │                                               FUNCTIONS: loadProfiles, saveProfiles, createProfile,
 │   │   │                                                          updateProfile, deleteProfile
-│   │   │                                               DEPENDS ON: fs, path, url, persistence.js, logger.js, src
+│   │   │                                               DEPENDS ON: fs, path, url, persistence.js, logger.js, config.js
 │   │   │                                               -->
 │   │   ├── 📜 projectsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/core/projectsStore.js
 │   │   │                                               PURPOSE: Projekty (ProjectManager, AggregatedTasks) — plik
@@ -1521,7 +1589,8 @@ root/
 │   │   │                                               DEPENDS ON: persistence.js, settingsStore.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 resourceMonitor.js ❗                <!-- VERSION: 0.0.3 PATH: src/core/resourceMonitor.js
-│   │   │                                               PURPOSE: Monitor zasobów systemowych
+│   │   │                                               PURPOSE: Monitor zasobów systemowych – odczyt użycia CPU i RAM z
+│   │   │                                                        wartościami limitów z ostrzeżeniami (getSystemUsage).
 │   │   │                                               FUNCTIONS: getSystemUsage
 │   │   │                                               DEPENDS ON: os, config.js, logger.js
 │   │   │                                               -->
@@ -1530,7 +1599,8 @@ root/
 │   │   │                                                        do domyślnych.
 │   │   │                                               FUNCTIONS: loadSettings, saveSettings, mergeSettings,
 │   │   │                                                          updateSettings, resetSettings
-│   │   │                                               DEPENDS ON: fs, path, url, config.js, persistence.js, logger.js
+│   │   │                                               DEPENDS ON: lodash, fs, path, url, config.js, persistence.js,
+│   │   │                                                           logger.js
 │   │   │                                               -->
 │   │   ├── 📜 tasksStore.js ❗                     <!-- VERSION: 0.0.3 PATH: src/core/tasksStore.js
 │   │   │                                               PURPOSE: Zadania per projekt (TaskPanel, AggregatedTasks).
@@ -1572,7 +1642,7 @@ root/
 │   │   │                                               FUNCTIONS: isAdUrl, setGlobalAdBlocker, getGlobalAdBlocker,
 │   │   │                                                          setProfileAdBlocker, getProfileAdBlocker,
 │   │   │                                                          initAdBlocker
-│   │   │                                               DEPENDS ON: electron, logger.js, webviewRegistry.js
+│   │   │                                               DEPENDS ON: electron, config.js, logger.js, webviewRegistry.js
 │   │   │                                               -->
 │   │   ├── 📜 hotkeysManager.js ❗                 <!-- VERSION: 0.0.3 PATH: src/engine/hotkeysManager.js
 │   │   │                                               PURPOSE: Zarządzanie globalnymi skrótami klawiszowymi
@@ -1580,7 +1650,7 @@ root/
 │   │   │                                               FUNCTIONS: setMainWindow, unregisterAllHotkeys,
 │   │   │                                                          registerGlobalHotkeys, getAllHotkeys, saveHotkeys,
 │   │   │                                                          registerHotkeysFromList
-│   │   │                                               DEPENDS ON: electron, logger.js, electron-store
+│   │   │                                               DEPENDS ON: electron, config.js, logger.js, electron-store
 │   │   │                                               -->
 │   │   ├── 📜 sleepTabsManager.js ❗               <!-- VERSION: 0.0.3 PATH: src/engine/sleepTabsManager.js
 │   │   │                                               PURPOSE: Logika usypiania nieaktywnych WebView (timeout z
@@ -1967,7 +2037,8 @@ root/
 │   │   │                                               PURPOSE: Pełny widok App Library – przeglądarka aplikacji z
 │   │   │                                                        kategoriami, wyszukiwarką
 │   │   │                                               FUNCTIONS: AppLibraryBrowser
-│   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer, src
+│   │   │                                               DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │                                                           icons, appLibraryStore
 │   │   │                                               -->
 │   │   ├── 📁 help/
 │   │   │   ├── ⚛️ FAQ.jsx                        <!-- VERSION: 0.0.3 PATH: src/ui/help/FAQ.jsx
@@ -1979,8 +2050,8 @@ root/
 │   │   │   │                                           PURPOSE: Główny komponent pomocy – łączy sekcje (Profile, Tools,
 │   │   │   │                                                    Tasks, Shortcuts, FAQ)
 │   │   │   │                                           FUNCTIONS: Help
-│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, HelpSection,
-│   │   │   │                                                       ToolCard, Shortcut, FAQ
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, icons.js,
+│   │   │   │                                                       HelpSection, ToolCard, Shortcut, FAQ
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ HelpSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/help/HelpSection.jsx
 │   │   │   │                                           PURPOSE: Rozwijana sekcja pomocy (tytuł + treść)
@@ -2021,6 +2092,14 @@ root/
 │   │   │                                               DEPENDS ON: react, historyStore.js, translations.js,
 │   │   │                                                           loggerRenderer.js, icons.js, ConfirmModal.jsx,
 │   │   │                                                           HistoryFilters.jsx, HistoryList.jsx
+│   │   │                                               -->
+│   │   ├── 📁 layout/
+│   │   │   └── ⚛️ MainLayout.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/layout/MainLayout.jsx
+│   │   │                                               PURPOSE: Główny układ aplikacji — Sidebar + panel treści +
+│   │   │                                                        TaskPanel + toasty + ConfirmModal
+│   │   │                                               FUNCTIONS: MainLayout
+│   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js,
+│   │   │                                                           Sidebar.jsx, ContentRenderer.jsx, ConfirmModal.jsx
 │   │   │                                               -->
 │   │   ├── 📁 modals/
 │   │   │   ├── ⚛️ ConfirmModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/modals/ConfirmModal.jsx
@@ -2114,20 +2193,28 @@ root/
 │   │   │   │                                           PURPOSE: Sekcja danych i logów (eksport/import, otwieranie
 │   │   │   │                                                    folderu logów, logi testów)
 │   │   │   │                                           FUNCTIONS: DataLogsSection
-│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer, icons,
-│   │   │   │                                                       ConfirmModal, Modal
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons, ConfirmModal, Modal
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ DebugModulesSection.jsx ❗      <!-- VERSION: 0.0.3 PATH: src/ui/settings/DebugModulesSection.jsx
+│   │   │   │                                           PURPOSE: UI do zarządzania filtrowaniem logów per-moduł.
+│   │   │   │                                                    Widoczna tylko w trybie debugMode.
+│   │   │   │                                           FUNCTIONS: DebugModulesSection
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
+│   │   │   │                                                       icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ GeneralSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/GeneralSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja ustawień ogólnych (język, dark mode, debug)
 │   │   │   │                                           FUNCTIONS: GeneralSection
-│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer, icons
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ HotkeysManager.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManager.jsx
 │   │   │   │                                           PURPOSE: Zarządzanie skrótami klawiszowymi (globalShortcut +
 │   │   │   │                                                    snippet text)
 │   │   │   │                                           FUNCTIONS: HotkeysManager
-│   │   │   │                                           DEPENDS ON: react, translations.js, src, ConfirmModal, Modal,
-│   │   │   │                                                       notificationsManager.js
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       ConfirmModal, Modal, notificationsManager.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ NotificationsSection.jsx ❗     <!-- VERSION: 0.0.3 PATH: src/ui/settings/NotificationsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja powiadomień (toasty, system, Pushbullet)
@@ -2138,15 +2225,16 @@ root/
 │   │   │   │                                           PURPOSE: Import plików Settings w poszczególnych modułach,
 │   │   │   │                                                    export settings-container
 │   │   │   │                                           FUNCTIONS: Settings
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, GeneralSection,
-│   │   │   │                                                       WebViewSection, TabsSection, NotificationsSection,
-│   │   │   │                                                       HotkeysManager, DataLogsSection, AccountSection,
+│   │   │   │                                           DEPENDS ON: react, GeneralSection, WebViewSection, TabsSection,
+│   │   │   │                                                       NotificationsSection, HotkeysManager,
+│   │   │   │                                                       DebugModulesSection, DataLogsSection, AccountSection,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TabsSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/TabsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja ustawień zakładek (Sleep Tabs timeout)
 │   │   │   │                                           FUNCTIONS: TabsSection
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ WebViewSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/WebViewSection.jsx
 │   │   │                                               PURPOSE: Sekcja ustawień WebView — AdBlocker globalny, User
@@ -2154,7 +2242,8 @@ root/
 │   │   │                                                        Szkielet do rozbudowy wg Definition_Mockups_UI_UX.md
 │   │   │                                                        sekcja 8.
 │   │   │                                               FUNCTIONS: WebViewSection
-│   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer, icons
+│   │   │                                               DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │                                                           icons
 │   │   │                                               -->
 │   │   ├── 📁 sidebar/
 │   │   │   ├── ⚛️ CategoryModal.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/CategoryModal.jsx
@@ -2203,7 +2292,7 @@ root/
 │   │   │   ├── ⚛️ SidebarTools.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarTools.jsx
 │   │   │   │                                           PURPOSE: Sekcja narzędzi specjalnych w Sidebarze
 │   │   │   │                                           FUNCTIONS: SidebarTools
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ SidebarWorkspaces.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarWorkspaces.jsx
 │   │   │                                               PURPOSE: Sekcja workspace'ów w Sidebarze
@@ -2315,47 +2404,52 @@ root/
 │   │   │   ├── ⚛️ ClipboardHistory.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/tools/ClipboardHistory.jsx
 │   │   │   │                                           PURPOSE: Historia schowka z pinowaniem i wyszukiwarką
 │   │   │   │                                           FUNCTIONS: ClipboardHistory
-│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer, icons,
-│   │   │   │                                                       config.js
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ CookieGrabber.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/tools/CookieGrabber.jsx
 │   │   │   │                                           PURPOSE: Pobieranie cookies z aktywnego WebView – tabela,
 │   │   │   │                                                    kopiowanie, eksport
 │   │   │   │                                           FUNCTIONS: CookieGrabber
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ FilePreviewer.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/tools/FilePreviewer.jsx
 │   │   │   │                                           PURPOSE: Podgląd plików (RAW/PREVIEW) – TXT, JSON, HTML, SVG,
 │   │   │   │                                                    Markdown, obrazy
 │   │   │   │                                           FUNCTIONS: FilePreviewer
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons, markdownRenderer
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ ImageTools.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/tools/ImageTools.jsx
 │   │   │   │                                           PURPOSE: Kompresja, resize i konwersja obrazów (drag & drop,
 │   │   │   │                                                    preview)
 │   │   │   │                                           FUNCTIONS: ImageTools
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons, imageUtils
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ JsonFormatter.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/tools/JsonFormatter.jsx
 │   │   │   │                                           PURPOSE: Formatowanie i walidacja JSON/YAML/XML
 │   │   │   │                                           FUNCTIONS: JsonFormatter
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ MarkdownPreviewer.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/tools/MarkdownPreviewer.jsx
 │   │   │   │                                           PURPOSE: Podgląd Markdown na żywo (split view)
 │   │   │   │                                           FUNCTIONS: MarkdownPreviewer
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js
+│   │   │   │                                           DEPENDS ON: react, config.js, loggerRenderer.js, translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ MiniPostman.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/tools/MiniPostman.jsx
 │   │   │   │                                           PURPOSE: Lekki API tester (GET/POST/PUT/DELETE, nagłówki, body,
 │   │   │   │                                                    odpowiedź)
 │   │   │   │                                           FUNCTIONS: MiniPostman
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons, apiClient
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ RegexTester.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/tools/RegexTester.jsx
 │   │   │   │                                           PURPOSE: Testowanie wyrażeń regularnych
 │   │   │   │                                           FUNCTIONS: RegexTester
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       regexEngine
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ RemoveBgTool.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/tools/RemoveBgTool.jsx
 │   │   │   │                                           PURPOSE: Narzędzie do masowego usuwania tła ze zdjęć przez API
@@ -2374,21 +2468,66 @@ root/
 │   │   │   │                                           PURPOSE: Konwersja SVG → PNG z wyborem rozdzielczości (drag &
 │   │   │   │                                                    drop, preview)
 │   │   │   │                                           FUNCTIONS: SvgToPngConverter
-│   │   │   │                                           DEPENDS ON: react, translations.js, src
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
+│   │   │   │                                                       icons, svgToPng
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ ToolsPanel.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/tools/ToolsPanel.jsx
 │   │   │                                               PURPOSE: Kontener narzędzi – przełączanie między wszystkimi
 │   │   │                                                        toolami
 │   │   │                                               FUNCTIONS: ToolsPanel
-│   │   │                                               DEPENDS ON: react, translations.js, icons, loggerRenderer
+│   │   │                                               DEPENDS ON: react, config.js, translations.js, icons,
+│   │   │                                                           loggerRenderer, RemoveBgTool.jsx, StringCombiner.jsx,
+│   │   │                                                           JsonFormatter.jsx, RegexTester.jsx,
+│   │   │                                                           MarkdownPreviewer.jsx, ClipboardHistory.jsx,
+│   │   │                                                           ImageTools.jsx, SvgToPngConverter.jsx,
+│   │   │                                                           MiniPostman.jsx, FilePreviewer.jsx,
+│   │   │                                                           CookieGrabber.jsx
+│   │   │                                               -->
+│   │   ├── 📁 views/
+│   │   │   ├── ⚛️ ContentRenderer.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/views/ContentRenderer.jsx
+│   │   │   │                                           PURPOSE: Router widoków — deleguje do WebViewContainer,
+│   │   │   │                                                    ToolsContainer lub SettingsContainer
+│   │   │   │                                           FUNCTIONS: ContentRenderer
+│   │   │   │                                           DEPENDS ON: react, icons.js, translations.js,
+│   │   │   │                                                       WebViewContainer.jsx, ToolsContainer.jsx,
+│   │   │   │                                                       SettingsContainer.jsx
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ SettingsContainer.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/views/SettingsContainer.jsx
+│   │   │   │                                           PURPOSE: Kontener renderowania ustawień, pomocy, historii i
+│   │   │   │                                                    zadań zagregowanych
+│   │   │   │                                           FUNCTIONS: SettingsContainer
+│   │   │   │                                           DEPENDS ON: react, config.js, loggerRenderer.js, Spinner.jsx
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ Spinner.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/views/Spinner.jsx
+│   │   │   │                                           PURPOSE: Współdzielony komponent wskaźnika ładowania (Suspense
+│   │   │   │                                                    fallback)
+│   │   │   │                                           FUNCTIONS: Spinner
+│   │   │   │                                           DEPENDS ON: react
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ ToolsContainer.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/views/ToolsContainer.jsx
+│   │   │   │                                           PURPOSE: Kontener renderowania narzędzi specjalnych (Notepad,
+│   │   │   │                                                    ProjectManager, RemoveBg, itp.)
+│   │   │   │                                           FUNCTIONS: ToolsContainer
+│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, Spinner.jsx
+│   │   │   │                                           -->
+│   │   │   └── ⚛️ WebViewContainer.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/views/WebViewContainer.jsx
+│   │   │                                               PURPOSE: Kontener renderowania WebView dla aktywnego profilu
+│   │   │                                               FUNCTIONS: WebViewContainer
+│   │   │                                               DEPENDS ON: react, Spinner.jsx
 │   │   │                                               -->
 │   │   ├── 📁 webview/
-│   │   │   └── ⚛️ WebViewTab.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewTab.jsx
-│   │   │                                               PURPOSE: Mini-przeglądarka profilu (webview + toolbar). Partycja
-│   │   │                                                        per profil,
-│   │   │                                               FUNCTIONS: WebViewTab
-│   │   │                                               DEPENDS ON: react, icons, translations.js, loggerRenderer,
-│   │   │                                                           urlUtils, config
+│   │   │   ├── ⚛️ WebViewTab.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewTab.jsx
+│   │   │   │                                           PURPOSE: Zakładka WebView – lifecycle, nawigacja, zoom,
+│   │   │   │                                                    recovery, logowanie błędów
+│   │   │   │                                           FUNCTIONS: WebViewTab
+│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
+│   │   │   │                                                       WebViewToolbar.jsx
+│   │   │   │                                           -->
+│   │   │   └── ⚛️ WebViewToolbar.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewToolbar.jsx
+│   │   │                                               PURPOSE: Pasek narzędzi WebView – przyciski i akcje (Back,
+│   │   │                                                        Forward, Reload, Zoom, itp.)
+│   │   │                                               FUNCTIONS: WebViewToolbar
+│   │   │                                               DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 🎨 index.css                           <!-- VERSION: 0.0.3 PATH: src/ui/index.css
 │   │   │                                               PURPOSE: Główny plik stylów – importuje layout, theme,
@@ -2430,12 +2569,12 @@ root/
 │   │   │                                               DEPENDS ON: logger.js, config.js
 │   │   │                                               -->
 │   │   ├── 📜 logger.js                           <!-- VERSION: 0.0.3 PATH: src/utils/logger.js
-│   │   │                                               PURPOSE: Moduł logowania dla procesu renderera (React). Loguje
-│   │   │                                                        tylko gdy
-│   │   │                                               FUNCTIONS: initLogger, setDebugMode, isDebugMode, log, warn,
-│   │   │                                                          error, logDebug, logInfo, logWarn, logError,
-│   │   │                                                          getLogFilePath
-│   │   │                                               DEPENDS ON: electron
+│   │   │                                               PURPOSE: Główna logika logowania z filtrowaniem per-modułowym.
+│   │   │                                                        Obsługuje proces Main i Renderer.
+│   │   │                                               FUNCTIONS: initLogger, setDebugMode, setDebugModule, isDebugMode,
+│   │   │                                                          log, warn, error, logDebug, logInfo, logWarn,
+│   │   │                                                          logError, getLogFilePath
+│   │   │                                               DEPENDS ON: config.js, electron
 │   │   │                                               -->
 │   │   ├── 📜 loggerRenderer.js                   <!-- VERSION: 0.0.3 PATH: src/utils/loggerRenderer.js
 │   │   │                                               PURPOSE: Cienki wrapper re-eksportujący logger.js dla procesu
@@ -2463,7 +2602,7 @@ root/
 │   │   │                                                          showSystemNotification
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 searchIndex.js ❗                    <!-- VERSION: 0.0.3 PATH: src/utils/searchIndex.js
+│   │   ├── 📜 searchIndex.js                      <!-- VERSION: 0.0.3 PATH: src/utils/searchIndex.js
 │   │   │                                               PURPOSE: Unified search (Ctrl+K) — indeks profili, projektów,
 │   │   │                                                        zadań, notatek.
 │   │   │                                               FUNCTIONS: buildSearchIndex, searchAll
@@ -2510,16 +2649,15 @@ root/
 │   │                                                   DEPENDS ON: komponenty z folderu yaml/
 │   │                                                   -->
 │   ├── ⚛️ App.jsx ❗                              <!-- VERSION: 0.0.3 PATH: src/App.jsx
-│   │                                                   PURPOSE: Główny komponent — Sidebar + content, lazy moduły z
-│   │                                                            src/ui/*. Zawiera AppErrorBoundary dla obsługi
-│   │                                                            krytycznych błędów React.
+│   │                                                   PURPOSE: Główny punkt wejścia aplikacji - zarządza stanem
+│   │                                                            globalnym, inicjalizacją i motywem.
 │   │                                                   FUNCTIONS: App
-│   │                                                   DEPENDS ON: icons.js, react, Sidebar, ConfirmModal,
-│   │                                                               loggerRenderer, urlUtils, translations.js
+│   │                                                   DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
+│   │                                                               urlUtils.js, MainLayout.jsx, Spinner.jsx
 │   │                                                   -->
-│   ├── 📜 config.js ❗                             <!-- VERSION: 0.0.3 PATH: src/config.js
-│   │                                                   PURPOSE: Centralna konfiguracja aplikacji – feature flags, API
-│   │                                                            endpoints,
+│   ├── 📜 config.js                               <!-- VERSION: 0.0.3 PATH: src/config.js
+│   │                                                   PURPOSE: Centralna konfiguracja aplikacji - flagi funkcji,
+│   │                                                            limity i domyślne ustawienia.
 │   │                                                   FUNCTIONS: isFeatureEnabled, isToolEnabled, getDefaultSetting,
 │   │                                                              getLimit
 │   │                                                   DEPENDS ON: -
@@ -2700,13 +2838,11 @@ root/
 │                                                       DEPENDS ON: -
 │                                                       -->
 ├── 📜 preload.cjs ❗                               <!-- VERSION: 0.0.3 PATH: preload.cjs
-│                                                       PURPOSE: Eksponuje API Electrona do renderera (React) przez
-│                                                                contextBridge. WAŻNE: Ten plik MUSI być CommonJS
-│                                                                (.cjs), bo Electron preload nie obsługuje ESM. Projekt
-│                                                                ma "type":"module" w package.json, stąd rozszerzenie
-│                                                                .cjs zamiast .js.
+│                                                       PURPOSE: Bridge IPC – eksponuje bezpieczne API dla renderera
+│                                                                (contextBridge). Zapewnia cleanup listenerów dla
+│                                                                terminala, logów, hotkeys.
 │                                                       FUNCTIONS: -
-│                                                       DEPENDS ON: -
+│                                                       DEPENDS ON: electron
 │                                                       -->
 └── 📄 readme.md                                   <!-- VERSION: 0.0.3 PATH: readme.md
                                                         PURPOSE: Dokumentacja specyfikacji projektowej

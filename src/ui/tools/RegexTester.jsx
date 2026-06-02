@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testowanie wyrażeń regularnych
 // FUNCTIONS: RegexTester
-// DEPENDS ON: react, translations.js, src
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, regexEngine
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -23,7 +23,7 @@ export default function RegexTester() {
   const [error, setError] = useState('');
 
   if (!isFeatureEnabled('regexTester')) return null;
-  
+
    // ─── handleTest() – Testuje wyrażenie regularne przeciwko podanemu ciągowi testowym, uwzględniając flagi, i aktualizuje listę dopasowań lub błąd.
    const handleTest = () => {
   setError('');
@@ -60,7 +60,7 @@ export default function RegexTester() {
         />
         <button onClick={handleTest}>{t('tools.test')}</button>
       </div>
-      
+
       <div className="tool-panels">
         <div className="tool-panel">
           <label>{t('tools.testString')}</label>

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Kontener renderowania ustawień, pomocy, historii i zadań zagregowanych
 // FUNCTIONS: SettingsContainer
-// DEPENDS ON: react, isFeatureEnabled, Settings, Help, AggregatedTasks, HistoryLog
+// DEPENDS ON: react, config.js, loggerRenderer.js, Spinner.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

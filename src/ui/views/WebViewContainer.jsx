@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Kontener renderowania WebView dla aktywnego profilu
 // FUNCTIONS: WebViewContainer
-// DEPENDS ON: react, WebViewTab
+// DEPENDS ON: react, Spinner.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

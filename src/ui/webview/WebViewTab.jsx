@@ -3,10 +3,8 @@
 // PATH: src/ui/webview/WebViewTab.jsx
 // VERSION: 0.0.3
 // PURPOSE: Zakładka WebView – lifecycle, nawigacja, zoom, recovery, logowanie błędów
-// FUNCTIONS: WebViewTab, goBack, goForward, reload, zoomIn, zoomOut, zoomReset,
-//            handleZoomDelta, openDevTools, clearCache, takeScreenshot, 
-//            openSingleAppMode, showResourceMonitor, handleWebViewEvents, cleanup
-// DEPENDS ON: react, electronAPI, loggerRenderer, translations.js, WebViewToolbar
+// FUNCTIONS: WebViewTab
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer.js, WebViewToolbar.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -74,7 +72,7 @@ export default function WebViewTab({ profile, isActive, onTitleChange, onLoadErr
   // ─── Narzędzia ──────────────────────────────────────────────────────────
   // =========================================================================
   const openDevTools = () => webviewRef.current?.openDevTools();
-  
+
   const clearCache = async () => {
     try {
       await window.electronAPI?.clearProfileCache?.(profile.id);

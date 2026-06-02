@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Sekcja ustawień zakładek (Sleep Tabs timeout)
 // FUNCTIONS: TabsSection
-// DEPENDS ON: react, translations.js, src
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

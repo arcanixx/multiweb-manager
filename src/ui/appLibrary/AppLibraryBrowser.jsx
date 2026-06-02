@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Pełny widok App Library – przeglądarka aplikacji z kategoriami, wyszukiwarką
 // FUNCTIONS: AppLibraryBrowser
-// DEPENDS ON: react, translations.js, loggerRenderer, src
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons, appLibraryStore
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -27,7 +27,7 @@ export default function AppLibraryBrowser({ onAddProfile }) {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   // ─── useEffect – ładowanie biblioteki aplikacji przy montowaniu
   useEffect(() => {
     try {
@@ -42,7 +42,7 @@ export default function AppLibraryBrowser({ onAddProfile }) {
       setLoading(false);
     }
   }, []);
-  
+
   // ─── useEffect – wyszukiwanie aplikacji przy zmianie zapytania
   useEffect(() => {
     if (searchQuery.trim()) {
@@ -78,7 +78,6 @@ export default function AppLibraryBrowser({ onAddProfile }) {
     onAddProfile?.(app);
   };
 
-
   // ─── renderAppCard() – Funkcja pomocnicza renderująca kartę graficzną aplikacji (nazwę, URL, ikonę oraz przycisk dodawania) w strukturze JSX
   const renderAppCard = (app, categoryId) => (
     <div key={app.id} className="app-card">
@@ -102,7 +101,7 @@ export default function AppLibraryBrowser({ onAddProfile }) {
   return (
     <div className="app-library-browser">
       <h1>{ICONS.APP_LIBRARY} {t('appLibrary.title')}</h1>
-      
+
       <div className="app-library-search">
         <input
           type="text"
@@ -112,7 +111,7 @@ export default function AppLibraryBrowser({ onAddProfile }) {
         />
         {searchQuery && <span className="search-icon">{ICONS.SEARCH}</span>}
       </div>
-      
+
       {searchQuery && searchResults.length > 0 && (
         <div className="app-library-results">
           <h2>{t('appLibrary.searchResults')} ({searchResults.length})</h2>
@@ -121,12 +120,12 @@ export default function AppLibraryBrowser({ onAddProfile }) {
           </div>
         </div>
       )}
-      
+
       {!searchQuery && (
         <div className="app-library-categories">
           {categories.map(category => (
             <div key={category.id} className="app-category">
-              <div 
+              <div
                 className="app-category-header"
                 onClick={() => handleCategoryClick(category.id)}
               >
@@ -134,7 +133,7 @@ export default function AppLibraryBrowser({ onAddProfile }) {
                 <h2>{category.label}</h2>
                 <span className="category-count">({category.apps?.length || 0})</span>
               </div>
-              
+
               {(selectedCategory === category.id || !selectedCategory) && (
                 <div className="apps-grid">
                   {category.apps?.map(app => renderAppCard(app, category.id))}
@@ -144,7 +143,7 @@ export default function AppLibraryBrowser({ onAddProfile }) {
           ))}
         </div>
       )}
-      
+
       {searchQuery && searchResults.length === 0 && (
         <div className="no-results">
           {ICONS.SEARCH} {t('appLibrary.noResults')}

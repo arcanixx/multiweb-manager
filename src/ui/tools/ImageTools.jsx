@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Kompresja, resize i konwersja obrazów (drag & drop, preview)
 // FUNCTIONS: ImageTools
-// DEPENDS ON: react, translations.js, src
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons, imageUtils
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -50,17 +50,17 @@ export default function ImageTools() {
       setError(t('imageTools.noFile'));
       return;
     }
-    
+
     setLoading(true);
     setError(null);
     try {
       // Użyj electronAPI do zapisu pliku tymczasowego
       const inputPath = await window.electronAPI?.saveTempFile?.(inputFile);
       if (!inputPath) throw new Error('Cannot save temp file');
-      
+
       const outputExt = operation === 'convert' ? format : 'jpg';
       const tempOutput = await window.electronAPI?.getTempPath?.(`output.${outputExt}`);
-      
+
       let resultPath;
       switch (operation) {
       case 'resize':
@@ -75,7 +75,7 @@ export default function ImageTools() {
       default:
         throw new Error('Unknown operation');
       }
-      
+
       setOutputPath(resultPath);
       logDebug(`ImageTools: processed successfully → ${resultPath}`);
     } catch (err) {
@@ -97,8 +97,8 @@ export default function ImageTools() {
   return (
     <div className="tool-container image-tools">
       <h2>{ICONS.IMAGE} {t('imageTools.title')}</h2>
-      
-      <div 
+
+      <div
         className="file-drop-zone"
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleFileDrop}
@@ -117,7 +117,7 @@ export default function ImageTools() {
           onChange={handleFileDrop}
         />
       </div>
-      
+
       {inputFile && (
         <div className="image-options">
           <div className="option-group">
@@ -128,7 +128,7 @@ export default function ImageTools() {
               <option value="compress">{t('imageTools.compress')}</option>
             </select>
           </div>
-          
+
           {operation === 'resize' && (
             <div className="option-group">
               <label>{t('imageTools.dimensions')}</label>
@@ -137,7 +137,7 @@ export default function ImageTools() {
               <input type="number" value={height} onChange={(e) => setHeight(parseInt(e.target.value))} placeholder="Height" />
             </div>
           )}
-          
+
           {operation === 'convert' && (
             <div className="option-group">
               <label>{t('imageTools.format')}</label>
@@ -148,22 +148,22 @@ export default function ImageTools() {
               </select>
             </div>
           )}
-          
+
           {operation === 'compress' && (
             <div className="option-group">
               <label>{t('imageTools.quality')} ({quality}%)</label>
               <input type="range" min="1" max="100" value={quality} onChange={(e) => setQuality(parseInt(e.target.value))} />
             </div>
           )}
-          
+
           <button onClick={handleProcess} disabled={loading} className="btn-primary">
             {loading ? t('common.processing') : t('imageTools.process')}
           </button>
         </div>
       )}
-      
+
       {error && <div className="error-message">{ICONS.WARNING} {error}</div>}
-      
+
       {outputPath && (
         <div className="output-result">
           <p>{ICONS.SUCCESS} {t('imageTools.processed')}</p>

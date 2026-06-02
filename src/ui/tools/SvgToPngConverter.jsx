@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Konwersja SVG → PNG z wyborem rozdzielczości (drag & drop, preview)
 // FUNCTIONS: SvgToPngConverter
-// DEPENDS ON: react, translations.js, src
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons, svgToPng
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -40,7 +40,7 @@ export default function SvgToPngConverter() {
     setSvgContent(text);
     logDebug(`SvgToPng: loaded ${file.name}`);
   }, [t]);
-  
+
    // ─── handleConvert() – Konwertuje załadowany plik SVG na PNG przy użyciu podanej szerokości i wysokości, a następnie ustawia ścieżkę wyjściową do pobrania.
    //   @returns {Promise<void>} – obietnica rozwiązywana po zakończeniu konwersji
    const handleConvert = async () => {
@@ -53,10 +53,10 @@ export default function SvgToPngConverter() {
     try {
       const inputPath = await window.electronAPI?.saveTempFile?.(inputFile);
       if (!inputPath) throw new Error('Cannot save temp file');
-      
+
       const tempOutput = await window.electronAPI?.getTempPath?.('output.png');
       const resultPath = await svgToPng(inputPath, tempOutput, width, height);
-      
+
       setOutputPath(resultPath);
       logDebug(`SvgToPng: converted successfully → ${resultPath}`);
     } catch (err) {
@@ -77,8 +77,8 @@ export default function SvgToPngConverter() {
   return (
     <div className="tool-container svg-to-png">
       <h2>{ICONS.SVG} {t('svgToPng.title')}</h2>
-      
-      <div 
+
+      <div
         className="file-drop-zone"
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleFileDrop}
@@ -97,7 +97,7 @@ export default function SvgToPngConverter() {
           onChange={handleFileDrop}
         />
       </div>
-      
+
       {inputFile && (
         <div className="conversion-options">
           <div className="option-group">
@@ -113,9 +113,9 @@ export default function SvgToPngConverter() {
           </button>
         </div>
       )}
-      
+
       {error && <div className="error-message">{ICONS.WARNING} {error}</div>}
-      
+
       {outputPath && (
         <div className="output-result">
           <p>{ICONS.SUCCESS} {t('svgToPng.converted')}</p>

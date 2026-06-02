@@ -3,10 +3,11 @@
 // PATH: src/utils/loggerRenderer.js
 // VERSION: 0.0.3
 // PURPOSE: Cienki wrapper re-eksportujący logger.js dla procesu renderera (React).
-// FUNCTIONS: initLogger, setDebugMode, isDebugMode, log, warn, error, logDebug, logInfo, logWarn, logError, getLogFilePath, setDebugModule
-// DEPENDS ON: logger.js
+// FUNCTIONS: -
+// DEPENDS ON: loggerRenderer, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
+
 // Re-eksport wszystkiego z logger.js
 // Dzięki temu zarówno:
 //   import { log, warn, error } from './loggerRenderer'

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Kontener renderowania narzędzi specjalnych (Notepad, ProjectManager, RemoveBg, itp.)
 // FUNCTIONS: ToolsContainer
-// DEPENDS ON: react, Notepad, ProjectManager, RemoveBgTool, StringCombiner, Terminal
+// DEPENDS ON: react, loggerRenderer.js, Spinner.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

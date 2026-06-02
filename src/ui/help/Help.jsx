@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny komponent pomocy – łączy sekcje (Profile, Tools, Tasks, Shortcuts, FAQ)
 // FUNCTIONS: Help
-// DEPENDS ON: react, translations.js, icons.js, HelpSection, ToolCard, Shortcut, FAQ
+// DEPENDS ON: react, config.js, translations.js, icons.js, HelpSection, ToolCard, Shortcut, FAQ
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

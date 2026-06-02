@@ -4,9 +4,10 @@
 // VERSION: 0.0.3
 // PURPOSE: Ustawienia użytkownika — merge partial updates, reset do domyślnych.
 // FUNCTIONS: loadSettings, saveSettings, mergeSettings, updateSettings, resetSettings
-// DEPENDS ON: fs, path, url, config.js, persistence.js, logger.js
+// DEPENDS ON: lodash, fs, path, url, config.js, persistence.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
+
 import _ from 'lodash';
 
 import fs from "fs";

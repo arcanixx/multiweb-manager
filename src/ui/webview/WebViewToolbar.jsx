@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Pasek narzędzi WebView – przyciski i akcje (Back, Forward, Reload, Zoom, itp.)
 // FUNCTIONS: WebViewToolbar
-// DEPENDS ON: react, translations.js, icons.js, loggerRenderer
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

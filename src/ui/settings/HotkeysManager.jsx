@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie skrótami klawiszowymi (globalShortcut + snippet text)
 // FUNCTIONS: HotkeysManager
-// DEPENDS ON: react, translations.js, src, ConfirmModal, Modal, notificationsManager.js
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, ConfirmModal, Modal, notificationsManager.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

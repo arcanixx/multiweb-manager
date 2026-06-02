@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Pobieranie cookies z aktywnego WebView – tabela, kopiowanie, eksport
 // FUNCTIONS: CookieGrabber
-// DEPENDS ON: react, translations.js, src
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -21,7 +21,7 @@ export default function CookieGrabber({ activeWebViewId }) {
   const [error, setError] = useState(null);
 
   if (!isFeatureEnabled('cookieGrabber')) return null;
-  
+
   // ─── handleGrabCookies() – pobiera cookies z aktywnego WebView
 //   @returns {Promise<void>}
   const handleGrabCookies = async () => {
@@ -77,7 +77,7 @@ export default function CookieGrabber({ activeWebViewId }) {
   return (
     <div className="tool-container cookie-grabber">
       <h2>{ICONS.COOKIE} {t('cookieGrabber.title')}</h2>
-      
+
       <div className="cookie-controls">
         <button onClick={handleGrabCookies} disabled={loading} className="btn-primary">
           {loading ? t('common.loading') : t('cookieGrabber.grab')}
@@ -93,9 +93,9 @@ export default function CookieGrabber({ activeWebViewId }) {
           </>
         )}
       </div>
-      
+
       {error && <div className="error-message">{ICONS.WARNING} {error}</div>}
-      
+
       {cookies.length > 0 && (
         <div className="cookies-table-container">
           <table className="cookies-table">
@@ -130,7 +130,7 @@ export default function CookieGrabber({ activeWebViewId }) {
           </table>
         </div>
       )}
-      
+
       {!loading && cookies.length === 0 && !error && (
         <div className="empty-state">{ICONS.COOKIE} {t('cookieGrabber.noCookies')}</div>
       )}

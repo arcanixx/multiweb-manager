@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Formatowanie i walidacja JSON/YAML/XML
 // FUNCTIONS: JsonFormatter
-// DEPENDS ON: react, translations.js, src
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

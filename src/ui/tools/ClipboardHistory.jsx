@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Historia schowka z pinowaniem i wyszukiwarką
 // FUNCTIONS: ClipboardHistory
-// DEPENDS ON: react, translations.js, loggerRenderer, icons, config.js
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

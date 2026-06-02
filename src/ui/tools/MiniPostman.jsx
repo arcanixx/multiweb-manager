@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Lekki API tester (GET/POST/PUT/DELETE, nagłówki, body, odpowiedź)
 // FUNCTIONS: MiniPostman
-// DEPENDS ON: react, translations.js, src
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons, apiClient
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -53,7 +53,7 @@ export default function MiniPostman() {
       setLoading(false);
     }
   };
-  
+
    // ─── handleCopyResponse() – Kopiuje sformatowaną odpowiedź JSON do schowka.
    const handleCopyResponse = () => {
     if (response) {
@@ -64,7 +64,7 @@ export default function MiniPostman() {
   return (
     <div className="tool-container mini-postman">
       <h2>{ICONS.API} {t('tools.miniPostman')}</h2>
-      
+
       <div className="postman-controls">
         <select value={method} onChange={(e) => setMethod(e.target.value)}>
           <option>GET</option>
@@ -84,7 +84,7 @@ export default function MiniPostman() {
           {loading ? t('common.loading') : t('tools.send')}
         </button>
       </div>
-      
+
       <div className="postman-headers">
         <label>{t('tools.headers')}</label>
         <textarea
@@ -94,7 +94,7 @@ export default function MiniPostman() {
           placeholder='{"Content-Type": "application/json"}'
         />
       </div>
-      
+
       {(method === 'POST' || method === 'PUT' || method === 'PATCH') && (
         <div className="postman-body">
           <label>{t('tools.body')}</label>
@@ -106,13 +106,13 @@ export default function MiniPostman() {
           />
         </div>
       )}
-      
+
       {error && (
         <div className="postman-error">
           {ICONS.WARNING} {error}
         </div>
       )}
-      
+
       {response && (
         <div className="postman-response">
           <div className="response-header">

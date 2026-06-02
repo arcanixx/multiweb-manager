@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Podgląd plików (RAW/PREVIEW) – TXT, JSON, HTML, SVG, Markdown, obrazy
 // FUNCTIONS: FilePreviewer
-// DEPENDS ON: react, translations.js, src
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons, markdownRenderer
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -53,17 +53,17 @@ export default function FilePreviewer() {
     if (['html', 'htm'].includes(ext)) return ICONS.HTML;
     return ICONS.FILE;
   };
-  
+
   // ─── renderPreview() – renderuje podgląd pliku w zależności od typu
 //   @returns {JSX.Element} – skonwertowany podgląd
   const renderPreview = () => {
     if (!content) return <div className="preview-placeholder">{t('tools.noFileLoaded')}</div>;
     const ext = file?.name.split('.').pop().toLowerCase();
-    
+
     if (mode === 'raw') {
       return <pre className="raw-content">{content}</pre>;
     }
-    
+
     // PREVIEW mode
     if (ext === 'json') {
       try {
@@ -73,32 +73,32 @@ export default function FilePreviewer() {
         return <pre className="raw-content">{content}</pre>;
       }
     }
-    
+
     if (ext === 'md' || ext === 'markdown') {
       const html = renderMarkdown(content);
       return <div className="markdown-preview" dangerouslySetInnerHTML={{ __html: html }} />;
     }
-    
+
     if (ext === 'html' || ext === 'htm') {
       return <iframe srcDoc={content} title="HTML Preview" className="html-preview" />;
     }
-    
+
     if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
       return <img src={URL.createObjectURL(file)} alt="Preview" className="image-preview" />;
     }
-    
+
     if (ext === 'svg') {
       return <div className="svg-preview" dangerouslySetInnerHTML={{ __html: content }} />;
     }
-    
+
     return <pre className="raw-content">{content}</pre>;
   };
 
   return (
     <div className="tool-container file-previewer">
       <h2>{ICONS.PREVIEW} {t('tools.filePreviewer')}</h2>
-      
-      <div 
+
+      <div
         className="file-drop-zone"
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleFileDrop}
@@ -112,7 +112,7 @@ export default function FilePreviewer() {
           onChange={handleFileDrop}
         />
       </div>
-      
+
       {file && (
         <>
           <div className="file-info">
@@ -120,7 +120,7 @@ export default function FilePreviewer() {
             <span className="file-name">{file.name}</span>
             <span className="file-size">({(file.size / 1024).toFixed(1)} KB)</span>
           </div>
-          
+
           <div className="preview-toolbar">
             <button className={mode === 'preview' ? 'active' : ''} onClick={() => setMode('preview')}>
               {ICONS.PREVIEW} {t('tools.preview')}
@@ -129,7 +129,7 @@ export default function FilePreviewer() {
               {ICONS.RAW} {t('tools.raw')}
             </button>
           </div>
-          
+
           <div className="preview-container">
             {error ? <div className="error">{error}</div> : renderPreview()}
           </div>

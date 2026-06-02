@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie globalnymi skrótami klawiszowymi (globalShortcut)
 // FUNCTIONS: setMainWindow, unregisterAllHotkeys, registerGlobalHotkeys, getAllHotkeys, saveHotkeys, registerHotkeysFromList
-// DEPENDS ON: electron, logger.js, electron-store
+// DEPENDS ON: electron, config.js, logger.js, electron-store
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -15,12 +15,10 @@ import Store from 'electron-store';
 let registeredHotkeys = [];
 let mainWindow = null;
 
-
 // ─── setMainWindow() – Zapisuje referencję do głównego okna aplikacji Electron (BrowserWindow), która jest wykorzystywana do przesyłania zdarzeń IPC po wyzwoleniu skrótu
 export function setMainWindow(win) {
   mainWindow = win;
 }
-
 
 // ─── unregisterAllHotkeys() – Wyrejestrowuje wszystkie aktualnie zarejestrowane globalne skróty klawiszowe z pamięci systemu operacyjnego za pomocą modułu globalShortcut Electrona
 export function unregisterAllHotkeys() {
@@ -30,7 +28,6 @@ export function unregisterAllHotkeys() {
   registeredHotkeys = [];
   logDebug('All hotkeys unregistered');
 }
-
 
 // ─── registerGlobalHotkeys() – Rejestruje przekazaną listę skrótów klawiszowych w systemie operacyjnym; po ich naciśnięciu wysyła odpowiednie powiadomienie IPC do procesu renderowania
 export async function registerGlobalHotkeys(hotkeys) {
@@ -67,13 +64,11 @@ export async function registerGlobalHotkeys(hotkeys) {
   }
 }
 
-
 // ─── getAllHotkeys() – Odczytuje konfigurację i listę skrótów klawiszowych z trwałego magazynu (electron-store) o nazwie 'hotkeys' i zwraca je w postaci tablicy
 export async function getAllHotkeys() {
   const store = new Store({ name: 'hotkeys', defaults: { hotkeys: [] } });
   return store.get('hotkeys', []);
 }
-
 
 // ─── saveHotkeys() – Zapisuje nową listę skrótów klawiszowych do bazy danych (electron-store), wywołuje proces ich globalnej rejestracji w systemie i zwraca zapisaną listę
 export async function saveHotkeys(hotkeys) {
@@ -82,7 +77,6 @@ export async function saveHotkeys(hotkeys) {
   await registerGlobalHotkeys(hotkeys);
   return hotkeys;
 }
-
 
 // ─── registerHotkeysFromList() – Uruchamia proces rejestracji globalnych skrótów klawiszowych bezpośrednio na przekazanej liście, bez modyfikacji danych zapisanych w bazie
 export async function registerHotkeysFromList(hotkeys) {

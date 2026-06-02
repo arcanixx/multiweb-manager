@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Sekcja ustawień WebView — AdBlocker globalny, User Agent, tryb Single App, edytowalny pasek adresu. Szkielet do rozbudowy wg Definition_Mockups_UI_UX.md sekcja 8.
 // FUNCTIONS: WebViewSection
-// DEPENDS ON: react, translations.js, loggerRenderer, icons
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

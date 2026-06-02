@@ -3,8 +3,8 @@
 // PATH: src/ui/layout/MainLayout.jsx
 // VERSION: 0.0.3
 // PURPOSE: Główny układ aplikacji — Sidebar + panel treści + TaskPanel + toasty + ConfirmModal
-// FUNCTIONS: MainLayout, NetToast, handleOpenTaskPanel, showConfirm
-// DEPENDS ON: react, Sidebar, ContentRenderer, TaskPanel, ConfirmModal, loggerRenderer, translations.js
+// FUNCTIONS: MainLayout
+// DEPENDS ON: react, translations.js, loggerRenderer.js, Sidebar.jsx, ContentRenderer.jsx, ConfirmModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

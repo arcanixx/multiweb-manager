@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Logika blokowania reklam (global + per profile)
 // FUNCTIONS: isAdUrl, setGlobalAdBlocker, getGlobalAdBlocker, setProfileAdBlocker, getProfileAdBlocker, initAdBlocker
-// DEPENDS ON: electron, logger.js, webviewRegistry.js
+// DEPENDS ON: electron, config.js, logger.js, webviewRegistry.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

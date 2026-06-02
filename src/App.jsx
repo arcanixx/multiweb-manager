@@ -3,8 +3,8 @@
 // PATH: src/App.jsx
 // VERSION: 0.0.3
 // PURPOSE: Główny punkt wejścia aplikacji - zarządza stanem globalnym, inicjalizacją i motywem.
-// FUNCTIONS: App, AppErrorBoundary
-// DEPENDS ON: react, MainLayout, loggerRenderer, urlUtils, TranslationContext, config.js
+// FUNCTIONS: App
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer.js, urlUtils.js, MainLayout.jsx, Spinner.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Router widoków — deleguje do WebViewContainer, ToolsContainer lub SettingsContainer
 // FUNCTIONS: ContentRenderer
-// DEPENDS ON: react, ICONS, WebViewContainer, ToolsContainer, SettingsContainer, translations.js
+// DEPENDS ON: react, icons.js, translations.js, WebViewContainer.jsx, ToolsContainer.jsx, SettingsContainer.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

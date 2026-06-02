@@ -3,8 +3,8 @@
 // PATH: src/ui/settings/DebugModulesSection.jsx
 // VERSION: 0.0.3
 // PURPOSE: UI do zarządzania filtrowaniem logów per-moduł. Widoczna tylko w trybie debugMode.
-// FUNCTIONS: DebugModulesSection, handleToggle
-// DEPENDS ON: react, DEBUG_MODULES, TranslationContext, loggerRenderer, ICONS
+// FUNCTIONS: DebugModulesSection
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
