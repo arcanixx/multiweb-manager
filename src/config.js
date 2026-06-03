@@ -90,6 +90,8 @@ export const FEATURES = {
   richText: true,
 
   // Tools
+  removeBg: true,
+  stringCombiner: true,
   jsonYamlXmlFormatter: true,
   regexTester: true,
   markdownPreviewer: true,

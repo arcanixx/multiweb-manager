@@ -1,14 +1,14 @@
 // =============================================================================
-// FILE:       ToolsPanel.jsx
-// PATH:       src/ui/tools/ToolsPanel.jsx
-// VERSION:    0.0.3
+// FILE: ToolsPanel.jsx
+// PATH: src/ui/tools/ToolsPanel.jsx
+// VERSION: 0.0.3
 // PURPOSE:    Główny panel narzędziowy aplikacji (Tools Panel) – dostarcza interfejs
 //             oparty na zakładkach do obsługi narzędzi pomocniczych (JSON Formatter,
 //             Regex Tester, Clipboard History, Image Tools, Mini Postman, Cookie Grabber
 //             itp.). Obsługuje dynamiczne ładowanie na podstawie flag funkcji (feature flags).
 //             Komponenty narzędzi ładowane leniwie (React.lazy) — kod pobierany dopiero
 //             po pierwszym kliknięciu zakładki, co skraca czas startu aplikacji.
-// FUNCTIONS:  ToolsPanel
+// FUNCTIONS: ToolsPanel
 // DEPENDS ON: react, config.js, translations.js, icons, loggerRenderer, RemoveBgTool.jsx,
 //             StringCombiner.jsx, JsonFormatter.jsx, RegexTester.jsx, MarkdownPreviewer.jsx,
 //             ClipboardHistory.jsx, ImageTools.jsx, SvgToPngConverter.jsx, MiniPostman.jsx,
@@ -59,8 +59,8 @@ export default function ToolsPanel({ removeBgApiKey, plan = 'free', activeWebVie
   //   feature: null  → zawsze widoczne
   //   feature: 'key' → widoczne tylko gdy isFeatureEnabled('key') === true
   const allTools = [
-    { id: 'removebg',        icon: ICONS.REMOVEBG,      label: t('tools.removebg'),        feature: null },
-    { id: 'stringCombiner',  icon: ICONS.STRINGCOMBINER, label: t('tools.stringCombiner'),  feature: null },
+    { id: 'removebg',        icon: ICONS.REMOVEBG,      label: t('tools.removebg'),        feature: 'removeBg' },
+    { id: 'stringCombiner',  icon: ICONS.STRINGCOMBINER, label: t('tools.stringCombiner'),  feature: 'stringCombiner' },
     { id: 'jsonFormatter',   icon: ICONS.JSON,           label: t('tools.jsonFormatter'),   feature: 'jsonYamlXmlFormatter' },
     { id: 'regexTester',     icon: ICONS.REGEX,          label: t('tools.regexTester'),     feature: 'regexTester' },
     { id: 'markdownPreviewer', icon: ICONS.MARKDOWN,     label: t('tools.markdownPreviewer'), feature: 'markdownPreviewer' },

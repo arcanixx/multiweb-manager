@@ -1,11 +1,11 @@
 // =============================================================================
-// FILE:       loggerRenderer.js
-// PATH:       src/utils/loggerRenderer.js
-// VERSION:    0.0.3
+// FILE: loggerRenderer.js
+// PATH: src/utils/loggerRenderer.js
+// VERSION: 0.0.3
 // PURPOSE:    Cienki wrapper re-eksportujący logger.js dla procesu renderera (React).
 //             Eksportuje też LOG_CATEGORIES – stałą z nazwami dostępnych kategorii,
 //             przydatną przy dynamicznym filtrowaniu logów w DebugModulesSection.jsx.
-// FUNCTIONS:  -
+// FUNCTIONS: -
 // DEPENDS ON: loggerRenderer, logger.js, config.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

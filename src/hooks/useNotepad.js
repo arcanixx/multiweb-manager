@@ -1,7 +1,7 @@
 // =============================================================================
-// FILE:       useNotepad.js
-// PATH:       src/hooks/useNotepad.js
-// VERSION:    0.0.3
+// FILE: useNotepad.js
+// PATH: src/hooks/useNotepad.js
+// VERSION: 0.0.3
 // PURPOSE:    Hook React do zarządzania notatkami użytkownika – obsługa operacji CRUD
 //             (Create, Read, Update, Delete) przez mostek IPC.
 //             PODZIAŁ ODPOWIEDZIALNOŚCI:
@@ -9,7 +9,7 @@
 //               • useNotepadUI   → autosave co 5s, stan zakładek, toast (useNotepadUI.js)
 //               • useNotepadTabs → logika zakładek (useNotepadTabs.js)
 //             Nie dodawać tu autosave ani logiki zakładek — ta logika żyje w useNotepadUI.js.
-// FUNCTIONS:  useNotepad
+// FUNCTIONS: useNotepad
 // DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
