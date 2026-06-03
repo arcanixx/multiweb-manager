@@ -10,7 +10,7 @@
 
 import { useEffect, useState, useContext } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
-import ConfirmModal from '../../ui/modals/ConfirmModal';
+// import ConfirmModal from '../../ui/modals/ConfirmModal'; // TODO: do użycia gdy potwierdzenie będzie renderowane w komponencie (np. Sidebar.jsx) – hook otrzymuje showConfirm jako callback
 import { TranslationContext } from '../../utils/translations.js';
 
 // ─── useWorkspaces() – hook do zarządzania workspace'ami
