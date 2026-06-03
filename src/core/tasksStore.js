@@ -14,7 +14,14 @@ import { logInfo, logError, logWarn } from "../utils/logger.js";
 
 // ─── TASKS_DIR() – zwraca ścieżkę do folderu z plikami zadań w userData
 //   @returns {string} – pełna ścieżka do katalogu tasks/
-const TASKS_DIR = () => getUserDataPath("tasks");
+const TASKS_DIR = () => {
+  try {
+    return getUserDataPath("tasks");
+  } catch (err) {
+    logError("tasks", "tasksStore.TASKS_DIR failed", err.message);
+    return "tasks";
+  }
+};
 
 // ─── taskFile() – generuje bezpieczną ścieżkę do pliku zadań dla projektu
 //   @param {string} projectName – nazwa projektu
@@ -45,8 +52,8 @@ export function loadTasksSections(projectName) {
       done: t.done || []
     };
   } catch (err) {
-    logError('tasks', 'loadTasksSections failed', err);
-    logWarn('tasks', `Nie można załadować zadań dla projektu ${projectName}`);
+    logError('loadTasksSections failed', err);
+    logWarn(`Nie można załadować zadań dla projektu ${projectName}`);
     return EMPTY_SECTIONS();
   }
 }
@@ -74,11 +81,11 @@ export function saveTasksForProject(projectName, payload) {
       project: projectName,
       ...body
     });
-    logInfo('tasks', "tasksStore.saveTasksForProject", projectName);
+    logInfo("tasksStore.saveTasksForProject", projectName);
     return body;
   } catch (err) {
-    logError('tasks', 'saveTasksForProject failed', err);
-    logWarn('tasks', `Nie można zapisać zadań dla projektu ${projectName}`);
+    logError('saveTasksForProject failed', err);
+    logWarn(`Nie można zapisać zadań dla projektu ${projectName}`);
     return payload;
   }
 }
@@ -97,8 +104,8 @@ export function loadAllTasksGrouped() {
     }
     return out;
   } catch (err) {
-    logError('tasks', 'loadAllTasksGrouped failed', err);
-    logWarn('tasks', 'Nie można załadować wszystkich zadań');
+    logError('loadAllTasksGrouped failed', err);
+    logWarn('Nie można załadować wszystkich zadań');
     return {};
   }
 }
@@ -116,11 +123,11 @@ export function loadTasks() {
         }
       }
     }
-    logInfo('tasks', "tasksStore.loadTasks", flat.length);
+    logInfo("tasksStore.loadTasks", flat.length);
     return flat;
   } catch (err) {
-    logError('tasks', 'loadTasks failed', err);
-    logWarn('tasks', 'Nie można załadować płaskiej listy zadań');
+    logError('loadTasks failed', err);
+    logWarn('Nie można załadować płaskiej listy zadań');
     return [];
   }
 }

@@ -24,18 +24,27 @@ ipcMain.handle("notes:getAll", async () => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle("notes:add", async (_, note) => {
+ipcMain.handle("notes:add", async (_, payload) => {
   try {
-    if (!note || typeof note !== 'object') throw new Error('NOTE_INVALID_PAYLOAD');
-    if (!note.id || typeof note.id !== 'string') throw new Error('NOTE_INVALID_ID');
+    if (!payload || typeof payload !== 'object') {
+      throw new Error('NOTE_INVALID_PAYLOAD');
+    }
+    const note = payload;
+    if (!note.id || typeof note.id !== 'string') {
+      throw new Error('NOTE_INVALID_ID');
+    }
     return { ok: true, data: addNote(note) };
   } catch (err) {
     logError('ipc', "notes:add", err);
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle("notes:update", async (_, { id, patch }) => {
+ipcMain.handle("notes:update", async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('id' in payload) || !('patch' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id, patch } = payload;
     if (!id || typeof id !== 'string') throw new Error('NOTE_ID_REQUIRED');
     if (!patch || typeof patch !== 'object') throw new Error('NOTE_INVALID_PATCH');
     return { ok: true, data: updateNote(id, patch) };
@@ -44,9 +53,15 @@ ipcMain.handle("notes:update", async (_, { id, patch }) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle("notes:delete", async (_, id) => {
+ipcMain.handle("notes:delete", async (_, payload) => {
   try {
-    if (!id || typeof id !== 'string') throw new Error('NOTE_ID_REQUIRED');
+    if (!payload || typeof payload !== 'string') {
+      throw new Error('NOTE_ID_REQUIRED');
+    }
+    const id = payload;
+    if (!id || typeof id !== 'string') {
+      throw new Error('NOTE_ID_REQUIRED');
+    }
     deleteNote(id);
     return { ok: true };
   } catch (err) {

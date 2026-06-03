@@ -22,8 +22,13 @@ function getWebContentsById(id) {
     return null;
   }
 }
-ipcMain.handle('webview:screenshot', async (_, id) => {
+ipcMain.handle('webview:screenshot', async (_, payload) => {
   try {
+    // TODO: Add rate limiting for screenshot (e.g., using timestamp map)
+    if (!payload || typeof payload !== 'object' || !('id' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id } = payload;
     if (!FEATURES.screenshotWebView) throw new Error('FEATURE_DISABLED');
     const wc = getWebContentsById(id);
     if (!wc) throw new Error('WEBVIEW_NOT_FOUND');

@@ -12,6 +12,32 @@
 
 3. **Aktywny Preload Bridge:** Jedynym aktywnym plikiem pomostu jest `preload.cjs`. Plik `preload.js` jest wyłączony i znajduje się w `.gitignore`. Nie sugeruj zmian w `preload.js`.
 
+4. **Zasada "Don't Guess, Ask":** Jeśli specyfikacja zadania jest niejasna lub brakuje typów danych z backendu, nie zgaduj struktury lub rozwiązania. Zatrzymaj się i poproś użytkownika o doprecyzowanie.
+
+5. **Formatowanie odpowiedzi"** Ogranicz wyjaśnienia tekstowe do minimum. Skup się na dostarczeniu czystego, gotowego kodu.
+---
+
+## REGÓŁY DOSTĘPU DO PLIKÓW I BEZPIECZEŃSTWA REPOZYTORIUM
+
+### 1. Zakaz zgadywania i zakładania nieistnienia plików
+* **NIGDY** nie zakładaj, że plik nie istnieje tylko dlatego, że nie ma go w obecnym kontekście rozmowy.
+* Jeśli potrzebujesz zmodyfikować konfigurację (np. `config.js`), a nie widzisz jej zawartości, **MUSISZ** najpierw poprosić użytkownika o jej udostępnienie lub użyć narzędzi wyszukiwania/odczytu.
+* **NIGDY** nie twórz pliku od zera (jako plik finałowy), jeśli istnieje ryzyko, że zastąpi on bogatszą, istniejącą wersję w repozytorium.
+
+### 2. Wykorzystanie dokumentacji struktury projektu
+* Przed zaproponowaniem zmian strukturalnych lub dodaniem nowych plików, **ZWSZE** zapoznaj się z plikami mapującymi projekt:
+  * `doc/Structure_light.md` – w celu weryfikacji aktualnej listy plików w projekcie.
+  * `doc/Structure.md` – w celu sprawdzenia eksportowanych funkcji (`FUNCTIONS`) oraz zależności (`DEPENDS_ON`).
+* Używaj tych plików, aby ocenić, czy dana funkcjonalność nie została już zaimplementowana w innym miejscu repozytorium.
+
+### 3. Praca na najnowszych wersjach (Identyfikacja Prawdy)
+* Zanim dokonasz edycji kodu, upewnij się, że operujesz na najświeższej wersji pliku. 
+* W przypadku wątpliwości dotyczących stanu synchronizacji z GitHubem, wstrzymaj działanie i poproś użytkownika o weryfikację lub wykonanie `git pull`.
+
+### 4. Proponowanie ulepszeń i Dobre Praktyki (Clean Code)
+* Twoim zadaniem jest nie tylko bezmyślne wykonywanie poleceń, ale też dbanie o jakość kodu.
+* Jeśli widzisz, że zadanie można wykonać lepiej, zgodnie z dobrymi praktykami (SOLID, DRY, YAGNI), **ZAPROPONUJ** to rozwiązanie użytkownikowi przed przystąpieniem do pisania kodu.
+
 ---
 
 ## ⚙️ Weryfikacja Wersji i Nagłówki Plików
@@ -152,8 +178,8 @@ export default function Komponent() {
 ### Dynamiczne ładowanie testów (`testsLoader.js`)
 
 - Plik `src/loaders/testsLoader.js` automatycznie wykrywa i uruchamia wszystkie `TestRunner_*.js` z folderu `tests/`
-- Nie trzeba ręcznie importować testów w `TestRunner.js`
-- Nowy test = nowy plik `TestRunner_Nazwa.js` z eksportowaną funkcją `runNazwaTests()`
+- Nie trzeba ręcznie importować testów w `TestRunner.js'
+- Nowy test = nowy plik `TestRunner_Nazwa.js` z eksportowaną funkcją `runNazwaTests()` i użyciem 'tests/testUtils.js'
 
 ### Format testu
 
@@ -259,6 +285,7 @@ Wszystkie ikony importuj **WYŁĄCZNIE** z pliku fasady `src/utils/icons.js` (re
 - [ ] Nowe funkcje mają testy w `tests/TestRunner_*.js`
 - [ ] Zmiany UI są dopisane do `pending_updates_for_Definition_Mockups_UI_UX.md` (nie do głównego pliku)
 - [ ] Jeśli nowy moduł ma flagę w FEATURES — `isFeatureEnabled` dodany PO hookach, wpis w `DevelopersGuide.md` sekcja 17.4
+- [ ] Jeżeli są stringi widoczne dla użytkownika, poprawne zastosowanie Locales poprzez translations.js i update kluczy tłumaczeń
 - [ ] Nie robisz automatycznych commitów
 
 ---

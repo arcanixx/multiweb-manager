@@ -15,8 +15,12 @@ import {
   loadAllTasksGrouped
 } from "../core/tasksStore.js";
 import { logError } from "../utils/logger.js";
-ipcMain.handle("tasks:getAll", async (_, projectName) => {
+ipcMain.handle("tasks:getAll", async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'string') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const projectName = payload;
     if (projectName) {
       return { ok: true, data: loadTasksSections(projectName) };
     }
@@ -26,8 +30,12 @@ ipcMain.handle("tasks:getAll", async (_, projectName) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle("tasks:saveSections", async (_, { projectName, sections }) => {
+ipcMain.handle("tasks:saveSections", async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('projectName' in payload) || !('sections' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { projectName, sections } = payload;
     if (!projectName || typeof projectName !== 'string') throw new Error('TASKS_PROJECT_NAME_REQUIRED');
     if (!Array.isArray(sections)) throw new Error('TASKS_SECTIONS_MUST_BE_ARRAY');
     saveTasksForProject(projectName, { tasks: sections });

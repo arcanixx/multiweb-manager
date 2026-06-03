@@ -2,9 +2,9 @@
 // FILE: TaskPanel.jsx
 // PATH: src/ui/taskpanel/TaskPanel.jsx
 // VERSION: 0.0.3
-// PURPOSE: Interfejs zarządzania zadaniami dla konkretnego projektu. Obsługuje wizualizację tablicy Kanban (Active, Backlog, Done), filtrowanie oraz synchronizację z tasksStore.
+// PURPOSE: Główny komponent panelu zadań (TaskPanel) – orkiestruje stan, operacje IPC (ładowanie, zapisywanie, usuwanie zadań) oraz koordynuje renderowanie list sekcji zadań i modali.
 // FUNCTIONS: TaskPanel
-// DEPENDS ON: react, tasksStore.js, projectsStore.js, translations.js, loggerRenderer.js, icons.js, ConfirmModal.jsx, TaskItem.jsx, TaskModal.jsx
+// DEPENDS ON: react, tasksStore.js, projectsStore.js, translations.js, loggerRenderer.js, icons.js, ConfirmModal.jsx, TaskSectionList.jsx, TaskModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -12,11 +12,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { loadTasksForProject, saveTasksForProject, deleteTask, updateTask } from '../../core/tasksStore.js';
 import { loadProjects } from '../../core/projectsStore.js';
 import { TranslationContext } from '../../utils/translations.js';
-import { logInfo, logError } from '../../utils/loggerRenderer.js';
+import { logInfo, logError, logDebug } from '../../utils/loggerRenderer.js';
 import { ICONS } from '../../utils/icons.js';
 import ConfirmModal from '../modals/ConfirmModal.jsx';
-import TaskItem from './TaskItem.jsx';
-import TaskModal from './TaskModal.jsx';
+import TaskModal from '../modals/TaskModal.jsx';
+import TaskSectionList from './TaskSectionList.jsx';
 
 export default function TaskPanel({ projectId, onClose }) {
   const { t } = useContext(TranslationContext);
@@ -29,6 +29,7 @@ export default function TaskPanel({ projectId, onClose }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    logDebug('tasks', 'TaskPanel: mounting for project', projectId);
     loadData();
   }, [projectId]);
 
@@ -56,20 +57,22 @@ export default function TaskPanel({ projectId, onClose }) {
 //   @returns {Promise<void>}
   const handleSaveTask = async (taskData) => {
     try {
-      const updatedTasks = { ...tasks };
+      let updatedTasks;
       if (taskData.id) {
-        // update existing
-        for (const section of ['active', 'backlog', 'done']) {
-          const index = updatedTasks[section].findIndex(t => t.id === taskData.id);
-          if (index !== -1) {
-            updatedTasks[section][index] = taskData;
-            break;
-          }
-        }
+        // update istniejącego – immutable map przez wszystkie sekcje
+        updatedTasks = {
+          active:  tasks.active.map(t  => t.id === taskData.id ? taskData : t),
+          backlog: tasks.backlog.map(t => t.id === taskData.id ? taskData : t),
+          done:    tasks.done.map(t   => t.id === taskData.id ? taskData : t),
+        };
       } else {
-        // add new
+        // dodaj nowe – immutable spread sekcji docelowej
         const newTask = { ...taskData, id: Date.now(), createdAt: new Date().toISOString() };
-        updatedTasks[taskData.section || 'active'].push(newTask);
+        const targetSection = taskData.section || 'active';
+        updatedTasks = {
+          ...tasks,
+          [targetSection]: [...tasks[targetSection], newTask],
+        };
       }
       await saveTasksForProject(projectId, updatedTasks);
       setTasks(updatedTasks);
@@ -91,14 +94,12 @@ export default function TaskPanel({ projectId, onClose }) {
   const handleDeleteConfirm = async () => {
     if (!taskToDelete) return;
     try {
-      const updatedTasks = { ...tasks };
-      for (const section of ['active', 'backlog', 'done']) {
-        const index = updatedTasks[section].findIndex(t => t.id === taskToDelete.id);
-        if (index !== -1) {
-          updatedTasks[section].splice(index, 1);
-          break;
-        }
-      }
+      // immutable filter – usuwa zadanie ze wszystkich sekcji bez mutacji
+      const updatedTasks = {
+        active:  tasks.active.filter(t  => t.id !== taskToDelete.id),
+        backlog: tasks.backlog.filter(t => t.id !== taskToDelete.id),
+        done:    tasks.done.filter(t   => t.id !== taskToDelete.id),
+      };
       await saveTasksForProject(projectId, updatedTasks);
       setTasks(updatedTasks);
       logInfo('tasks', `TaskPanel: deleted task ${taskToDelete.id}`);
@@ -116,15 +117,16 @@ export default function TaskPanel({ projectId, onClose }) {
 //   @returns {Promise<void>}
   const handleMoveTask = async (task, newSection) => {
     try {
-      const updatedTasks = { ...tasks };
-      for (const section of ['active', 'backlog', 'done']) {
-        const index = updatedTasks[section].findIndex(t => t.id === task.id);
-        if (index !== -1) {
-          updatedTasks[section].splice(index, 1);
-          break;
-        }
-      }
-      updatedTasks[newSection].push({ ...task, section: newSection });
+      // immutable: najpierw usuwamy z wszystkich sekcji filtrem, potem dodajemy do docelowej
+      const without = {
+        active:  tasks.active.filter(t  => t.id !== task.id),
+        backlog: tasks.backlog.filter(t => t.id !== task.id),
+        done:    tasks.done.filter(t   => t.id !== task.id),
+      };
+      const updatedTasks = {
+        ...without,
+        [newSection]: [...without[newSection], { ...task, section: newSection }],
+      };
       await saveTasksForProject(projectId, updatedTasks);
       setTasks(updatedTasks);
       logInfo('tasks', `TaskPanel: moved task ${task.id} to ${newSection}`);
@@ -143,6 +145,16 @@ export default function TaskPanel({ projectId, onClose }) {
 
   if (loading) return <div className="loading">{t('common.loading')}</div>;
 
+  const handlers = {
+    onMoveToDone: (id) => handleMoveTask(tasks.active.find(t => t.id === id), 'done'),
+    onMoveToBacklog: (id) => handleMoveTask(tasks.active.find(t => t.id === id), 'backlog'),
+    onMoveToActive: (id) => handleMoveTask([...tasks.backlog, ...tasks.done].find(t => t.id === id), 'active'),
+    onPin: (id, section) => handleSaveTask({ ...tasks[section].find(t => t.id === id), pinned: !tasks[section].find(t => t.id === id).pinned }),
+    onDelete: handleDeleteClick,
+    onEdit: (task) => { setSelectedTask(task); setShowTaskModal(true); },
+    onOpenComment: (task) => { /* logic for comment modal if needed */ }
+  };
+
   return (
     <div className="task-panel">
       <div className="task-panel-header">
@@ -151,72 +163,12 @@ export default function TaskPanel({ projectId, onClose }) {
       </div>
 
       <div className="task-panel-actions">
-        <button className="btn-primary" onClick={() => {
-          setSelectedTask(null);
-          setShowTaskModal(true);
-        }}>
+        <button className="btn-primary" onClick={() => handlers.onEdit(null)}>
           {ICONS.ADD} {t('tasks.add')}
         </button>
       </div>
 
-      <div className="task-sections">
-        {/* Active section */}
-        <div className="task-section">
-          <h3>{t('tasks.active')} ({tasks.active.length})</h3>
-          {tasks.active.map(task => (
-            <TaskItem
-              key={task.id}
-              task={task}
-              onEdit={() => {
-                setSelectedTask(task);
-                setShowTaskModal(true);
-              }}
-              onDelete={() => handleDeleteClick(task)}
-              onMove={(newSection) => handleMoveTask(task, newSection)}
-              projectId={projectId}
-            />
-          ))}
-          {tasks.active.length === 0 && <div className="empty-state">{t('tasks.no_tasks')}</div>}
-        </div>
-
-        {/* Backlog section */}
-        <div className="task-section">
-          <h3>{t('tasks.backlog')} ({tasks.backlog.length})</h3>
-          {tasks.backlog.map(task => (
-            <TaskItem
-              key={task.id}
-              task={task}
-              onEdit={() => {
-                setSelectedTask(task);
-                setShowTaskModal(true);
-              }}
-              onDelete={() => handleDeleteClick(task)}
-              onMove={(newSection) => handleMoveTask(task, newSection)}
-              projectId={projectId}
-            />
-          ))}
-          {tasks.backlog.length === 0 && <div className="empty-state">{t('tasks.no_tasks')}</div>}
-        </div>
-
-        {/* Done section */}
-        <div className="task-section">
-          <h3>{t('tasks.done')} ({tasks.done.length})</h3>
-          {tasks.done.map(task => (
-            <TaskItem
-              key={task.id}
-              task={task}
-              onEdit={() => {
-                setSelectedTask(task);
-                setShowTaskModal(true);
-              }}
-              onDelete={() => handleDeleteClick(task)}
-              onMove={(newSection) => handleMoveTask(task, newSection)}
-              projectId={projectId}
-            />
-          ))}
-          {tasks.done.length === 0 && <div className="empty-state">{t('tasks.no_tasks')}</div>}
-        </div>
-      </div>
+      <TaskSectionList tasks={tasks} handlers={handlers} />
 
       {showTaskModal && (
         <TaskModal

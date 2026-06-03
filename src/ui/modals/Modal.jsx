@@ -8,8 +8,9 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useEffect } from 'react';
-import { logInfo } from '../utils/loggerRenderer.js';
+import React, { useEffect, useContext } from 'react';
+import { TranslationContext } from '../../utils/translations.js';
+import { logInfo } from '../../utils/loggerRenderer.js';
 
 // ─── Modal() – bazowy komponent modalny dla całej aplikacji
 //   @param {Object} props – właściwości komponentu
@@ -20,6 +21,7 @@ import { logInfo } from '../utils/loggerRenderer.js';
 //   @param {string} props.size – rozmiar modala (small, medium, large, full)
 //   @returns {JSX.Element|null} – renderowany modal lub null
 export default function Modal({ isOpen, onClose, title, children, size = 'medium' }) {
+  const { t } = useContext(TranslationContext);
 
   // ─── useEffect – obsługa klawisza Escape i blokowanie scrolla
   useEffect(() => {
@@ -57,7 +59,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'medium
         {title && (
           <div className="modal-header">
             <h3>{title}</h3>
-            <button className="modal-close" onClick={onClose}>×</button>
+            <button className="modal-close" onClick={onClose} title={t('common.close')}>×</button>
           </div>
         )}
         <div className="modal-body">

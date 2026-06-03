@@ -10,6 +10,7 @@
 
 import React from 'react';
 import { TranslationContext } from '../../utils/translations.js';
+import { logError, logWarn, logDebug } from '../../utils/loggerRenderer.js';
 import Modal from '../modals/Modal';
 
 // ─── HotkeyModal() – modal edycji/dodawania skrótu klawiszowego

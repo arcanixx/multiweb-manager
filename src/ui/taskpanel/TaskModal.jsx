@@ -2,13 +2,13 @@
 // FILE: TaskModal.jsx
 // PATH: src/ui/taskpanel/TaskModal.jsx
 // VERSION: 0.0.3
-// PURPOSE: Formularz modalny do kompleksowego zarządzania zadaniem. Obsługuje edycję metadanych takich jak: priorytet, sekcja, przypisanie do projektu oraz dodatkowe notatki i wersjonowanie.
+// PURPOSE: Modal do dodawania i edycji zadań. Umożliwia konfigurację nazwy, opisu, priorytetu, sekcji, projektu, wersji, komentarza oraz statusu przypięcia.
 // FUNCTIONS: TaskModal
 // DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
@@ -23,6 +23,7 @@ import { ICONS } from '../../utils/icons.js';
 //   @returns {JSX.Element} – renderowany modal zadania
 
 export default function TaskModal({ task, availableProjects, currentProject, onSave, onClose }) {
+  useEffect(() => { logDebug('tasks', 'TaskModal mounted'); }, []);
   const { t } = useContext(TranslationContext);
   const isEdit = !!task;
   const [name, setName] = useState(task?.name || '');

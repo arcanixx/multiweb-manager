@@ -4,11 +4,12 @@
 // VERSION: 0.0.3
 // PURPOSE: Sekcja workspace'ów w Sidebarze
 // FUNCTIONS: SidebarWorkspaces
-// DEPENDS ON: react, translations.js, icons.js
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 
@@ -21,6 +22,7 @@ import { ICONS } from '../../utils/icons.js';
 
 export default function SidebarWorkspaces({ workspaces, activeWorkspace, onSelect }) {
   const { t } = useContext(TranslationContext);
+  useEffect(() => { logDebug('ui', 'SidebarWorkspaces mounted'); }, []);
   if (!workspaces || workspaces.length === 0) return null;
   return (
     <div style={{ marginTop: 12 }}>

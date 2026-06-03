@@ -14,8 +14,12 @@ import { logError } from '../utils/logger.js';
 // -----------------------------------------------------------------------------
 // Włącz / wyłącz blokadę globalnie (dla wszystkich profili)
 // -----------------------------------------------------------------------------
-ipcMain.handle('adblocker:setGlobal', (_, enabled) => {
+ipcMain.handle('adblocker:setGlobal', (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'boolean') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const enabled = payload;
     setGlobalAdBlocker(enabled);
     return { ok: true };
   } catch (err) {
@@ -35,8 +39,13 @@ ipcMain.handle('adblocker:getGlobal', () => {
 // -----------------------------------------------------------------------------
 // Włącz / wyłącz blokadę dla konkretnego profilu
 // -----------------------------------------------------------------------------
-ipcMain.handle('adblocker:setForProfile', (_, profileId, enabled) => {
+ipcMain.handle('adblocker:setForProfile', (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || 
+        !('profileId' in payload) || !('enabled' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { profileId, enabled } = payload;
     setProfileAdBlocker(profileId, enabled);
     return { ok: true };
   } catch (err) {
@@ -45,8 +54,12 @@ ipcMain.handle('adblocker:setForProfile', (_, profileId, enabled) => {
   }
 });
 // Zwróć stan blokady dla konkretnego profilu
-ipcMain.handle('adblocker:getForProfile', (_, profileId) => {
+ipcMain.handle('adblocker:getForProfile', (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'string') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const profileId = payload;
     return { ok: true, data: getProfileAdBlocker(profileId) };
   } catch (err) {
     logError('ipc', 'adblocker:getForProfile failed', err);

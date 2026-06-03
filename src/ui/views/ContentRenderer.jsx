@@ -8,8 +8,9 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ICONS } from '../../utils/icons.js';
+import { logDebug } from '../../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import WebViewContainer from './WebViewContainer.jsx';
 import ToolsContainer from './ToolsContainer.jsx';
@@ -26,6 +27,7 @@ const SETTINGS_IDS = ['settings', 'help', 'aggregatedTasks', 'history'];
 //   @param {boolean}  props.sidebarModalOpen – czy sidebar modal jest otwarty
 //   @returns {JSX.Element}
 export function ContentRenderer({ activeItem, settings, onSaveSettings, onOpenTasks, sidebarModalOpen }) {
+  useEffect(() => { logDebug('ui', 'ContentRenderer mounted'); }, []);
   const { t } = useContext(TranslationContext);
 
   // Ekran powitalny — nic nie wybrano

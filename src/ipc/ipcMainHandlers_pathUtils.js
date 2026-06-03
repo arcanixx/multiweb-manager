@@ -11,8 +11,12 @@
 import { ipcMain } from 'electron';
 import path from 'path';
 import { logError } from '../utils/logger.js';
-ipcMain.handle('path:join', async (_, parts) => {
+ipcMain.handle('path:join', async (_, payload) => {
   try {
+    if (!payload || !Array.isArray(payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const parts = payload;
     const result = path.join(...parts);
     return { ok: true, data: result };
   } catch (err) {
@@ -20,8 +24,12 @@ ipcMain.handle('path:join', async (_, parts) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('path:dirname', async (_, filePath) => {
+ipcMain.handle('path:dirname', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'string') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const filePath = payload;
     return { ok: true, data: path.dirname(filePath) };
   } catch (err) {
     logError('ipc', 'path:dirname failed', err);

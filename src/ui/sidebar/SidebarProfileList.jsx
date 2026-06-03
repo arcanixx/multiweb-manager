@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Lista profilów w sidebarze – favorites, kategorie, profil bez kategorii, z obsługą menu kontekstowego.
 // FUNCTIONS: SidebarProfileList
-// DEPENDS ON: react, translations.js, icons.js, loggerRenderer, SidebarCategory, SidebarProfileItem, ContextMenu
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js, SidebarCategory, SidebarProfileItem, ContextMenu
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

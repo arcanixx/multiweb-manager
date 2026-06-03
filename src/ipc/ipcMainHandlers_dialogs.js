@@ -10,8 +10,12 @@
 
 import { ipcMain, dialog } from 'electron';
 import { logError } from '../utils/logger.js';
-ipcMain.handle('dialog:openFile', async (_, options) => {
+ipcMain.handle('dialog:openFile', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const options = payload;
     const result = await dialog.showOpenDialog(options || {});
     return { ok: true, data: result };
   } catch (err) {
@@ -19,8 +23,12 @@ ipcMain.handle('dialog:openFile', async (_, options) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('dialog:saveFile', async (_, options) => {
+ipcMain.handle('dialog:saveFile', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const options = payload;
     const result = await dialog.showSaveDialog(options || {});
     return { ok: true, data: result };
   } catch (err) {

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Sekcja zarządzania logami aplikacji – podgląd, czyszczenie, przełączanie zapisu logów.
 // FUNCTIONS: LogsSection
-// DEPENDS ON: react, translations.js, loggerRenderer, icons.js, Modal
+// DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js, Modal
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

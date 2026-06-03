@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania treścią notatnika – stan edycji, zapis ręczny, zapis do pliku, skróty klawiszowe.
 // FUNCTIONS: useNotepadContent
-// DEPENDS ON: react, translations.js, notesStorage.js, loggerRenderer.js
+// DEPENDS ON: react, notesStorage.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

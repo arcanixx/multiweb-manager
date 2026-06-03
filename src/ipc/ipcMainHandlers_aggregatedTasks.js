@@ -40,8 +40,12 @@ ipcMain.handle("aggregatedTasks:getAll", async () => {
 // aggregatedTasks:filter – filtruje po status i/lub priority
 //   { status?: string, priority?: string }
 // ----------------------------------------------------------------
-ipcMain.handle("aggregatedTasks:filter", async (_, { status, priority }) => {
+ipcMain.handle("aggregatedTasks:filter", async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { status, priority } = payload;
     const tasks    = loadTasks();
     const projects = loadProjects();
     let filtered = tasks;
@@ -59,8 +63,12 @@ ipcMain.handle("aggregatedTasks:filter", async (_, { status, priority }) => {
 // aggregatedTasks:sort – sortuje po "priority" lub "date"
 //   { by: "priority" | "date" }
 // ----------------------------------------------------------------
-ipcMain.handle("aggregatedTasks:sort", async (_, { by }) => {
+ipcMain.handle("aggregatedTasks:sort", async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('by' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { by } = payload;
     const tasks    = loadTasks();
     const projects = loadProjects();
     const enriched = enrich(tasks, projects);

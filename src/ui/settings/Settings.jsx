@@ -18,12 +18,14 @@ import DebugModulesSection from './DebugModulesSection';
 import DataManagementSection from './DataManagementSection';
 import LogsSection from './LogsSection';
 import AccountSection from './AccountSection';
+import { logError, logWarn, logInfo, logDebug } from '../../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 
 // ─── Settings() – kontener wszystkich sekcji ustawień aplikacji
 // @returns {JSX.Element} – renderowany interfejs ustawień
 export default function Settings() {
   const { t } = React.useContext(TranslationContext);
+  React.useEffect(() => { logInfo('settings', 'Settings view opened'); }, []);
   return (
     <div className="settings-container">
       <h2>{t('settings.title')}</h2>

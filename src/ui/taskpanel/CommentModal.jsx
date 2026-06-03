@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
@@ -20,6 +20,7 @@ import { ICONS } from '../../utils/icons.js';
 //   @returns {JSX.Element} – renderowany modal komentarza
 
 export default function CommentModal({ task, onClose }) {
+  useEffect(() => { logDebug('ui', 'CommentModal mounted'); }, []);
   const { t } = useContext(TranslationContext);
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>

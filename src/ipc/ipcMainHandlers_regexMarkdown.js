@@ -10,11 +10,30 @@
 
 import { ipcMain } from 'electron';
 import { logError } from '../utils/logger.js';
-ipcMain.handle('tools:regexTest', async (_, { pattern, flags, text }) => {
+ipcMain.handle('tools:regexTest', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || 
+        !('pattern' in payload) || !('flags' in payload) || 
+        !('text' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { pattern, flags, text } = payload;
     const regex = new RegExp(pattern, flags || '');
     const matches = [...text.matchAll(regex)];
     return { ok: true, data: matches };
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
+});
+ipcMain.handle('tools:markdownRender', async (_, payload) => {
+  try {
+    if (!payload || typeof payload !== 'string') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const markdownText = payload;
+    const { marked } = await import('marked');
+    const html = marked(markdownText);
+    return { ok: true, data: html };
   } catch (err) {
     return { ok: false, error: err.message };
   }

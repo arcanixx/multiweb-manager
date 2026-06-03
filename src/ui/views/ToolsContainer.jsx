@@ -8,8 +8,8 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { lazy, Suspense } from 'react';
-import { logWarn } from '../../utils/loggerRenderer.js';
+import React, { lazy, Suspense, useEffect } from 'react';
+import { logWarn, logDebug } from '../../utils/loggerRenderer.js';
 import { Spinner } from './Spinner.jsx';
 
 const Notepad        = lazy(() => import('../notepad/Notepad'));
@@ -24,6 +24,7 @@ const Terminal       = lazy(() => import('../terminal/Terminal'));
 //   @param {Function} props.onOpenTasks – callback otwierający TaskPanel dla projektu
 //   @returns {JSX.Element|null}
 export default function ToolsContainer({ activeItem, settings, onOpenTasks }) {
+  useEffect(() => { logDebug('ui', 'ToolsContainer mounted'); }, []);
   const wrap = (Component, props = {}) => (
     <Suspense fallback={<Spinner />}>
       <Component {...props} />

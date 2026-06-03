@@ -25,8 +25,12 @@ function getWebContentsById(id) {
     return null;
   }
 }
-ipcMain.handle('webview:setUserAgent', async (_, { id, userAgent }) => {
+ipcMain.handle('webview:setUserAgent', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('id' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id, userAgent } = payload;
     const wc = getWebContentsById(id);
     if (!wc) throw new Error('WEBVIEW_NOT_FOUND');
     wc.setUserAgent(userAgent || DEFAULT_SETTINGS.defaultUserAgent);
@@ -36,8 +40,12 @@ ipcMain.handle('webview:setUserAgent', async (_, { id, userAgent }) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('webview:openInWindow', async (_, { url, userAgent }) => {
+ipcMain.handle('webview:openInWindow', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('url' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { url, userAgent } = payload;
     if (!FEATURES.singleAppMode) throw new Error('FEATURE_DISABLED');
     const win = new BrowserWindow({
       width: 1200,
@@ -61,8 +69,12 @@ ipcMain.handle('webview:openInWindow', async (_, { url, userAgent }) => {
   }
 });
 
-ipcMain.handle('webview:getUsage', async (_, id) => {
+ipcMain.handle('webview:getUsage', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('id' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id } = payload;
     if (!FEATURES.resourceMonitor) throw new Error('FEATURE_DISABLED');
     const wc = getWebContentsById(id);
     if (!wc) throw new Error('WEBVIEW_NOT_FOUND');
@@ -74,8 +86,12 @@ ipcMain.handle('webview:getUsage', async (_, id) => {
   }
 });
 
-ipcMain.handle('webview:sleep', async (_, id) => {
+ipcMain.handle('webview:sleep', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('id' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id } = payload;
     if (!FEATURES.sleepTabs) throw new Error('FEATURE_DISABLED');
     const wc = getWebContentsById(id);
     if (!wc) throw new Error('WEBVIEW_NOT_FOUND');
@@ -88,8 +104,12 @@ ipcMain.handle('webview:sleep', async (_, id) => {
   }
 });
 
-ipcMain.handle('webview:wake', async (_, id) => {
+ipcMain.handle('webview:wake', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('id' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id } = payload;
     if (!FEATURES.sleepTabs) throw new Error('FEATURE_DISABLED');
     const wc = getWebContentsById(id);
     if (!wc) throw new Error('WEBVIEW_NOT_FOUND');

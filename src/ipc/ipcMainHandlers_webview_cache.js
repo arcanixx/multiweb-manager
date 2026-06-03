@@ -21,8 +21,12 @@ function getWebContentsById(id) {
     return null;
   }
 }
-ipcMain.handle('webview:clearCache', async (_, id) => {
+ipcMain.handle('webview:clearCache', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'string') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const id = payload;
     const wc = getWebContentsById(id);
     if (!wc) throw new Error('WEBVIEW_NOT_FOUND');
     await wc.session.clearCache();

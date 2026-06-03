@@ -20,7 +20,14 @@ import { logInfo, logError, logWarn } from "../utils/logger.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // ─── SETTINGS_FILE() – zwraca ścieżkę do pliku ustawień w userData
 //   @returns {string} – pełna ścieżka do settings.json
-const SETTINGS_FILE = () => getUserDataPath("settings.json");
+const SETTINGS_FILE = () => {
+  try {
+    return getUserDataPath("settings.json");
+  } catch (err) {
+    logError("settings", "settingsStore: Failed to resolve settings path", err.message);
+    return "settings.json";
+  }
+};
 
 // ─── baseDefaults() – ładuje domyślne ustawienia z pliku lub używa DEFAULT_SETTINGS
 //   @returns {Object} – obiekt z domyślnymi ustawieniami
@@ -33,8 +40,8 @@ function baseDefaults() {
     );
     extra = JSON.parse(raw).data || {};
   } catch (err) {
-    logError('settings', 'baseDefaults failed', err);
-    logWarn('settings', 'Nie można załadować domyślnych ustawień – używam DEFAULT_SETTINGS');
+    logError('settings', 'baseDefaults failed', err.message);
+    logWarn('Nie można załadować domyślnych ustawień – używam DEFAULT_SETTINGS');
   }
   return {
     ...DEFAULT_SETTINGS,
@@ -51,7 +58,7 @@ export function loadSettings() {
     if (!stored || typeof stored !== "object") return baseDefaults();
     return { ...baseDefaults(), ...stored };
   } catch (err) {
-    logError('settings', 'loadSettings failed', err);
+    logError('settings', 'settingsStore.loadSettings failed', err.message);
     logWarn('settings', 'Nie można załadować ustawień – używam domyślnych');
     return baseDefaults();
   }
@@ -63,10 +70,10 @@ export function loadSettings() {
 export function saveSettings(settings) {
   try {
     writeJsonFile(SETTINGS_FILE(), settings);
-    logInfo('settings', "settingsStore.saveSettings", Object.keys(settings).length);
+    logInfo("settings", "settingsStore.saveSettings success", Object.keys(settings).length);
     return settings;
   } catch (err) {
-    logError('settings', 'saveSettings failed', err);
+    logError('settings', 'settingsStore.saveSettings failed', err.message);
     logWarn('settings', 'Nie można zapisać ustawień');
     return settings;
   }

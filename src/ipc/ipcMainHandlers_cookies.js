@@ -10,8 +10,13 @@
 
 import { ipcMain, session } from 'electron';
 import { logError } from '../utils/logger.js';
-ipcMain.handle('tools:getCookies', async (_, partition) => {
+ipcMain.handle('tools:getCookies', async (_, payload) => {
   try {
+    // TODO: Add rate limiting for cookies (e.g., using timestamp map)
+    if (!payload || typeof payload !== 'object' || !('partition' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { partition } = payload;
     const ses = partition ? session.fromPartition(partition) : session.defaultSession;
     const cookies = await ses.cookies.get({});
     return { ok: true, data: cookies };

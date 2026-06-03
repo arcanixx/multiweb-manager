@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Orkiestrator hooków notatnika – łączy zarządzanie zakładkami i treścią, obsługuje autosave i toast.
 // FUNCTIONS: useNotepadUI
-// DEPENDS ON: react, useNotepadTabs, useNotepadContent, translations.js, loggerRenderer.js
+// DEPENDS ON: react, translations.js, useNotepadTabs.js, useNotepadContent.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

@@ -15,8 +15,12 @@ import { loadSharp } from '../utils/sharpLoader.js';
 // ─── ipc:tools:svgToPng – konwertuje plik SVG na PNG o podanych wymiarach
 //   Oczekuje: { svgPath, outputPath, width, height }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:svgToPng', async (_, { svgPath, outputPath, width, height }) => {
+ipcMain.handle('tools:svgToPng', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('svgPath' in payload) || !('outputPath' in payload) || !('width' in payload) || !('height' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { svgPath, outputPath, width, height } = payload;
     const sharp = await loadSharp();
     if (!sharp) return { ok: false, error: 'SHARP_MODULE_MISSING' };
     const svg = fs.readFileSync(svgPath, 'utf8');

@@ -14,8 +14,14 @@ import { loadSharp } from '../utils/sharpLoader.js';
 // ─── ipc:tools:image:resize – zmienia rozmiar obrazu
 //   Oczekuje: { inputPath, width, height, outputPath }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:image:resize', async (_, { inputPath, width, height, outputPath }) => {
+ipcMain.handle('tools:image:resize', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || 
+        !('inputPath' in payload) || !('width' in payload) || 
+        !('height' in payload) || !('outputPath' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { inputPath, width, height, outputPath } = payload;
     const sharp = await loadSharp();
     if (!sharp) return { ok: false, error: 'SHARP_MODULE_MISSING' };
     await sharp(inputPath).resize(width, height).toFile(outputPath);
@@ -28,8 +34,14 @@ ipcMain.handle('tools:image:resize', async (_, { inputPath, width, height, outpu
 // ─── ipc:tools:image:convert – konwertuje obraz do wskazanego formatu
 //   Oczekuje: { inputPath, format, outputPath }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:image:convert', async (_, { inputPath, format, outputPath }) => {
+ipcMain.handle('tools:image:convert', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || 
+        !('inputPath' in payload) || !('format' in payload) || 
+        !('outputPath' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { inputPath, format, outputPath } = payload;
     const sharp = await loadSharp();
     if (!sharp) return { ok: false, error: 'SHARP_MODULE_MISSING' };
     await sharp(inputPath).toFormat(format).toFile(outputPath);
@@ -42,8 +54,14 @@ ipcMain.handle('tools:image:convert', async (_, { inputPath, format, outputPath 
 // ─── ipc:tools:image:compress – kompresuje obraz JPEG do podanej jakości
 //   Oczekuje: { inputPath, quality, outputPath }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:image:compress', async (_, { inputPath, quality, outputPath }) => {
+ipcMain.handle('tools:image:compress', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || 
+        !('inputPath' in payload) || !('quality' in payload) || 
+        !('outputPath' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { inputPath, quality, outputPath } = payload;
     const sharp = await loadSharp();
     if (!sharp) return { ok: false, error: 'SHARP_MODULE_MISSING' };
     await sharp(inputPath).jpeg({ quality }).toFile(outputPath);

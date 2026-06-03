@@ -33,11 +33,12 @@ ipcMain.handle("settings:get", async () => {
 // settings:update – merge patch z istniejącymi settings (nie nadpisuje!)
 //   patch: Partial<Settings> – tylko zmieniane klucze
 // ----------------------------------------------------------------
-ipcMain.handle("settings:update", async (_, patch) => {
+ipcMain.handle("settings:update", async (_, payload) => {
   try {
-    if (!patch || typeof patch !== "object") {
+    if (!payload || typeof payload !== "object") {
       throw new Error("INVALID_SETTINGS_PATCH");
     }
+    const patch = payload;
     const updated = mergeSettings(patch);
     // mergeSettings() wewnętrznie wywołuje saveSettings() — nie zapisujemy drugi raz
     return { ok: true, data: updated };
@@ -65,6 +66,9 @@ ipcMain.handle("settings:reset", async () => {
 // ----------------------------------------------------------------
 ipcMain.handle("settings:export", async (_, exportPath) => {
   try {
+    if (!exportPath || typeof exportPath !== 'string' || exportPath.trim() === '') {
+      throw new Error('INVALID_EXPORT_PATH');
+    }
     const settings = loadSettings();
     const json = JSON.stringify(settings, null, 2);
     fs.writeFileSync(exportPath, json, "utf8");
@@ -78,8 +82,12 @@ ipcMain.handle("settings:export", async (_, exportPath) => {
 // ----------------------------------------------------------------
 // settings:import – wczytuje JSON z importPath i merge z istniejącymi
 // ----------------------------------------------------------------
-ipcMain.handle("settings:import", async (_, importPath) => {
+ipcMain.handle("settings:import", async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'string') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const importPath = payload;
     if (!fs.existsSync(importPath)) {
       throw new Error("IMPORT_FILE_NOT_FOUND");
     }

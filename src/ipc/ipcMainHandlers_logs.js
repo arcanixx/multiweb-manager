@@ -15,26 +15,31 @@ import { logError } from '../utils/logger.js';
 
 // ─── registerLogsHandlers() – Rejestruje zestaw głównych handlerów komunikacji IPC odpowiedzialnych za dopisywanie, pobieranie i czyszczenie pliku logów błędów testów jednostkowych (test-fails.log)
 export function registerLogsHandlers() {
-  ipcMain.handle('append-log-file', async (_, payload) => {
-    try {
-      const logsDir = path.join(app.getPath('userData'), 'logs');
-      if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir, { recursive: true });
-      const logFile = path.join(logsDir, 'test-fails.log');
-      const maxLines = 500;
-      const line = `[${new Date(payload.timestamp).toISOString()}] FAIL: ${payload.module} / ${payload.test} – ${payload.details}\n`;
-      fs.appendFileSync(logFile, line, 'utf8');
-      const content = fs.readFileSync(logFile, 'utf8');
-      const lines = content.split(/\r?\n/).filter(l => l.trim());
-      if (lines.length > maxLines) {
-        const trimmed = lines.slice(-maxLines);
-        fs.writeFileSync(logFile, trimmed.join('\n') + '\n', 'utf8');
-      }
-      return { ok: true };
-    } catch (err) {
-      logError('ipc', 'append-log-file error', err);
-      return { ok: false, error: err.message };
+ipcMain.handle('append-log-file', async (_, payload) => {
+  try {
+    if (!payload || typeof payload !== 'object' || 
+        !('timestamp' in payload) || !('module' in payload) || 
+        !('test' in payload) || !('details' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
     }
-  });
+    const logsDir = path.join(app.getPath('userData'), 'logs');
+    if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir, { recursive: true });
+    const logFile = path.join(logsDir, 'test-fails.log');
+    const maxLines = 500;
+    const line = `[${new Date(payload.timestamp).toISOString()}] FAIL: ${payload.module} / ${payload.test} – ${payload.details}\n`;
+    fs.appendFileSync(logFile, line, 'utf8');
+    const content = fs.readFileSync(logFile, 'utf8');
+    const lines = content.split(/\r?\n/).filter(l => l.trim());
+    if (lines.length > maxLines) {
+      const trimmed = lines.slice(-maxLines);
+      fs.writeFileSync(logFile, trimmed.join('\n') + '\n', 'utf8');
+    }
+    return { ok: true };
+  } catch (err) {
+    logError('ipc', 'append-log-file error', err);
+    return { ok: false, error: err.message };
+  }
+});
   ipcMain.handle('get-logs-file', async () => {
     try {
       const logFile = path.join(app.getPath('userData'), 'logs', 'test-fails.log');

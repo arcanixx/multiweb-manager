@@ -8,8 +8,9 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
+import { logDebug } from '../../utils/loggerRenderer.js';
 import { ICONS } from '../../utils/icons.js';
 
 // ─── SidebarCategory() – nagłówek kategorii profilów z ikoną i przełącznikiem collapse
@@ -23,6 +24,7 @@ import { ICONS } from '../../utils/icons.js';
 
 export default function SidebarCategory({ name, icon, isCollapsed, onToggle, onContextMenu }) {
   const { t } = useContext(TranslationContext);
+  useEffect(() => { logDebug('ui', `SidebarCategory mounted: ${name}`); }, [name]);
   return (
     <div className="sidebar-category" onClick={onToggle} onContextMenu={onContextMenu}>
       <span>{icon || ICONS.FOLDER}</span>

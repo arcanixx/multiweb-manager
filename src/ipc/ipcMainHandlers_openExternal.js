@@ -10,8 +10,12 @@
 
 import { ipcMain, shell } from 'electron';
 import { logError } from '../utils/logger.js';
-ipcMain.handle('shell:openExternal', async (_, url) => {
+ipcMain.handle('shell:openExternal', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'string') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const url = payload;
     await shell.openExternal(url);
     return { ok: true };
   } catch (err) {

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Sekcja zarządzania danymi aplikacji – eksport, import i reset ustawień.
 // FUNCTIONS: DataManagementSection
-// DEPENDS ON: react, translations.js, loggerRenderer, icons.js, ConfirmModal
+// DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js, ConfirmModal
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

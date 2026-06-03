@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logDebug } from '../../utils/loggerRenderer.js';
@@ -53,6 +53,7 @@ export default function WebViewToolbar({
   onResourceMonitor
 }) {
   const { t } = useContext(TranslationContext);
+  useEffect(() => { logDebug('webview', 'WebViewToolbar mounted'); }, []);
 
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(url);

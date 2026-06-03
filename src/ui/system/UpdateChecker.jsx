@@ -11,7 +11,7 @@
 import React, { useState, useEffect } from 'react';
 import { ICONS } from '../../utils/icons';
 import { TranslationContext } from '../../utils/translations.js';
-import { logInfo as log, logError, logWarn } from '../../utils/loggerRenderer';
+import { logInfo, logError, logWarn } from '../../utils/loggerRenderer';
 export default function UpdateChecker() {
   const { t } = React.useContext(TranslationContext);
   const [checking,   setChecking]   = useState(false);
@@ -33,10 +33,10 @@ export default function UpdateChecker() {
   // ─── checkForUpdates() – Wywołuje IPC check-for-updates; jeśli nowa wersja jest dostępna, wyświetla powiadomienie z numerem wersji, w przeciwnym razie pokazuje komunikat "coming soon"
   const checkForUpdates = async () => {
     setChecking(true);
-    log('UpdateChecker: checking for updates...');
+    logInfo('ui', 'UpdateChecker: checking for updates...');
     try {
       const latestVersion = await window.electronAPI.checkForUpdates();
-      log('UpdateChecker: latest version:', latestVersion);
+      logInfo('ui', 'UpdateChecker: latest version:', latestVersion);
       if (latestVersion && latestVersion !== appVersion) {
         showToast(t('updateChecker.new_version', { version: latestVersion }), 'success');
       } else {

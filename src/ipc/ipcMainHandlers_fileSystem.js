@@ -21,8 +21,12 @@ ipcMain.handle('fs:readFile', async (_, filePath) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('fs:writeFile', async (_, { filePath, content }) => {
+ipcMain.handle('fs:writeFile', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !payload.filePath || typeof payload.filePath !== 'string' || !payload.content || typeof payload.content !== 'string') {
+      throw new Error('INVALID_FILE_PAYLOAD');
+    }
+    const { filePath, content } = payload;
     fs.writeFileSync(filePath, content, 'utf8');
     return { ok: true };
   } catch (err) {

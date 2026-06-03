@@ -4,15 +4,15 @@
 // VERSION: 0.0.3
 // PURPOSE: Sekcja narzędzi specjalnych w Sidebarze
 // FUNCTIONS: SidebarTools
-// DEPENDS ON: react, config.js, translations.js, icons.js, constants.js
+// DEPENDS ON: react, config.js, translations.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../../utils/translations.js';
-import { ICONS } from '../../utils/icons.js';
-import { SIDEBAR_ICON_MAP } from '../../constants.js';
+import { logDebug } from '../../utils/loggerRenderer.js';
+import { ICONS, SIDEBAR_ICON_MAP } from '../../utils/icons.js';
 
 // ─── SPECIAL_TOOLS – stała z listą narzędzi specjalnych w sidebarze
 //   @returns {Array} – tablica obiektów z id i kluczem tłumaczenia
@@ -37,6 +37,7 @@ const SPECIAL_TOOLS = [
 
 export default function SidebarTools({ activeItem, onSelect }) {
   const { t } = useContext(TranslationContext);
+  useEffect(() => { logDebug('ui', 'SidebarTools mounted'); }, []);
   const visibleTools = SPECIAL_TOOLS.filter(tool => !tool.feature || isFeatureEnabled(tool.feature));
   const topSpecial = visibleTools.slice(0, 3);
   const sortedSpecial = visibleTools.slice(3).sort((a, b) => t(a.labelKey).localeCompare(t(b.labelKey)));

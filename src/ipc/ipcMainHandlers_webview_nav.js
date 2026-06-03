@@ -22,8 +22,12 @@ function getWebContentsById(id) {
     return null;
   }
 }
-ipcMain.handle('webview:navigate', async (_, { id, url }) => {
+ipcMain.handle('webview:navigate', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('id' in payload) || !('url' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id, url } = payload;
     if (!id) throw new Error('WEBVIEW_ID_REQUIRED');
     if (!url || typeof url !== 'string') throw new Error('WEBVIEW_URL_REQUIRED');
     if (!isSafeUrl(url)) throw new Error('WEBVIEW_URL_BLOCKED_UNSAFE_SCHEME');
@@ -36,8 +40,12 @@ ipcMain.handle('webview:navigate', async (_, { id, url }) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('webview:reload', async (_, id) => {
+ipcMain.handle('webview:reload', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('id' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id } = payload;
     const wc = getWebContentsById(id);
     if (!wc) throw new Error('WEBVIEW_NOT_FOUND');
     wc.reload();
@@ -47,8 +55,12 @@ ipcMain.handle('webview:reload', async (_, id) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('webview:goBack', async (_, id) => {
+ipcMain.handle('webview:goBack', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('id' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id } = payload;
     const wc = getWebContentsById(id);
     if (!wc) throw new Error('WEBVIEW_NOT_FOUND');
     if (wc.canGoBack()) wc.goBack();
@@ -59,8 +71,12 @@ ipcMain.handle('webview:goBack', async (_, id) => {
   }
 });
 
-ipcMain.handle('webview:goForward', async (_, id) => {
+ipcMain.handle('webview:goForward', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('id' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id } = payload;
     const wc = getWebContentsById(id);
     if (!wc) throw new Error('WEBVIEW_NOT_FOUND');
     if (wc.canGoForward()) wc.goForward();
@@ -71,8 +87,12 @@ ipcMain.handle('webview:goForward', async (_, id) => {
   }
 });
 
-ipcMain.handle('webview:getURL', async (_, id) => {
+ipcMain.handle('webview:getURL', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('id' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id } = payload;
     const wc = getWebContentsById(id);
     if (!wc) throw new Error('WEBVIEW_NOT_FOUND');
     return { ok: true, data: wc.getURL() };

@@ -10,6 +10,8 @@
 
 import { runTests } from './testUtils.js';
 const tests = [
+  // ─── Test: AdBlocker URL detection works ─────────────────
+  // Weryfikuje, czy funkcja isAdUrl poprawnie identyfikuje adresy URL jako reklamowe lub nie.
   {
     name: 'AdBlocker URL detection works',
     run: async () => {
@@ -43,6 +45,8 @@ const tests = [
       return { ok, details: ok ? '' : 'Ad detection failed' };
     }
   },
+  // ─── Test: AdBlocker global toggle works ─────────────────
+  // Sprawdza, czy globalny przełącznik AdBlockera poprawnie zmienia jego stan.
   {
     name: 'AdBlocker global toggle works',
     run: async () => {
@@ -54,6 +58,8 @@ const tests = [
       return { ok, details: ok ? '' : 'Global toggle failed' };
     }
   },
+  // ─── Test: AdBlocker per-profile override works ─────────────────
+  // Weryfikuje, czy ustawienia AdBlockera dla konkretnego profilu nadpisują ustawienia globalne.
   {
     name: 'AdBlocker per-profile override works',
     run: async () => {
@@ -70,6 +76,7 @@ const tests = [
   }
 ];
 
+// ─── runAdBlockerTests() – uruchamia testy jednostkowe blokera reklam ─────────────────
 export async function runAdBlockerTests() {
   return runTests('AdBlocker', tests);
 }

@@ -4,12 +4,12 @@
 // VERSION: 0.0.3
 // PURPOSE: Pojedynczy profil w Sidebarze (ikona, nazwa, indykatory)
 // FUNCTIONS: SidebarProfileItem
-// DEPENDS ON: react, translations.js, icons.js
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useContext } from 'react';
-import { TranslationContext } from '../../utils/translations.js';
+import React from 'react';
+import { logInfo, logError, logWarn, logDebug } from '../../utils/loggerRenderer.js';
 import { ICONS } from '../../utils/icons.js';
 
 // ─── SidebarProfileItem() – pojedynczy element profilu w sidebarze
@@ -21,12 +21,17 @@ import { ICONS } from '../../utils/icons.js';
 //   @returns {JSX.Element} – renderowany element profilu
 
 export default function SidebarProfileItem({ profile, isActive, onSelect, onContextMenu }) {
-  const { t } = useContext(TranslationContext);
+  
+  const handleClick = () => {
+    logDebug('ui', `Sidebar: profile selected: ${profile.name}`);
+    onSelect();
+  };
+
   const iconStr = profile.icon || ICONS.DEFAULT;
   const isEmoji = iconStr.length <= 4;
   return (
     <div className={`sidebar-item ${isActive ? 'active' : ''}`}
-      onClick={onSelect} onContextMenu={onContextMenu} title={profile.url}>
+      onClick={handleClick} onContextMenu={onContextMenu} title={profile.url}>
       {isEmoji
         ? <span style={{ fontSize: 16, minWidth: 20, flexShrink: 0, textAlign: 'center' }}>{iconStr}</span>
         : <img src={iconStr} alt="" style={{ width: 18, height: 18, flexShrink: 0, objectFit: 'contain', borderRadius: 3 }}

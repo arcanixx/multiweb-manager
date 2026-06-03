@@ -2,13 +2,14 @@
 // FILE: SidebarSearch.jsx
 // PATH: src/ui/sidebar/SidebarSearch.jsx
 // VERSION: 0.0.3
-// PURPOSE: Wyszukiwarka profili w Sidebarze
+// PURPOSE: Komponent paska wyszukiwania zintegrowany z SidebarHeader – umożliwia dynamiczne filtrowanie listy profili i kategorii w czasie rzeczywistym.
 // FUNCTIONS: SidebarSearch
-// DEPENDS ON: react, translations.js, icons.js
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { logDebug } from '../../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 
@@ -17,9 +18,9 @@ import { ICONS } from '../../utils/icons.js';
 //   @param {string} props.value – bieżąca wartość wyszukiwania
 //   @param {Function} props.onChange – callback zmiany wartości
 //   @returns {JSX.Element} – renderowany input wyszukiwania
-
 export default function SidebarSearch({ value, onChange }) {
   const { t } = useContext(TranslationContext);
+  useEffect(() => { logDebug('ui', 'SidebarSearch mounted'); }, []);
   return (
     <div style={{ position: 'relative' }}>
       <span style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', fontSize: 12, color: 'var(--text-muted)' }}>

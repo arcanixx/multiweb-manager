@@ -19,6 +19,9 @@ export function registerWebViewExtraHandlers() {
   // Single App Mode – nowe okno
   ipcMain.handle('open-single-window', async (_, payload) => {
     try {
+      if (!payload || typeof payload !== 'object') {
+        throw new Error('INVALID_PAYLOAD');
+      }
       const win = new BrowserWindow({
         width: payload.width || 1200,
         height: payload.height || 800,
@@ -36,9 +39,14 @@ export function registerWebViewExtraHandlers() {
       return { ok: false, error: err.message };
     }
   });
+  
   // Screenshot WebView
-  ipcMain.handle('capture-webview', async (_, tabId) => {
+  ipcMain.handle('capture-webview', async (_, payload) => {
     try {
+      if (!payload || typeof payload !== 'object' || !('tabId' in payload)) {
+        throw new Error('INVALID_PAYLOAD');
+      }
+      const { tabId } = payload;
       const entry = getWebViewEntry(tabId);
       if (!entry || !entry.webContentsId) return { ok: false, error: 'WebView not found' };
       const all = getAllWebContents();
@@ -53,8 +61,12 @@ export function registerWebViewExtraHandlers() {
   });
 
   // Resource Monitor
-  ipcMain.handle('get-webview-resource', async (_, tabId) => {
+  ipcMain.handle('get-webview-resource', async (_, payload) => {
     try {
+      if (!payload || typeof payload !== 'object' || !('tabId' in payload)) {
+        throw new Error('INVALID_PAYLOAD');
+      }
+      const { tabId } = payload;
       const entry = getWebViewEntry(tabId);
       if (!entry || !entry.webContentsId) return { ok: false, error: 'WebView not found' };
       const all = getAllWebContents();

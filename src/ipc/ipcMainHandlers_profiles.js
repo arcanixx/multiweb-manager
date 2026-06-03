@@ -57,9 +57,14 @@ ipcMain.handle("profiles:create", async (_, payload) => {
 });
 
 // Aktualizuje istniejący profil
-ipcMain.handle("profiles:update", async (_, { id, patch }) => {
+ipcMain.handle("profiles:update", async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('id' in payload) || !('patch' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id, patch } = payload;
     if (!id) throw new Error("PROFILE_ID_REQUIRED");
+    if (!patch || typeof patch !== 'object') throw new Error("INVALID_PATCH");
     const updated = updateProfile(id, patch);
     saveProfiles(updated);
     return { ok: true, data: updated };
@@ -70,8 +75,12 @@ ipcMain.handle("profiles:update", async (_, { id, patch }) => {
 });
 
 // Usuwa profil
-ipcMain.handle("profiles:delete", async (_, id) => {
+ipcMain.handle("profiles:delete", async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'string') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const id = payload;
     if (!id) throw new Error("PROFILE_ID_REQUIRED");
     const updated = deleteProfile(id);
     saveProfiles(updated);
@@ -83,8 +92,12 @@ ipcMain.handle("profiles:delete", async (_, id) => {
 });
 
 // Ustawia lastUsedAt
-ipcMain.handle("profiles:touch", async (_, id) => {
+ipcMain.handle("profiles:touch", async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'string') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const id = payload;
     if (!id) throw new Error("PROFILE_ID_REQUIRED");
     const updated = updateProfile(id, { lastUsedAt: Date.now() });
     saveProfiles(updated);

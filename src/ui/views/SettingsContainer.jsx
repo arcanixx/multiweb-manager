@@ -8,9 +8,9 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { isFeatureEnabled } from '../../config.js';
-import { logWarn } from '../../utils/loggerRenderer.js';
+import { logWarn, logDebug } from '../../utils/loggerRenderer.js';
 import { Spinner } from './Spinner.jsx';
 
 const Settings       = lazy(() => import('../settings/Settings'));
@@ -24,6 +24,7 @@ const HistoryLog     = lazy(() => import('../history/HistoryLog'));
 //   @param {Function} props.onSaveSettings – callback zapisu ustawień
 //   @returns {JSX.Element|null}
 export default function SettingsContainer({ activeItem, settings, onSaveSettings }) {
+  useEffect(() => { logDebug('ui', 'SettingsContainer mounted'); }, []);
   const wrap = (Component, props = {}) => (
     <Suspense fallback={<Spinner />}>
       <Component {...props} />

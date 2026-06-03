@@ -59,6 +59,9 @@ export default function DebugModulesSection() {
     loadSettings();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ─── handleToggle() – przełącza stan debugowania dla konkretnego modułu ─────────────────
+  //   @param {string} moduleName – nazwa modułu
+  //   @param {boolean} enabled – nowy stan (włączony/wyłączony)
   // Sekcja nie powinna być widoczna, jeśli globalny debugMode jest wyłączony
   if (!settings || settings.debugMode === false) return null;
 

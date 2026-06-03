@@ -12,8 +12,12 @@ import { ipcMain, clipboard } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { logError } from '../utils/logger.js';
-ipcMain.handle('tools:filePreview', async (_, filePath) => {
+ipcMain.handle('tools:filePreview', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'string') {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const filePath = payload;
     if (!fs.existsSync(filePath)) throw new Error('FILE_NOT_FOUND');
     const ext = path.extname(filePath).toLowerCase();
     const buffer = fs.readFileSync(filePath);
@@ -23,8 +27,14 @@ ipcMain.handle('tools:filePreview', async (_, filePath) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('tools:apiRequest', async (_, { url, method, headers, body }) => {
+ipcMain.handle('tools:apiRequest', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || 
+        !('url' in payload) || !('method' in payload) || 
+        !('headers' in payload) || !('body' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { url, method, headers, body } = payload;
     const res = await fetch(url, {
       method,
       headers,

@@ -50,6 +50,16 @@ ipcMain.handle("terminal:create", async (_, { cwd }) => {
       }
     });
 
+    ptyProcess.on('error', (err) => {
+      logError('ipc', `PTY error on terminal ${terminalId}`, err);
+      // Clean up
+      try {
+        ptyProcess.kill();
+      } catch (_) {}
+      delete terminals[terminalId];
+      delete terminalBuffers[terminalId];
+    });
+
     ptyProcess.onExit(() => {
       delete terminals[terminalId];
       delete terminalBuffers[terminalId];
@@ -66,8 +76,12 @@ ipcMain.handle("terminal:create", async (_, { cwd }) => {
 // WRITE TO TERMINAL
 // =============================================================================
 
-ipcMain.handle("terminal:write", async (_, { terminalId, data }) => {
+ipcMain.handle("terminal:write", async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('terminalId' in payload) || !('data' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { terminalId, data } = payload;
     const term = terminals[terminalId];
     if (!term) throw new Error("TERMINAL_NOT_FOUND");
 
@@ -157,6 +171,16 @@ ipcMain.handle("terminal:restart", async (_, { terminalId, cwd }) => {
       if (terminalBuffers[terminalId].length > 2000) {
         terminalBuffers[terminalId].shift();
       }
+    });
+
+    ptyProcess.on('error', (err) => {
+      logError('ipc', `PTY error on terminal ${terminalId}`, err);
+      // Clean up
+      try {
+        ptyProcess.kill();
+      } catch (_) {}
+      delete terminals[terminalId];
+      delete terminalBuffers[terminalId];
     });
 
     ptyProcess.onExit(() => {

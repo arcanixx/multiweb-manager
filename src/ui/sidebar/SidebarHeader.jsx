@@ -2,15 +2,16 @@
 // FILE: SidebarHeader.jsx
 // PATH: src/ui/sidebar/SidebarHeader.jsx
 // VERSION: 0.0.3
-// PURPOSE: Nagłówek sidebaru – przyciski dodawania profilu/kategorii oraz wyszukiwarka.
+// PURPOSE: Główny komponent nagłówka paska bocznego (Sidebar) – udostępnia przyciski akcji do tworzenia nowych profili i kategorii oraz integruje komponent wyszukiwania SidebarSearch.
 // FUNCTIONS: SidebarHeader
-// DEPENDS ON: react, translations.js, icons.js, SidebarSearch
+// DEPENDS ON: react, translations.js, icons.js, SidebarSearch.jsx, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
+import { logDebug } from '../../utils/loggerRenderer.js';
 import SidebarSearch from './SidebarSearch';
 
 // ─── SidebarHeader() – nagłówek sidebaru z akcjami i wyszukiwarką
@@ -22,6 +23,8 @@ import SidebarSearch from './SidebarSearch';
 // @returns {JSX.Element} – renderowany nagłówek sidebaru
 export default function SidebarHeader({ onAddProfile, onAddCategory, searchValue, onSearchChange }) {
   const { t } = useContext(TranslationContext);
+
+  useEffect(() => { logDebug('ui', 'SidebarHeader mounted'); }, []);
 
   return (
     <div style={{ padding: '12px 10px 8px', borderBottom: '1px solid var(--border)' }}>

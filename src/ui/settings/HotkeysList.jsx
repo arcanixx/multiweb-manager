@@ -10,6 +10,7 @@
 
 import React from 'react';
 import { TranslationContext } from '../../utils/translations.js';
+import { logError, logWarn, logDebug } from '../../utils/loggerRenderer.js';
 import { ICONS } from '../../utils/icons.js';
 
 // ─── HotkeysList() – tabela skrótów klawiszowych

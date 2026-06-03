@@ -22,11 +22,12 @@ ipcMain.handle("workspaces:getAll", async () => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle("workspaces:save", async (_, workspaces) => {
+ipcMain.handle("workspaces:save", async (_, payload) => {
   try {
-    if (!Array.isArray(workspaces)) {
+    if (!payload || !Array.isArray(payload)) {
       return { ok: false, error: "INVALID_WORKSPACES" };
     }
+    const workspaces = payload;
     saveWorkspaces(workspaces);
     return { ok: true, data: workspaces };
   } catch (err) {

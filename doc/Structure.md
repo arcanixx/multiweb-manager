@@ -259,6 +259,12 @@ root/
 │   │                                                   DEPENDS ON: logger.js, electron
 │   │                                                   -->
 │   ├── 📁 hooks/
+│   │   ├── 📜 useCategories.js                    <!-- VERSION: 0.0.3 PATH: src/hooks/useCategories.js
+│   │   │                                               PURPOSE: Hook React do zarządzania kategoriami profilów – CRUD,
+│   │   │                                                        stan zwinięcia, persistencja przez IPC.
+│   │   │                                               FUNCTIONS: useCategories
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 useHistoryLog.js ❗                  <!-- VERSION: 0.0.3 PATH: src/hooks/useHistoryLog.js
 │   │   │                                               PURPOSE: Hook React do zarządzania i odświeżania logów historii
 │   │   │                                                        aktywności użytkownika. Komunikuje się z historyStore
@@ -273,19 +279,37 @@ root/
 │   │   │                                               FUNCTIONS: useNotepad
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
+│   │   ├── 📜 useNotepadContent.js ❗              <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadContent.js
+│   │   │                                               PURPOSE: Hook React do zarządzania treścią notatnika – stan
+│   │   │                                                        edycji, zapis ręczny, zapis do pliku, skróty
+│   │   │                                                        klawiszowe.
+│   │   │                                               FUNCTIONS: useNotepadContent
+│   │   │                                               DEPENDS ON: react, notesStorage.js, loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 useNotepadFindReplace.js ❗          <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadFindReplace.js
 │   │   │                                               PURPOSE: Hook React obsługujący logikę wyszukiwania i
 │   │   │                                                        zastępowania tekstu w edytorze notatnika.
 │   │   │                                               FUNCTIONS: useNotepadFindReplace
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │                                               -->
+│   │   ├── 📜 useNotepadTabs.js ❗                 <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadTabs.js
+│   │   │                                               PURPOSE: Hook React do zarządzania zakładkami notatnika –
+│   │   │                                                        tworzenie, przełączanie, zamykanie, zmiana nazw.
+│   │   │                                               FUNCTIONS: useNotepadTabs
+│   │   │                                               DEPENDS ON: react, notesStorage.js, loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 useNotepadUI.js ❗                   <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadUI.js
-│   │   │                                               PURPOSE: Hook React do zarządzania interfejsem notatnika –
-│   │   │                                                        obsługa zakładek, automatycznego zapisu oraz skrótów
-│   │   │                                                        klawiszowych.
+│   │   │                                               PURPOSE: Orkiestrator hooków notatnika – łączy zarządzanie
+│   │   │                                                        zakładkami i treścią, obsługuje autosave i toast.
 │   │   │                                               FUNCTIONS: useNotepadUI
-│   │   │                                               DEPENDS ON: react, translations.js, notesStorage.js,
-│   │   │                                                           loggerRenderer.js
+│   │   │                                               DEPENDS ON: react, translations.js, useNotepadTabs.js,
+│   │   │                                                           useNotepadContent.js, loggerRenderer.js
+│   │   │                                               -->
+│   │   ├── 📜 useProfiles.js                      <!-- VERSION: 0.0.3 PATH: src/hooks/useProfiles.js
+│   │   │                                               PURPOSE: Hook React do zarządzania profilami WebView – CRUD,
+│   │   │                                                        favorite, persistencja przez IPC.
+│   │   │                                               FUNCTIONS: useProfiles
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useProjects.js ❗                    <!-- VERSION: 0.0.3 PATH: src/hooks/useProjects.js
 │   │   │                                               PURPOSE: Hook React do zarządzania projektami użytkownika –
@@ -298,6 +322,13 @@ root/
 │   │   │                                                        ładowanie, aktualizacja i synchronizacja stanu z
 │   │   │                                                        settingsStore przez mostek IPC.
 │   │   │                                               FUNCTIONS: useSettings
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               -->
+│   │   ├── 📜 useSidebarSearch.js                 <!-- VERSION: 0.0.3 PATH: src/hooks/useSidebarSearch.js
+│   │   │                                               PURPOSE: Hook React do wyszukiwania i filtrowania profilów w
+│   │   │                                                        sidebarze – search, favorites, grupowanie po
+│   │   │                                                        kategoriach.
+│   │   │                                               FUNCTIONS: useSidebarSearch
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useTasks.js ❗                       <!-- VERSION: 0.0.3 PATH: src/hooks/useTasks.js
@@ -683,6 +714,14 @@ root/
 │   │   │                                                           Sidebar.jsx, ContentRenderer.jsx, ConfirmModal.jsx
 │   │   │                                               -->
 │   │   ├── 📁 modals/
+│   │   │   ├── ⚛️ CategoryModal.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/modals/CategoryModal.jsx
+│   │   │   │                                           PURPOSE: Formularz modalny do zarządzania kategoriami profili –
+│   │   │   │                                                    umożliwia tworzenie nowych i edycję istniejących sekcji
+│   │   │   │                                                    grupujących w Sidebarze.
+│   │   │   │                                           FUNCTIONS: CategoryModal
+│   │   │   │                                           DEPENDS ON: loggerRenderer.js, react, translations.js, icons.js,
+│   │   │   │                                                       ModalPortal
+│   │   │   │                                           -->
 │   │   │   ├── ⚛️ ConfirmModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/modals/ConfirmModal.jsx
 │   │   │   │                                           PURPOSE: Generyczny komponent modalny służący do potwierdzania
 │   │   │   │                                                    akcji krytycznych (np. usuwanie). Zapewnia spójność
@@ -694,6 +733,15 @@ root/
 │   │   │   │                                           PURPOSE: Bazowy komponent modalny dla całej aplikacji
 │   │   │   │                                           FUNCTIONS: Modal
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ ProfileModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/modals/ProfileModal.jsx
+│   │   │   │                                           PURPOSE: Zaawansowany formularz modalny do konfiguracji profili
+│   │   │   │                                                    WebView – obsługuje parametry URL, ikony, przypisanie
+│   │   │   │                                                    do kategorii oraz przełączniki adblockera i
+│   │   │   │                                                    powiadomień.
+│   │   │   │                                           FUNCTIONS: ProfileModal
+│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
+│   │   │   │                                                       urlUtils.js, ModalPortal, notificationsManager.js
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ PromptModal.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/modals/PromptModal.jsx
 │   │   │                                               PURPOSE: Modal z polem input – zastępuje window.prompt()
@@ -780,12 +828,12 @@ root/
 │   │   │   │                                           FUNCTIONS: AccountSection
 │   │   │   │                                           DEPENDS ON: react, translations.js, src, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ DataLogsSection.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/settings/DataLogsSection.jsx
-│   │   │   │                                           PURPOSE: Sekcja danych i logów (eksport/import, otwieranie
-│   │   │   │                                                    folderu logów, logi testów)
-│   │   │   │                                           FUNCTIONS: DataLogsSection
-│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
-│   │   │   │                                                       icons, ConfirmModal, Modal
+│   │   │   ├── ⚛️ DataManagementSection.jsx ❗    <!-- VERSION: 0.0.3 PATH: src/ui/settings/DataManagementSection.jsx
+│   │   │   │                                           PURPOSE: Sekcja zarządzania danymi aplikacji – eksport, import i
+│   │   │   │                                                    reset ustawień.
+│   │   │   │                                           FUNCTIONS: DataManagementSection
+│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js,
+│   │   │   │                                                       ConfirmModal
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ DebugModulesSection.jsx ❗      <!-- VERSION: 0.0.3 PATH: src/ui/settings/DebugModulesSection.jsx
 │   │   │   │                                           PURPOSE: UI do zarządzania filtrowaniem logów per-moduł.
@@ -802,14 +850,33 @@ root/
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
+│   │   │   ├── ⚛️ HotkeyModal.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeyModal.jsx
+│   │   │   │                                           PURPOSE: Modal do dodawania i edycji skrótów klawiszowych –
+│   │   │   │                                                    formularz z walidacją.
+│   │   │   │                                           FUNCTIONS: HotkeyModal
+│   │   │   │                                           DEPENDS ON: react, translations.js, Modal
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ HotkeysList.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysList.jsx
+│   │   │   │                                           PURPOSE: Komponent tabeli wyświetlającej listę skrótów
+│   │   │   │                                                    klawiszowych z akcjami edycji i usuwania.
+│   │   │   │                                           FUNCTIONS: HotkeysList
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
+│   │   │   │                                           -->
 │   │   │   ├── ⚛️ HotkeysManager.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManager.jsx
-│   │   │   │                                           PURPOSE: Interfejs zarządzania globalnymi skrótami klawiszowymi
-│   │   │   │                                                    aplikacji. Umożliwia definiowanie akcji systemowych
-│   │   │   │                                                    (screenshot, monitor) oraz wstawianie predefiniowanych
-│   │   │   │                                                    snippetów tekstowych.
+│   │   │   │                                           PURPOSE: Kontener zarządzania skrótami klawiszowymi – ładuje
+│   │   │   │                                                    dane, orkiestruje logikę CRUD i renderuje
+│   │   │   │                                                    podkomponenty.
 │   │   │   │                                           FUNCTIONS: HotkeysManager
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
-│   │   │   │                                                       ConfirmModal, Modal, notificationsManager.js
+│   │   │   │                                                       HotkeysList, HotkeyModal, ConfirmModal,
+│   │   │   │                                                       notificationsManager.js
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ LogsSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/LogsSection.jsx
+│   │   │   │                                           PURPOSE: Sekcja zarządzania logami aplikacji – podgląd,
+│   │   │   │                                                    czyszczenie, przełączanie zapisu logów.
+│   │   │   │                                           FUNCTIONS: LogsSection
+│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js,
+│   │   │   │                                                       Modal
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ NotificationsSection.jsx ❗     <!-- VERSION: 0.0.3 PATH: src/ui/settings/NotificationsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja powiadomień (toasty, system, Pushbullet)
@@ -818,14 +885,13 @@ root/
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ Settings.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/settings/Settings.jsx
 │   │   │   │                                           PURPOSE: Główny kontener widoku ustawień aplikacji. Agreguje
-│   │   │   │                                                    wszystkie sekcje konfiguracyjne (General, WebView,
-│   │   │   │                                                    Tabs, Notifications, Hotkeys, Debug, Data) w jeden
+│   │   │   │                                                    wszystkie sekcje konfiguracyjne w jeden
 │   │   │   │                                                    ustrukturyzowany interfejs użytkownika.
 │   │   │   │                                           FUNCTIONS: Settings
 │   │   │   │                                           DEPENDS ON: react, GeneralSection, WebViewSection, TabsSection,
 │   │   │   │                                                       NotificationsSection, HotkeysManager,
-│   │   │   │                                                       DebugModulesSection, DataLogsSection, AccountSection,
-│   │   │   │                                                       translations.js
+│   │   │   │                                                       DebugModulesSection, DataManagementSection,
+│   │   │   │                                                       LogsSection, AccountSection, translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TabsSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/TabsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja konfiguracji zarządzania kartami – pozwala na
@@ -846,36 +912,20 @@ root/
 │   │   │                                                           icons
 │   │   │                                               -->
 │   │   ├── 📁 sidebar/
-│   │   │   ├── ⚛️ CategoryModal.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/CategoryModal.jsx
-│   │   │   │                                           PURPOSE: Formularz modalny do zarządzania kategoriami profili –
-│   │   │   │                                                    umożliwia tworzenie nowych i edycję istniejących sekcji
-│   │   │   │                                                    grupujących w Sidebarze.
-│   │   │   │                                           FUNCTIONS: CategoryModal
-│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, ModalPortal
-│   │   │   │                                           -->
 │   │   │   ├── ⚛️ ContextMenu.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/ContextMenu.jsx
 │   │   │   │                                           PURPOSE: Menu kontekstowe (PPM) dla profilu
 │   │   │   │                                           FUNCTIONS: ContextMenu
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ProfileModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/ProfileModal.jsx
-│   │   │   │                                           PURPOSE: Zaawansowany formularz modalny do konfiguracji profili
-│   │   │   │                                                    WebView – obsługuje parametry URL, ikony, przypisanie
-│   │   │   │                                                    do kategorii oraz przełączniki adblockera i
-│   │   │   │                                                    powiadomień.
-│   │   │   │                                           FUNCTIONS: ProfileModal
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
-│   │   │   │                                                       urlUtils.js, ModalPortal, notificationsManager.js
-│   │   │   │                                           -->
 │   │   │   ├── ⚛️ Sidebar.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/Sidebar.jsx
-│   │   │   │                                           PURPOSE: Główny panel nawigacyjny aplikacji – zarządza listą
-│   │   │   │                                                    profili, hierarchią kategorii, narzędziami systemowymi
-│   │   │   │                                                    oraz integracją z mostkiem IPC dla trwałości ustawień.
+│   │   │   │                                           PURPOSE: Główny panel nawigacyjny aplikacji – orkiestrator,
+│   │   │   │                                                    deleguje logikę do hooków i podkomponentów.
 │   │   │   │                                           FUNCTIONS: Sidebar
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
-│   │   │   │                                                       ProfileModal, CategoryModal, ContextMenu,
-│   │   │   │                                                       SidebarSearch, SidebarCategory, SidebarProfileItem,
-│   │   │   │                                                       SidebarTools, SidebarWorkspaces, ConfirmModal.jsx
+│   │   │   │                                                       useProfiles.js, useCategories.js,
+│   │   │   │                                                       useSidebarSearch.js, useWorkspaces.js, SidebarHeader,
+│   │   │   │                                                       SidebarProfileList, SidebarTools, SidebarWorkspaces,
+│   │   │   │                                                       ProfileModal, CategoryModal, ConfirmModal
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ SidebarCategory.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarCategory.jsx
 │   │   │   │                                           PURPOSE: Nagłówek kategorii profilów (zwijanie/rozwijanie, menu
@@ -883,11 +933,24 @@ root/
 │   │   │   │                                           FUNCTIONS: SidebarCategory
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
+│   │   │   ├── ⚛️ SidebarHeader.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarHeader.jsx
+│   │   │   │                                           PURPOSE: Nagłówek sidebaru – przyciski dodawania
+│   │   │   │                                                    profilu/kategorii oraz wyszukiwarka.
+│   │   │   │                                           FUNCTIONS: SidebarHeader
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, SidebarSearch
+│   │   │   │                                           -->
 │   │   │   ├── ⚛️ SidebarProfileItem.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileItem.jsx
 │   │   │   │                                           PURPOSE: Pojedynczy profil w Sidebarze (ikona, nazwa,
 │   │   │   │                                                    indykatory)
 │   │   │   │                                           FUNCTIONS: SidebarProfileItem
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ SidebarProfileList.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileList.jsx
+│   │   │   │                                           PURPOSE: Lista profilów w sidebarze – favorites, kategorie,
+│   │   │   │                                                    profil bez kategorii, z obsługą menu kontekstowego.
+│   │   │   │                                           FUNCTIONS: SidebarProfileList
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js,
+│   │   │   │                                                       SidebarCategory, SidebarProfileItem, ContextMenu
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ SidebarSearch.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarSearch.jsx
 │   │   │   │                                           PURPOSE: Wyszukiwarka profili w Sidebarze
@@ -1280,9 +1343,9 @@ root/
 │   │                                                   -->
 │   ├── ⚛️ App.jsx ❗                              <!-- VERSION: 0.0.3 PATH: src/App.jsx
 │   │                                                   PURPOSE: Główny komponent root aplikacji React – inicjalizuje
-│   │                                                            system logowania, ładuje profile i ustawienia
-│   │                                                            użytkownika, zarządza motywem graficznym (dark/light)
-│   │                                                            oraz obsługuje globalne skróty klawiszowe i stan sieci.
+│   │                                                            system logowania, ładuje ustawienia użytkownika,
+│   │                                                            zarządza motywem graficznym (dark/light) oraz obsługuje
+│   │                                                            globalne skróty klawiszowe i stan sieci.
 │   │                                                   FUNCTIONS: App
 │   │                                                   DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
 │   │                                                               urlUtils.js, MainLayout.jsx, Spinner.jsx
@@ -1335,6 +1398,12 @@ root/
 │   │                                                   FUNCTIONS: runCssTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
+│   ├── 📜 TestRunner_Categories.js                <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Categories.js
+│   │                                                   PURPOSE: Testy hooka useCategories – CRUD kategorii, stan
+│   │                                                            zwinięcia, persistencja przez mock electronAPI.
+│   │                                                   FUNCTIONS: runCategoriesTests
+│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   -->
 │   ├── 📜 TestRunner_Config.js                    <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Config.js
 │   │                                                   PURPOSE: Testy pliku konfiguracyjnego config.js
 │   │                                                   FUNCTIONS: runConfigTests
@@ -1356,6 +1425,13 @@ root/
 │   │                                                            filtrowania zdarzeń oraz poprawność przycinania
 │   │                                                            historii do zdefiniowanych limitów (FIFO).
 │   │                                                   FUNCTIONS: runHistoryTests
+│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   -->
+│   ├── 📜 TestRunner_Hooks.js                     <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Hooks.js
+│   │                                                   PURPOSE: Testy hooków React useProfiles, useCategories,
+│   │                                                            useSidebarSearch – mock electronAPI, struktura
+│   │                                                            eksportów, obsługa błędów.
+│   │                                                   FUNCTIONS: runHooksTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_IPC.js                       <!-- VERSION: 0.0.3 PATH: tests/TestRunner_IPC.js
@@ -1750,6 +1826,12 @@ root/
 │   │                                                   DEPENDS ON: logger.js, electron
 │   │                                                   -->
 │   ├── 📁 hooks/
+│   │   ├── 📜 useCategories.js                    <!-- VERSION: 0.0.3 PATH: src/hooks/useCategories.js
+│   │   │                                               PURPOSE: Hook React do zarządzania kategoriami profilów – CRUD,
+│   │   │                                                        stan zwinięcia, persistencja przez IPC.
+│   │   │                                               FUNCTIONS: useCategories
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 useHistoryLog.js ❗                  <!-- VERSION: 0.0.3 PATH: src/hooks/useHistoryLog.js
 │   │   │                                               PURPOSE: Hook React do zarządzania i odświeżania logów historii
 │   │   │                                                        aktywności użytkownika. Komunikuje się z historyStore
@@ -1764,19 +1846,37 @@ root/
 │   │   │                                               FUNCTIONS: useNotepad
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
+│   │   ├── 📜 useNotepadContent.js ❗              <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadContent.js
+│   │   │                                               PURPOSE: Hook React do zarządzania treścią notatnika – stan
+│   │   │                                                        edycji, zapis ręczny, zapis do pliku, skróty
+│   │   │                                                        klawiszowe.
+│   │   │                                               FUNCTIONS: useNotepadContent
+│   │   │                                               DEPENDS ON: react, notesStorage.js, loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 useNotepadFindReplace.js ❗          <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadFindReplace.js
 │   │   │                                               PURPOSE: Hook React obsługujący logikę wyszukiwania i
 │   │   │                                                        zastępowania tekstu w edytorze notatnika.
 │   │   │                                               FUNCTIONS: useNotepadFindReplace
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │                                               -->
+│   │   ├── 📜 useNotepadTabs.js ❗                 <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadTabs.js
+│   │   │                                               PURPOSE: Hook React do zarządzania zakładkami notatnika –
+│   │   │                                                        tworzenie, przełączanie, zamykanie, zmiana nazw.
+│   │   │                                               FUNCTIONS: useNotepadTabs
+│   │   │                                               DEPENDS ON: react, notesStorage.js, loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 useNotepadUI.js ❗                   <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadUI.js
-│   │   │                                               PURPOSE: Hook React do zarządzania interfejsem notatnika –
-│   │   │                                                        obsługa zakładek, automatycznego zapisu oraz skrótów
-│   │   │                                                        klawiszowych.
+│   │   │                                               PURPOSE: Orkiestrator hooków notatnika – łączy zarządzanie
+│   │   │                                                        zakładkami i treścią, obsługuje autosave i toast.
 │   │   │                                               FUNCTIONS: useNotepadUI
-│   │   │                                               DEPENDS ON: react, translations.js, notesStorage.js,
-│   │   │                                                           loggerRenderer.js
+│   │   │                                               DEPENDS ON: react, translations.js, useNotepadTabs.js,
+│   │   │                                                           useNotepadContent.js, loggerRenderer.js
+│   │   │                                               -->
+│   │   ├── 📜 useProfiles.js                      <!-- VERSION: 0.0.3 PATH: src/hooks/useProfiles.js
+│   │   │                                               PURPOSE: Hook React do zarządzania profilami WebView – CRUD,
+│   │   │                                                        favorite, persistencja przez IPC.
+│   │   │                                               FUNCTIONS: useProfiles
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useProjects.js ❗                    <!-- VERSION: 0.0.3 PATH: src/hooks/useProjects.js
 │   │   │                                               PURPOSE: Hook React do zarządzania projektami użytkownika –
@@ -1789,6 +1889,13 @@ root/
 │   │   │                                                        ładowanie, aktualizacja i synchronizacja stanu z
 │   │   │                                                        settingsStore przez mostek IPC.
 │   │   │                                               FUNCTIONS: useSettings
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               -->
+│   │   ├── 📜 useSidebarSearch.js                 <!-- VERSION: 0.0.3 PATH: src/hooks/useSidebarSearch.js
+│   │   │                                               PURPOSE: Hook React do wyszukiwania i filtrowania profilów w
+│   │   │                                                        sidebarze – search, favorites, grupowanie po
+│   │   │                                                        kategoriach.
+│   │   │                                               FUNCTIONS: useSidebarSearch
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useTasks.js ❗                       <!-- VERSION: 0.0.3 PATH: src/hooks/useTasks.js
@@ -2174,6 +2281,14 @@ root/
 │   │   │                                                           Sidebar.jsx, ContentRenderer.jsx, ConfirmModal.jsx
 │   │   │                                               -->
 │   │   ├── 📁 modals/
+│   │   │   ├── ⚛️ CategoryModal.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/modals/CategoryModal.jsx
+│   │   │   │                                           PURPOSE: Formularz modalny do zarządzania kategoriami profili –
+│   │   │   │                                                    umożliwia tworzenie nowych i edycję istniejących sekcji
+│   │   │   │                                                    grupujących w Sidebarze.
+│   │   │   │                                           FUNCTIONS: CategoryModal
+│   │   │   │                                           DEPENDS ON: loggerRenderer.js, react, translations.js, icons.js,
+│   │   │   │                                                       ModalPortal
+│   │   │   │                                           -->
 │   │   │   ├── ⚛️ ConfirmModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/modals/ConfirmModal.jsx
 │   │   │   │                                           PURPOSE: Generyczny komponent modalny służący do potwierdzania
 │   │   │   │                                                    akcji krytycznych (np. usuwanie). Zapewnia spójność
@@ -2185,6 +2300,15 @@ root/
 │   │   │   │                                           PURPOSE: Bazowy komponent modalny dla całej aplikacji
 │   │   │   │                                           FUNCTIONS: Modal
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ ProfileModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/modals/ProfileModal.jsx
+│   │   │   │                                           PURPOSE: Zaawansowany formularz modalny do konfiguracji profili
+│   │   │   │                                                    WebView – obsługuje parametry URL, ikony, przypisanie
+│   │   │   │                                                    do kategorii oraz przełączniki adblockera i
+│   │   │   │                                                    powiadomień.
+│   │   │   │                                           FUNCTIONS: ProfileModal
+│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
+│   │   │   │                                                       urlUtils.js, ModalPortal, notificationsManager.js
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ PromptModal.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/modals/PromptModal.jsx
 │   │   │                                               PURPOSE: Modal z polem input – zastępuje window.prompt()
@@ -2271,12 +2395,12 @@ root/
 │   │   │   │                                           FUNCTIONS: AccountSection
 │   │   │   │                                           DEPENDS ON: react, translations.js, src, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ DataLogsSection.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/settings/DataLogsSection.jsx
-│   │   │   │                                           PURPOSE: Sekcja danych i logów (eksport/import, otwieranie
-│   │   │   │                                                    folderu logów, logi testów)
-│   │   │   │                                           FUNCTIONS: DataLogsSection
-│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
-│   │   │   │                                                       icons, ConfirmModal, Modal
+│   │   │   ├── ⚛️ DataManagementSection.jsx ❗    <!-- VERSION: 0.0.3 PATH: src/ui/settings/DataManagementSection.jsx
+│   │   │   │                                           PURPOSE: Sekcja zarządzania danymi aplikacji – eksport, import i
+│   │   │   │                                                    reset ustawień.
+│   │   │   │                                           FUNCTIONS: DataManagementSection
+│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js,
+│   │   │   │                                                       ConfirmModal
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ DebugModulesSection.jsx ❗      <!-- VERSION: 0.0.3 PATH: src/ui/settings/DebugModulesSection.jsx
 │   │   │   │                                           PURPOSE: UI do zarządzania filtrowaniem logów per-moduł.
@@ -2293,14 +2417,33 @@ root/
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
+│   │   │   ├── ⚛️ HotkeyModal.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeyModal.jsx
+│   │   │   │                                           PURPOSE: Modal do dodawania i edycji skrótów klawiszowych –
+│   │   │   │                                                    formularz z walidacją.
+│   │   │   │                                           FUNCTIONS: HotkeyModal
+│   │   │   │                                           DEPENDS ON: react, translations.js, Modal
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ HotkeysList.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysList.jsx
+│   │   │   │                                           PURPOSE: Komponent tabeli wyświetlającej listę skrótów
+│   │   │   │                                                    klawiszowych z akcjami edycji i usuwania.
+│   │   │   │                                           FUNCTIONS: HotkeysList
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
+│   │   │   │                                           -->
 │   │   │   ├── ⚛️ HotkeysManager.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManager.jsx
-│   │   │   │                                           PURPOSE: Interfejs zarządzania globalnymi skrótami klawiszowymi
-│   │   │   │                                                    aplikacji. Umożliwia definiowanie akcji systemowych
-│   │   │   │                                                    (screenshot, monitor) oraz wstawianie predefiniowanych
-│   │   │   │                                                    snippetów tekstowych.
+│   │   │   │                                           PURPOSE: Kontener zarządzania skrótami klawiszowymi – ładuje
+│   │   │   │                                                    dane, orkiestruje logikę CRUD i renderuje
+│   │   │   │                                                    podkomponenty.
 │   │   │   │                                           FUNCTIONS: HotkeysManager
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
-│   │   │   │                                                       ConfirmModal, Modal, notificationsManager.js
+│   │   │   │                                                       HotkeysList, HotkeyModal, ConfirmModal,
+│   │   │   │                                                       notificationsManager.js
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ LogsSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/LogsSection.jsx
+│   │   │   │                                           PURPOSE: Sekcja zarządzania logami aplikacji – podgląd,
+│   │   │   │                                                    czyszczenie, przełączanie zapisu logów.
+│   │   │   │                                           FUNCTIONS: LogsSection
+│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js,
+│   │   │   │                                                       Modal
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ NotificationsSection.jsx ❗     <!-- VERSION: 0.0.3 PATH: src/ui/settings/NotificationsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja powiadomień (toasty, system, Pushbullet)
@@ -2309,14 +2452,13 @@ root/
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ Settings.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/settings/Settings.jsx
 │   │   │   │                                           PURPOSE: Główny kontener widoku ustawień aplikacji. Agreguje
-│   │   │   │                                                    wszystkie sekcje konfiguracyjne (General, WebView,
-│   │   │   │                                                    Tabs, Notifications, Hotkeys, Debug, Data) w jeden
+│   │   │   │                                                    wszystkie sekcje konfiguracyjne w jeden
 │   │   │   │                                                    ustrukturyzowany interfejs użytkownika.
 │   │   │   │                                           FUNCTIONS: Settings
 │   │   │   │                                           DEPENDS ON: react, GeneralSection, WebViewSection, TabsSection,
 │   │   │   │                                                       NotificationsSection, HotkeysManager,
-│   │   │   │                                                       DebugModulesSection, DataLogsSection, AccountSection,
-│   │   │   │                                                       translations.js
+│   │   │   │                                                       DebugModulesSection, DataManagementSection,
+│   │   │   │                                                       LogsSection, AccountSection, translations.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ TabsSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/TabsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja konfiguracji zarządzania kartami – pozwala na
@@ -2337,36 +2479,20 @@ root/
 │   │   │                                                           icons
 │   │   │                                               -->
 │   │   ├── 📁 sidebar/
-│   │   │   ├── ⚛️ CategoryModal.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/CategoryModal.jsx
-│   │   │   │                                           PURPOSE: Formularz modalny do zarządzania kategoriami profili –
-│   │   │   │                                                    umożliwia tworzenie nowych i edycję istniejących sekcji
-│   │   │   │                                                    grupujących w Sidebarze.
-│   │   │   │                                           FUNCTIONS: CategoryModal
-│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, ModalPortal
-│   │   │   │                                           -->
 │   │   │   ├── ⚛️ ContextMenu.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/ContextMenu.jsx
 │   │   │   │                                           PURPOSE: Menu kontekstowe (PPM) dla profilu
 │   │   │   │                                           FUNCTIONS: ContextMenu
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ProfileModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/ProfileModal.jsx
-│   │   │   │                                           PURPOSE: Zaawansowany formularz modalny do konfiguracji profili
-│   │   │   │                                                    WebView – obsługuje parametry URL, ikony, przypisanie
-│   │   │   │                                                    do kategorii oraz przełączniki adblockera i
-│   │   │   │                                                    powiadomień.
-│   │   │   │                                           FUNCTIONS: ProfileModal
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
-│   │   │   │                                                       urlUtils.js, ModalPortal, notificationsManager.js
-│   │   │   │                                           -->
 │   │   │   ├── ⚛️ Sidebar.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/Sidebar.jsx
-│   │   │   │                                           PURPOSE: Główny panel nawigacyjny aplikacji – zarządza listą
-│   │   │   │                                                    profili, hierarchią kategorii, narzędziami systemowymi
-│   │   │   │                                                    oraz integracją z mostkiem IPC dla trwałości ustawień.
+│   │   │   │                                           PURPOSE: Główny panel nawigacyjny aplikacji – orkiestrator,
+│   │   │   │                                                    deleguje logikę do hooków i podkomponentów.
 │   │   │   │                                           FUNCTIONS: Sidebar
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
-│   │   │   │                                                       ProfileModal, CategoryModal, ContextMenu,
-│   │   │   │                                                       SidebarSearch, SidebarCategory, SidebarProfileItem,
-│   │   │   │                                                       SidebarTools, SidebarWorkspaces, ConfirmModal.jsx
+│   │   │   │                                                       useProfiles.js, useCategories.js,
+│   │   │   │                                                       useSidebarSearch.js, useWorkspaces.js, SidebarHeader,
+│   │   │   │                                                       SidebarProfileList, SidebarTools, SidebarWorkspaces,
+│   │   │   │                                                       ProfileModal, CategoryModal, ConfirmModal
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ SidebarCategory.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarCategory.jsx
 │   │   │   │                                           PURPOSE: Nagłówek kategorii profilów (zwijanie/rozwijanie, menu
@@ -2374,11 +2500,24 @@ root/
 │   │   │   │                                           FUNCTIONS: SidebarCategory
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
+│   │   │   ├── ⚛️ SidebarHeader.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarHeader.jsx
+│   │   │   │                                           PURPOSE: Nagłówek sidebaru – przyciski dodawania
+│   │   │   │                                                    profilu/kategorii oraz wyszukiwarka.
+│   │   │   │                                           FUNCTIONS: SidebarHeader
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, SidebarSearch
+│   │   │   │                                           -->
 │   │   │   ├── ⚛️ SidebarProfileItem.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileItem.jsx
 │   │   │   │                                           PURPOSE: Pojedynczy profil w Sidebarze (ikona, nazwa,
 │   │   │   │                                                    indykatory)
 │   │   │   │                                           FUNCTIONS: SidebarProfileItem
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
+│   │   │   │                                           -->
+│   │   │   ├── ⚛️ SidebarProfileList.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileList.jsx
+│   │   │   │                                           PURPOSE: Lista profilów w sidebarze – favorites, kategorie,
+│   │   │   │                                                    profil bez kategorii, z obsługą menu kontekstowego.
+│   │   │   │                                           FUNCTIONS: SidebarProfileList
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js,
+│   │   │   │                                                       SidebarCategory, SidebarProfileItem, ContextMenu
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ SidebarSearch.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarSearch.jsx
 │   │   │   │                                           PURPOSE: Wyszukiwarka profili w Sidebarze
@@ -2771,9 +2910,9 @@ root/
 │   │                                                   -->
 │   ├── ⚛️ App.jsx ❗                              <!-- VERSION: 0.0.3 PATH: src/App.jsx
 │   │                                                   PURPOSE: Główny komponent root aplikacji React – inicjalizuje
-│   │                                                            system logowania, ładuje profile i ustawienia
-│   │                                                            użytkownika, zarządza motywem graficznym (dark/light)
-│   │                                                            oraz obsługuje globalne skróty klawiszowe i stan sieci.
+│   │                                                            system logowania, ładuje ustawienia użytkownika,
+│   │                                                            zarządza motywem graficznym (dark/light) oraz obsługuje
+│   │                                                            globalne skróty klawiszowe i stan sieci.
 │   │                                                   FUNCTIONS: App
 │   │                                                   DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
 │   │                                                               urlUtils.js, MainLayout.jsx, Spinner.jsx
@@ -2826,6 +2965,12 @@ root/
 │   │                                                   FUNCTIONS: runCssTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
+│   ├── 📜 TestRunner_Categories.js                <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Categories.js
+│   │                                                   PURPOSE: Testy hooka useCategories – CRUD kategorii, stan
+│   │                                                            zwinięcia, persistencja przez mock electronAPI.
+│   │                                                   FUNCTIONS: runCategoriesTests
+│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   -->
 │   ├── 📜 TestRunner_Config.js                    <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Config.js
 │   │                                                   PURPOSE: Testy pliku konfiguracyjnego config.js
 │   │                                                   FUNCTIONS: runConfigTests
@@ -2847,6 +2992,13 @@ root/
 │   │                                                            filtrowania zdarzeń oraz poprawność przycinania
 │   │                                                            historii do zdefiniowanych limitów (FIFO).
 │   │                                                   FUNCTIONS: runHistoryTests
+│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   -->
+│   ├── 📜 TestRunner_Hooks.js                     <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Hooks.js
+│   │                                                   PURPOSE: Testy hooków React useProfiles, useCategories,
+│   │                                                            useSidebarSearch – mock electronAPI, struktura
+│   │                                                            eksportów, obsługa błędów.
+│   │                                                   FUNCTIONS: runHooksTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_IPC.js                       <!-- VERSION: 0.0.3 PATH: tests/TestRunner_IPC.js

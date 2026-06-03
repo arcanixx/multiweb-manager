@@ -36,7 +36,11 @@ export function readJsonFile(filePath, fallback) {
     if (!fs.existsSync(filePath)) return fallback;
     return JSON.parse(fs.readFileSync(filePath, "utf8"));
   } catch (err) {
-    logError("store", "persistence.readJsonFile failed", { filePath, error: err.message });
+    try {
+      logError("store", "persistence.readJsonFile failed", { filePath, error: err.message });
+    } catch (logErr) {
+      console.error("Critical: Logger failed in persistence.readJsonFile", logErr);
+    }
     return fallback;
   }
 }
@@ -52,7 +56,11 @@ export function writeJsonFile(filePath, data) {
     logInfo("store", "persistence.writeJsonFile success", { filePath });
     return true;
   } catch (err) {
-    logError("store", "persistence.writeJsonFile failed", { filePath, error: err.message });
+    try {
+      logError("store", "persistence.writeJsonFile failed", { filePath, error: err.message });
+    } catch (logErr) {
+      console.error("Critical: Logger failed in persistence.writeJsonFile", logErr);
+    }
     return false;
   }
 }

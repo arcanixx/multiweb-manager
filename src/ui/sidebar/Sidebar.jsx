@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny panel nawigacyjny aplikacji – orkiestrator, deleguje logikę do hooków i podkomponentów.
 // FUNCTIONS: Sidebar
-// DEPENDS ON: react, useProfiles, useCategories, useSidebarSearch, useWorkspaces, loggerRenderer, translations, icons, SidebarHeader, SidebarProfileList, SidebarTools, SidebarWorkspaces, ProfileModal, CategoryModal, ConfirmModal
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, useProfiles.js, useCategories.js, useSidebarSearch.js, useWorkspaces.js, SidebarHeader, SidebarProfileList, SidebarTools, SidebarWorkspaces, ProfileModal, CategoryModal, ConfirmModal
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

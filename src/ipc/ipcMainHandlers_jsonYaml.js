@@ -14,8 +14,12 @@ import { loadYaml } from '../utils/yamlLoader.js';
 // ─── ipc:tools:formatJSON – formatuje tekst JSON z wcięciami
 //   Oczekuje: { text: string }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:formatJSON', async (_, text) => {
+ipcMain.handle('tools:formatJSON', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('text' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { text } = payload;
     const parsed = JSON.parse(text);
     const formatted = JSON.stringify(parsed, null, 2);
     return { ok: true, data: formatted };
@@ -27,8 +31,12 @@ ipcMain.handle('tools:formatJSON', async (_, text) => {
 // ─── ipc:tools:yamlToJson – konwertuje YAML na sformatowany JSON
 //   Oczekuje: { text: string }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:yamlToJson', async (_, text) => {
+ipcMain.handle('tools:yamlToJson', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('text' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { text } = payload;
     const yaml = await loadYaml();
     if (!yaml) return { ok: false, error: 'YAML_MODULE_MISSING' };
     const parsed = yaml.load(text);
@@ -42,8 +50,12 @@ ipcMain.handle('tools:yamlToJson', async (_, text) => {
 // ─── ipc:tools:jsonToYaml – konwertuje JSON na YAML
 //   Oczekuje: { text: string }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:jsonToYaml', async (_, text) => {
+ipcMain.handle('tools:jsonToYaml', async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('text' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { text } = payload;
     const yaml = await loadYaml();
     if (!yaml) return { ok: false, error: 'YAML_MODULE_MISSING' };
     const parsed = JSON.parse(text);

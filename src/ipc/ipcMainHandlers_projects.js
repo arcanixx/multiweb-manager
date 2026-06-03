@@ -80,9 +80,14 @@ ipcMain.handle("projects:create", async (_, payload) => {
 });
 
 // Aktualizuje projekt
-ipcMain.handle("projects:update", async (_, { id, patch }) => {
+ipcMain.handle("projects:update", async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('id' in payload) || !('patch' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id, patch } = payload;
     if (!id) throw new Error("PROJECT_ID_REQUIRED");
+    if (!patch || typeof patch !== 'object') throw new Error("INVALID_PATCH");
     const updated = updateProject(id, patch);
     saveProjects(updated);
     return { ok: true, data: updated };
