@@ -10,9 +10,9 @@
 
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { LANGUAGES, DEFAULT_LANGUAGE } from '../config.js';
-// loggerRenderer nie jest dostępny tutaj (translations.js ładuje się przed App),
-// używamy console.warn jako fallback dla brakujących kluczy.
-const _warnMissingKey = (key) => console.warn(`[i18n] Brakujący klucz tłumaczenia: "${key}" — sprawdź pl.json / en.json`);
+import { logWarn } from './loggerRenderer.js';
+// loggerRenderer jest dostępny – używamy go do ostrzeżeń o brakujących kluczach tłumaczeń
+const _warnMissingKey = (key) => logWarn('ui', `[i18n] Brakujący klucz tłumaczenia: "${key}" — sprawdź pl.json / en.json`);
 const TranslationContext = createContext(null);
 // Dynamiczne zaimportowanie tłumaczeń dla danego języka
 async function loadTranslations(lang) {

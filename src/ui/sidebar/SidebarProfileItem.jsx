@@ -22,10 +22,11 @@ import { ICONS } from '../../utils/icons.js';
 
 export default function SidebarProfileItem({ profile, isActive, onSelect, onContextMenu }) {
 
-  const handleClick = () => {
-    logDebug('ui', `Sidebar: profile selected: ${profile.name}`);
-    onSelect();
-  };
+   // ─── handleClick() – obsługuje kliknięcie na element profilu
+   const handleClick = () => {
+     logDebug('ui', `Sidebar: profile selected: ${profile.name}`);
+     onSelect();
+   };
 
   const iconStr = profile.icon || ICONS.DEFAULT;
   const isEmoji = iconStr.length <= 4;

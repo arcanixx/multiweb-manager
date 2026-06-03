@@ -25,11 +25,15 @@ const Terminal       = lazy(() => import('../terminal/Terminal'));
 //   @returns {JSX.Element|null}
 export default function ToolsContainer({ activeItem, settings, onOpenTasks }) {
   useEffect(() => { logDebug('ui', 'ToolsContainer mounted'); }, []);
-  const wrap = (Component, props = {}) => (
-    <Suspense fallback={<Spinner />}>
-      <Component {...props} />
-    </Suspense>
-  );
+   const wrap = (Component, props = {>) => (
+     // ─── wrap() – zawija komponent w Suspense z fallback Spinner
+     //   @param {React.ComponentType} Component – komponent do leniwego ładowania
+     //   @param {Object} props – dodatkowe propsy przekazane do komponentu
+     //   @returns {JSX.Element} – komponent zawijany w Suspense
+     <Suspense fallback={<Spinner />}>
+       <Component {...props} />
+     </Suspense>
+   );
 
   switch (activeItem.id) {
     case 'notepad':

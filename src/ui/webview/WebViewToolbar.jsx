@@ -53,13 +53,14 @@ export default function WebViewToolbar({
   onResourceMonitor
 }) {
   const { t } = useContext(TranslationContext);
-  useEffect(() => { logDebug('webview', 'WebViewToolbar mounted'); }, []);
+   useEffect(() => { logDebug('webview', 'WebViewToolbar mounted'); }, []);
 
-  const handleCopyUrl = () => {
-    navigator.clipboard.writeText(url);
-    logDebug('webview', `WebViewToolbar: URL copied to clipboard`);
-    if (onCopyUrl) onCopyUrl();
-  };
+   // ─── handleCopyUrl() – kopiuje bieżący URL do schowka systemowego
+   const handleCopyUrl = () => {
+     navigator.clipboard.writeText(url);
+     logDebug('webview', `WebViewToolbar: URL copied to clipboard`);
+     if (onCopyUrl) onCopyUrl();
+   };
 
   return (
     <div className="webview-toolbar">

@@ -65,13 +65,13 @@ root/
 │   │                                                   FUNCTIONS: Dokumentacja: 17 sekcji głównych
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
-│   ├── 📄 Global_Project_Starter_Guide.md         <!-- VERSION: 0.0.3 PATH: doc/Global_Project_Starter_Guide.md
+│   ├── 📄 Global_Project_Starter_Guide.md ❗       <!-- VERSION: 0.0.3 PATH: doc/Global_Project_Starter_Guide.md
 │   │                                                   PURPOSE: Dokumentacja specyfikacji projektowej - Globalny
 │   │                                                            przewodnik inicjalizacji projektów (AI First)
 │   │                                                   FUNCTIONS: Dokumentacja: 15 sekcji głównych
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
-│   ├── 📄 ModulesOverview.md                      <!-- VERSION: 0.0.3 PATH: doc/ModulesOverview.md
+│   ├── 📄 ModulesOverview.md ❗                    <!-- VERSION: 0.0.3 PATH: doc/ModulesOverview.md
 │   │                                                   PURPOSE: Dokumentacja specyfikacji projektowej - Ujednolicona
 │   │                                                            lista modułów + opis przeznaczenia dla AI i devów
 │   │                                                   FUNCTIONS: Dokumentacja: 78 sekcji głównych
@@ -621,13 +621,8 @@ root/
 │   │   │   │                                           FUNCTIONS: -
 │   │   │   │                                           DEPENDS ON: -
 │   │   │   │                                           -->
-│   │   │   └── 📦 lang.template.json ❗            <!-- VERSION: 0.0.3 PATH: src/locales/templates/lang.template.json
-│   │   │                                               PURPOSE: Szablon dla nowego języka (kopiuj, zmień nazwę na
-│   │   │                                                        [język].json i przetłumacz). PAMIĘTAJ: Jeśli dodajesz
-│   │   │                                                        nowy język, zaktualizuj TestRunner_Locales.js (dodaj
-│   │   │                                                        plik do LOCALE_FILES) ORAZ w src/utils/translations.js
-│   │   │                                                        dodaj import nowego języka oraz w
-│   │   │                                                        src/hooks/useTranslation.js (jeśli używa locales).
+│   │   │   └── 📦 lang.template.json              <!-- VERSION: 0.0.3 PATH: src/locales/templates/lang.template.json
+│   │   │                                               PURPOSE: 
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
@@ -899,13 +894,13 @@ root/
 │   │   │   │                                           PURPOSE: Modal do dodawania i edycji skrótów klawiszowych –
 │   │   │   │                                                    formularz z walidacją.
 │   │   │   │                                           FUNCTIONS: HotkeyModal
-│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, Modal
+│   │   │   │                                           DEPENDS ON: react, translations.js, Modal
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ HotkeysList.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysList.jsx
 │   │   │   │                                           PURPOSE: Komponent tabeli wyświetlającej listę skrótów
 │   │   │   │                                                    klawiszowych z akcjami edycji i usuwania.
 │   │   │   │                                           FUNCTIONS: HotkeysList
-│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ HotkeysManager.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManager.jsx
 │   │   │   │                                           PURPOSE: Kontener zarządzania skrótami klawiszowymi – ładuje
@@ -1021,7 +1016,7 @@ root/
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │                                               -->
 │   │   ├── 📁 styles/
-│   │   │   ├── 🎨 components.css                  <!-- VERSION: 0.0.3 PATH: src/ui/styles/components.css
+│   │   │   ├── 🎨 components.css ❗                <!-- VERSION: 0.0.3 PATH: src/ui/styles/components.css
 │   │   │   │                                           PURPOSE: Zbiór stylów CSS aplikacji
 │   │   │   │                                           FUNCTIONS: -
 │   │   │   │                                           DEPENDS ON: -
@@ -1036,7 +1031,7 @@ root/
 │   │   │   │                                           PURPOSE: Modal w portalu (document.body) — ponad natywnym
 │   │   │   │                                                    <webview> w Electronie.
 │   │   │   │                                           FUNCTIONS: ModalPortal
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, react-dom
+│   │   │   │                                           DEPENDS ON: react, react-dom
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ UpdateChecker.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/system/UpdateChecker.jsx
 │   │   │                                               PURPOSE: Komponent sprawdzania aktualizacji. Placeholder –
@@ -1125,8 +1120,7 @@ root/
 │   │   │   ├── ⚛️ AggregatedProjectSection.jsx ❗ <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedProjectSection.jsx
 │   │   │   │                                           PURPOSE: Pojedyncza sekcja projektu w widoku zbiorczym
 │   │   │   │                                           FUNCTIONS: AggregatedProjectSection
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
-│   │   │   │                                                       AggregatedTaskItem
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, AggregatedTaskItem
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ AggregatedTaskItem.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTaskItem.jsx
 │   │   │   │                                           PURPOSE: Wyspecjalizowany komponent prezentujący zadanie w
@@ -1323,7 +1317,7 @@ root/
 │   │   │                                                          clearLogsFile
 │   │   │                                               DEPENDS ON: loggerRenderer.js, config.js
 │   │   │                                               -->
-│   │   ├── 📜 logger.js                           <!-- VERSION: 0.0.3 PATH: src/utils/logger.js
+│   │   ├── 📜 logger.js ❗                         <!-- VERSION: 0.0.3 PATH: src/utils/logger.js
 │   │   │                                               PURPOSE: Główna logika logowania z filtrowaniem per-modułowym.
 │   │   │                                                        Obsługuje proces Main i Renderer.
 │   │   │                                               FUNCTIONS: initLogger, setDebugMode, setDebugModule, isDebugMode,
@@ -1396,7 +1390,7 @@ root/
 │   │   │                                               FUNCTIONS: normalizeWebUrl, isValidWebUrl, isSafeUrl
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 validators.js ❗                     <!-- VERSION: 0.0.3 PATH: src/utils/validators.js
+│   │   ├── 📜 validators.js                       <!-- VERSION: 0.0.3 PATH: src/utils/validators.js
 │   │   │                                               PURPOSE: Walidatory typów danych wykorzystywane przy sprawdzaniu
 │   │   │                                                        poprawności payloadów IPC i stanów magazynów.
 │   │   │                                               FUNCTIONS: ensureString, ensureObject, validateUrl,
@@ -1446,7 +1440,7 @@ root/
 │   │                                                   FUNCTIONS: runAllTests
 │   │                                                   DEPENDS ON: logger.js, icons.js, logWriter.js, testsLoader.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_AdBlocker.js ❗               <!-- VERSION: 0.0.3 PATH: tests/TestRunner_AdBlocker.js
+│   ├── 📜 TestRunner_AdBlocker.js                 <!-- VERSION: 0.0.3 PATH: tests/TestRunner_AdBlocker.js
 │   │                                                   PURPOSE: Testy jednostkowe dla AdBlockera (globalny + per
 │   │                                                            profil, wykrywanie URL)
 │   │                                                   FUNCTIONS: runAdBlockerTests
@@ -1457,7 +1451,7 @@ root/
 │   │                                                   FUNCTIONS: runAssetsTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_BusinessLogic.js ❗           <!-- VERSION: 0.0.3 PATH: tests/TestRunner_BusinessLogic.js
+│   ├── 📜 TestRunner_BusinessLogic.js             <!-- VERSION: 0.0.3 PATH: tests/TestRunner_BusinessLogic.js
 │   │                                                   PURPOSE: Testy czystych funkcji biznesowych (cartesian,
 │   │                                                            parseSplitChar, sortByPin, normalizeUrl)
 │   │                                                   FUNCTIONS: runBusinessLogicTests
@@ -1570,7 +1564,7 @@ root/
 │   │                                                   FUNCTIONS: runSettingsTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_SleepTabs.js ❗               <!-- VERSION: 0.0.3 PATH: tests/TestRunner_SleepTabs.js
+│   ├── 📜 TestRunner_SleepTabs.js                 <!-- VERSION: 0.0.3 PATH: tests/TestRunner_SleepTabs.js
 │   │                                                   PURPOSE: Testy jednostkowe dla Sleep Tabs
 │   │                                                   FUNCTIONS: runSleepTabsTests
 │   │                                                   DEPENDS ON: testUtils.js
@@ -1589,7 +1583,7 @@ root/
 │   │                                                   FUNCTIONS: runTasksTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_Terminal.js ❗                <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Terminal.js
+│   ├── 📜 TestRunner_Terminal.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Terminal.js
 │   │                                                   PURPOSE: Testy jednostkowe dla Terminala (xterm, node-pty,
 │   │                                                            historia, ANSI)
 │   │                                                   FUNCTIONS: runTerminalTests
@@ -1703,13 +1697,13 @@ root/
 │   │                                                   FUNCTIONS: Dokumentacja: 17 sekcji głównych
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
-│   ├── 📄 Global_Project_Starter_Guide.md         <!-- VERSION: 0.0.3 PATH: doc/Global_Project_Starter_Guide.md
+│   ├── 📄 Global_Project_Starter_Guide.md ❗       <!-- VERSION: 0.0.3 PATH: doc/Global_Project_Starter_Guide.md
 │   │                                                   PURPOSE: Dokumentacja specyfikacji projektowej - Globalny
 │   │                                                            przewodnik inicjalizacji projektów (AI First)
 │   │                                                   FUNCTIONS: Dokumentacja: 15 sekcji głównych
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
-│   ├── 📄 ModulesOverview.md                      <!-- VERSION: 0.0.3 PATH: doc/ModulesOverview.md
+│   ├── 📄 ModulesOverview.md ❗                    <!-- VERSION: 0.0.3 PATH: doc/ModulesOverview.md
 │   │                                                   PURPOSE: Dokumentacja specyfikacji projektowej - Ujednolicona
 │   │                                                            lista modułów + opis przeznaczenia dla AI i devów
 │   │                                                   FUNCTIONS: Dokumentacja: 78 sekcji głównych
@@ -2259,13 +2253,8 @@ root/
 │   │   │   │                                           FUNCTIONS: -
 │   │   │   │                                           DEPENDS ON: -
 │   │   │   │                                           -->
-│   │   │   └── 📦 lang.template.json ❗            <!-- VERSION: 0.0.3 PATH: src/locales/templates/lang.template.json
-│   │   │                                               PURPOSE: Szablon dla nowego języka (kopiuj, zmień nazwę na
-│   │   │                                                        [język].json i przetłumacz). PAMIĘTAJ: Jeśli dodajesz
-│   │   │                                                        nowy język, zaktualizuj TestRunner_Locales.js (dodaj
-│   │   │                                                        plik do LOCALE_FILES) ORAZ w src/utils/translations.js
-│   │   │                                                        dodaj import nowego języka oraz w
-│   │   │                                                        src/hooks/useTranslation.js (jeśli używa locales).
+│   │   │   └── 📦 lang.template.json              <!-- VERSION: 0.0.3 PATH: src/locales/templates/lang.template.json
+│   │   │                                               PURPOSE: 
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
@@ -2537,13 +2526,13 @@ root/
 │   │   │   │                                           PURPOSE: Modal do dodawania i edycji skrótów klawiszowych –
 │   │   │   │                                                    formularz z walidacją.
 │   │   │   │                                           FUNCTIONS: HotkeyModal
-│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, Modal
+│   │   │   │                                           DEPENDS ON: react, translations.js, Modal
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ HotkeysList.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysList.jsx
 │   │   │   │                                           PURPOSE: Komponent tabeli wyświetlającej listę skrótów
 │   │   │   │                                                    klawiszowych z akcjami edycji i usuwania.
 │   │   │   │                                           FUNCTIONS: HotkeysList
-│   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ HotkeysManager.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManager.jsx
 │   │   │   │                                           PURPOSE: Kontener zarządzania skrótami klawiszowymi – ładuje
@@ -2659,7 +2648,7 @@ root/
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │                                               -->
 │   │   ├── 📁 styles/
-│   │   │   ├── 🎨 components.css                  <!-- VERSION: 0.0.3 PATH: src/ui/styles/components.css
+│   │   │   ├── 🎨 components.css ❗                <!-- VERSION: 0.0.3 PATH: src/ui/styles/components.css
 │   │   │   │                                           PURPOSE: Zbiór stylów CSS aplikacji
 │   │   │   │                                           FUNCTIONS: -
 │   │   │   │                                           DEPENDS ON: -
@@ -2674,7 +2663,7 @@ root/
 │   │   │   │                                           PURPOSE: Modal w portalu (document.body) — ponad natywnym
 │   │   │   │                                                    <webview> w Electronie.
 │   │   │   │                                           FUNCTIONS: ModalPortal
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, react-dom
+│   │   │   │                                           DEPENDS ON: react, react-dom
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ UpdateChecker.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/system/UpdateChecker.jsx
 │   │   │                                               PURPOSE: Komponent sprawdzania aktualizacji. Placeholder –
@@ -2763,8 +2752,7 @@ root/
 │   │   │   ├── ⚛️ AggregatedProjectSection.jsx ❗ <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedProjectSection.jsx
 │   │   │   │                                           PURPOSE: Pojedyncza sekcja projektu w widoku zbiorczym
 │   │   │   │                                           FUNCTIONS: AggregatedProjectSection
-│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
-│   │   │   │                                                       AggregatedTaskItem
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, AggregatedTaskItem
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ AggregatedTaskItem.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTaskItem.jsx
 │   │   │   │                                           PURPOSE: Wyspecjalizowany komponent prezentujący zadanie w
@@ -2961,7 +2949,7 @@ root/
 │   │   │                                                          clearLogsFile
 │   │   │                                               DEPENDS ON: loggerRenderer.js, config.js
 │   │   │                                               -->
-│   │   ├── 📜 logger.js                           <!-- VERSION: 0.0.3 PATH: src/utils/logger.js
+│   │   ├── 📜 logger.js ❗                         <!-- VERSION: 0.0.3 PATH: src/utils/logger.js
 │   │   │                                               PURPOSE: Główna logika logowania z filtrowaniem per-modułowym.
 │   │   │                                                        Obsługuje proces Main i Renderer.
 │   │   │                                               FUNCTIONS: initLogger, setDebugMode, setDebugModule, isDebugMode,
@@ -3034,7 +3022,7 @@ root/
 │   │   │                                               FUNCTIONS: normalizeWebUrl, isValidWebUrl, isSafeUrl
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 validators.js ❗                     <!-- VERSION: 0.0.3 PATH: src/utils/validators.js
+│   │   ├── 📜 validators.js                       <!-- VERSION: 0.0.3 PATH: src/utils/validators.js
 │   │   │                                               PURPOSE: Walidatory typów danych wykorzystywane przy sprawdzaniu
 │   │   │                                                        poprawności payloadów IPC i stanów magazynów.
 │   │   │                                               FUNCTIONS: ensureString, ensureObject, validateUrl,
@@ -3084,7 +3072,7 @@ root/
 │   │                                                   FUNCTIONS: runAllTests
 │   │                                                   DEPENDS ON: logger.js, icons.js, logWriter.js, testsLoader.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_AdBlocker.js ❗               <!-- VERSION: 0.0.3 PATH: tests/TestRunner_AdBlocker.js
+│   ├── 📜 TestRunner_AdBlocker.js                 <!-- VERSION: 0.0.3 PATH: tests/TestRunner_AdBlocker.js
 │   │                                                   PURPOSE: Testy jednostkowe dla AdBlockera (globalny + per
 │   │                                                            profil, wykrywanie URL)
 │   │                                                   FUNCTIONS: runAdBlockerTests
@@ -3095,7 +3083,7 @@ root/
 │   │                                                   FUNCTIONS: runAssetsTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_BusinessLogic.js ❗           <!-- VERSION: 0.0.3 PATH: tests/TestRunner_BusinessLogic.js
+│   ├── 📜 TestRunner_BusinessLogic.js             <!-- VERSION: 0.0.3 PATH: tests/TestRunner_BusinessLogic.js
 │   │                                                   PURPOSE: Testy czystych funkcji biznesowych (cartesian,
 │   │                                                            parseSplitChar, sortByPin, normalizeUrl)
 │   │                                                   FUNCTIONS: runBusinessLogicTests
@@ -3208,7 +3196,7 @@ root/
 │   │                                                   FUNCTIONS: runSettingsTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_SleepTabs.js ❗               <!-- VERSION: 0.0.3 PATH: tests/TestRunner_SleepTabs.js
+│   ├── 📜 TestRunner_SleepTabs.js                 <!-- VERSION: 0.0.3 PATH: tests/TestRunner_SleepTabs.js
 │   │                                                   PURPOSE: Testy jednostkowe dla Sleep Tabs
 │   │                                                   FUNCTIONS: runSleepTabsTests
 │   │                                                   DEPENDS ON: testUtils.js
@@ -3227,7 +3215,7 @@ root/
 │   │                                                   FUNCTIONS: runTasksTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_Terminal.js ❗                <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Terminal.js
+│   ├── 📜 TestRunner_Terminal.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Terminal.js
 │   │                                                   PURPOSE: Testy jednostkowe dla Terminala (xterm, node-pty,
 │   │                                                            historia, ANSI)
 │   │                                                   FUNCTIONS: runTerminalTests

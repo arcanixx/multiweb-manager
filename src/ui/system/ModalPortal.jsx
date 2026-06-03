@@ -4,12 +4,11 @@
 // VERSION: 0.0.3
 // PURPOSE: Modal w portalu (document.body) — ponad natywnym <webview> w Electronie.
 // FUNCTIONS: ModalPortal
-// DEPENDS ON: react, loggerRenderer.js, react-dom
+// DEPENDS ON: react, react-dom
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useEffect } from 'react';
-import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { createPortal } from 'react-dom';
 
 // ─── ModalPortal() – portal modalny renderujący dzieci w document.body

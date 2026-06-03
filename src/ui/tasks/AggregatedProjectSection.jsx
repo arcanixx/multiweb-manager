@@ -4,12 +4,11 @@
 // VERSION: 0.0.3
 // PURPOSE: Pojedyncza sekcja projektu w widoku zbiorczym
 // FUNCTIONS: AggregatedProjectSection
-// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, AggregatedTaskItem
+// DEPENDS ON: react, translations.js, icons.js, AggregatedTaskItem
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useContext } from 'react';
-import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import AggregatedTaskItem from './AggregatedTaskItem';

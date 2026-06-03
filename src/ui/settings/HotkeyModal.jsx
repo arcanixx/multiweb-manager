@@ -4,13 +4,12 @@
 // VERSION: 0.0.3
 // PURPOSE: Modal do dodawania i edycji skrótów klawiszowych – formularz z walidacją.
 // FUNCTIONS: HotkeyModal
-// DEPENDS ON: react, translations.js, loggerRenderer.js, Modal
+// DEPENDS ON: react, translations.js, Modal
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React from 'react';
 import { TranslationContext } from '../../utils/translations.js';
-import { logError, logWarn, logDebug } from '../../utils/loggerRenderer.js';
 import Modal from '../modals/Modal';
 
 // ─── HotkeyModal() – modal edycji/dodawania skrótu klawiszowego

@@ -35,8 +35,10 @@ export default function DebugModulesSection() {
   const { t } = React.useContext(TranslationContext);
   const [settings, setSettings] = useState(null);
 
-  useEffect(() => {
-    const loadSettings = async () => {
+   // ─── useEffect() – ładowanie ustawień przy montowaniu komponentu
+   useEffect(() => {
+     // ─── loadSettings() – asynchronicznie pobiera ustawienia z main process
+     const loadSettings = async () => {
       try {
         if (!window.electronAPI?.getSettings) {
           setSettings({ debugMode: false, debugModules: { ...DEBUG_MODULES } });
