@@ -3,7 +3,7 @@
 // PATH: src/utils/validators.js
 // VERSION: 0.0.3
 // PURPOSE: Walidatory typów danych wykorzystywane przy sprawdzaniu poprawności payloadów IPC i stanów magazynów.
-// FUNCTIONS: ensureString, ensureObject
+// FUNCTIONS: ensureString, ensureObject, validateUrl, validateEmail, validateLength, validateNoSpecialChars, validatePassword, validatePhone
 // DEPENDS ON: logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

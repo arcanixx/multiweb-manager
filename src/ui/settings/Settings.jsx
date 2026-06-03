@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny kontener widoku ustawień aplikacji. Agreguje wszystkie sekcje konfiguracyjne w jeden ustrukturyzowany interfejs użytkownika.
 // FUNCTIONS: Settings
-// DEPENDS ON: react, GeneralSection, WebViewSection, TabsSection, NotificationsSection, HotkeysManager, DebugModulesSection, DataManagementSection, LogsSection, AccountSection, translations.js
+// DEPENDS ON: react, GeneralSection, WebViewSection, TabsSection, NotificationsSection, HotkeysManager, DebugModulesSection, DataManagementSection, LogsSection, AccountSection, loggerRenderer.js, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

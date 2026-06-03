@@ -6,8 +6,6 @@
 // FUNCTIONS: initLogWriter, appendTestFailLog, getLogsContent, clearLogsFile
 // DEPENDS ON: loggerRenderer.js, config.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
-// UWAGA: Rotacja plików logów jest obsługiwana po stronie main process w ipcMainHandlers_logs.js.
-//        Ten plik jest wyłącznie klientem IPC – nie operuje bezpośrednio na systemie plików.
 // =============================================================================
 
 import { logInfo, logError, logWarn, logDebug } from "./loggerRenderer.js";

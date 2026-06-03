@@ -7,7 +7,7 @@
 //          get-logs-file   – zwraca zawartość aktualnego pliku logów
 //          clear-logs-file – usuwa plik logów
 //          logs:getFile    – alias dla get-logs-file (zachowanie kompatybilności)
-// FUNCTIONS: registerLogsHandlers, rotateLogs
+// FUNCTIONS: registerLogsHandlers, ipc:append-log-file, ipc:get-logs-file, ipc:clear-logs-file, ipc:logs:getFile
 // DEPENDS ON: electron, fs, path, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

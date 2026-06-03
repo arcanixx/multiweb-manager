@@ -3,8 +3,8 @@
 // PATH: src/ui/sidebar/SidebarSearch.jsx
 // VERSION: 0.0.3
 // PURPOSE: Komponent paska wyszukiwania zintegrowany z SidebarHeader – filtrowanie profili i kategorii (tryb lokalny) oraz globalne wyszukiwanie notatek, zadań i projektów (tryb globalny).
-// FUNCTIONS: SidebarSearch, GlobalSearchResults
-// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
+// FUNCTIONS: SidebarSearch
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

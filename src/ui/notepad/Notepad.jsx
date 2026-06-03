@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny komponent interfejsu notatnika – koordynuje pracę zakładek, edytora oraz paneli wyszukiwania i statusu, integrując logikę z hookami useNotepadUI i useNotepadFindReplace.
 // FUNCTIONS: Notepad
-// DEPENDS ON: react, useNotepadUI.js, useNotepadFindReplace.js, NotepadTabs, NotepadToolbar, NotepadFindReplace, NotepadStatusBar, loggerRenderer.js
+// DEPENDS ON: react, useNotepadUI.js, useNotepadFindReplace.js, NotepadTabs, NotepadToolbar, NotepadFindReplace, NotepadStatusBar, loggerRenderer.js, translations.js, ConfirmModal
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

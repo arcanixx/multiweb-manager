@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Pojedynczy profil w Sidebarze (ikona, nazwa, indykatory)
 // FUNCTIONS: SidebarProfileItem
-// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
+// DEPENDS ON: react, loggerRenderer.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -21,7 +21,7 @@ import { ICONS } from '../../utils/icons.js';
 //   @returns {JSX.Element} – renderowany element profilu
 
 export default function SidebarProfileItem({ profile, isActive, onSelect, onContextMenu }) {
-  
+
   const handleClick = () => {
     logDebug('ui', `Sidebar: profile selected: ${profile.name}`);
     onSelect();

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania przestrzeniami roboczymi (workspaces) użytkownika przez mostek IPC.
 // FUNCTIONS: useWorkspaces
-// DEPENDS ON: react, loggerRenderer.js
+// DEPENDS ON: react, loggerRenderer.js, ConfirmModal, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -78,7 +78,7 @@ export function useWorkspaces() {
           return { ok: false, error: 'USER_CANCELLED' };
         }
       }
-      
+
       const res = await window.electronAPI.invoke("workspaces:delete", { id });
       if (res?.ok) {
         logInfo("store", "useWorkspaces.remove success", id);

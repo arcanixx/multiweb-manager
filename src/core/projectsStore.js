@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Projekty (ProjectManager, AggregatedTasks) — plik projects.json.
 // FUNCTIONS: loadProjects, saveProjects, createProject, updateProject, archiveProject, deleteProject
-// DEPENDS ON: persistence.js, settingsStore.js, logger.js
+// DEPENDS ON: persistence.js, settingsStore.js, logger.js, fs
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

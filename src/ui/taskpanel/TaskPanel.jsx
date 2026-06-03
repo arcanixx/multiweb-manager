@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny komponent panelu zadań (TaskPanel) – orkiestruje stan, operacje IPC (ładowanie, zapisywanie, usuwanie zadań) oraz koordynuje renderowanie list sekcji zadań i modali.
 // FUNCTIONS: TaskPanel
-// DEPENDS ON: react, tasksStore.js, projectsStore.js, translations.js, loggerRenderer.js, icons.js, ConfirmModal.jsx, TaskSectionList.jsx, TaskModal.jsx
+// DEPENDS ON: react, tasksStore.js, projectsStore.js, translations.js, loggerRenderer.js, icons.js, ConfirmModal.jsx, TaskModal.jsx, CommentModal.jsx, TaskSectionList.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

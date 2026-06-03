@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Bazowy komponent modalny dla całej aplikacji
 // FUNCTIONS: Modal
-// DEPENDS ON: react, loggerRenderer.js
+// DEPENDS ON: react, translations.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

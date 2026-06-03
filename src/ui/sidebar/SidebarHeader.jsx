@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny komponent nagłówka paska bocznego (Sidebar) – udostępnia przyciski akcji do tworzenia nowych profili i kategorii oraz integruje komponent wyszukiwania SidebarSearch.
 // FUNCTIONS: SidebarHeader
-// DEPENDS ON: react, translations.js, icons.js, SidebarSearch.jsx, loggerRenderer.js
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js, SidebarSearch
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

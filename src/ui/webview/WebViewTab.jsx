@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Zakładka WebView – lifecycle, nawigacja, zoom, recovery, logowanie błędów
 // FUNCTIONS: WebViewTab
-// DEPENDS ON: react, config.js, translations.js, loggerRenderer.js, WebViewToolbar.jsx
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer.js, WebViewToolbar.jsx, useWebViewEvents.js, useWebViewActions.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

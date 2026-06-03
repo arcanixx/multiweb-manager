@@ -1,11 +1,11 @@
 // =============================================================================
-// FILE:       ipcMainHandlers_webview_httpErrors.js
-// PATH:       src/ipc/ipcMainHandlers_webview_httpErrors.js
-// VERSION:    0.0.3
-// PURPOSE:    IPC handler monitorujący HTTP 4xx/5xx z WebView per partycja.
-//             Uzupełnia did-fail-load (błędy sieciowe/DNS) o obsługę błędów HTTP,
-//             których did-fail-load nie wychwytuje (strona się ładuje, ale zwraca błąd).
-// FUNCTIONS:  ipc:webview:startHttpMonitor
+// FILE: ipcMainHandlers_webview_httpErrors.js
+// PATH: src/ipc/ipcMainHandlers_webview_httpErrors.js
+// VERSION: 0.0.3
+// PURPOSE: IPC handler monitorujący HTTP 4xx/5xx z WebView per partycja.
+//          Uzupełnia did-fail-load (błędy sieciowe/DNS) o obsługę błędów HTTP,
+//          których did-fail-load nie wychwytuje (strona się ładuje, ale zwraca błąd).
+// FUNCTIONS: ipc:webview:startHttpMonitor
 // DEPENDS ON: electron, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

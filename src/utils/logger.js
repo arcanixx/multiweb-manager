@@ -3,7 +3,7 @@
 // PATH: src/utils/logger.js
 // VERSION: 0.0.3
 // PURPOSE: Główna logika logowania z filtrowaniem per-modułowym. Obsługuje proces Main i Renderer.
-// FUNCTIONS: initLogger, setDebugMode, setDebugModule, isDebugMode, log, warn, error, logDebug, logInfo, logWarn, logError, getLogFilePath
+// FUNCTIONS: initLogger, setDebugMode, setDebugModule, isDebugMode, log, warn, error, logDebug, logInfo, logWarn, logError, getLogFilePath, logUI, logWebview, logTerminal, logTasks, logTools, logSettings, logEngine, logStore, logIPC
 // DEPENDS ON: config.js, electron
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

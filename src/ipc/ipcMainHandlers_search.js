@@ -4,8 +4,8 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC handler globalnego wyszukiwania (Ctrl+K / sidebar global search).
 //          search:global – buduje indeks ze store'ów i przeszukuje go wg query.
-// FUNCTIONS: registerSearchHandlers
-// DEPENDS ON: ipcMain, electron, searchIndex.js, notesStore.js, tasksStore.js, projectsStore.js, logger.js
+// FUNCTIONS: ipc:search:global
+// DEPENDS ON: electron, searchIndex.js, notesStore.js, tasksStore.js, projectsStore.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

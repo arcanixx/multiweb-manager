@@ -3,7 +3,7 @@
 // PATH: src/utils/fileUtils.js
 // VERSION: 0.0.3
 // PURPOSE: Uniwersalne i bezpieczne opakowanie natywnych funkcji I/O Node.js dla plików JSON z automatyczną obsługą błędów.
-// FUNCTIONS: readJsonSafe, writeJsonSafe
+// FUNCTIONS: readJsonSafe, writeJsonSafe, writeJsonStreaming, readJsonStreaming
 // DEPENDS ON: fs, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
