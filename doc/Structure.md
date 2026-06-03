@@ -285,18 +285,6 @@ root/
 │   │   │                                               FUNCTIONS: useHistoryLog
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
-│   │   ├── 📜 useNotepad.js ❗                     <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepad.js
-│   │   │                                               PURPOSE: Hook React do zarządzania notatkami użytkownika –
-│   │   │                                                        obsługa operacji CRUD (Create, Read, Update, Delete)
-│   │   │                                                        przez mostek IPC. PODZIAŁ ODPOWIEDZIALNOŚCI: •
-│   │   │                                                        useNotepad     → CRUD przez IPC (ten plik) •
-│   │   │                                                        useNotepadUI   → autosave co 5s, stan zakładek, toast
-│   │   │                                                        (useNotepadUI.js) • useNotepadTabs → logika zakładek
-│   │   │                                                        (useNotepadTabs.js) Nie dodawać tu autosave ani logiki
-│   │   │                                                        zakładek — ta logika żyje w useNotepadUI.js.
-│   │   │                                               FUNCTIONS: useNotepad
-│   │   │                                               DEPENDS ON: react, loggerRenderer.js
-│   │   │                                               -->
 │   │   ├── 📜 useNotepadContent.js ❗              <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadContent.js
 │   │   │                                               PURPOSE: Hook React do zarządzania treścią notatnika – stan
 │   │   │                                                        edycji, zapis ręczny, zapis do pliku, skróty
@@ -1933,18 +1921,6 @@ root/
 │   │   │                                                        aktywności użytkownika. Komunikuje się z historyStore
 │   │   │                                                        przez mostek IPC.
 │   │   │                                               FUNCTIONS: useHistoryLog
-│   │   │                                               DEPENDS ON: react, loggerRenderer.js
-│   │   │                                               -->
-│   │   ├── 📜 useNotepad.js ❗                     <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepad.js
-│   │   │                                               PURPOSE: Hook React do zarządzania notatkami użytkownika –
-│   │   │                                                        obsługa operacji CRUD (Create, Read, Update, Delete)
-│   │   │                                                        przez mostek IPC. PODZIAŁ ODPOWIEDZIALNOŚCI: •
-│   │   │                                                        useNotepad     → CRUD przez IPC (ten plik) •
-│   │   │                                                        useNotepadUI   → autosave co 5s, stan zakładek, toast
-│   │   │                                                        (useNotepadUI.js) • useNotepadTabs → logika zakładek
-│   │   │                                                        (useNotepadTabs.js) Nie dodawać tu autosave ani logiki
-│   │   │                                                        zakładek — ta logika żyje w useNotepadUI.js.
-│   │   │                                               FUNCTIONS: useNotepad
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useNotepadContent.js ❗              <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadContent.js

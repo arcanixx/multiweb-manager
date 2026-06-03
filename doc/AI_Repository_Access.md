@@ -66,7 +66,6 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   ├── 📁 📁 hooks/
 │   │   ├── 📜 [useCategories.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useCategories.js)
 │   │   ├── 📜 [useHistoryLog.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useHistoryLog.js)
-│   │   ├── 📜 [useNotepad.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useNotepad.js)
 │   │   ├── 📜 [useNotepadContent.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useNotepadContent.js)
 │   │   ├── 📜 [useNotepadFindReplace.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useNotepadFindReplace.js)
 │   │   ├── 📜 [useNotepadTabs.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useNotepadTabs.js)
