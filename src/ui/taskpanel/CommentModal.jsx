@@ -19,9 +19,12 @@ import { ICONS } from '../../utils/icons.js';
 //   @param {Function} props.onClose – callback zamknięcia modala
 //   @returns {JSX.Element} – renderowany modal komentarza
 
-export default function CommentModal({ task, onClose }) {
+export default function CommentModal({ task, onClose, isOpen }) {
   useEffect(() => { logDebug('ui', 'CommentModal mounted'); }, []);
   const { t } = useContext(TranslationContext);
+  
+  if (!isOpen) return null;
+  
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="modal-box" style={{ maxWidth: 560 }}>

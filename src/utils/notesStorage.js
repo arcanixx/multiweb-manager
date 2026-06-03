@@ -17,6 +17,11 @@ const NOTES_STORAGE_KEY = 'notepad_notes';
 //   @param {string} id – opcjonalny identyfikator; jeśli brak, generowany na podstawie Date.now()
 //   @returns {Object} – nowy obiekt zakładki
 export function createNewTab(id) {
+  // Basic validation
+  if (id !== undefined && typeof id !== 'string') {
+    throw new Error('notesStorage.createNewTab: id must be a string or undefined');
+  }
+  
   return {
     id: id || `tab-${Date.now()}`,
     title: 'Notatka',
@@ -37,7 +42,7 @@ export function loadNotesFromStorage() {
     const raw = localStorage.getItem(NOTES_STORAGE_KEY);
     if (raw) return JSON.parse(raw);
   } catch (e) {
-    logError('ui', 'notesStorage: loadNotesFromStorage error', e);
+    logError('ui', 'notesStorage.loadNotesFromStorage failed', e.message);
   }
   return null;
 }
@@ -53,6 +58,6 @@ export function saveNotesToStorage(notesState) {
     }
     localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(notesState));
   } catch (e) {
-    logError('ui', 'notesStorage: saveNotesToStorage error', e);
+    logError('ui', 'notesStorage.saveNotesToStorage failed', e.message);
   }
 }

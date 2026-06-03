@@ -15,6 +15,8 @@ const ROOT_CONFIG = join(process.cwd(), "config.js");
 const SRC_CONFIG = join(process.cwd(), "src", "config.js");
 const UTILS_ICONS = join(process.cwd(), "src", "utils", "icons.js");
 const DATA_ICONS = join(process.cwd(), "src", "data", "icons.js");
+const IPC_LOADER = join(process.cwd(), "src", "loaders", "ipcLoader.js");
+const TESTS_LOADER = join(process.cwd(), "src", "loaders", "testsLoader.js");
 const tests = [
   {
     name: "root/config.js exists",
@@ -94,6 +96,20 @@ const tests = [
       } catch (err) {
         return { ok: false, details: err.message };
       }
+    }
+  },
+  {
+    name: "loaders exist (ipcLoader & testsLoader)",
+    run: async () => {
+      const ipcExists = existsSync(IPC_LOADER);
+      const testsExists = existsSync(TESTS_LOADER);
+      return { 
+        ok: ipcExists && testsExists, 
+        details: [
+          !ipcExists && "ipcLoader.js missing",
+          !testsExists && "testsLoader.js missing"
+        ].filter(Boolean).join(", ")
+      };
     }
   }
 ];

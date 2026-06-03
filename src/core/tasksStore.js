@@ -76,11 +76,15 @@ export function saveTasksForProject(projectName, payload) {
       payload?.tasks && typeof payload.tasks === "object"
         ? payload
         : { tasks: payload };
-    writeJsonFile(taskFile(projectName), {
-      version: "0.0.3",
-      project: projectName,
-      ...body
-    });
+    
+    // Atomic save: write to temp, then rename
+    const filePath = taskFile(projectName);
+    const tempPath = filePath + ".tmp";
+    const data = JSON.stringify({ version: "0.0.3", project: projectName, ...body }, null, 2);
+    
+    fs.writeFileSync(tempPath, data, 'utf8');
+    fs.renameSync(tempPath, filePath);
+
     logInfo("tasksStore.saveTasksForProject", projectName);
     return body;
   } catch (err) {

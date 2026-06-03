@@ -11,6 +11,7 @@
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
 import { loadSettings, mergeSettings } from "./settingsStore.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
+import fs from 'fs';
 
 // ─── PROJECTS_FILE() – zwraca ścieżkę do pliku projektów w userData
 //   @returns {string} – pełna ścieżka do projects.json
@@ -91,7 +92,14 @@ export function updateProject(id, patch) {
 //   @returns {Array} – zaktualizowana tablica projektów
 export function archiveProject(id) {
   try {
-    logInfo("store", "projectsStore.archiveProject", id);
+    const project = loadProjects().find(p => p.id === id);
+    if (project) {
+      // Backup przed archiwizacją
+      const backupDir = getUserDataPath("backups/projects");
+      if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
+      fs.writeFileSync(`${backupDir}/${id}_backup.json`, JSON.stringify(project));
+      logInfo("store", "projectsStore.archiveProject: backup created", id);
+    }
     return updateProject(id, { status: "archived", archivedAt: Date.now() });
   } catch (err) {
     logError("store", "projectsStore.archiveProject failed", err.message);

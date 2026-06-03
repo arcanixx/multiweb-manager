@@ -42,12 +42,16 @@ export function useTasks() {
   //   @param {Object} task – obiekt zadania
   //   @returns {Promise<Object>} – wynik operacji
   async function add(task) {
+    const previousTasks = [...tasks];
+    // Optimistic update
+    setTasks(prev => [...prev, { ...task, section: task.section || 'active' }]);
+
     try {
       const res = await window.electronAPI.invoke("tasks:add", task);
       if (res?.ok) {
         logInfo("tasks", "useTasks.add success", task.id);
-        await load();
       } else {
+        setTasks(previousTasks); // Rollback
         logError("tasks", "useTasks.add failed", res?.error);
         logWarn("tasks", "Nie można dodać zadania");
       }
@@ -64,12 +68,16 @@ export function useTasks() {
   //   @param {Object} patch – obiekt z polami do zaktualizowania
   //   @returns {Promise<Object>} – wynik operacji
   async function update(id, patch) {
+    const previousTasks = [...tasks];
+    // Optimistic update
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, ...patch } : t));
+
     try {
       const res = await window.electronAPI.invoke("tasks:update", { id, patch });
       if (res?.ok) {
         logInfo("tasks", "useTasks.update success", id);
-        await load();
       } else {
+        setTasks(previousTasks); // Rollback
         logError("tasks", "useTasks.update failed", res?.error);
         logWarn("tasks", "Nie można zaktualizować zadania");
       }
@@ -85,12 +93,16 @@ export function useTasks() {
   //   @param {string} id – identyfikator zadania
   //   @returns {Promise<Object>} – wynik operacji
   async function remove(id) {
+    const previousTasks = [...tasks];
+    // Optimistic update
+    setTasks(prev => prev.filter(t => t.id !== id));
+
     try {
       const res = await window.electronAPI.invoke("tasks:delete", { id });
       if (res?.ok) {
         logInfo("tasks", "useTasks.remove success", id);
-        await load();
       } else {
+        setTasks(previousTasks); // Rollback
         logError("tasks", "useTasks.remove failed", res?.error);
         logWarn("tasks", "Nie można usunąć zadania");
       }

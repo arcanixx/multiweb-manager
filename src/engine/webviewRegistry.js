@@ -24,6 +24,19 @@ export function registerWebView(tabId, webContentsId) {
 export function unregisterWebView(tabId) {
   const entry = webviewMap.get(tabId);
   if (entry) {
+    try {
+      // Remove all listeners from the webContents if possible
+      const { webContents } = require('electron');
+      const wc = webContents.getById(entry.webContentsId);
+      if (wc) {
+        wc.removeAllListeners();
+        // Optionally destroy or close the webContents if needed
+        // wc.destroy(); // This might be too aggressive, let's just remove listeners
+      }
+    } catch (err) {
+      logError('engine', 'webviewRegistry.unregisterWebView failed', { webContentsId: entry.webContentsId, error: err.message });
+    }
+    
     webviewProfileMap.delete(entry.webContentsId);
     webviewMap.delete(tabId);
     logDebug('engine', `WebView unregistered: ${tabId}`);

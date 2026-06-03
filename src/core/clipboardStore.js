@@ -10,7 +10,7 @@
 
 import { clipboard } from "electron";
 import { LIMITS } from "../../config.js";
-import { logInfo, logError } from "../utils/logger.js";
+import { logInfo, logError, logWarn } from "../utils/logger.js";
 // In-memory historia (nie jest persystowana między restartami)
 let history = [];
 
@@ -25,6 +25,7 @@ export function addClipboardEntry(text) {
     });
     // Przycinaj do limitu (FIFO)
     if (history.length > LIMITS.maxClipboardItems) {
+      logWarn("store", `clipboardStore: limit exceeded (${history.length > LIMITS.maxClipboardItems}), trimming to ${LIMITS.maxClipboardItems} items`);
       history = history.slice(0, LIMITS.maxClipboardItems);
     }
     clipboard.writeText(text);

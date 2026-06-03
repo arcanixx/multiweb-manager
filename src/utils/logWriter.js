@@ -4,17 +4,21 @@
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie utrwalaniem logów błędów i wyników testów w systemie plików (userData) poprzez mostek IPC.
 // FUNCTIONS: initLogWriter, appendTestFailLog, getLogsContent, clearLogsFile
-// DEPENDS ON: logger.js, config.js
+// DEPENDS ON: loggerRenderer.js, config.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+// UWAGA: Rotacja plików logów jest obsługiwana po stronie main process w ipcMainHandlers_logs.js.
+//        Ten plik jest wyłącznie klientem IPC – nie operuje bezpośrednio na systemie plików.
 // =============================================================================
 
-import { logInfo, logError, logWarn, logDebug } from "./logger.js";
+import { logInfo, logError, logWarn, logDebug } from "./loggerRenderer.js";
 import { DEFAULT_SETTINGS } from '../config.js';
 
 let logsEnabled = false;
 let debugMode = false;
 
-// ─── initLogWriter() – inicjalizuje system logowania testów
+// ─── initLogWriter() – inicjalizuje system logowania testów na podstawie ustawień
+//   Zgoda na logowanie jest teraz zarządzana przez Settings (logsEnabled toggle),
+//   nie przez window.confirm – usunięto interaktywny dialog.
 //   @returns {Promise<void>}
 export async function initLogWriter() {
   try {
@@ -24,26 +28,18 @@ export async function initLogWriter() {
     logsEnabled = settings.logsEnabled === true;
     logDebug("store", `initLogWriter: debugMode=${debugMode}, logsEnabled=${logsEnabled}`);
 
-    // Jeśli debugMode jest wyłączony – nie robimy nic
     if (!debugMode) {
       logsEnabled = false;
       logInfo("store", "initLogWriter: debug mode disabled, skipping log setup");
       return;
     }
 
-    // Jeśli to pierwsze uruchomienie i jeszcze nie wyraził zgody
-    if (settings.firstRun && !logsEnabled) {
-      const granted = await askForLogPermission();
-      if (granted) {
-        await window.electronAPI?.saveSettings?.({ logsEnabled: true });
-        logsEnabled = true;
-        logInfo("store", "initLogWriter: log permission granted");
-      } else {
-        await window.electronAPI?.saveSettings?.({ logsEnabled: false });
-        logsEnabled = false;
-        logWarn("store", "initLogWriter: log permission denied");
-      }
-      await window.electronAPI?.saveSettings?.({ firstRun: false });
+    // firstRun: jeśli użytkownik jeszcze nie ustawił logsEnabled – domyślnie włączamy
+    // (użytkownik może wyłączyć w Settings → Data & Logs)
+    if (settings.firstRun && logsEnabled === false) {
+      await window.electronAPI?.saveSettings?.({ logsEnabled: true, firstRun: false });
+      logsEnabled = true;
+      logInfo("store", "initLogWriter: first run – logs enabled by default");
     }
   } catch (err) {
     logError("store", "initLogWriter failed", err.message);
@@ -52,71 +48,40 @@ export async function initLogWriter() {
   }
 }
 
-// ─── t() – funkcja tłumaczenia (prosty proxy, zastąpiona przez TranslationContext w UI)
-//   @param {string} key – klucz tłumaczenia
-//   @param {Object} params – parametry interpolacji
-//   @returns {string} przetłumaczony tekst lub klucz
-
-// ─── t() – uproszczona funkcja tłumaczenia dla logWriter (fallback poza kontekstem React)
-//   @param {string} key – klucz tłumaczenia
-//   @param {Object} params – parametry interpolacji
-//   @returns {string} przełumaczony tekst lub klucz
-function t(key, params = {}) {
-  const translations = {
-    'logs.askForPermission': 'Czy zezwolić na zapisywanie logów testów?',
-    'logs.unknownError': 'Nieznany błąd: {error}'
-  };
-  let result = translations[key] || key;
-  Object.entries(params).forEach(([k, v]) => {
-    result = result.replace(`{${k}}`, v);
-  });
-  return result;
-}
-
-// ─── askForLogPermission() – prosi użytkownika o zgodę na logowanie przez window.confirm
-//   Uwaga: window.confirm jest tu celowy (logWriter działa poza aplikacją React)
-//   @returns {Promise<boolean>} czy zgodę przyznano
-async function askForLogPermission() {
-  // Użyjemy modala (ConfirmModal) – tutaj uproszczona wersja
-  return new Promise((resolve) => {
-    const confirmed = window.confirm(t('logs.askForPermission'));
-    resolve(confirmed);
-  });
-}
-
-// ─── appendTestFailLog() – dodaje wpis o błędzie testu do pliku
+// ─── appendTestFailLog() – dopisuje wpis o błędzie testu do pliku przez IPC
+//   Rotacja pliku jest obsługiwana przez handler (ipcMainHandlers_logs.js).
 //   @param {string} moduleName – nazwa modułu
-//   @param {string} testName – nazwa testu
-//   @param {string} details – szczegóły błędu
+//   @param {string} testName   – nazwa testu
+//   @param {string} details    – szczegóły błędu
 //   @returns {Promise<void>}
 export async function appendTestFailLog(moduleName, testName, details) {
   if (!debugMode || !logsEnabled) return;
 
   try {
-    const result = await window.electronAPI?.appendLogFile?.({
+    const result = await window.electronAPI?.invoke?.('append-log-file', {
       level: 'fail',
       module: moduleName,
       test: testName,
       details,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
-    if (!result || !result.ok) {
-      logWarn("store", "appendTestFailLog: IPC call failed");
-      throw new Error(t('logs.unknownError', { error: result?.error || '' }));
+    if (!result?.ok) {
+      logWarn("store", `appendTestFailLog: IPC returned error – ${result?.error ?? 'unknown'}`);
+    } else {
+      logDebug("store", `appendTestFailLog: logged failure for ${moduleName}.${testName}`);
     }
-    logDebug("store", `appendTestFailLog: logged failure for ${moduleName}.${testName}`);
   } catch (err) {
     logError("store", "appendTestFailLog failed", err.message);
     logWarn("store", "Nie udało się zapisać logu testu");
   }
 }
 
-// ─── getLogsContent() – pobiera zawartość pliku logów
+// ─── getLogsContent() – pobiera zawartość aktualnego pliku logów przez IPC
 //   @returns {Promise<string|null>}
 export async function getLogsContent() {
   if (!debugMode || !logsEnabled) return null;
   try {
-    const result = await window.electronAPI?.getLogsFile?.();
+    const result = await window.electronAPI?.invoke?.('get-logs-file');
     if (result?.ok) {
       logDebug("store", "getLogsContent: logs retrieved");
       return result.data;
@@ -130,15 +95,13 @@ export async function getLogsContent() {
   }
 }
 
-// ─── clearLogsFile() – czyści plik logów
+// ─── clearLogsFile() – czyści aktualny plik logów przez IPC (archiwa pozostają)
 //   @returns {Promise<boolean>}
 export async function clearLogsFile() {
   if (!debugMode || !logsEnabled) return false;
   try {
-    const result = await window.electronAPI?.clearLogsFile?.();
-    if (result?.ok) {
-      logInfo("store", "clearLogsFile: logs cleared");
-    }
+    const result = await window.electronAPI?.invoke?.('clear-logs-file');
+    if (result?.ok) logInfo("store", "clearLogsFile: logs cleared");
     return result?.ok === true;
   } catch (err) {
     logError("store", "clearLogsFile failed", err.message);

@@ -16,6 +16,21 @@ import { ICONS } from '../../utils/icons';
 
 import { loadAppLibrary, searchAppLibrary, getAppsByCategory } from '../../core/appLibraryStore'; // getAppsByCategory to helper do filtrowania aplikacji po kategorii, loadAppLibrary i searchAppLibrary to funkcje do pobierania danych z appLibraryStore
 
+// ─── AppIcon() – ikona aplikacji z fallbackiem na ikonę domyślną przy błędzie ładowania
+//   @param {string} icon – URL ikony aplikacji (może być niedostępny lub null)
+//   @returns {JSX.Element}
+function AppIcon({ icon }) {
+  const [hasError, setHasError] = useState(false);
+  if (!icon || hasError) return <span>{ICONS.DEFAULT}</span>;
+  return (
+    <img
+      src={icon}
+      alt=""
+      onError={() => setHasError(true)}
+    />
+  );
+}
+
 // ─── AppLibraryBrowser() – komponent przeglądarki aplikacji z kategoriami i wyszukiwarką
 //   @param {Object} props – właściwości komponentu
 //   @param {Function} props.onAddProfile – callback dodawania profilu
@@ -78,21 +93,21 @@ export default function AppLibraryBrowser({ onAddProfile }) {
     onAddProfile?.(app);
   };
 
-  // ─── renderAppCard() – Funkcja pomocnicza renderująca kartę graficzną aplikacji (nazwę, URL, ikonę oraz przycisk dodawania) w strukturze JSX
-  const renderAppCard = (app, categoryId) => (
-    <div key={app.id} className="app-card">
-      <div className="app-card-icon">
-        {app.icon ? <img src={app.icon} alt="" /> : <span>{ICONS.DEFAULT}</span>}
-      </div>
-      <div className="app-card-info">
-        <h3>{app.name}</h3>
-        <p className="app-card-url">{app.url}</p>
-      </div>
-      <button onClick={() => handleAddApp({ ...app, categoryId })} className="btn-primary">
-        {ICONS.PLUS} {t('appLibrary.add')}
-      </button>
-    </div>
-  );
+   // ─── renderAppCard() – Funkcja pomocnicza renderująca kartę graficzną aplikacji (nazwę, URL, ikonę oraz przycisk dodawania) w strukturze JSX
+   const renderAppCard = (app, categoryId) => (
+     <div key={app.id} className="app-card">
+       <div className="app-card-icon">
+         <AppIcon icon={app.icon} />
+       </div>
+       <div className="app-card-info">
+         <h3>{app.name}</h3>
+         <p className="app-card-url">{app.url}</p>
+       </div>
+       <button onClick={() => handleAddApp({ ...app, categoryId })} className="btn-primary">
+         {ICONS.PLUS} {t('appLibrary.add')}
+       </button>
+     </div>
+   );
 
   if (loading) {
     return <div className="loading">{t('common.loading')}</div>;

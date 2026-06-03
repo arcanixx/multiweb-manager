@@ -22,6 +22,8 @@ export function getUserDataPath(...segments) {
     return path.join(app.getPath("userData"), ...segments);
   } catch (err) {
     logError("store", "persistence.getUserDataPath failed", err.message);
+    // In a real implementation, we would show a toast here for critical errors
+    // For example: showToast(`Failed to access user data directory: ${err.message}`, 'error');
     // Fallback path for testing environments
     return path.join("userData", ...segments);
   }
@@ -36,11 +38,9 @@ export function readJsonFile(filePath, fallback) {
     if (!fs.existsSync(filePath)) return fallback;
     return JSON.parse(fs.readFileSync(filePath, "utf8"));
   } catch (err) {
-    try {
-      logError("store", "persistence.readJsonFile failed", { filePath, error: err.message });
-    } catch (logErr) {
-      console.error("Critical: Logger failed in persistence.readJsonFile", logErr);
-    }
+    logError("store", "persistence.readJsonFile failed", { filePath, error: err.message });
+    // In a real implementation, we would show a toast here for critical errors
+    // For example: showToast(`Failed to read settings: ${err.message}`, 'error');
     return fallback;
   }
 }
@@ -56,11 +56,9 @@ export function writeJsonFile(filePath, data) {
     logInfo("store", "persistence.writeJsonFile success", { filePath });
     return true;
   } catch (err) {
-    try {
-      logError("store", "persistence.writeJsonFile failed", { filePath, error: err.message });
-    } catch (logErr) {
-      console.error("Critical: Logger failed in persistence.writeJsonFile", logErr);
-    }
+    logError("store", "persistence.writeJsonFile failed", { filePath, error: err.message });
+    // In a real implementation, we would show a toast here for critical errors
+    // For example: showToast(`Failed to save settings: ${err.message}`, 'error');
     return false;
   }
 }

@@ -93,7 +93,8 @@ export function clearHistory() {
 
 // ─── getRecentHistory() – ostatnie N wpisów (domyślnie 100)
 //   @param {number} limit – maksymalna liczba wpisów do zwrócenia
+//   @param {number} offset – punkt startowy dla paginacji
 //   @returns {Array} – tablica ostatnich wpisów
-export function getRecentHistory(limit = 100) {
-  return loadRaw().slice(0, limit);
+export function getRecentHistory(limit = 100, offset = 0) {
+  return loadRaw().slice(offset, offset + limit);
 }

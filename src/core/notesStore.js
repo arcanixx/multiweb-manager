@@ -30,6 +30,10 @@ function loadStore() {
 // ─── saveStore() – Zapisuje aktualną strukturę notatek do pliku notes.json w katalogu danych użytkownika; zwraca true w przypadku powodzenia lub false przy błędzie
 function saveStore(store) {
   try {
+    // Walidacja przed zapisem
+    if (!store.data.every(n => n.id && typeof n.title === 'string')) {
+      throw new Error("Validation failed: Note missing ID or Title");
+    }
     fs.writeFileSync(NOTES_FILE, JSON.stringify(store, null, 2), "utf8");
     logInfo("store", "notesStore.saveStore success");
     return true;

@@ -53,7 +53,7 @@ export default function NotepadTabs({ tabs, activeTabId, onTabSelect, onTabClose
           >
             <span className="tab-name" onDoubleClick={() => handleRenameClick(tab.id, tab.name)}>
               {tab.name}
-              {tab.isDirty && <span className="dirty-indicator">●</span>}
+              {tab.dirty && <span className="dirty-indicator">●</span>}
             </span>
             <button
               className="tab-close"

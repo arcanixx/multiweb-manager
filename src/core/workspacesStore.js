@@ -53,6 +53,12 @@ export function getAllWorkspaces() {
 export function saveWorkspace(workspace) {
   try {
     const store = loadStore();
+    
+    // Check name uniqueness for new workspaces
+    if (!store.data.find(w => w.id === workspace.id) && store.data.find(w => w.name === workspace.name)) {
+      throw new Error("Workspace name already exists");
+    }
+
     const idx = store.data.findIndex(w => w.id === workspace.id);
 
     if (idx === -1) {

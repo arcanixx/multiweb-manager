@@ -17,12 +17,11 @@ import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 // @param {Object} options.notesRef – ref do stanu zakładek z useNotepadTabs
 // @param {Function} options.setNotes – setter stanu zakładek
 // @param {Object} options.textareaRef – ref do elementu textarea
+// @param {Function} options.onContentChangeCallback – callback wywoływany przy zmianie treści
+// @param {Function} options.onContentSavedCallback – callback wywoływany po zapisie treści
 // @returns {Object} – stan treści i funkcje edycji/zapisu
-export function useNotepadContent({ notesRef, setNotes, textareaRef }) {
+export function useNotepadContent({ notesRef, setNotes, textareaRef, onContentChangeCallback, onContentSavedCallback }) {
   const [content, setContent] = useState('');
-  const [dirty, setDirty] = useState(false);
-
-  // Ref dla aktualnej treści (unikanie stale closure)
   const contentRef = useRef(content);
   const setContentWithRef = useCallback((value) => {
     contentRef.current = value;
@@ -32,7 +31,7 @@ export function useNotepadContent({ notesRef, setNotes, textareaRef }) {
   // ─── handleContentChange() – obsługa zmiany treści (keystroke)
   const handleContentChange = useCallback((e) => {
     setContentWithRef(e.target.value);
-    setDirty(true);
+    onContentChangeCallback?.(true);
   }, [setContentWithRef]);
 
   // ─── saveCurrentTab() – zapis ręczny aktualnej zakładki
@@ -46,10 +45,10 @@ export function useNotepadContent({ notesRef, setNotes, textareaRef }) {
         ? { ...tab, content: contentRef.current, updatedAt: new Date().toISOString(), lastSaved: Date.now() }
         : tab
     );
-    const updatedNotes = { ...currentNotes, tabs: updatedTabs };
-    setNotes(updatedNotes);
-    saveNotesToStorage(updatedNotes);
-    setDirty(false);
+    const updatedNotes = { ...currentNotes, tabs: updatedTabs }; // This updatedNotes now includes dirty: false for the active tab
+    setNotes(updatedNotes); // Use the actual setNotes from useNotepadTabs
+    saveNotesToStorage(updatedNotes); // Persist to storage
+    onContentSavedCallback?.(false);
     logInfo('notepad', `useNotepadContent: saved tab ${active.id}`);
     return true;
   }, [notesRef, setNotes]);
@@ -115,10 +114,8 @@ export function useNotepadContent({ notesRef, setNotes, textareaRef }) {
 
   return {
     content,
-    dirty,
     contentRef,
     setContent: setContentWithRef,
-    setDirty,
     handleContentChange,
     handleKeyDown,
     saveCurrentTab,

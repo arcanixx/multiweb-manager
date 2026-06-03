@@ -1324,17 +1324,48 @@ Unified search (`Ctrl+K`), quick switcher (`Ctrl+P`), tile view, dark mode, ulep
 
 ---
 
-# 13. DYNAMICZNE ŁADOWANIE TESTÓW (`testsLoader.js`)
+# 13. DYNAMICZNE ŁADOWANIE MODUŁÓW (Testy i IPC)
+
+## 13.1. Cele i zasady ogólne
+
+Aplikacja wykorzystuje dwa loadery do automatycznego wykrywania i ładowania modułów — jeden dla handlerów IPC, drugi dla testów. Eliminuje to konieczność ręcznego importowania plików w `main.js` i `TestRunner.js`, zmniejsza ryzyko błędów i ułatwia utrzymanie kodu.
+
+**Korzyści:**
+- Nowe moduły są wykrywane automatycznie — wystarczy utworzyć plik zgodny z konwencją nazewnictwa
+- Brak możliwości "zapomnienia" o dodaniu nowego handlera lub zestawu testów
+- Wyraźne oddzielenie odpowiedzialności — loadery zajmują się ładowaniem, moduły swoją logiką
+- Mniej konfliktów merge (nie modyfikujemy `main.js` ani `TestRunner.js` przy dodawaniu modułów)
+
+---
+
+## 13.2. `ipcLoader.js` — automatyczne ładowanie handlerów IPC
+
+**Plik:** `src/loaders/ipcLoader.js`
+
+Skanuje folder `src/ipc/` w poszukiwaniu plików `ipcMainHandlers_*.js` i importuje każdy z nich. Handlery rejestrują się przez side-effect przy imporcie. Pomija: `ipcLegacyBridge.js` (ładowany osobno jako most legacy). Loguje które handlery zostały załadowane, pominięte lub zwróciły błąd.
+
+**Użycie w `main.js`:**
+```js
+import { loadAllIpcHandlers } from './src/loaders/ipcLoader.js';
+await loadAllIpcHandlers();
+```
+
+Zamiast ręcznego podejścia:
+```js
+// ❌ Do usunięcia — ręczne importy i rejestracje
+import { handleSettingsGet } from './ipcMainHandlers_settings.js';
+import { handleProfilesGetAll } from './ipcMainHandlers_profiles.js';
+ipcMain.handle('settings:get', handleSettingsGet);
+ipcMain.handle('profiles:getAll', handleProfilesGetAll);
+```
+
+---
+
+## 13.3. `testsLoader.js` — automatyczne wykrywanie i uruchamianie testów
 
 **Plik:** `src/loaders/testsLoader.js`
 
-**Cel:** Automatyczne wykrywanie i uruchamianie wszystkich testów bez ręcznego importowania.
-
-**Działanie:**
-- Skanuje folder `tests/` w poszukiwaniu plików `TestRunner_*.js`
-- Pomija: `TestRunner.js`, `testUtils.js`
-- Dla każdego pliku — znajduje eksportowaną funkcję `run*Tests()` (np. `runNotepadTests`, `runTasksTests`)
-- Uruchamia ją i agreguje wyniki
+Skanuje folder `tests/` w poszukiwaniu plików `TestRunner_*.js`. Pomija: `TestRunner.js`, `testUtils.js`. Dla każdego pliku znajduje eksportowaną funkcję `run*Tests()` (np. `runNotepadTests`, `runTasksTests`), uruchamia ją i agreguje wyniki. Używa `logInfo` i `logError` z loggera.
 
 **Użycie w `TestRunner.js`:**
 ```js
@@ -1346,7 +1377,111 @@ export async function runAllTests(options = {}) {
 }
 ```
 
-> Nowe testy są wykrywane automatycznie — nie trzeba modyfikować `TestRunner.js`. Łatwiejsze utrzymanie i mniej konfliktów merge. `testsLoader` używa `logInfo` i `logError` z loggera.
+Zamiast ręcznego podejścia:
+```js
+// ❌ Do usunięcia — ręczne importy i wywołania
+import { runSettingsTests } from './TestRunner_Settings.js';
+import { runProfilesTests } from './TestRunner_Profiles.js';
+await runSettingsTests();
+await runProfilesTests();
+```
+
+---
+
+## 13.4. Konwencje nazewnictwa
+
+| Typ | Wzorzec pliku | Wymagany eksport |
+|-----|--------------|-----------------|
+| Handler IPC | `ipcMainHandlers_nazwa.js` | funkcja lub obiekt z handlerami (rejestracja przez side-effect) |
+| Zestaw testów | `TestRunner_Nazwa.js` | funkcja `runNazwaTests()` |
+
+> `testsLoader` jest inicjalizowany w `TestRunner.js` przed uruchomieniem testów. Oba loadery działają tylko gdy spełnione są warunki środowiskowe (`debugMode`, zgoda na logi).
+
+---
+
+## 13.5. FEATURE FLAGS — warunkowe ładowanie modułów UI
+
+Obiekt `FEATURES` w `src/config.js` steruje włączaniem i wyłączaniem poszczególnych modułów bez konieczności usuwania kodu. Pozwala szybko wyłączyć dowolny feature na czas debugów lub testów.
+
+### Implementacja w komponentach React
+
+**Zasada: WSZYSTKIE hooki muszą być PRZED warunkiem feature.**
+
+React wymaga, żeby hooki były wywoływane bezwarunkowo i zawsze w tej samej kolejności. Umieszczenie warunku przed `useState` / `useEffect` / `useContext` jest błędem (`React Hook called conditionally`).
+
+```jsx
+// ✅ Poprawnie — hooki przed warunkiem
+export default function MojKomponent() {
+  const { t } = useContext(TranslationContext);
+  const [stan, setStan] = useState(null);
+
+  if (!isFeatureEnabled('nazwaFeature')) return null; // warunek PO hookach
+
+  return <div>...</div>;
+}
+
+// ❌ Źle — warunek przed hookami
+export default function MojKomponent() {
+  if (!isFeatureEnabled('nazwaFeature')) return null; // BŁĄD!
+  const [stan, setStan] = useState(null);
+}
+```
+
+### Implementacja w modułach logicznych (`.js`)
+
+```js
+export function initAdBlocker() {
+  if (!isFeatureEnabled('adBlocker')) return;
+  // ... logika inicjalizacji
+}
+```
+
+### Mapowanie FEATURES → pliki
+
+| Flaga | Plik(i) | Sposób warunkowania |
+|---|---|---|
+| `helpScreen` | `src/ui/help/Help.jsx` | `return null` w komponencie |
+| `appLibrary` | `src/ui/appLibrary/AppLibraryBrowser.jsx` | `return null` w komponencie |
+| `unifiedSearch` | `src/ui/system/GlobalSearch.jsx` | `return null` w komponencie |
+| `tileView` | `src/ui/webview/WebViewTileView.jsx` | `return null` w komponencie |
+| `singleAppMode` | `src/ui/webview/WebViewTab.jsx` | prop `onSingleAppMode` = `undefined` |
+| `screenshotWebView` | `src/ui/webview/WebViewTab.jsx` | prop `onScreenshot` = `undefined` |
+| `resourceMonitor` | `src/ui/webview/WebViewTab.jsx` | prop `onResourceMonitor` = `undefined` |
+| `sleepTabs` | `src/engine/sleepTabsManager.js` | `return 0` w `getSleepTimeoutMs()` |
+| `adBlocker` | `src/engine/adBlocker.js` | `return` w `initAdBlocker()` |
+| `jsonYamlXmlFormatter` | `src/ui/tools/JsonFormatter.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `regexTester` | `src/ui/tools/RegexTester.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `markdownPreviewer` | `src/ui/tools/MarkdownPreviewer.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `imageTools` | `src/ui/tools/ImageTools.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `svgToPng` | `src/ui/tools/SvgToPngConverter.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `filePreviewer` | `src/ui/tools/FilePreviewer.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `miniPostman` | `src/ui/tools/MiniPostman.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `clipboardHistory` | `src/ui/tools/ClipboardHistory.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `cookieGrabber` | `src/ui/tools/CookieGrabber.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
+| `hotkeysManager` | `src/ui/settings/HotkeysManager.jsx` + `Settings.jsx` | `return null` + `{isFeatureEnabled && <HotkeysManager />}` |
+| `exportImport` | `src/ui/settings/DataLogsSection.jsx` | warunkowe renderowanie przycisków |
+| `logsAccess` | `src/ui/settings/DataLogsSection.jsx` | warunkowe renderowanie przycisku |
+
+### Wzorzec filtrowania zakładek w ToolsPanel
+
+```jsx
+const allTools = [
+  { id: 'jsonFormatter', icon: ICONS.JSON, label: t('tools.jsonFormatter'), feature: 'jsonYamlXmlFormatter' },
+  { id: 'removebg', icon: ICONS.REMOVEBG, label: t('tools.removebg'), feature: null }, // null = zawsze widoczne
+  // ...
+];
+const tools = allTools.filter(tool => !tool.feature || isFeatureEnabled(tool.feature));
+```
+
+### Dodawanie nowego feature flaga — checklista
+
+1. Dodaj wpis do `FEATURES` w `src/config.js`
+2. Dodaj `import { isFeatureEnabled } from '../../config.js'` w docelowym pliku
+3. W komponencie React: dodaj `if (!isFeatureEnabled('klucz')) return null;` **PO wszystkich hookach**
+4. W module JS: dodaj `if (!isFeatureEnabled('klucz')) return;` na początku funkcji inicjalizacyjnej
+5. Jeśli tool pojawia się w `ToolsPanel` — dodaj pole `feature: 'klucz'` w `allTools`
+6. Zaktualizuj tablicę mapowania w sekcji 13.5 powyżej
+7. Dodaj wpis do `.clinerules` (sekcja DEBUG / FEATURES)
 
 ---
 

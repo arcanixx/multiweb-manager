@@ -8,12 +8,15 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+import ConfirmModal from '../../ui/modals/ConfirmModal';
+import { TranslationContext } from '../../utils/translations.js';
 
 // ─── useWorkspaces() – hook do zarządzania workspace'ami
 //   @returns {Object} – obiekt z workspaces, loading i funkcjami saveWorkspace, deleteWorkspace
 export function useWorkspaces() {
+  const { t } = useContext(TranslationContext);
   const [workspaces, setWorkspaces] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -61,9 +64,21 @@ export function useWorkspaces() {
 
   // ─── remove() – usuwa workspace
   //   @param {string} id – identyfikator workspace do usunięcia
+  //   @param {Function} [showConfirm] – opcjonalna funkcja do wyświetlania potwierdzenia
   //   @returns {Promise<Object>}
-  async function remove(id) {
+  async function remove(id, showConfirm) {
     try {
+      // If we have a confirmation function, use it
+      if (showConfirm) {
+        const confirmed = await showConfirm(
+          t('workspaces.deleteTitle'),
+          t('workspaces.deleteMessage', { count: 1 })
+        );
+        if (!confirmed) {
+          return { ok: false, error: 'USER_CANCELLED' };
+        }
+      }
+      
       const res = await window.electronAPI.invoke("workspaces:delete", { id });
       if (res?.ok) {
         logInfo("store", "useWorkspaces.remove success", id);

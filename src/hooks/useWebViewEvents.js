@@ -37,15 +37,19 @@ export function useWebViewEvents({
     logDebug('webview', `useWebViewEvents: finished loading ${profile.id}`);
   }, [profile.id, setIsLoading, setError, updateNavigationState]);
 
-  // ─── handleDidFailLoad() – obsługuje błąd ładowania strony
-  const handleDidFailLoad = useCallback((event) => {
-    const errorCode = event.errorCode;
-    const errorDescription = event.errorDescription;
-    setIsLoading(false);
-    setError({ code: errorCode, description: errorDescription });
-    logError('webview', `useWebViewEvents: fail load ${profile.id}`, { errorCode, errorDescription });
-    if (onLoadError) onLoadError(profile.id, errorCode);
-  }, [profile.id, setIsLoading, setError, onLoadError]);
+   // ─── handleDidFailLoad() – obsługuje błąd ładowania strony
+   const handleDidFailLoad = useCallback((event) => {
+     const errorCode = event.errorCode;
+     const errorDescription = event.errorDescription;
+
+     // Pomijaj anulowane nawigacje (np. szybkie kliknięcia, cofnięcie przed załadowaniem)
+     if (errorCode === -3) return; // ERR_ABORTED
+
+     setIsLoading(false);
+     setError({ code: errorCode, description: errorDescription, isHttp: false });
+     logError('webview', `useWebViewEvents: fail load ${profile.id}`, { errorCode, errorDescription });
+     if (onLoadError) onLoadError(profile.id, errorCode);
+   }, [profile.id, setIsLoading, setError, onLoadError]);
 
   // ─── handleDidStartLoading() – obsługuje rozpoczęcie ładowania strony
   const handleDidStartLoading = useCallback(() => {

@@ -65,11 +65,15 @@ export function loadProfiles() {
 //   @returns {Array} – zapisana tablica profili
 export function saveProfiles(profiles) {
   try {
+    if (!Array.isArray(profiles)) throw new Error("Profiles must be an array");
+    profiles.forEach(p => {
+      if (!p.id || !p.url) throw new Error(`Profile ${p.name || 'unknown'} missing ID or URL`);
+    });
     writeJsonFile(PROFILES_FILE(), { version: "0.0.3", data: profiles });
     logInfo("store", "profilesStore.saveProfiles success", profiles.length);
     return profiles;
   } catch (err) {
-    logError("store", "profilesStore.saveProfiles failed", err.message);
+    logError("store", "profilesStore.saveProfiles failed: " + err.message);
     return profiles;
   }
 }

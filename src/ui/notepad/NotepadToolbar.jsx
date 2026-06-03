@@ -84,7 +84,7 @@ export default function NotepadToolbar({ onSave, onSaveAs, onToggleFind, wordWra
         {ICONS.SAVE} {t('notepad.save')}
       </button>
         <button className="btn btn-secondary" style={{ fontSize: 12 }} onClick={handleSaveAs}>
-        {ICONS.EXPORT} {t('notepad.save_as')}
+        {ICONS.DOWNLOAD} {t('notepad.save_as')}
       </button>
         <button className={`btn btn-secondary`} style={{ fontSize: 12 }} onClick={handleToggleFind}>
         {ICONS.SEARCH} {t('notepad.find_replace')}

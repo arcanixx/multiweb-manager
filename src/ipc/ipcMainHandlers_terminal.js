@@ -18,53 +18,70 @@ import os from "os";
 const terminals = {};
 const terminalBuffers = {};
 // =============================================================================
-// HELPER: create shell command per OS
+// HELPER: domyślna powłoka per OS
 // =============================================================================
 
-// ─── getDefaultShell() – Zwraca nazwę binarnego pliku domyślnej powłoki systemowej (shell) na podstawie platformy operacyjnej (powershell.exe dla Windows, zsh dla macOS, bash dla Linuxa)
+// ─── getDefaultShell() – Zwraca nazwę binarnego pliku domyślnej powłoki systemowej na podstawie platformy
 function getDefaultShell() {
   if (os.platform() === "win32") return "powershell.exe";
   if (os.platform() === "darwin") return "zsh";
   return "bash";
+}
+
+// =============================================================================
+// HELPER: tworzenie procesu PTY
+// =============================================================================
+
+// ─── spawnPty() – Tworzy nowy proces PTY z daną powłoką i CWD; rejestruje handlery onData/onError/onExit
+//   @param {string} terminalId – ID terminala (string z PID)
+//   @param {string} cwd        – katalog roboczy
+//   @returns {Object}          – instancja ptyProcess
+function spawnPty(terminalId, cwd) {
+  const shell = getDefaultShell();
+  const ptyProcess = pty.spawn(shell, [], {
+    name: "xterm-color",
+    cols: 120,
+    rows: 30,
+    cwd: cwd || process.cwd(),
+    env: process.env
+  });
+
+  terminals[terminalId]       = ptyProcess;
+  terminalBuffers[terminalId] = [];
+
+  ptyProcess.onData((data) => {
+    terminalBuffers[terminalId].push(data);
+    if (terminalBuffers[terminalId].length > 2000) {
+      terminalBuffers[terminalId].shift();
+    }
+  });
+
+  ptyProcess.on('error', (err) => {
+    logError('ipc', `PTY error on terminal ${terminalId}`, err);
+    try { ptyProcess.kill(); } catch (_) {}
+    delete terminals[terminalId];
+    delete terminalBuffers[terminalId];
+  });
+
+  ptyProcess.onExit(() => {
+    delete terminals[terminalId];
+    delete terminalBuffers[terminalId];
+  });
+
+  return ptyProcess;
 }
 // =============================================================================
 // CREATE TERMINAL SESSION
 // =============================================================================
 ipcMain.handle("terminal:create", async (_, { cwd }) => {
   try {
-    const shell = getDefaultShell();
-    const ptyProcess = pty.spawn(shell, [], {
-      name: "xterm-color",
-      cols: 120,
-      rows: 30,
-      cwd: cwd || process.cwd(),
-      env: process.env
-    });
+    const ptyProcess = spawnPty('_tmp', cwd); // tymczasowe ID przed poznaniem PID
     const terminalId = String(ptyProcess.pid);
-    terminals[terminalId] = ptyProcess;
-    terminalBuffers[terminalId] = [];
-    ptyProcess.onData((data) => {
-      terminalBuffers[terminalId].push(data);
-      if (terminalBuffers[terminalId].length > 2000) {
-        terminalBuffers[terminalId].shift();
-      }
-    });
-
-    ptyProcess.on('error', (err) => {
-      logError('ipc', `PTY error on terminal ${terminalId}`, err);
-      // Clean up
-      try {
-        ptyProcess.kill();
-      } catch (_) {}
-      delete terminals[terminalId];
-      delete terminalBuffers[terminalId];
-    });
-
-    ptyProcess.onExit(() => {
-      delete terminals[terminalId];
-      delete terminalBuffers[terminalId];
-    });
-
+    // przenieś pod właściwe ID
+    terminals[terminalId]       = terminals['_tmp'];
+    terminalBuffers[terminalId] = terminalBuffers['_tmp'];
+    delete terminals['_tmp'];
+    delete terminalBuffers['_tmp'];
     return { ok: true, data: { terminalId } };
   } catch (err) {
     logError('ipc', "terminal:create failed", err);
@@ -152,42 +169,9 @@ ipcMain.handle("terminal:restart", async (_, { terminalId, cwd }) => {
   try {
     const old = terminals[terminalId];
     if (old) old.kill();
-
-    const shell = getDefaultShell();
-
-    const ptyProcess = pty.spawn(shell, [], {
-      name: "xterm-color",
-      cols: 120,
-      rows: 30,
-      cwd: cwd || process.cwd(),
-      env: process.env
-    });
-
-    terminals[terminalId] = ptyProcess;
-    terminalBuffers[terminalId] = [];
-
-    ptyProcess.onData((data) => {
-      terminalBuffers[terminalId].push(data);
-      if (terminalBuffers[terminalId].length > 2000) {
-        terminalBuffers[terminalId].shift();
-      }
-    });
-
-    ptyProcess.on('error', (err) => {
-      logError('ipc', `PTY error on terminal ${terminalId}`, err);
-      // Clean up
-      try {
-        ptyProcess.kill();
-      } catch (_) {}
-      delete terminals[terminalId];
-      delete terminalBuffers[terminalId];
-    });
-
-    ptyProcess.onExit(() => {
-      delete terminals[terminalId];
-      delete terminalBuffers[terminalId];
-    });
-
+    delete terminals[terminalId];
+    delete terminalBuffers[terminalId];
+    spawnPty(terminalId, cwd);
     return { ok: true };
   } catch (err) {
     logError('ipc', "terminal:restart failed", err);

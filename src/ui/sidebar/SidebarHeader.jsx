@@ -21,7 +21,7 @@ import SidebarSearch from './SidebarSearch';
 // @param {string} props.searchValue – wartość wyszukiwania
 // @param {Function} props.onSearchChange – callback zmiany wyszukiwania
 // @returns {JSX.Element} – renderowany nagłówek sidebaru
-export default function SidebarHeader({ onAddProfile, onAddCategory, searchValue, onSearchChange }) {
+export default function SidebarHeader({ onAddProfile, onAddCategory, searchValue, onSearchChange, globalEnabled, onGlobalToggle, globalResults, isGlobalSearching, onGlobalSelect }) {
   const { t } = useContext(TranslationContext);
 
   useEffect(() => { logDebug('ui', 'SidebarHeader mounted'); }, []);
@@ -36,7 +36,15 @@ export default function SidebarHeader({ onAddProfile, onAddCategory, searchValue
           {ICONS.FOLDER_ADD}
         </button>
       </div>
-      <SidebarSearch value={searchValue} onChange={onSearchChange} />
+      <SidebarSearch
+        value={searchValue}
+        onChange={onSearchChange}
+        globalEnabled={globalEnabled}
+        onGlobalToggle={onGlobalToggle}
+        globalResults={globalResults}
+        isGlobalSearching={isGlobalSearching}
+        onGlobalSelect={onGlobalSelect}
+      />
     </div>
   );
 }

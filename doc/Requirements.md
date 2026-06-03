@@ -328,6 +328,16 @@
 
 ---
 
+### [Standaryzacja obsługi błędów z modalami/toastami] :
+- **ID:** ARCH_REQ-042
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** Wprowadzenie jednolitego systemu obsługi błędów w aplikacji. Wszystkie nieobsłużone wyjątki i błędy IPC muszą być prezentowane użytkownikowi poprzez modal ConfirmModal (dla krytycznych błędów wymagających potwierdzenia) lub toast (dla błędów nieblokujących). W przypadku błędów I/O (np. odczyt/zapis plików) należy wykonać trzy kroki: 1) Złapać błąd w try-catch, 2) Zalogować błąd przez logger z kontekstem modułu, opisem akcji i szczegółami błędu, 3) Pokaż odpowiedni komunikat użytkownikowi (toast dla błędów nieblokujących, modal dla błędów uniemożliwiających kontynuację pracy). Dotyczy wszystkich hooków use* i funkcji zapisujących/odczytujących dane.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Standaryzacja poprawi UX poprzez konsekwentne informowanie użytkownika o problemach oraz ułatwi debugowanie poprzez jednolite logowanie.
+
+
 ### [Deep merge ustawień (lodash.merge)] :
 - **ID:** ARCH_REQ-042
 - **Sekcja:** ARCHITEKTURA I STABILNOŚĆ

@@ -22,6 +22,7 @@ export const ICONS = {
   WARNING: "⚠️",
   INFO: "ℹ️",
   SEARCH: "🔍",
+  SEARCH_GLOBAL: "🌐",
   EXPORT: "📤",
   IMPORT: "📥",
   DOWNLOAD: "⬇️",
@@ -146,7 +147,15 @@ export const ICONS = {
   LOGS: "📊",
   HOTKEY: "⌨️",
 
-  // ========== Modale / Dialogi ==========
+  // ========== Onboarding ==========
+  ONBOARDING_LOGO: null, // placeholder – renderowany jako SVG/PNG z assets/
+  ONBOARDING_THEME_DARK: "🌙",
+  ONBOARDING_THEME_LIGHT: "☀️",
+  ONBOARDING_LANGUAGE: "🌐",
+  ONBOARDING_ACCOUNT: "👤",
+  ONBOARDING_CHECK: "✅",
+  ONBOARDING_ARROW: "➡️",
+  SPLASH: "🔷",
   CONFIRM: "❓",
   ALERT: "🚨",
   SUCCESS: "✅",

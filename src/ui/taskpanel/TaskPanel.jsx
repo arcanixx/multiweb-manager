@@ -16,17 +16,20 @@ import { logInfo, logError, logDebug } from '../../utils/loggerRenderer.js';
 import { ICONS } from '../../utils/icons.js';
 import ConfirmModal from '../modals/ConfirmModal.jsx';
 import TaskModal from '../modals/TaskModal.jsx';
+import CommentModal from './CommentModal.jsx';
 import TaskSectionList from './TaskSectionList.jsx';
 
 export default function TaskPanel({ projectId, onClose }) {
   const { t } = useContext(TranslationContext);
   const [tasks, setTasks] = useState({ active: [], backlog: [], done: [] });
-  const [projects, setProjects] = useState([]);
-  const [selectedTask, setSelectedTask] = useState(null);
-  const [showTaskModal, setShowTaskModal] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [taskToDelete, setTaskToDelete] = useState(null);
-  const [loading, setLoading] = useState(true);
+   const [projects, setProjects] = useState([]);
+   const [selectedTask, setSelectedTask] = useState(null);
+   const [showTaskModal, setShowTaskModal] = useState(false);
+   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+   const [taskToDelete, setTaskToDelete] = useState(null);
+   const [showCommentModal, setShowCommentModal] = useState(false);
+   const [commentTask, setCommentTask] = useState(null);
+   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     logDebug('tasks', 'TaskPanel: mounting for project', projectId);
@@ -145,15 +148,15 @@ export default function TaskPanel({ projectId, onClose }) {
 
   if (loading) return <div className="loading">{t('common.loading')}</div>;
 
-  const handlers = {
-    onMoveToDone: (id) => handleMoveTask(tasks.active.find(t => t.id === id), 'done'),
-    onMoveToBacklog: (id) => handleMoveTask(tasks.active.find(t => t.id === id), 'backlog'),
-    onMoveToActive: (id) => handleMoveTask([...tasks.backlog, ...tasks.done].find(t => t.id === id), 'active'),
-    onPin: (id, section) => handleSaveTask({ ...tasks[section].find(t => t.id === id), pinned: !tasks[section].find(t => t.id === id).pinned }),
-    onDelete: handleDeleteClick,
-    onEdit: (task) => { setSelectedTask(task); setShowTaskModal(true); },
-    onOpenComment: (task) => { /* logic for comment modal if needed */ }
-  };
+   const handlers = {
+     onMoveToDone: (id) => handleMoveTask(tasks.active.find(t => t.id === id), 'done'),
+     onMoveToBacklog: (id) => handleMoveTask(tasks.active.find(t => t.id === id), 'backlog'),
+     onMoveToActive: (id) => handleMoveTask([...tasks.backlog, ...tasks.done].find(t => t.id === id), 'active'),
+     onPin: (id, section) => handleSaveTask({ ...tasks[section].find(t => t.id === id), pinned: !tasks[section].find(t => t.id === id).pinned }),
+     onDelete: handleDeleteClick,
+     onEdit: (task) => { setSelectedTask(task); setShowTaskModal(true); },
+     onOpenComment: (task) => { setCommentTask(task); setShowCommentModal(true); }
+   };
 
   return (
     <div className="task-panel">
@@ -182,16 +185,24 @@ export default function TaskPanel({ projectId, onClose }) {
         />
       )}
 
-      <ConfirmModal
-        isOpen={showDeleteConfirm}
-        title={t('tasks.delete')}
-        message={t('tasks.delete_confirm_message')}
-        onConfirm={handleDeleteConfirm}
-        onCancel={() => {
-          setShowDeleteConfirm(false);
-          setTaskToDelete(null);
-        }}
-      />
-    </div>
-  );
-}
+       <ConfirmModal
+         isOpen={showDeleteConfirm}
+         title={t('tasks.delete')}
+         message={t('tasks.delete_confirm_message')}
+         onConfirm={handleDeleteConfirm}
+         onCancel={() => {
+           setShowDeleteConfirm(false);
+           setTaskToDelete(null);
+         }}
+       />
+       <CommentModal
+         isOpen={showCommentModal}
+         task={commentTask}
+         onClose={() => {
+           setShowCommentModal(false);
+           setCommentTask(null);
+         }}
+       />
+     </div>
+   );
+ }

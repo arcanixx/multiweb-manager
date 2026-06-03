@@ -27,6 +27,19 @@ export function useNotepadTabs() {
     });
   }, []);
 
+  // ─── updateTabProperty() – aktualizuje dowolną właściwość aktywnej zakładki
+  const updateTabProperty = useCallback((tabId, property, value) => {
+    setNotesWithRef(prevNotes => {
+      const updatedTabs = prevNotes.tabs.map(tab =>
+        tab.id === tabId ? { ...tab, [property]: value } : tab
+      );
+      return { ...prevNotes, tabs: updatedTabs };
+    });
+  }, [setNotesWithRef]);
+
+  // ─── markTabAsDirty() – ustawia flagę dirty dla danej zakładki
+  const markTabAsDirty = useCallback((tabId, isDirty) => updateTabProperty(tabId, 'dirty', isDirty), [updateTabProperty]);
+
   // ─── loadNotes() – ładuje notatki z storage przy inicjalizacji
   const loadNotes = useCallback(() => {
     try {
@@ -34,7 +47,7 @@ export function useNotepadTabs() {
       if (saved && Array.isArray(saved.tabs) && saved.tabs.length > 0) {
         setNotesWithRef(saved);
         logInfo('notepad', 'useNotepadTabs: notes loaded from storage');
-        return saved;
+        return { ...saved, tabs: saved.tabs.map(tab => ({ ...tab, dirty: false })) }; // Ensure loaded tabs are not dirty
       } else {
         const firstTab = createNewTab();
         const initial = { tabs: [firstTab], activeTab: firstTab.id };
@@ -55,10 +68,10 @@ export function useNotepadTabs() {
   // ─── addTab() – dodaje nową zakładkę
   const addTab = useCallback((currentContent = '') => {
     const currentNotes = notesRef.current;
-    const updatedTabs = currentNotes.tabs.map(tab =>
-      tab.id === currentNotes.activeTab ? { ...tab, content: currentContent } : tab
+    const updatedTabs = currentNotes.tabs.map(tab => // Save content of current active tab and mark it clean
+      tab.id === currentNotes.activeTab ? { ...tab, content: currentContent, dirty: false } : tab
     );
-    const newTab = createNewTab();
+    const newTab = { ...createNewTab(), dirty: false }; // New tab is not dirty
     const updatedNotes = { tabs: [...updatedTabs, newTab], activeTab: newTab.id };
     setNotesWithRef(updatedNotes);
     saveNotesToStorage(updatedNotes);
@@ -69,20 +82,27 @@ export function useNotepadTabs() {
   // ─── switchTab() – przełącza aktywną zakładkę
   const switchTab = useCallback((tabId, currentContent = '') => {
     const currentNotes = notesRef.current;
-    const updatedTabs = currentNotes.tabs.map(tab =>
-      tab.id === currentNotes.activeTab ? { ...tab, content: currentContent } : tab
+    const oldActiveTab = currentNotes.tabs.find(tab => tab.id === currentNotes.activeTab);
+    const oldTabDirty = oldActiveTab?.dirty ?? false;
+
+    const updatedTabs = currentNotes.tabs.map(tab => // Save content of current active tab and mark it clean
+      tab.id === currentNotes.activeTab ? { ...tab, content: currentContent, dirty: false } : tab
     );
+
     const newActive = updatedTabs.find(tab => tab.id === tabId);
     const updatedNotes = { ...currentNotes, tabs: updatedTabs, activeTab: tabId };
     setNotesWithRef(updatedNotes);
     logInfo('notepad', `useNotepadTabs: switched to tab ${tabId}`);
-    return newActive?.content ?? '';
+    return { newContent: newActive?.content ?? '', oldTabDirty };
   }, [setNotesWithRef]);
 
   // ─── closeTab() – zamyka zakładkę (zabezpieczenie: min. 1 zakładka)
   const closeTab = useCallback((tabId) => {
     const currentNotes = notesRef.current;
     if (currentNotes.tabs.length <= 1) return null;
+
+    const tabToClose = currentNotes.tabs.find(tab => tab.id === tabId);
+    const oldTabDirty = tabToClose?.dirty ?? false;
 
     const updatedTabs = currentNotes.tabs.filter(tab => tab.id !== tabId);
     let nextActiveId = currentNotes.activeTab;
@@ -98,7 +118,7 @@ export function useNotepadTabs() {
 
     const nextContent = updatedTabs.find(tab => tab.id === nextActiveId)?.content ?? '';
     logInfo('notepad', `useNotepadTabs: closed tab ${tabId}, next active: ${nextActiveId}`);
-    return { nextActiveId, nextContent };
+    return { nextActiveId, nextContent, oldTabDirty };
   }, [setNotesWithRef]);
 
   // ─── renameTab() – zmienia nazwę zakładki
@@ -122,9 +142,11 @@ export function useNotepadTabs() {
   return {
     notes,
     notesRef,
+    setNotesWithRef,
     loadNotes,
     addTab,
     switchTab,
+    markTabAsDirty,
     closeTab,
     renameTab,
     getActiveTab,

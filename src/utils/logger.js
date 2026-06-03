@@ -155,6 +155,17 @@ export function logError(...args) {
   }
 }
 
+// ─── Metody kategoryzowane (Szybki dostęp) ───
+export const logUI = (...args) => logInfo('ui', ...args);
+export const logWebview = (...args) => logInfo('webview', ...args);
+export const logTerminal = (...args) => logInfo('terminal', ...args);
+export const logTasks = (...args) => logInfo('tasks', ...args);
+export const logTools = (...args) => logInfo('tools', ...args);
+export const logSettings = (...args) => logInfo('settings', ...args);
+export const logEngine = (...args) => logInfo('engine', ...args);
+export const logStore = (...args) => logInfo('store', ...args);
+export const logIPC = (...args) => logInfo('ipc', ...args);
+
 // ----------------------------------------------------------------
 // getLogFilePath() – ścieżka do pliku logów
 //   W rendererze (React/webpack) zawsze zwraca null,

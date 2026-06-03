@@ -2,11 +2,16 @@
 // FILE: searchIndex.js
 // PATH: src/utils/searchIndex.js
 // VERSION: 0.0.3
-// PURPOSE: Budowanie ujednoliconego indeksu wyszukiwania (profiles, projects, tasks, notes) dla globalnej palety komend (Ctrl+K).
+// PURPOSE: Budowanie ujednoliconego indeksu wyszukiwania (profiles, projects, tasks, notes) dla globalnej palety komend (Ctrl+K) i globalnego wyszukiwania w sidebarze.
 // FUNCTIONS: buildSearchIndex, searchAll
 // DEPENDS ON: logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
+
+// WAŻNE: Indeks jest budowany on-demand przy każdym zapytaniu (search:global IPC).
+//        Nie jest cache'owany – dane w store'ach mogą się zmienić między zapytaniami.
+//        Gdyby wydajność stała się problemem: dodać cache z TTL i inwalidację
+//        przez EventEmitter w store'ach (notesStore, tasksStore, projectsStore).
 
 import { logDebug } from "./logger.js";
 

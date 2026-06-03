@@ -16,6 +16,25 @@ import WebViewToolbar from './WebViewToolbar.jsx';
 import { useWebViewEvents } from '../../hooks/useWebViewEvents.js';
 import { useWebViewActions } from '../../hooks/useWebViewActions.js';
 
+// ─── getErrorMessage() – zwraca zlokalizowany komunikat błędu WebView na podstawie kodu
+//   @param {Object} error  – { code, description, isHttp }
+//   @param {Function} t    – funkcja tłumaczeń
+//   @param {string} url    – aktualny URL zakładki
+//   @returns {string}
+function getErrorMessage(error, t, url) {
+  if (error.isHttp) {
+    if (error.code === 404) return t('webview.error_http_404');
+    if (error.code === 403) return t('webview.error_http_403');
+    if (error.code === 401) return t('webview.error_http_401');
+    if (error.code >= 500) return t('webview.error_http_5xx').replace('{code}', String(error.code));
+    return t('webview.error_http_4xx').replace('{code}', String(error.code));
+  }
+  // Błędy sieciowe Chromium (did-fail-load)
+  if (error.code === -106) return t('webview.error_offline');
+  if (error.code === -105 || error.code === -2) return t('webview.error_bad_host');
+  return t('webview.error_404').replace('{url}', url);
+}
+
 // ─── WebViewTab – pojedyncza zakładka WebView z pełnym toolbar'em
 //   @param {Object} props
 //   @param {Object} props.profile – obiekt profilu (url, userAgent, adBlocker, partition)
@@ -60,19 +79,40 @@ export default function WebViewTab({ profile, isActive, onTitleChange, onLoadErr
     onTitleChange, onLoadError, updateNavigationState,
   });
 
-  // =========================================================================
-  // ─── useEffect – zoom factor ─────────────────────────────────────────────
-  // =========================================================================
-  useEffect(() => {
-    if (webviewRef.current) {
-      webviewRef.current.setZoomFactor(zoomFactor);
-      logDebug('webview', `WebViewTab: zoom factor set to ${zoomFactor} for ${profile.id}`);
-    }
-  }, [zoomFactor, profile.id]);
+   // =========================================================================
+   // ─── useEffect – zoom factor ─────────────────────────────────────────────
+   // =========================================================================
+   useEffect(() => {
+     if (webviewRef.current) {
+       webviewRef.current.setZoomFactor(zoomFactor);
+       logDebug('webview', `WebViewTab: zoom factor set to ${zoomFactor} for ${profile.id}`);
+     }
+   }, [zoomFactor, profile.id]);
 
-  // =========================================================================
-  // ─── useEffect – attach event listeners + cleanup ─────────────────────────
-  // =========================================================================
+   // =========================================================================
+   // ─── useEffect – rejestracja monitora HTTP 4xx/5xx dla tej partycji ─────
+   // =========================================================================
+   useEffect(() => {
+     // Uruchom monitor HTTP błędów w main process dla partycji tego profilu
+     window.electronAPI.startWebviewHttpMonitor?.(partition);
+
+     // Nasłuchuj HTTP błędów – filtruj po partycji żeby obsłużyć tylko tę zakładkę
+     const cleanup = window.electronAPI.onWebviewHttpError?.((payload) => {
+       if (payload.partition !== partition) return;
+
+       // Wyczyść stan ładowania i ustaw błąd HTTP
+       setIsLoading(false);
+       setError({ code: payload.statusCode, description: `HTTP ${payload.statusCode}`, isHttp: true });
+       logDebug('webview', `WebViewTab: HTTP ${payload.statusCode} dla ${payload.url} (profil: ${profile.id})`);
+       if (onLoadError) onLoadError(profile.id, payload.statusCode);
+     });
+
+     return () => cleanup?.();
+   }, [partition, profile.id, onLoadError]);
+
+   // =========================================================================
+   // ─── useEffect – attach event listeners + cleanup ─────────────────────────
+   // =========================================================================
   useEffect(() => {
     const webview = webviewRef.current;
     if (!webview) return;
@@ -131,12 +171,12 @@ export default function WebViewTab({ profile, isActive, onTitleChange, onLoadErr
         onResourceMonitor={isFeatureEnabled('resourceMonitor') ? showResourceMonitor : undefined}
       />
 
-      {error && (
-        <div className="webview-error-bar">
-          <span>Error: {error.description || `Code ${error.code}`}</span>
-          <button onClick={reloadPage}>{t('webview.reload')}</button>
-        </div>
-      )}
+       {error && (
+         <div className="webview-error-bar">
+           <span>{getErrorMessage(error, t, url)}</span>
+           <button onClick={reloadPage}>{t('webview.reload')}</button>
+         </div>
+       )}
 
       {isLoading && !error && (
         <div className="webview-loading">

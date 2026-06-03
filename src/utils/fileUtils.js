@@ -47,3 +47,43 @@ export function writeJsonSafe(filePath, data) {
     return false;
   }
 }
+
+// ─── writeJsonStreaming() – Zapis strumieniowy dla dużych plików
+export async function writeJsonStreaming(filePath, data) {
+  return new Promise((resolve, reject) => {
+    try {
+      const stream = fs.createWriteStream(filePath, { encoding: 'utf8' });
+      stream.write(JSON.stringify(data, null, 2));
+      stream.end();
+      stream.on('finish', () => {
+        logInfo("store", "writeJsonStreaming success", filePath);
+        resolve(true);
+      });
+      stream.on('error', (err) => {
+        logError("store", "writeJsonStreaming error", err.message);
+        reject(err);
+      });
+    } catch (err) {
+      logError("store", "writeJsonStreaming exception", err.message);
+      reject(err);
+    }
+  });
+}
+
+// ─── readJsonStreaming() – Odczyt strumieniowy
+export async function readJsonStreaming(filePath) {
+  return new Promise((resolve, reject) => {
+    if (!fs.existsSync(filePath)) return resolve(null);
+    let rawData = '';
+    const stream = fs.createReadStream(filePath, { encoding: 'utf8' });
+    stream.on('data', chunk => rawData += chunk);
+    stream.on('end', () => {
+      try {
+        resolve(JSON.parse(rawData));
+      } catch (err) {
+        reject(err);
+      }
+    });
+    stream.on('error', err => reject(err));
+  });
+}

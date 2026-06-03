@@ -43,7 +43,7 @@ export default function Sidebar({ onSelect, activeItem, onOpenTaskPanel, onModal
   // ─── Hooki biznesowe ───
   const { profiles, loading: profilesLoading, addProfile, updateProfile, deleteProfile, toggleFavorite } = useProfiles();
   const { categories, collapsed, toggleCollapse, saveCategories, addCategory, updateCategory, deleteCategory } = useCategories();
-  const { search, setSearch, favorites, byCategory } = useSidebarSearch(profiles);
+  const { search, setSearch, favorites, byCategory, globalEnabled, setGlobalEnabled, globalResults, isGlobalSearching } = useSidebarSearch(profiles);
   const { workspaces } = useWorkspaces();
 
   // ─── Stan lokalny UI ───
@@ -150,6 +150,23 @@ export default function Sidebar({ onSelect, activeItem, onOpenTaskPanel, onModal
     }
   }, [deleteCategory]);
 
+  // ─── handleGlobalSelect() – obsługa kliknięcia wyniku globalnego wyszukiwania
+  //   @param {{ type: string, id: string|number, label: string }} result
+  const handleGlobalSelect = useCallback((result) => {
+    logDebug('ui', `Sidebar: global search result selected type=${result.type} id=${result.id}`);
+    if (result.type === 'profile') {
+      const profile = profiles.find(p => p.id === result.id);
+      if (profile) onSelect({ ...profile, type: 'webview' });
+    } else if (result.type === 'project') {
+      onSelect({ id: result.id, name: result.label, type: 'special' });
+    } else if (result.type === 'task') {
+      onOpenTaskPanel?.(result.label);
+    } else if (result.type === 'note') {
+      onSelect({ id: 'notepad', type: 'special' });
+    }
+    setSearch('');
+  }, [profiles, onSelect, onOpenTaskPanel, setSearch]);
+
   if (profilesLoading) {
     return <div className="sidebar-loading">{t('common.loading')}</div>;
   }
@@ -166,6 +183,11 @@ export default function Sidebar({ onSelect, activeItem, onOpenTaskPanel, onModal
         onAddCategory={handleAddCategory}
         searchValue={search}
         onSearchChange={setSearch}
+        globalEnabled={globalEnabled}
+        onGlobalToggle={() => setGlobalEnabled(v => !v)}
+        globalResults={globalResults}
+        isGlobalSearching={isGlobalSearching}
+        onGlobalSelect={handleGlobalSelect}
       />
 
       {/* ─── Lista profili ─── */}

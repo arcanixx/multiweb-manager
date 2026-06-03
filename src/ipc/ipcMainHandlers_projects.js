@@ -2,7 +2,13 @@
 // FILE: ipcMainHandlers_projects.js
 // PATH: src/ipc/ipcMainHandlers_projects.js
 // VERSION: 0.0.3
-// PURPOSE: IPC dla Project Manager settings:get        – pobiera aktualne ustawienia settings:update     – aktualizuje (merge patch, nie nadpisuje) settings:reset      – reset do DEFAULT_SETTINGS settings:export     – eksport do pliku JSON settings:import     – import z pliku JSON (merge) settings:getDefaults – zwraca DEFAULT_SETTINGS z config.js
+// PURPOSE: IPC handlers dla Project Manager – CRUD projektów z walidacją i integracją z tasksStore.
+//          projects:getAll       – pobiera wszystkie projekty
+//          projects:getWithTasks – pobiera projekt wraz z jego zadaniami
+//          projects:create       – tworzy nowy projekt
+//          projects:update       – aktualizuje projekt (patch)
+//          projects:archive      – archiwizuje projekt
+//          projects:delete       – usuwa projekt
 // FUNCTIONS: ipc:projects:getAll, ipc:projects:getWithTasks, ipc:projects:create, ipc:projects:update, ipc:projects:archive, ipc:projects:delete
 // DEPENDS ON: electron, projectsStore.js, tasksStore.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.

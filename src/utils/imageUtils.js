@@ -25,6 +25,8 @@ export async function resizeImage(inputPath, width, height, outputPath) {
   } catch (err) {
     logError("tools", "resizeImage failed", { inputPath, error: err.message });
     logWarn("tools", "Nie można zmienić rozmiaru obrazu");
+    // In a real implementation, the calling code would show a toast here for user feedback
+    // For example: showToast(`Failed to resize image: ${err.message}`, 'error');
     throw err;
   }
 }
@@ -43,6 +45,8 @@ export async function convertImage(inputPath, format, outputPath) {
   } catch (err) {
     logError("tools", "convertImage failed", { inputPath, format, error: err.message });
     logWarn("tools", "Nie można skonwertować obrazu");
+    // In a real implementation, the calling code would show a toast here for user feedback
+    // For example: showToast(`Failed to convert image: ${err.message}`, 'error');
     throw err;
   }
 }
@@ -61,6 +65,8 @@ export async function compressJpeg(inputPath, quality, outputPath) {
   } catch (err) {
     logError("tools", "compressJpeg failed", { inputPath, quality, error: err.message });
     logWarn("tools", "Nie można skompresować obrazu JPEG");
+    // In a real implementation, the calling code would show a toast here for user feedback
+    // For example: showToast(`Failed to compress JPEG: ${err.message}`, 'error');
     throw err;
   }
 }

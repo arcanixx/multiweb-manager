@@ -161,17 +161,27 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // ─── getAdBlockerForProfile(profileId) – Pobiera stan blokera reklam dla profilu
   getAdBlockerForProfile: (profileId) => ipcRenderer.invoke('adblocker:getForProfile', profileId),
 
-  // ─── Sleep Tabs ───────────────────────────────────────────────
-  // ─── setSleepTimeout(minutes) – Ustawia czas bezczynności przed uśpieniem karty
-  setSleepTimeout: (minutes) => ipcRenderer.invoke('sleeptabs:setTimeout', minutes),
-  // ─── getSleepTimeout() – Pobiera czas bezczynności przed uśpieniem
-  getSleepTimeout: () => ipcRenderer.invoke('sleeptabs:getTimeout'),
+   // ─── Sleep Tabs ───────────────────────────────────────────────
+   // ─── setSleepTimeout(minutes) – Ustawia czas bezczynności przed uśpieniem karty
+   setSleepTimeout: (minutes) => ipcRenderer.invoke('sleeptabs:setTimeout', minutes),
+   // ─── getSleepTimeout() – Pobiera czas bezczynności przed uśpieniem
+   getSleepTimeout: () => ipcRenderer.invoke('sleeptabs:getTimeout'),
 
-  // ─── WebView registry (dla screenshot/resource) ───────────────
-  // ─── registerWebView(tabId, webContentsId) – Rejestruje mapowanie karty na ID Electron
-  registerWebView: (tabId, webContentsId) => ipcRenderer.invoke('register-webview', tabId, webContentsId),
-  // ─── unregisterWebView(tabId) – Usuwa mapowanie karty
-  unregisterWebView: (tabId) => ipcRenderer.invoke('unregister-webview', tabId),
+   // ─── WebView HTTP Errors ──────────────────────────────────────
+   // ─── startWebviewHttpMonitor(partition) – rejestruje monitor HTTP 4xx/5xx dla partycji WebView
+   startWebviewHttpMonitor: (partition) => ipcRenderer.invoke('webview:startHttpMonitor', partition),
+   // ─── onWebviewHttpError(callback) – nasłuchuje błędów HTTP 4xx/5xx z WebView; zwraca cleanup
+   onWebviewHttpError: (callback) => {
+     const listener = (_, payload) => callback(payload);
+     ipcRenderer.on('webview:http-error', listener);
+     return () => ipcRenderer.removeListener('webview:http-error', listener);
+   },
+
+   // ─── WebView registry (dla screenshot/resource) ───────────────
+   // ─── registerWebView(tabId, webContentsId) – Rejestruje mapowanie karty na ID Electron
+   registerWebView: (tabId, webContentsId) => ipcRenderer.invoke('register-webview', tabId, webContentsId),
+   // ─── unregisterWebView(tabId) – Usuwa mapowanie karty
+   unregisterWebView: (tabId) => ipcRenderer.invoke('unregister-webview', tabId),
 
   // ─── Generic invoke (dla nowych kanałów namespaced) ───────────
   // ─── invoke(channel, ...args) – Wykonuje dowolne wywołanie kanału IPC

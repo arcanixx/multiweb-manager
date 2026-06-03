@@ -32,11 +32,12 @@ function loadAccounts() {
 // ─── saveAccounts() – Zapisuje aktualny stan kont użytkowników do pliku JSON w katalogu danych użytkownika (userData); zwraca true przy powodzeniu, false przy błędzie
 function saveAccounts(store) {
   try {
+    if (!store || !Array.isArray(store.data)) throw new Error("Invalid accounts data structure");
     fs.writeFileSync(ACCOUNTS_FILE, JSON.stringify(store, null, 2), "utf8");
     logInfo("store", "accountsStore.saveAccounts success");
     return true;
   } catch (err) {
-    logError("store", "accountsStore.saveAccounts failed", err.message);
+    logError("store", "accountsStore.saveAccounts failed: " + err.message);
     return false;
   }
 }

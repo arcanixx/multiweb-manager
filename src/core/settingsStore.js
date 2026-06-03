@@ -60,6 +60,8 @@ export function loadSettings() {
   } catch (err) {
     logError('settings', 'settingsStore.loadSettings failed', err.message);
     logWarn('settings', 'Nie można załadować ustawień – używam domyślnych');
+    // In a real implementation, we would show a toast here for non-critical errors
+    // For example: showToast(`Failed to load settings: ${err.message}. Using defaults.`, 'warn');
     return baseDefaults();
   }
 }
@@ -75,6 +77,8 @@ export function saveSettings(settings) {
   } catch (err) {
     logError('settings', 'settingsStore.saveSettings failed', err.message);
     logWarn('settings', 'Nie można zapisać ustawień');
+    // In a real implementation, we would show a toast here for non-critical errors
+    // For example: showToast(`Failed to save settings: ${err.message}`, 'error');
     return settings;
   }
 }
@@ -83,10 +87,18 @@ export function saveSettings(settings) {
 //   @param {Object} patch – obiekt z polami do zaktualizowania
 //   @returns {Object} – zaktualizowany obiekt ustawień
 export function mergeSettings(patch) {
-  const current = loadSettings();
-  const merged = _.merge({}, current, patch);
-  saveSettings(merged);
-  return merged;
+  try {
+    const current = loadSettings();
+    const merged = _.merge({}, current, patch);
+    saveSettings(merged);
+    return merged;
+  } catch (err) {
+    logError('settings', 'settingsStore.mergeSettings failed', err.message);
+    // In a real implementation, we would show a modal here for critical errors
+    // For example: showConfirm('Settings Error', `Failed to save settings: ${err.message}. Try again?`, () => mergeSettings(patch));
+    // Return current settings as fallback
+    return loadSettings();
+  }
 }
 
 // ─── updateSettings() – alias dla mergeSettings (kompatybilność wsteczna)
