@@ -53,16 +53,3 @@ ipcMain.handle("workspaces:delete", async (_, payload) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle("workspaces:save", async (_, payload) => {
-  try {
-    if (!payload || !Array.isArray(payload)) {
-      return { ok: false, error: "INVALID_WORKSPACES" };
-    }
-    const workspaces = payload;
-    saveWorkspaces(workspaces);
-    return { ok: true, data: workspaces };
-  } catch (err) {
-    logError('ipc', "workspaces:save", err);
-    return { ok: false, error: err.message };
-  }
-});
