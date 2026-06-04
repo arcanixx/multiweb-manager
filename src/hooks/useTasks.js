@@ -2,121 +2,127 @@
 // FILE: useTasks.js
 // PATH: src/hooks/useTasks.js
 // VERSION: 0.0.3
-// PURPOSE: Hook React do zarządzania zadaniami użytkownika – obsługa operacji CRUD przez mostek IPC.
+// PURPOSE: Hook React do zarządzania zadaniami użytkownika per taskGroupId – CRUD przez IPC z optimistic update i rollbackiem.
 // FUNCTIONS: useTasks
 // DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { useEffect, useState } from "react";
-import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
 
-// ─── useTasks() – hook do zarządzania zadaniami
-//   @returns {Object} – obiekt z tasks, loading i funkcjami CRUD
+// ─── useTasks() – hook do zarządzania zadaniami dla taskGroupId
+//   @returns {Object} – tasks, loading, reloadTasks, addTask, updateTask, deleteTask
 export function useTasks() {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [tasks,   setTasks]   = useState([]);
+  const [loading, setLoading] = useState(false);
+  // Ref na ostatni załadowany taskGroupId — zapobiega wyścigowi requestów
+  const currentGroupRef = useRef(null);
 
-  // ─── load() – ładuje wszystkie zadania z backendu
-  //   @returns {Promise<void>}
-  async function load() {
+  // ─── reloadTasks() – ładuje zadania dla grupy (płaska lista)
+  //   @param {string} [taskGroupId] – opcjonalne; jeśli brak → wszystkie
+  const reloadTasks = useCallback(async (taskGroupId) => {
+    currentGroupRef.current = taskGroupId || null;
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await window.electronAPI.invoke("tasks:getAll");
+      const res = await window.electronAPI.invoke('tasks:getAll', taskGroupId || undefined);
+      // Ignoruj odpowiedź jeśli grupaz mienia się w trakcie
+      if (currentGroupRef.current !== (taskGroupId || null)) return;
       if (res?.ok) {
-        setTasks(res.data);
-        logInfo("tasks", "useTasks.load success", res.data.length);
+        setTasks(res.data || []);
+        logInfo('tasks', 'useTasks.reload', res.data?.length, taskGroupId || 'all');
       } else {
-        logError("tasks", "useTasks.load failed", res?.error);
-        logWarn("tasks", "Nie można załadować zadań");
+        logError('tasks', 'useTasks.reload failed', res?.error);
+        logWarn('tasks', 'Nie można załadować zadań');
       }
-      setLoading(false);
     } catch (err) {
-      logError("tasks", "useTasks.load exception", err.message);
-      logWarn("tasks", "Wystąpił błąd podczas ładowania zadań");
+      logError('tasks', 'useTasks.reload exception', err.message);
+    } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
-  // ─── add() – dodaje nowe zadanie
-  //   @param {Object} task – obiekt zadania
-  //   @returns {Promise<Object>} – wynik operacji
-  async function add(task) {
-    const previousTasks = [...tasks];
-    // Optimistic update
-    setTasks(prev => [...prev, { ...task, section: task.section || 'active' }]);
+  // Nie ładujemy przy montowaniu — TaskPanel jawnie wywołuje reloadTasks(taskGroupId)
+
+  // ─── addTask() – dodaje zadanie z optimistic update
+  //   @param {Object} task – { taskGroupId, name, status, priority, ... }
+  //   @returns {Promise<Object>}
+  const addTask = useCallback(async (task) => {
+    const optimisticId = `optimistic_${Date.now()}`;
+    const optimistic   = { ...task, id: optimisticId };
+    setTasks(prev => [...prev, optimistic]);
 
     try {
-      const res = await window.electronAPI.invoke("tasks:add", task);
+      const res = await window.electronAPI.invoke('tasks:add', task);
       if (res?.ok) {
-        logInfo("tasks", "useTasks.add success", task.id);
+        // Zamień optimistic na rzeczywisty obiekt zwrócony z backendu
+        setTasks(prev => prev.map(t => t.id === optimisticId ? res.data : t));
+        logInfo('tasks', 'useTasks.add', res.data?.id);
       } else {
-        setTasks(previousTasks); // Rollback
-        logError("tasks", "useTasks.add failed", res?.error);
-        logWarn("tasks", "Nie można dodać zadania");
+        setTasks(prev => prev.filter(t => t.id !== optimisticId)); // rollback
+        logError('tasks', 'useTasks.add failed', res?.error);
+        logWarn('tasks', 'Nie można dodać zadania');
       }
       return res;
     } catch (err) {
-      logError("tasks", "useTasks.add exception", err.message);
-      logWarn("tasks", "Wystąpił błąd podczas dodawania zadania");
+      setTasks(prev => prev.filter(t => t.id !== optimisticId));
+      logError('tasks', 'useTasks.add exception', err.message);
       return { ok: false, error: err.message };
     }
-  }
+  }, []);
 
-  // ─── update() – aktualizuje istniejące zadanie
-  //   @param {string} id – identyfikator zadania
-  //   @param {Object} patch – obiekt z polami do zaktualizowania
-  //   @returns {Promise<Object>} – wynik operacji
-  async function update(id, patch) {
-    const previousTasks = [...tasks];
-    // Optimistic update
+  // ─── updateTask() – aktualizuje zadanie z optimistic update
+  //   Zmiana status → backend wyznacza section (normalizeTask)
+  //   @param {string} id
+  //   @param {Object} patch
+  //   @returns {Promise<Object>}
+  const updateTask = useCallback(async (id, patch) => {
+    const previous = tasks.find(t => t.id === id);
+    // Optimistic: aplikuj patch lokalnie (section może być błędna — backend skoryguje)
     setTasks(prev => prev.map(t => t.id === id ? { ...t, ...patch } : t));
 
     try {
-      const res = await window.electronAPI.invoke("tasks:update", { id, patch });
+      const res = await window.electronAPI.invoke('tasks:update', { id, patch });
       if (res?.ok) {
-        logInfo("tasks", "useTasks.update success", id);
+        // Zastąp stanem z backendu (poprawna section z normalizeTask)
+        setTasks(prev => prev.map(t => t.id === id ? res.data : t));
+        logInfo('tasks', 'useTasks.update', id);
       } else {
-        setTasks(previousTasks); // Rollback
-        logError("tasks", "useTasks.update failed", res?.error);
-        logWarn("tasks", "Nie można zaktualizować zadania");
+        if (previous) setTasks(prev => prev.map(t => t.id === id ? previous : t)); // rollback
+        logError('tasks', 'useTasks.update failed', res?.error);
+        logWarn('tasks', 'Nie można zaktualizować zadania');
       }
       return res;
     } catch (err) {
-      logError("tasks", "useTasks.update exception", err.message);
-      logWarn("tasks", "Wystąpił błąd podczas aktualizacji zadania");
+      if (previous) setTasks(prev => prev.map(t => t.id === id ? previous : t));
+      logError('tasks', 'useTasks.update exception', err.message);
       return { ok: false, error: err.message };
     }
-  }
+  }, [tasks]);
 
-  // ─── remove() – usuwa zadanie
-  //   @param {string} id – identyfikator zadania
-  //   @returns {Promise<Object>} – wynik operacji
-  async function remove(id) {
-    const previousTasks = [...tasks];
-    // Optimistic update
+  // ─── deleteTask() – usuwa zadanie z optimistic update
+  //   @param {string} id
+  //   @returns {Promise<Object>}
+  const deleteTask = useCallback(async (id) => {
+    const previous = tasks.find(t => t.id === id);
     setTasks(prev => prev.filter(t => t.id !== id));
 
     try {
-      const res = await window.electronAPI.invoke("tasks:delete", { id });
+      const res = await window.electronAPI.invoke('tasks:delete', { id });
       if (res?.ok) {
-        logInfo("tasks", "useTasks.remove success", id);
+        logInfo('tasks', 'useTasks.delete', id);
       } else {
-        setTasks(previousTasks); // Rollback
-        logError("tasks", "useTasks.remove failed", res?.error);
-        logWarn("tasks", "Nie można usunąć zadania");
+        if (previous) setTasks(prev => [...prev, previous]); // rollback
+        logError('tasks', 'useTasks.delete failed', res?.error);
+        logWarn('tasks', 'Nie można usunąć zadania');
       }
       return res;
     } catch (err) {
-      logError("tasks", "useTasks.remove exception", err.message);
-      logWarn("tasks", "Wystąpił błąd podczas usuwania zadania");
+      if (previous) setTasks(prev => [...prev, previous]);
+      logError('tasks', 'useTasks.delete exception', err.message);
       return { ok: false, error: err.message };
     }
-  }
+  }, [tasks]);
 
-  useEffect(() => {
-    load();
-  }, []);
-
-  return { tasks, loading, reloadTasks: load, addTask: add, updateTask: update, deleteTask: remove };
+  return { tasks, loading, reloadTasks, addTask, updateTask, deleteTask };
 }

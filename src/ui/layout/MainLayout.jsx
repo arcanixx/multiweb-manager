@@ -15,7 +15,7 @@ import Sidebar from '../sidebar/Sidebar.jsx';
 import { ContentRenderer } from '../views/ContentRenderer.jsx';
 import ConfirmModal from '../modals/ConfirmModal.jsx';
 
-const TaskPanel = lazy(() => import('../taskpanel/TaskPanel'));
+const TaskPanel = lazy(() => import('../taskpanel/TaskPanel.jsx'));
 
 // ─── NetToast() – powiadomienie o stanie połączenia sieciowego
 //   @param {string} props.message – treść powiadomienia
@@ -48,7 +48,7 @@ export default function MainLayout({
 }) {
   const { t } = useContext(TranslationContext);
   const [showTaskPanel, setShowTaskPanel]   = useState(false);
-  const [currentProject, setCurrentProject] = useState('');
+  const [currentGroup,  setCurrentGroup]    = useState({ id: null, name: '' });
   const [sidebarModalOpen, setSidebarModalOpen] = useState(false);
   const [confirmState, setConfirmState] = useState({
     isOpen: false, title: '', message: '', onConfirm: null,
@@ -63,16 +63,41 @@ export default function MainLayout({
     }
   };
 
-  // ─── handleOpenTaskPanel() – otwiera TaskPanel dla projektu / profilu
-  //   @param {string|Object} profileOrProject
-  const handleOpenTaskPanel = (profileOrProject) => {
-    const name =
-      typeof profileOrProject === 'string'
-        ? profileOrProject
-        : profileOrProject?.taskProject || profileOrProject?.name || 'default';
-    setCurrentProject(name);
-    setShowTaskPanel(true);
-    logInfo('ui', 'MainLayout: TaskPanel opened for', name);
+  // ─── handleOpenTaskPanel() – otwiera TaskPanel dla profilu
+  //   Wywołuje taskGroups:ensureForProfile → zwraca lub tworzy grupę 1:1
+  //   @param {string|Object} profileOrProject – profil (obiekt) lub nazwa grupy (string)
+  const handleOpenTaskPanel = async (profileOrProject) => {
+    try {
+      let groupId, groupName;
+
+      if (typeof profileOrProject === 'object' && profileOrProject?.id) {
+        // Profil – wyznacz grupę przez IPC
+        const res = await window.electronAPI.invoke('taskGroups:ensureForProfile', {
+          profileId:   profileOrProject.id,
+          profileName: profileOrProject.name || profileOrProject.id,
+        });
+        if (res?.ok && res.data) {
+          groupId   = res.data.id;
+          groupName = res.data.name;
+        } else {
+          // Fallback: użyj id profilu jako groupId
+          groupId   = `tg_${profileOrProject.id}`;
+          groupName = profileOrProject.name || 'Tasks';
+          logError('ui', 'MainLayout: ensureForProfile failed, using fallback', res?.error);
+        }
+      } else {
+        // String (legacy lub globalne otwarcie)
+        const name = typeof profileOrProject === 'string' ? profileOrProject : 'default';
+        groupId   = `tg_${name}`;
+        groupName = name;
+      }
+
+      setCurrentGroup({ id: groupId, name: groupName });
+      setShowTaskPanel(true);
+      logInfo('ui', 'MainLayout: TaskPanel opened for group', groupId);
+    } catch (err) {
+      logError('ui', 'MainLayout: handleOpenTaskPanel failed', err.message);
+    }
   };
 
   // Nasłuchiwanie sygnału quit z procesu głównego
@@ -120,7 +145,7 @@ export default function MainLayout({
             activeItem={activeItem}
             settings={settings}
             onSaveSettings={onSaveSettings}
-            onOpenTasks={(project) => { setCurrentProject(project); setShowTaskPanel(true); }}
+            onOpenTasks={(profileOrProject) => handleOpenTaskPanel(profileOrProject)}
             sidebarModalOpen={sidebarModalOpen}
           />
         </div>
@@ -129,10 +154,10 @@ export default function MainLayout({
       {/* ── TaskPanel (lazy) ─────────────────────────────────────────────── */}
       <Suspense fallback={null}>
         <TaskPanel
-          projectName={currentProject}
+          taskGroupId={currentGroup.id}
+          groupName={currentGroup.name}
           visible={showTaskPanel}
           onClose={() => setShowTaskPanel(false)}
-          availableProjects={(settings.projects || []).map((p) => p.name)}
         />
       </Suspense>
 
