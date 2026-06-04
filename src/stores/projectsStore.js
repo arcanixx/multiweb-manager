@@ -4,12 +4,11 @@
 // VERSION: 0.0.3
 // PURPOSE: Projekty (ProjectManager, AggregatedTasks) — plik projects.json.
 // FUNCTIONS: loadProjects, saveProjects, createProject, updateProject, archiveProject, deleteProject
-// DEPENDS ON: persistence.js, settingsStore.js, logger.js, fs
+// DEPENDS ON: persistence.js, logger.js, fs
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
-import { loadSettings, mergeSettings } from "./settingsStore.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
 import fs from 'fs';
 
@@ -31,11 +30,10 @@ export function loadProjects() {
     const stored = readJsonFile(PROJECTS_FILE(), null);
     if (Array.isArray(stored)) return stored;
     if (stored?.data && Array.isArray(stored.data)) return stored.data;
-    const fromSettings = loadSettings().projects;
-    return Array.isArray(fromSettings) ? fromSettings : [];
+    return [];
   } catch (err) {
     logError("store", "projectsStore.loadProjects failed", err.message);
-    logWarn("store", "Nie można załadować projektów – używam pustej tablicy");
+    logWarn("store", "Cannot load projects – returning empty array");
     return [];
   }
 }
@@ -46,12 +44,11 @@ export function loadProjects() {
 export function saveProjects(projects) {
   try {
     writeJsonFile(PROJECTS_FILE(), { version: "0.0.3", data: projects });
-    mergeSettings({ projects });
     logInfo("store", "projectsStore.saveProjects success", projects.length);
     return projects;
   } catch (err) {
     logError("store", "projectsStore.saveProjects failed", err.message);
-    logWarn("store", "Nie można zapisać projektów");
+    logWarn("store", "Cannot save projects");
     return projects;
   }
 }
