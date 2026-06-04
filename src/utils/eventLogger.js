@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       eventLogger.js
-// PATH:       src/utils/eventLogger.js
-// VERSION:    0.0.3
-// PURPOSE:    Dziennik zdarzeń aplikacji — zapisuje akcje użytkownika i systemu do userData/logs/events.log w formacie NDJSON. Różny od logger.js (konsola debug) i logWriter.js (błędy testów). Implementuje ARCH_REQ-044.
-// FUNCTIONS:  logEvent
+// FILE: eventLogger.js
+// PATH: src/utils/eventLogger.js
+// VERSION: 0.0.3
+// PURPOSE: Dziennik zdarzeń aplikacji — zapisuje akcje użytkownika i systemu do userData/logs/events.log w formacie NDJSON. Różny od logger.js (konsola debug) i logWriter.js (błędy testów). Implementuje ARCH_REQ-044.
+// FUNCTIONS: logEvent
 // DEPENDS ON: loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

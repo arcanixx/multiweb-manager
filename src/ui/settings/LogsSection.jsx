@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       LogsSection.jsx
-// PATH:       src/ui/settings/LogsSection.jsx
-// VERSION:    0.0.3
-// PURPOSE:    Sekcja zarządzania logami — logi testów (LogWriter) i dziennik zdarzeń aplikacji (EventLogger, ARCH_REQ-044).
-// FUNCTIONS:  LogsSection
+// FILE: LogsSection.jsx
+// PATH: src/ui/settings/LogsSection.jsx
+// VERSION: 0.0.3
+// PURPOSE: Sekcja zarządzania logami — logi testów (LogWriter) i dziennik zdarzeń aplikacji (EventLogger, ARCH_REQ-044).
+// FUNCTIONS: LogsSection
 // DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js, Modal
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

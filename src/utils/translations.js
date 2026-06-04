@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Logika ładowania tłumaczeń i helpData, provider contextu (dynamicznie)
 // FUNCTIONS: TranslationProvider
-// DEPENDS ON: react, config.js
+// DEPENDS ON: react, config.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

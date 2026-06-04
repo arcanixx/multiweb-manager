@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       useMainLayout.js
-// PATH:       src/hooks/useMainLayout.js
-// VERSION:    0.0.3
-// PURPOSE:    Hook zarządzający stanem globalnym layoutu aplikacji – TaskPanel, modal potwierdzenia oraz klasa CSS body w zależności od aktywnego widoku.
-// FUNCTIONS:  useMainLayout
+// FILE: useMainLayout.js
+// PATH: src/hooks/useMainLayout.js
+// VERSION: 0.0.3
+// PURPOSE: Hook zarządzający stanem globalnym layoutu aplikacji – TaskPanel, modal potwierdzenia oraz klasa CSS body w zależności od aktywnego widoku.
+// FUNCTIONS: useMainLayout
 // DEPENDS ON: react, translations.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

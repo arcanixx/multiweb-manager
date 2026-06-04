@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: projectsStore.js
-// PATH: src/core/projectsStore.js
+// PATH: src/stores/projectsStore.js
 // VERSION: 0.0.3
 // PURPOSE: Projekty (ProjectManager, AggregatedTasks) — plik projects.json.
 // FUNCTIONS: loadProjects, saveProjects, createProject, updateProject, archiveProject, deleteProject

@@ -1,10 +1,10 @@
 // =============================================================================
-// FILE:       NotificationsSection.jsx
-// PATH:       src/ui/settings/NotificationsSection.jsx
-// VERSION:    0.0.3
-// PURPOSE:    Sekcja powiadomień — toggles dla toastów UI (UIUX_REQ-021), powiadomień systemowych OS (UIUX_REQ-022) oraz Pushbullet.
-// FUNCTIONS:  NotificationsSection
-// DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js
+// FILE: NotificationsSection.jsx
+// PATH: src/ui/settings/NotificationsSection.jsx
+// VERSION: 0.0.3
+// PURPOSE: Sekcja powiadomień — toggles dla toastów UI (UIUX_REQ-021), powiadomień systemowych OS (UIUX_REQ-022) oraz Pushbullet.
+// FUNCTIONS: NotificationsSection
+// DEPENDS ON: react, translations.js, loggerRenderer, icons
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -136,8 +136,6 @@ export default function NotificationsSection() {
   const [systemNotifications, setSystemNotifications] = useState(true);
   const [pushbulletApiKey, setPushbulletApiKey] = useState('');
 
-  
-
   // ─── useEffect – ładowanie ustawień powiadomień z settingsStore przez IPC
   useEffect(() => {
     // ─── load() – Ładuje zapisane ustawienia powiadomień z procesu głównego przez IPC, z fallbackiem na localStorage
@@ -163,7 +161,7 @@ export default function NotificationsSection() {
     };
     load();
   }, []);
-  
+
   // ─── handleSystemNotifToggle() – przełącza powiadomienia systemowe i zapisuje przez IPC
   //   @param {Event} e – zdarzenie zmiany checkboxa
   //   @returns {Promise<void>}
@@ -180,7 +178,7 @@ export default function NotificationsSection() {
       logWarn('settings', 'Wystąpił błąd podczas przełączania powiadomień systemowych');
     }
   };
-  
+
   // ─── handlePushbulletSave() – zapisuje klucz API Pushbullet przez IPC
   //   @returns {Promise<void>}
   const handlePushbulletSave = async () => {

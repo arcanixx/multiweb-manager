@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_webview_extra.js
 // VERSION: 0.0.3
 // PURPOSE: Dodatkowe handlery IPC dla WebView – tryb Single App, screenshot, monitor zasobów.
-// FUNCTIONS: registerWebViewExtraHandlers, webview:openSingle, webview:capture, webview:getResource
+// FUNCTIONS: registerWebViewExtraHandlers, ipc:webview:openSingle, ipc:open-single-window, ipc:webview:capture, ipc:capture-webview, ipc:webview:getResource, ipc:get-webview-resource
 // DEPENDS ON: electron, path, logger.js, webviewRegistry.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

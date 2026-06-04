@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: workspacesStore.js
-// PATH: src/core/workspacesStore.js
+// PATH: src/stores/workspacesStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie przestrzeniami roboczymi (workspaces) użytkownika – ładowanie, zapisywanie oraz operacje typu upsert.
 // FUNCTIONS: getAllWorkspaces, saveWorkspace, saveWorkspaces, deleteWorkspace
@@ -53,7 +53,7 @@ export function getAllWorkspaces() {
 export function saveWorkspace(workspace) {
   try {
     const store = loadStore();
-    
+
     // Check name uniqueness for new workspaces
     if (!store.data.find(w => w.id === workspace.id) && store.data.find(w => w.name === workspace.name)) {
       throw new Error("Workspace name already exists");

@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       ipcMainHandlers_logs.js
-// PATH:       src/ipc/ipcMainHandlers_logs.js
-// VERSION:    0.0.3
-// PURPOSE:    Handlery IPC dla logów testów (LogWriter) i dziennika zdarzeń (EventLogger). append-log-file – błędy testów; events:append – zdarzenia aplikacji (ARCH_REQ-044).
-// FUNCTIONS:  registerLogsHandlers, ipc:append-log-file, ipc:get-logs-file, ipc:clear-logs-file, ipc:logs:getFile, ipc:events:append, ipc:events:getFile, ipc:events:clear
+// FILE: ipcMainHandlers_logs.js
+// PATH: src/ipc/ipcMainHandlers_logs.js
+// VERSION: 0.0.3
+// PURPOSE: Handlery IPC dla logów testów (LogWriter) i dziennika zdarzeń (EventLogger). append-log-file – błędy testów; events:append – zdarzenia aplikacji (ARCH_REQ-044).
+// FUNCTIONS: registerLogsHandlers, ipc:append-log-file, ipc:get-logs-file, ipc:clear-logs-file, ipc:logs:getFile, ipc:logs:append, ipc:logs:get, ipc:logs:clear, ipc:events:append, ipc:events:getFile, ipc:events:clear
 // DEPENDS ON: electron, fs, path, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -135,7 +135,6 @@ export function registerLogsHandlers() {
       return { ok: false, error: err.message };
     }
   });
-
 
   // ─── logs:append – nowa nazwa dla 'append-log-file' (migracja Sprint 2)
   //   Alias kompatybilności — preload.cjs używa jeszcze 'append-log-file'

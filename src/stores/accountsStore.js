@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: accountsStore.js
-// PATH: src/core/accountsStore.js
+// PATH: src/stores/accountsStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie kontami użytkownika (Google, GitHub, AI, itp.) – obsługa trwałości i operacji CRUD na danych kont.
 // FUNCTIONS: getAllAccounts, addAccount, updateAccount, deleteAccount

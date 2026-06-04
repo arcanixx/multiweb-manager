@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Pojedyncza sekcja grupy zadań (TaskGroup) w widoku zbiorczym. Wyświetla zadania per sekcja z pinem na górze.
 // FUNCTIONS: AggregatedProjectSection
-// DEPENDS ON: react, translations.js, icons.js, AggregatedTaskItem
+// DEPENDS ON: react, translations.js, icons.js, AggregatedTaskItem.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

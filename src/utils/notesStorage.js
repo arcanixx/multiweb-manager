@@ -7,6 +7,7 @@
 // DEPENDS ON: logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
+
 //
 // ARCHITEKTURA NOTATEK — dwa osobne systemy, celowy podział:
 //
@@ -36,7 +37,7 @@ export function createNewTab(id) {
   if (id !== undefined && typeof id !== 'string') {
     throw new Error('notesStorage.createNewTab: id must be a string or undefined');
   }
-  
+
   return {
     id: id || `tab-${Date.now()}`,
     title: 'Notatka',

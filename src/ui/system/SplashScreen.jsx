@@ -6,7 +6,6 @@
 // FUNCTIONS: SplashScreen
 // DEPENDS ON: react, translations.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
-// UWAGA: Zastąp assets/splash_logo.svg plikiem assets/splash_logo.png gdy będzie dostępny.
 // =============================================================================
 
 import React, { useContext, useEffect, useState } from 'react';

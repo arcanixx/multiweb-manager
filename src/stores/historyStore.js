@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: historyStore.js
-// PATH: src/core/historyStore.js
+// PATH: src/stores/historyStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie historią akcji użytkownika – odczyt, zapis, dodawanie wpisów, czyszczenie i pobieranie ostatnich wpisów.
 // FUNCTIONS: loadHistory, saveHistory, addHistoryEntry, clearHistory, getRecentHistory

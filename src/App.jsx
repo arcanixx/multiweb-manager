@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny komponent root aplikacji React – inicjalizuje system logowania, ładuje ustawienia użytkownika, zarządza motywem graficznym (dark/light) oraz obsługuje globalne skróty klawiszowe i stan sieci.
 // FUNCTIONS: App
-// DEPENDS ON: react, config.js, translations.js, loggerRenderer.js, urlUtils.js, MainLayout.jsx, Spinner.jsx
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer.js, urlUtils.js, MainLayout.jsx, Spinner.jsx, SplashScreen.jsx, OnboardingScreen.jsx, ToastContainer.jsx, notificationsManager.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

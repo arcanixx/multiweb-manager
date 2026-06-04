@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       TestRunner_EventLogger.js
-// PATH:       tests/TestRunner_EventLogger.js
-// VERSION:    0.0.3
-// PURPOSE:    Testy jednostkowe modułu eventLogger — sanityzacja params, guard eventLogEnabled, format wpisu. (ARCH_REQ-044)
-// FUNCTIONS:  runEventLoggerTests
+// FILE: TestRunner_EventLogger.js
+// PATH: tests/TestRunner_EventLogger.js
+// VERSION: 0.0.3
+// PURPOSE: Testy jednostkowe modułu eventLogger — sanityzacja params, guard eventLogEnabled, format wpisu. (ARCH_REQ-044)
+// FUNCTIONS: runEventLoggerTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

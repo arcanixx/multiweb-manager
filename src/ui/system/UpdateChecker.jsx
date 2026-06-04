@@ -1,10 +1,10 @@
 // =============================================================================
-// FILE:       UpdateChecker.jsx
-// PATH:       src/ui/system/UpdateChecker.jsx
-// VERSION:    0.0.3
-// PURPOSE:    Komponent sprawdzania aktualizacji. Używa globalnego showToast (UIUX_REQ-021) zamiast lokalnego stanu inline.
-// FUNCTIONS:  UpdateChecker
-// DEPENDS ON: react, icons.js, translations.js, loggerRenderer.js, notificationsManager.js
+// FILE: UpdateChecker.jsx
+// PATH: src/ui/system/UpdateChecker.jsx
+// VERSION: 0.0.3
+// PURPOSE: Komponent sprawdzania aktualizacji. Używa globalnego showToast (UIUX_REQ-021) zamiast lokalnego stanu inline.
+// FUNCTIONS: UpdateChecker
+// DEPENDS ON: react, icons, translations.js, loggerRenderer, notificationsManager.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

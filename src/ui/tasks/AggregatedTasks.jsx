@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Widok zbiorczy zadań ze wszystkich grup (TaskGroup). Filtrowanie po statusie, priorytecie, sekcji. Zwijanie/rozwijanie per grupa.
 // FUNCTIONS: AggregatedTasks
-// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js, AggregatedProjectSection
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js, AggregatedProjectSection.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

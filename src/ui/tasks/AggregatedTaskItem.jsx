@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Pojedynczy element zadania w widoku zbiorczym. Wyświetla status (ikona), priorytet (kolor), nazwę, flagę pinned, komentarz, wersję.
 // FUNCTIONS: AggregatedTaskItem
-// DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: clipboardStore.js
-// PATH: src/core/clipboardStore.js
+// PATH: src/stores/clipboardStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie historią schowka systemowego – dodawanie, pobieranie i czyszczenie wpisów tekstowych.
 // FUNCTIONS: addClipboardEntry, getClipboardHistory, clearClipboardHistory

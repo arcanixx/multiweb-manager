@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       MainLayout.jsx
-// PATH:       src/ui/layout/MainLayout.jsx
-// VERSION:    0.0.3
-// PURPOSE:    Główny szkielet interfejsu użytkownika (Shell) – definiuje siatkę aplikacji, koordynuje nawigację boczną, obszar roboczy (ContentRenderer) oraz integruje globalne mechanizmy modalne. Logika stanu przeniesiona do useMainLayout.js.
-// FUNCTIONS:  MainLayout
+// FILE: MainLayout.jsx
+// PATH: src/ui/layout/MainLayout.jsx
+// VERSION: 0.0.3
+// PURPOSE: Główny szkielet interfejsu użytkownika (Shell) – definiuje siatkę aplikacji, koordynuje nawigację boczną, obszar roboczy (ContentRenderer) oraz integruje globalne mechanizmy modalne. Logika stanu przeniesiona do useMainLayout.js.
+// FUNCTIONS: MainLayout
 // DEPENDS ON: react, useMainLayout.js, Sidebar.jsx, ContentRenderer.jsx, ConfirmModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

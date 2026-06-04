@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: appLibraryStore.js
-// PATH: src/core/appLibraryStore.js
+// PATH: src/stores/appLibraryStore.js
 // VERSION: 0.0.3
 // PURPOSE: Statyczna App Library (WebCatalog-style) — odczyt, cache'owanie i filtrowanie aplikacji z pliku JSON (loadAppLibrary, filterApps, searchAppLibrary, getAppById).
 // FUNCTIONS: loadAppLibrary, filterApps, searchAppLibrary, getAppById

@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       ipcMainHandlers_files.js
-// PATH:       src/ipc/ipcMainHandlers_files.js
-// VERSION:    0.0.3
-// PURPOSE:    IPC handlery zapisu plików – tekst i dane binarne przez dialog systemowy.
-// FUNCTIONS:  files:saveText, files:saveBinary
+// FILE: ipcMainHandlers_files.js
+// PATH: src/ipc/ipcMainHandlers_files.js
+// VERSION: 0.0.3
+// PURPOSE: IPC handlery zapisu plików – tekst i dane binarne przez dialog systemowy.
+// FUNCTIONS: ipc:files:saveText, ipc:save-text-to-file, ipc:files:saveBinary, ipc:save-file
 // DEPENDS ON: electron, fs, path, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

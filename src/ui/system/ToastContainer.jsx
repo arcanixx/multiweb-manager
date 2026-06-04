@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       ToastContainer.jsx
-// PATH:       src/ui/system/ToastContainer.jsx
-// VERSION:    0.0.3
-// PURPOSE:    Globalny kontener toastów z kolejką FIFO i animowanym stackiem. Subskrybuje się na CustomEvent 'mwm:toast' z notificationsManager.js. Zarządza stanem przez useReducer — max 3 aktywne jednocześnie, pozostałe czekają w kolejce.
-// FUNCTIONS:  ToastContainer
+// FILE: ToastContainer.jsx
+// PATH: src/ui/system/ToastContainer.jsx
+// VERSION: 0.0.3
+// PURPOSE: Globalny kontener toastów z kolejką FIFO i animowanym stackiem. Subskrybuje się na CustomEvent 'mwm:toast' z notificationsManager.js. Zarządza stanem przez useReducer — max 3 aktywne jednocześnie, pozostałe czekają w kolejce.
+// FUNCTIONS: ToastContainer
 // DEPENDS ON: react, icons.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

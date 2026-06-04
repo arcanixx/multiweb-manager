@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: taskGroupsStore.js
-// PATH: src/core/taskGroupsStore.js
+// PATH: src/stores/taskGroupsStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie grupami zadań (TaskGroup) — mapowanie profili WebView na wspólny panel zadań. Każda grupa to osobny panel TaskPanel współdzielony przez 1..N profili.
 // FUNCTIONS: loadTaskGroups, saveTaskGroups, createTaskGroup, updateTaskGroup, deleteTaskGroup, getGroupForProfile, ensureDefaultGroup

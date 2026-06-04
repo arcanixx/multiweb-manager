@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       notificationsManager.js
-// PATH:       src/utils/notificationsManager.js
-// VERSION:    0.0.3
-// PURPOSE:    Fasada globalnego systemu powiadomień — dispatchuje toasty UI przez CustomEvent do ToastContainer oraz wywołuje systemowe powiadomienia OS przez IPC. Nie zarządza stanem React.
-// FUNCTIONS:  showToast, showSystemNotification
+// FILE: notificationsManager.js
+// PATH: src/utils/notificationsManager.js
+// VERSION: 0.0.3
+// PURPOSE: Fasada globalnego systemu powiadomień — dispatchuje toasty UI przez CustomEvent do ToastContainer oraz wywołuje systemowe powiadomienia OS przez IPC. Nie zarządza stanem React.
+// FUNCTIONS: showToast, showSystemNotification
 // DEPENDS ON: logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

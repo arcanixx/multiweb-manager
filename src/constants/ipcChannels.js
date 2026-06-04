@@ -1,11 +1,11 @@
 // =============================================================================
-// FILE:       ipcChannels.js
-// PATH:       src/constants/ipcChannels.js
-// VERSION:    0.0.3
-// PURPOSE:    Centralny rejestr nazw kanałów IPC – single source of truth.
-//             Eliminuje string literals rozrzucone po handlerach, hookach i preloadzie.
-//             Używać wszędzie zamiast ręcznych stringów np. 'profiles:getAll'.
-// FUNCTIONS:  IPC_CHANNELS
+// FILE: ipcChannels.js
+// PATH: src/constants/ipcChannels.js
+// VERSION: 0.0.3
+// PURPOSE: Centralny rejestr nazw kanałów IPC – single source of truth.
+//          Eliminuje string literals rozrzucone po handlerach, hookach i preloadzie.
+//          Używać wszędzie zamiast ręcznych stringów np. 'profiles:getAll'.
+// FUNCTIONS: -
 // DEPENDS ON: -
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

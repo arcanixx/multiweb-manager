@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       ipcMainHandlers_notifications.js
-// PATH:       src/ipc/ipcMainHandlers_notifications.js
-// VERSION:    0.0.3
-// PURPOSE:    Handler IPC dla natywnych powiadomień systemowych OS (Windows/macOS). Przeniesione do procesu głównego — działa nawet gdy okno jest zminimalizowane lub ukryte w tray. Implementuje UIUX_REQ-022.
-// FUNCTIONS:  registerNotificationsHandlers, ipc:notifications:showSystem
+// FILE: ipcMainHandlers_notifications.js
+// PATH: src/ipc/ipcMainHandlers_notifications.js
+// VERSION: 0.0.3
+// PURPOSE: Handler IPC dla natywnych powiadomień systemowych OS (Windows/macOS). Przeniesione do procesu głównego — działa nawet gdy okno jest zminimalizowane lub ukryte w tray. Implementuje UIUX_REQ-022.
+// FUNCTIONS: ipc:notifications:showSystem
 // DEPENDS ON: electron, path, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

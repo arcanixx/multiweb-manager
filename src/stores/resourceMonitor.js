@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: resourceMonitor.js
-// PATH: src/core/resourceMonitor.js
+// PATH: src/stores/resourceMonitor.js
 // VERSION: 0.0.3
 // PURPOSE: Serwis monitorujący zużycie zasobów systemowych (CPU/RAM) przez aplikację i system operacyjny.
 // FUNCTIONS: getSystemUsage
@@ -18,11 +18,11 @@ export function getSystemUsage() {
   try {
     if (!isFeatureEnabled('resourceMonitor')) {
       logDebug("engine", "resourceMonitor: feature disabled, returning null data");
-      return { 
-        cpuPercent: 0, 
-        ramPercent: 0, 
-        warnAt: DEFAULT_SETTINGS.resourceMonitor.warnAt, 
-        criticalAt: DEFAULT_SETTINGS.resourceMonitor.criticalAt 
+      return {
+        cpuPercent: 0,
+        ramPercent: 0,
+        warnAt: DEFAULT_SETTINGS.resourceMonitor.warnAt,
+        criticalAt: DEFAULT_SETTINGS.resourceMonitor.criticalAt
       };
     }
 

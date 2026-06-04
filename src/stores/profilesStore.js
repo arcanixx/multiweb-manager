@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: profilesStore.js
-// PATH: src/core/profilesStore.js
+// PATH: src/stores/profilesStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie profilami WebView — odczyt z pliku, zapis, tworzenie, aktualizacja i usuwanie (loadProfiles, saveProfiles, createProfile, updateProfile, deleteProfile).
 // FUNCTIONS: loadProfiles, saveProfiles, createProfile, updateProfile, deleteProfile

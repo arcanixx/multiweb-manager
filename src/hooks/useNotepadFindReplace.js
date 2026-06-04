@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React obsługujący logikę wyszukiwania i zastępowania tekstu w edytorze notatnika.
 // FUNCTIONS: useNotepadFindReplace
-// DEPENDS ON: react, translations.js, loggerRenderer.js
+// DEPENDS ON: react, translations.js, loggerRenderer.js, notificationsManager.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -25,7 +25,7 @@ export function useNotepadFindReplace({ contentRef, textareaRef, setContent, set
   const [findText, setFindText] = useState('');
   const [replaceText, setReplaceText] = useState('');
   const [findCount, setFindCount] = useState(0);
-  
+
   // ─── handleFind() – wyszukuje tekst i ustawia kursor na pierwsze trafienie
   //   @returns {void}
   const handleFind = useCallback(() => {
@@ -51,8 +51,6 @@ export function useNotepadFindReplace({ contentRef, textareaRef, setContent, set
       logWarn("ui", "Wystąpił błąd podczas wyszukiwania tekstu");
     }
   }, [findText, contentRef, textareaRef]);
-
-  
 
   // ─── handleReplace() – zastępuje wszystkie wystąpienia szukanego tekstu
   //   @returns {void}

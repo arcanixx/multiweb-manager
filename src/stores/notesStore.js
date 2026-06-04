@@ -7,6 +7,7 @@
 // DEPENDS ON: fs, path, electron, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
+
 //
 // ARCHITEKTURA NOTATEK — dwa osobne systemy, celowy podział:
 //
