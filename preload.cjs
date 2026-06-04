@@ -145,24 +145,36 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 
   // ─── LogWriter ────────────────────────────────────────────────
-  // ─── appendLogFile(payload) – Dopisuje dane do pliku logów aplikacji
+  // ─── appendLogFile(payload) – Dopisuje dane do pliku logów aplikacji [legacy — użyj logsAppend]
   appendLogFile: (payload) => ipcRenderer.invoke('append-log-file', payload),
-  // ─── getLogsFile() – Odczytuje zawartość pliku logów
+  // ─── getLogsFile() – Odczytuje zawartość pliku logów [legacy — użyj logsGet]
   getLogsFile: () => ipcRenderer.invoke('get-logs-file'),
-  // ─── clearLogsFile() – Usuwa zawartość pliku logów
+  // ─── clearLogsFile() – Usuwa zawartość pliku logów [legacy — użyj logsClear]
   clearLogsFile: () => ipcRenderer.invoke('clear-logs-file'),
+  // ─── logsAppend(payload) – nowa nazwa (Sprint 2): logs:append
+  logsAppend: (payload) => ipcRenderer.invoke('logs:append', payload),
+  // ─── logsGet() – nowa nazwa (Sprint 2): logs:get
+  logsGet: () => ipcRenderer.invoke('logs:get'),
+  // ─── logsClear() – nowa nazwa (Sprint 2): logs:clear
+  logsClear: () => ipcRenderer.invoke('logs:clear'),
 
   // ─── Cookie Grabber ───────────────────────────────────────────
   // ─── getCookies(partition) – Pobiera ciasteczka dla wybranej partycji WebView
   getCookies: (partition) => ipcRenderer.invoke('tools:getCookies', partition),
 
   // ─── Single App Mode, Screenshot, Resource Monitor ───────────
-  // ─── openSingleWindow(payload) – Otwiera stronę w osobnym oknie aplikacji
+  // ─── openSingleWindow(payload) – Otwiera stronę w osobnym oknie [legacy — użyj webviewOpenSingle]
   openSingleWindow: (payload) => ipcRenderer.invoke('open-single-window', payload),
-  // ─── captureWebView(tabId) – Przechwytuje obraz widoku WebView
+  // ─── captureWebView(tabId) – Przechwytuje obraz widoku WebView [legacy — użyj webviewCapture]
   captureWebView: (tabId) => ipcRenderer.invoke('capture-webview', tabId),
-  // ─── getWebViewResourceInfo(tabId) – Pobiera informacje o zużyciu RAM/CPU przez WebView
+  // ─── getWebViewResourceInfo(tabId) – Pobiera informacje o zużyciu RAM/CPU [legacy — użyj webviewGetResource]
   getWebViewResourceInfo: (tabId) => ipcRenderer.invoke('get-webview-resource', tabId),
+  // ─── webviewOpenSingle(payload) – nowa nazwa (Sprint 2): webview:openSingle
+  webviewOpenSingle: (payload) => ipcRenderer.invoke('webview:openSingle', payload),
+  // ─── webviewCapture(tabId) – nowa nazwa (Sprint 2): webview:capture
+  webviewCapture: (tabId) => ipcRenderer.invoke('webview:capture', tabId),
+  // ─── webviewGetResource(tabId) – nowa nazwa (Sprint 2): webview:getResource
+  webviewGetResource: (tabId) => ipcRenderer.invoke('webview:getResource', tabId),
 
   // ─── Hotkeys ──────────────────────────────────────────────────
   // ─── getHotkeys() – Pobiera listę zdefiniowanych skrótów klawiszowych
