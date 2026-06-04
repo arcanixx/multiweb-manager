@@ -153,7 +153,7 @@ process.on("unhandledRejection", (reason) => logError("unhandledRejection", reas
 
 ## 1f. Poprawne zapisywanie settings (merge, nie overwrite)
 
-**Plik:** `src/core/settingsStore.js`
+**Plik:** `src/stores/settingsStore.js`
 
 **Cel:** Nigdy nie nadpisywać całego settings jednym polem.
 
@@ -742,7 +742,7 @@ export default function WebViewTileView({ profiles }) {
 
 ## 3d. AdBlocker globalny + per profil
 
-**Pliki:** `main.js`, `src/core/settingsStore.js`, `src/ui/sidebar/ProfileModal.jsx`, `src/ui/webview/WebViewTab.jsx`
+**Pliki:** `main.js`, `src/stores/settingsStore.js`, `src/ui/sidebar/ProfileModal.jsx`, `src/ui/webview/WebViewTab.jsx`
 
 **Cel:** Możliwość włączenia/wyłączenia AdBlockera globalnie oraz nadpisania ustawienia per profil.
 
@@ -887,7 +887,7 @@ ipcMain.handle("capture-webview", async (_, tabId) => {
 
 ## 3h. Sleep Tabs
 
-**Pliki:** `src/ui/webview/WebViewTab.jsx`, `src/engine/sleepTabsManager.js`, `src/core/settingsStore.js`, `src/config.js`
+**Pliki:** `src/ui/webview/WebViewTab.jsx`, `src/engine/sleepTabsManager.js`, `src/stores/settingsStore.js`, `src/config.js`
 
 **Cel:** Usypianie nieaktywnych WebView po X minutach.
 

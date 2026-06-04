@@ -9,7 +9,7 @@
 // =============================================================================
 
 import { ipcMain } from "electron";
-import { loadAppLibrary, filterApps, getAppById } from "../core/appLibraryStore.js";
+import { loadAppLibrary, filterApps, getAppById } from "../stores/appLibraryStore.js";
 import { logError } from "../utils/logger.js";
 
 // ─── appLibrary:getAll – zwraca wszystkie kategorie z aplikacjami

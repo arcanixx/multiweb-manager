@@ -17,7 +17,7 @@ import {
   loadAllTasksGrouped,
   normalizeTask,
   resolveSection,
-} from '../core/tasksStore.js';
+} from '../stores/tasksStore.js';
 import { logError, logInfo } from '../utils/logger.js';
 
 // ─── tasks:getAll – płaska lista zadań dla grupy lub wszystkich

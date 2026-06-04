@@ -16,7 +16,7 @@ import {
   deleteTaskGroup,
   getGroupForProfile,
   ensureDefaultGroup,
-} from '../core/taskGroupsStore.js';
+} from '../stores/taskGroupsStore.js';
 import { logError, logInfo } from '../utils/logger.js';
 
 // ─── taskGroups:getAll – wszystkie grupy zadań

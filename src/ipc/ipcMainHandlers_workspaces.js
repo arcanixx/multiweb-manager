@@ -13,7 +13,7 @@ import {
   getAllWorkspaces,
   saveWorkspaces,
   deleteWorkspace
-} from "../core/workspacesStore.js";
+} from "../stores/workspacesStore.js";
 import { logError } from "../utils/logger.js";
 ipcMain.handle("workspaces:getAll", async () => {
   try {

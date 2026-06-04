@@ -15,7 +15,7 @@ import {
   updateProfile,
   deleteProfile,
   createProfile
-} from "../core/profilesStore.js";
+} from "../stores/profilesStore.js";
 import { logError } from "../utils/logger.js";
 // =============================================================================
 // VALIDATION HELPERS

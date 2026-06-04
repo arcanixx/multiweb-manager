@@ -15,7 +15,7 @@ import {
   loadSettings,
   resetSettings,
   mergeSettings
-} from "../core/settingsStore.js";
+} from "../stores/settingsStore.js";
 import { DEFAULT_SETTINGS } from "../../config.js";
 // ----------------------------------------------------------------
 // settings:get – zwraca aktualne ustawienia z settingsStore

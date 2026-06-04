@@ -9,8 +9,8 @@
 // =============================================================================
 
 import { ipcMain } from 'electron';
-import { loadTasks } from '../core/tasksStore.js';
-import { loadTaskGroups } from '../core/taskGroupsStore.js';
+import { loadTasks } from '../stores/tasksStore.js';
+import { loadTaskGroups } from '../stores/taskGroupsStore.js';
 import { logError } from '../utils/logger.js';
 
 // ─── enrich() – uzupełnia zadania o nazwę grupy (zamiast projectName)

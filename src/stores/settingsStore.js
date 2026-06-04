@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: settingsStore.js
-// PATH: src/core/settingsStore.js
+// PATH: src/stores/settingsStore.js
 // VERSION: 0.0.3
 // PURPOSE: Ustawienia użytkownika — merge partial updates, reset do domyślnych.
 // FUNCTIONS: loadSettings, saveSettings, mergeSettings, updateSettings, resetSettings

@@ -11,9 +11,9 @@
 
 import { ipcMain } from 'electron';
 import { buildSearchIndex, searchAll } from '../utils/searchIndex.js';
-import { getAllNotes } from '../core/notesStore.js';
-import { loadTasks } from '../core/tasksStore.js';
-import { loadProjects } from '../core/projectsStore.js';
+import { getAllNotes } from '../stores/notesStore.js';
+import { loadTasks } from '../stores/tasksStore.js';
+import { loadProjects } from '../stores/projectsStore.js';
 import { logDebug, logError } from '../utils/logger.js';
 
 // ─── search:global – przeszukuje profile, projekty, zadania i notatki

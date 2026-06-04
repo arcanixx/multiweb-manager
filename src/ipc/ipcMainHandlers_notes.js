@@ -14,7 +14,7 @@ import {
   addNote,
   updateNote,
   deleteNote
-} from "../core/notesStore.js";
+} from "../stores/notesStore.js";
 import { logError } from "../utils/logger.js";
 ipcMain.handle("notes:getAll", async () => {
   try {

@@ -13,7 +13,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
 import { FEATURES, DEFAULT_SETTINGS } from "./config.js";
-import { loadSettings } from "./src/core/settingsStore.js";
+import { loadSettings } from "./src/stores/settingsStore.js";
 import { logInfo, logError } from "./src/utils/logger.js";
 import { runAllTests } from "./tests/TestRunner.js";
 import { initAdBlocker } from './src/engine/adBlocker.js';
