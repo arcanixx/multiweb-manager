@@ -14,15 +14,25 @@ contextBridge.exposeInMainWorld('electronAPI', {
   
   // ─── Profiles ─────────────────────────────────────────────────
   // ─── getProfiles() – Pobiera listę wszystkich profili użytkownika
-  getProfiles:    ()           => ipcRenderer.invoke('get-profiles'),
-  // ─── saveProfiles(profiles) – Zapisuje aktualny stan listy profili
-  saveProfiles:   (profiles)   => ipcRenderer.invoke('save-profiles', profiles),
+  getProfiles:    ()           => ipcRenderer.invoke('profiles:getAll'),
+  // ─── createProfile(profileData) – Tworzy nowy profil (zastępuje saveProfiles dla nowych wpisów)
+  createProfile:  (profileData) => ipcRenderer.invoke('profiles:create', profileData),
+  // ─── updateProfile(id, patch) – Aktualizuje istniejący profil
+  updateProfile:  (id, patch)   => ipcRenderer.invoke('profiles:update', { id, patch }),
+  // ─── deleteProfile(id) – Usuwa profil po ID
+  deleteProfile:  (id)          => ipcRenderer.invoke('profiles:delete', id),
+  // ─── touchProfile(id) – Aktualizuje lastUsedAt profilu
+  touchProfile:   (id)          => ipcRenderer.invoke('profiles:touch', id),
   
   // ─── Notes ────────────────────────────────────────────────────
   // ─── getNotes() – Pobiera listę notatek
-  getNotes:   ()      => ipcRenderer.invoke('get-notes'),
-  // ─── saveNotes(notes) – Zapisuje listę notatek
-  saveNotes:  (notes) => ipcRenderer.invoke('save-notes', notes),
+  getNotes:   ()             => ipcRenderer.invoke('notes:getAll'),
+  // ─── addNote(note) – Dodaje nową notatkę
+  addNote:    (note)         => ipcRenderer.invoke('notes:add', note),
+  // ─── updateNote(id, patch) – Aktualizuje notatkę po ID
+  updateNote: (id, patch)    => ipcRenderer.invoke('notes:update', { id, patch }),
+  // ─── deleteNote(id) – Usuwa notatkę po ID
+  deleteNote: (id)           => ipcRenderer.invoke('notes:delete', id),
   
   // ─── Settings ─────────────────────────────────────────────────
   // ─── getSettings() – Pobiera aktualną konfigurację użytkownika
@@ -39,20 +49,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
   }),
   
   // ─── Tasks ────────────────────────────────────────────────────
-  // ─── getTasks(project) – Pobiera zadania dla wybranego projektu
-  getTasks:    (project)       => ipcRenderer.invoke('get-tasks', project),
-  // ─── saveTasks(project, data) – Zapisuje stan zadań w projekcie
-  saveTasks:   (project, data) => ipcRenderer.invoke('save-tasks', project, data),
+  // ─── getTasks(project) – Pobiera zadania dla wybranego projektu (używa tasks:getAll z filtrem)
+  getTasks:    (project)       => ipcRenderer.invoke('tasks:getAll', project),
   // ─── getAllTasks() – Pobiera wszystkie zadania ze wszystkich projektów
-  getAllTasks:  ()              => ipcRenderer.invoke('get-all-tasks'),
+  getAllTasks:  ()              => ipcRenderer.invoke('tasks:getAll'),
   
   // ─── History ──────────────────────────────────────────────────
   // ─── getHistory() – Pobiera historię aktywności
-  getHistory:   ()      => ipcRenderer.invoke('get-history'),
+  getHistory:   ()      => ipcRenderer.invoke('history:getAll'),
   // ─── addHistory(entry) – Dodaje nowy wpis do historii
-  addHistory:   (entry) => ipcRenderer.invoke('add-history', entry),
+  addHistory:   (entry) => ipcRenderer.invoke('history:add', entry),
   // ─── clearHistory() – Czyści historię aktywności
-  clearHistory: ()      => ipcRenderer.invoke('clear-history'),
+  clearHistory: ()      => ipcRenderer.invoke('history:clear'),
   
   // ─── WebView ──────────────────────────────────────────────────
   // ─── clearProfileCache(id) – Czyści pamięć podręczną (cache) dla profilu
@@ -73,13 +81,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
   
   // ─── Terminal ─────────────────────────────────────────────────
   // ─── createTerminal(cwd) – Tworzy nową sesję terminala w podanej ścieżce
-  createTerminal: (cwd)          => ipcRenderer.invoke('create-terminal', cwd),
+  createTerminal: (cwd)              => ipcRenderer.invoke('terminal:create', { cwd }),
   // ─── terminalWrite(id, data) – Przesyła dane do wejścia terminala
-  terminalWrite:  (id, data)     => ipcRenderer.invoke('terminal-write', id, data),
+  terminalWrite:  (id, data)         => ipcRenderer.invoke('terminal:write', { terminalId: id, data }),
   // ─── terminalResize(id, cols, rows) – Zmienia wymiary okna terminala
-  terminalResize: (id, cols, rows) => ipcRenderer.invoke('terminal-resize', id, cols, rows),
+  terminalResize: (id, cols, rows)   => ipcRenderer.invoke('terminal:resize', { terminalId: id, cols, rows }),
   // ─── killTerminal(id) – Zamyka proces terminala
-  killTerminal:   (id)           => ipcRenderer.invoke('kill-terminal', id),
+  killTerminal:   (id)               => ipcRenderer.invoke('terminal:kill', id),
   
   // ─── onTerminalData(callback) – Rejestruje słuchacz strumienia danych z terminala
   onTerminalData: (callback) => {
@@ -187,3 +195,4 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // ─── invoke(channel, ...args) – Wykonuje dowolne wywołanie kanału IPC
   invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args)
 });
+
