@@ -10,7 +10,6 @@
 // =============================================================================
 
 import React, { useState, useContext, useCallback } from 'react';
-import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logInfo, logDebug } from '../../utils/loggerRenderer.js';
@@ -20,14 +19,13 @@ import appLibraryData from '../../data/app-library.json';
 // UWAGA: Ta stała celowo pozostaje w tym pliku – dotyczy wyłącznie logiki OnboardingScreen.
 const ONBOARDING_STEPS = ['theme', 'language', 'privacy', 'apps', 'account'];
 
-// ─── QUICK_START_CATEGORIES – kategorie do wyboru w kroku "Szybki start"
-// Mapowane z app-library.json – tylko 4 główne kategorie dla onboardingu
+// ─── QUICK_START_MAP – które aplikacje pokazać w onboardingu per kategoria
+// Klucz = id kategorii z app-library.json, wartość = tablica id aplikacji do pokazania
 const QUICK_START_MAP = {
-  AI:          'apps_category_ai',
-  MAIL:        'apps_category_mail',
-  DRIVE:       'apps_category_drive',
-  SOCIAL:      'apps_category_chat',
-  PRODUCTIVITY:'apps_category_drive', // fallback do drive jeśli brak DRIVE
+  AI:          ['chatgpt', 'claude', 'deepseek', 'gemini'],
+  DEV:         ['github', 'stackOverflow', 'npm', 'codesandbox'],
+  PRODUCTIVITY:['notion', 'todoist', 'trello', 'calendar'],
+  SOCIAL:      ['discord', 'messenger', 'whatsapp'],
 };
 
 // ─── StepIndicator() – wskaźnik aktualnego kroku (dot-y u góry)
@@ -192,11 +190,13 @@ function StepPrivacy({ privacy, onPrivacyChange, disclaimerAccepted, onDisclaime
 
 // ─── StepApps() – krok 4: szybki start – wybór aplikacji z App Library
 function StepApps({ selectedApps, onToggleApp, t }) {
-  // Pobierz 4 główne kategorie z app-library.json (tylko pierwsze 4 aplikacje per kategoria)
-  const categories = (appLibraryData?.categories || []).slice(0, 4).map(cat => ({
-    ...cat,
-    apps: (cat.apps || []).slice(0, 4),
-  }));
+  // Filtruj kategorie i aplikacje według QUICK_START_MAP
+  const categories = (appLibraryData?.categories || [])
+    .filter(cat => QUICK_START_MAP[cat.id])
+    .map(cat => ({
+      ...cat,
+      apps: (cat.apps || []).filter(app => QUICK_START_MAP[cat.id].includes(app.id)),
+    }));
 
   return (
     <div>
