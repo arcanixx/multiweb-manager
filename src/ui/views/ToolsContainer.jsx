@@ -2,78 +2,56 @@
 // FILE: ToolsContainer.jsx
 // PATH: src/ui/views/ToolsContainer.jsx
 // VERSION: 0.0.3
-// PURPOSE: Kontener renderowania narzędzi specjalnych (Notepad, ProjectManager, RemoveBg, AppLibrary itp.)
+// PURPOSE: Kontener renderowania narzędzi specjalnych. Używa TOOLS_REGISTRY zamiast switch-case – nowe narzędzie = wpis w src/config/toolsRegistry.js, bez modyfikacji kontenera.
 // FUNCTIONS: ToolsContainer
-// DEPENDS ON: react, loggerRenderer.js, Spinner.jsx, config.js
+// DEPENDS ON: react, loggerRenderer.js, Spinner.jsx, toolsRegistry.js, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { lazy, Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect, useContext } from 'react';
 import { logWarn, logDebug } from '../../utils/loggerRenderer.js';
+import { TranslationContext } from '../../utils/translations.js';
 import { Spinner } from './Spinner.jsx';
-import { isFeatureEnabled } from '../../config.js';
+import { getToolComponent } from '../../config/toolsRegistry.js';
 
-const Notepad            = lazy(() => import('../notepad/Notepad'));
-const ProjectManager     = lazy(() => import('../projects/ProjectManager'));
-const RemoveBgTool       = lazy(() => import('../tools/RemoveBgTool'));
-const StringCombiner     = lazy(() => import('../tools/StringCombiner'));
-const Terminal           = lazy(() => import('../terminal/Terminal'));
-const AppLibraryBrowser  = lazy(() => import('../appLibrary/AppLibraryBrowser'));
-
-// ─── ToolsContainer() – renderuje odpowiednie narzędzie na podstawie activeItem.id
-//   @param {Object} props.activeItem – aktywny element specjalny
-//   @param {Object} props.settings   – ustawienia aplikacji (apiKey, plan itp.)
-//   @param {Function} props.onOpenTasks – callback otwierający TaskPanel dla projektu
-//   @returns {JSX.Element|null}
+// ─── ToolsContainer() – renderuje narzędzie na podstawie activeItem.id z rejestru
+//   Dodaj nowe narzędzie w src/config/toolsRegistry.js — tu nie zmieniać.
+//   @param {Object}   props.activeItem   – aktywny element (id, cwd, ...)
+//   @param {Object}   props.settings     – ustawienia aplikacji
+//   @param {Function} props.onOpenTasks  – callback otwierający TaskPanel
 export default function ToolsContainer({ activeItem, settings, onOpenTasks }) {
-  useEffect(() => { logDebug('ui', 'ToolsContainer mounted'); }, []);
+  const { t } = useContext(TranslationContext);
+  useEffect(() => { logDebug('ui', 'ToolsContainer mounted', activeItem?.id); }, [activeItem?.id]);
 
-  // ─── wrap() – zawija komponent w Suspense z fallback Spinner
-  //   @param {React.ComponentType} Component – komponent do leniwego ładowania
-  //   @param {Object} props – dodatkowe propsy przekazane do komponentu
-  //   @returns {JSX.Element} – komponent zawijany w Suspense
-  const wrap = (Component, props = {}) => (
+  if (!activeItem?.id) return null;
+
+  const entry = getToolComponent(activeItem.id);
+
+  if (!entry) {
+    logWarn('ui', `ToolsContainer: brak wpisu w rejestrze dla id="${activeItem.id}"`);
+    return (
+      <div style={{ padding: 32, color: 'var(--text-muted)' }}>
+        {t('tools.unknown_tool')}: {activeItem.id}
+      </div>
+    );
+  }
+
+  if (entry.disabled) {
+    logWarn('ui', `ToolsContainer: narzędzie "${activeItem.id}" wyłączone (featureFlag=${entry.featureFlag})`);
+    return (
+      <div style={{ padding: 32, color: 'var(--text-muted)' }}>
+        {t('tools.disabled')}
+      </div>
+    );
+  }
+
+  // ─── Buduj propsy przez getProps z kontekstem (activeItem, settings, callbacks)
+  const Component = entry.component;
+  const extraProps = entry.getProps ? entry.getProps({ activeItem, settings, onOpenTasks }) : {};
+
+  return (
     <Suspense fallback={<Spinner />}>
-      <Component {...props} />
+      <Component {...extraProps} />
     </Suspense>
   );
-
-  switch (activeItem.id) {
-    case 'notepad':
-      return wrap(Notepad);
-
-    case 'projectManager':
-      return wrap(ProjectManager, { onOpenTasks });
-
-    case 'removebg':
-      // ─── Guard feature flag: removeBg
-      if (!isFeatureEnabled('removeBg')) {
-        logWarn('ui', 'ToolsContainer: removeBg disabled via feature flag');
-        return <div style={{ padding: 32 }}>Narzędzie wyłączone.</div>;
-      }
-      return wrap(RemoveBgTool, { apiKey: settings.removeBgApiKey, plan: settings.removeBgPlan || 'free' });
-
-    case 'stringCombiner':
-      // ─── Guard feature flag: stringCombiner
-      if (!isFeatureEnabled('stringCombiner')) {
-        logWarn('ui', 'ToolsContainer: stringCombiner disabled via feature flag');
-        return <div style={{ padding: 32 }}>Narzędzie wyłączone.</div>;
-      }
-      return wrap(StringCombiner);
-
-    case 'terminal':
-      return wrap(Terminal, { cwd: activeItem.cwd });
-
-    case 'appLibrary':
-      // ─── Guard feature flag: appLibrary
-      if (!isFeatureEnabled('appLibrary')) {
-        logWarn('ui', 'ToolsContainer: appLibrary disabled via feature flag');
-        return <div style={{ padding: 32 }}>Biblioteka aplikacji wyłączona.</div>;
-      }
-      return wrap(AppLibraryBrowser);
-
-    default:
-      logWarn('ui', `ToolsContainer: unknown tool id "${activeItem.id}"`);
-      return <div style={{ padding: 32 }}>Nieznane narzędzie: {activeItem.id}</div>;
-  }
 }

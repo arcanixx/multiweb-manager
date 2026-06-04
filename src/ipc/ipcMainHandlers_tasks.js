@@ -9,6 +9,7 @@
 // =============================================================================
 
 import { ipcMain } from 'electron';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 import {
   loadTasksSections,
   loadTasksByGroup,
@@ -22,7 +23,7 @@ import { logError, logInfo } from '../utils/logger.js';
 
 // ─── tasks:getAll – płaska lista zadań dla grupy lub wszystkich
 //   payload opcjonalny: string = taskGroupId → płaska lista dla grupy; brak = wszystkie
-ipcMain.handle('tasks:getAll', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TASKS.GET_ALL, async (_, payload) => {
   try {
     if (payload !== undefined && typeof payload !== 'string') throw new Error('INVALID_PAYLOAD');
 
@@ -40,7 +41,7 @@ ipcMain.handle('tasks:getAll', async (_, payload) => {
 });
 
 // ─── tasks:getAllGrouped – dla AggregatedTasks: { taskGroupId: { active, backlog, done } }
-ipcMain.handle('tasks:getAllGrouped', async () => {
+ipcMain.handle(IPC_CHANNELS.TASKS.GET_ALL_GROUPED, async () => {
   try {
     return { ok: true, data: loadAllTasksGrouped() };
   } catch (err) {
@@ -52,7 +53,7 @@ ipcMain.handle('tasks:getAllGrouped', async () => {
 // ─── tasks:add – dodaje nowe zadanie do grupy
 //   payload: { taskGroupId, name, status?, section?, priority?, desc?, comment?, version?, pinned? }
 //   section jest WYZNACZANA ze status (nie podawana jawnie)
-ipcMain.handle('tasks:add', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TASKS.ADD, async (_, payload) => {
   try {
     if (!payload || !payload.taskGroupId) throw new Error('TASKS_GROUP_ID_REQUIRED');
     if (!payload.name || !String(payload.name).trim()) throw new Error('TASKS_NAME_REQUIRED');
@@ -83,7 +84,7 @@ ipcMain.handle('tasks:add', async (_, payload) => {
 // ─── tasks:update – aktualizuje zadanie (patch)
 //   payload: { id, patch: { ...fields } }
 //   Zmiana status → automatycznie przenosi między sekcjami
-ipcMain.handle('tasks:update', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TASKS.UPDATE, async (_, payload) => {
   try {
     if (!payload?.id || !payload?.patch) throw new Error('TASKS_UPDATE_INVALID_PAYLOAD');
     const { id, patch } = payload;
@@ -117,7 +118,7 @@ ipcMain.handle('tasks:update', async (_, payload) => {
 
 // ─── tasks:delete – usuwa zadanie
 //   payload: { id }
-ipcMain.handle('tasks:delete', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TASKS.DELETE, async (_, payload) => {
   try {
     if (!payload?.id) throw new Error('TASKS_DELETE_ID_REQUIRED');
     const { id } = payload;
@@ -142,7 +143,7 @@ ipcMain.handle('tasks:delete', async (_, payload) => {
 
 // ─── tasks:saveSections – bulk save (legacy / backup restore)
 //   payload: { taskGroupId, sections: { active, backlog, done } }
-ipcMain.handle('tasks:saveSections', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TASKS.SAVE_SECTIONS, async (_, payload) => {
   try {
     if (!payload?.taskGroupId || !payload?.sections) throw new Error('INVALID_PAYLOAD');
     const { taskGroupId, sections } = payload;

@@ -549,7 +549,9 @@
     "testString": "Test string",
     "enterUrl": "Enter URL",
     "bodyPlaceholder": "Request body...",
-    "invalidHeaders": "Invalid headers"
+    "invalidHeaders": "Invalid headers",
+    "unknown_tool": "Unknown tool",
+    "disabled": "Tool disabled"
   },
   "hotkeys": {
     "title": "Keyboard Shortcuts",

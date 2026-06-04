@@ -9,6 +9,7 @@
 // =============================================================================
 
 import { ipcMain } from 'electron';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 import {
   loadTaskGroups,
   createTaskGroup,
@@ -20,7 +21,7 @@ import {
 import { logError, logInfo } from '../utils/logger.js';
 
 // ─── taskGroups:getAll – wszystkie grupy zadań
-ipcMain.handle('taskGroups:getAll', async () => {
+ipcMain.handle(IPC_CHANNELS.TASK_GROUPS.GET_ALL, async () => {
   try {
     return { ok: true, data: loadTaskGroups() };
   } catch (err) {
@@ -31,7 +32,7 @@ ipcMain.handle('taskGroups:getAll', async () => {
 
 // ─── taskGroups:create – tworzy nową grupę zadań
 //   payload: { id?, name, profileIds?: string[] }
-ipcMain.handle('taskGroups:create', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TASK_GROUPS.CREATE, async (_, payload) => {
   try {
     if (!payload || !payload.name) throw new Error('GROUP_NAME_REQUIRED');
     const group = {
@@ -51,7 +52,7 @@ ipcMain.handle('taskGroups:create', async (_, payload) => {
 
 // ─── taskGroups:update – aktualizuje grupę (patch)
 //   payload: { id, patch: { name?, profileIds? } }
-ipcMain.handle('taskGroups:update', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TASK_GROUPS.UPDATE, async (_, payload) => {
   try {
     if (!payload?.id || !payload?.patch) throw new Error('GROUP_UPDATE_INVALID_PAYLOAD');
     const updated = updateTaskGroup(payload.id, payload.patch);
@@ -65,7 +66,7 @@ ipcMain.handle('taskGroups:update', async (_, payload) => {
 
 // ─── taskGroups:delete – usuwa grupę (zadania pozostają w tasksStore)
 //   payload: { id }
-ipcMain.handle('taskGroups:delete', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TASK_GROUPS.DELETE, async (_, payload) => {
   try {
     if (!payload?.id) throw new Error('GROUP_ID_REQUIRED');
     const updated = deleteTaskGroup(payload.id);
@@ -79,7 +80,7 @@ ipcMain.handle('taskGroups:delete', async (_, payload) => {
 
 // ─── taskGroups:getForProfile – zwraca grupę dla profilu lub null
 //   payload: { profileId }
-ipcMain.handle('taskGroups:getForProfile', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TASK_GROUPS.GET_FOR_PROFILE, async (_, payload) => {
   try {
     if (!payload?.profileId) throw new Error('PROFILE_ID_REQUIRED');
     const group = getGroupForProfile(payload.profileId);
@@ -93,7 +94,7 @@ ipcMain.handle('taskGroups:getForProfile', async (_, payload) => {
 // ─── taskGroups:ensureForProfile – zwraca lub tworzy domyślną grupę 1:1 dla profilu
 //   payload: { profileId, profileName }
 //   Wywoływane automatycznie przy otwarciu TaskPanel
-ipcMain.handle('taskGroups:ensureForProfile', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TASK_GROUPS.ENSURE_FOR_PROFILE, async (_, payload) => {
   try {
     if (!payload?.profileId) throw new Error('PROFILE_ID_REQUIRED');
     const group = ensureDefaultGroup({
@@ -111,7 +112,7 @@ ipcMain.handle('taskGroups:ensureForProfile', async (_, payload) => {
 // ─── taskGroups:assignProfile – dodaje profil do istniejącej grupy
 //   payload: { groupId, profileId }
 //   Przy przypisaniu profil jest usuwany z poprzedniej grupy (jeśli miał)
-ipcMain.handle('taskGroups:assignProfile', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TASK_GROUPS.ASSIGN_PROFILE, async (_, payload) => {
   try {
     if (!payload?.groupId || !payload?.profileId) throw new Error('GROUP_ID_AND_PROFILE_ID_REQUIRED');
     const { groupId, profileId } = payload;
@@ -141,7 +142,7 @@ ipcMain.handle('taskGroups:assignProfile', async (_, payload) => {
 
 // ─── taskGroups:unassignProfile – odłącza profil od grupy (wraca do braku grupy)
 //   payload: { profileId }
-ipcMain.handle('taskGroups:unassignProfile', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TASK_GROUPS.UNASSIGN_PROFILE, async (_, payload) => {
   try {
     if (!payload?.profileId) throw new Error('PROFILE_ID_REQUIRED');
     const { profileId } = payload;

@@ -37,11 +37,31 @@ export const IPC_CHANNELS = {
 
   // ─── Tasks ─────────────────────────────────────────────────────
   TASKS: {
-    GET_ALL:       'tasks:getAll',
-    ADD:           'tasks:add',
-    UPDATE:        'tasks:update',
-    DELETE:        'tasks:delete',
-    SAVE_SECTIONS: 'tasks:saveSections',
+    GET_ALL:         'tasks:getAll',
+    GET_ALL_GROUPED: 'tasks:getAllGrouped',
+    ADD:             'tasks:add',
+    UPDATE:          'tasks:update',
+    DELETE:          'tasks:delete',
+    SAVE_SECTIONS:   'tasks:saveSections',
+  },
+
+  // ─── Task Groups ───────────────────────────────────────────────
+  TASK_GROUPS: {
+    GET_ALL:            'taskGroups:getAll',
+    CREATE:             'taskGroups:create',
+    UPDATE:             'taskGroups:update',
+    DELETE:             'taskGroups:delete',
+    GET_FOR_PROFILE:    'taskGroups:getForProfile',
+    ENSURE_FOR_PROFILE: 'taskGroups:ensureForProfile',
+    ASSIGN_PROFILE:     'taskGroups:assignProfile',
+    UNASSIGN_PROFILE:   'taskGroups:unassignProfile',
+  },
+
+  // ─── Aggregated Tasks ──────────────────────────────────────────
+  AGGREGATED_TASKS: {
+    GET_ALL: 'aggregatedTasks:getAll',
+    FILTER:  'aggregatedTasks:filter',
+    SORT:    'aggregatedTasks:sort',
   },
 
   // ─── notepad ─────────────────────────────────────────────────────

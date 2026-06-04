@@ -408,7 +408,8 @@
     "saved": "Zapisano",
     "error": "Błąd: {message}",
     "coming_soon": "Wkrótce dostępne! ❤️"
-  },  "test": {
+  },
+  "test": {
     "orchestrationFailed": "Orkiestracja testów nie powiodła się",
     "pass": "Passed",
     "fail": "Failed",
@@ -548,7 +549,9 @@
     "testString": "Testowy ciąg znaków",
     "enterUrl": "Wprowadź URL",
     "bodyPlaceholder": "Treść żądania...",
-    "invalidHeaders": "Nieprawidłowe nagłówki"
+    "invalidHeaders": "Nieprawidłowe nagłówki",
+    "unknown_tool": "Nieznane narzędzie",
+    "disabled": "Narzędzie wyłączone"
   },
   "hotkeys": {
     "title": "Skróty klawiszowe",

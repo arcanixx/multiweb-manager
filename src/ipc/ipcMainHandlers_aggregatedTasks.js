@@ -9,6 +9,7 @@
 // =============================================================================
 
 import { ipcMain } from 'electron';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 import { loadTasks } from '../stores/tasksStore.js';
 import { loadTaskGroups } from '../stores/taskGroupsStore.js';
 import { logError } from '../utils/logger.js';
@@ -25,7 +26,7 @@ function enrich(tasks, groups) {
 }
 
 // ─── aggregatedTasks:getAll – wszystkie zadania z groupName
-ipcMain.handle('aggregatedTasks:getAll', async () => {
+ipcMain.handle(IPC_CHANNELS.AGGREGATED_TASKS.GET_ALL, async () => {
   try {
     const tasks  = loadTasks();
     const groups = loadTaskGroups();
@@ -38,7 +39,7 @@ ipcMain.handle('aggregatedTasks:getAll', async () => {
 
 // ─── aggregatedTasks:filter – filtruje po status i/lub priority
 //   payload: { status?: string, priority?: string, section?: string }
-ipcMain.handle('aggregatedTasks:filter', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.AGGREGATED_TASKS.FILTER, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object') throw new Error('INVALID_PAYLOAD');
     const { status, priority, section } = payload;
@@ -56,7 +57,7 @@ ipcMain.handle('aggregatedTasks:filter', async (_, payload) => {
 
 // ─── aggregatedTasks:sort – sortuje po priority lub date
 //   payload: { by: 'priority' | 'date' | 'status' }
-ipcMain.handle('aggregatedTasks:sort', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.AGGREGATED_TASKS.SORT, async (_, payload) => {
   try {
     if (!payload?.by) throw new Error('INVALID_PAYLOAD');
     const groups   = loadTaskGroups();
