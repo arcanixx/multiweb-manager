@@ -39,20 +39,37 @@ contextBridge.exposeInMainWorld('electronAPI', {
   }),
   
   // ─── Tasks ────────────────────────────────────────────────────
-  // ─── getTasks(project) – Pobiera zadania dla wybranego projektu
-  getTasks:    (project)       => ipcRenderer.invoke('get-tasks', project),
-  // ─── saveTasks(project, data) – Zapisuje stan zadań w projekcie
-  saveTasks:   (project, data) => ipcRenderer.invoke('save-tasks', project, data),
-  // ─── getAllTasks() – Pobiera wszystkie zadania ze wszystkich projektów
-  getAllTasks:  ()              => ipcRenderer.invoke('get-all-tasks'),
+  // ─── getTasks(taskGroupId?) – Pobiera płaską listę zadań dla grupy lub wszystkich
+  getTasks:         (taskGroupId) => ipcRenderer.invoke('tasks:getAll', taskGroupId),
+  // ─── getAllTasks() – Pobiera zadania pogrupowane per taskGroupId (dla AggregatedTasks)
+  getAllTasks:       ()            => ipcRenderer.invoke('tasks:getAllGrouped'),
+
+  // ─── TaskGroups ───────────────────────────────────────────────
+  // ─── getTaskGroups() – Pobiera wszystkie grupy zadań
+  getTaskGroups:        ()                    => ipcRenderer.invoke('taskGroups:getAll'),
+  // ─── createTaskGroup(data) – Tworzy nową grupę zadań
+  createTaskGroup:      (data)               => ipcRenderer.invoke('taskGroups:create', data),
+  // ─── updateTaskGroup(id, patch) – Aktualizuje grupę
+  updateTaskGroup:      (id, patch)          => ipcRenderer.invoke('taskGroups:update', { id, patch }),
+  // ─── deleteTaskGroup(id) – Usuwa grupę
+  deleteTaskGroup:      (id)                 => ipcRenderer.invoke('taskGroups:delete', { id }),
+  // ─── getTaskGroupForProfile(profileId) – Zwraca grupę dla profilu lub null
+  getTaskGroupForProfile: (profileId)        => ipcRenderer.invoke('taskGroups:getForProfile', { profileId }),
+  // ─── ensureTaskGroupForProfile(profileId, profileName) – Zwraca lub tworzy domyślną grupę 1:1
+  ensureTaskGroupForProfile: (profileId, profileName) => ipcRenderer.invoke('taskGroups:ensureForProfile', { profileId, profileName }),
+  // ─── assignProfileToTaskGroup(groupId, profileId) – Przypisuje profil do grupy
+  assignProfileToTaskGroup: (groupId, profileId)      => ipcRenderer.invoke('taskGroups:assignProfile', { groupId, profileId }),
+  // ─── unassignProfileFromTaskGroup(profileId) – Odłącza profil od grupy
+  unassignProfileFromTaskGroup: (profileId)           => ipcRenderer.invoke('taskGroups:unassignProfile', { profileId }),
+
   
   // ─── History ──────────────────────────────────────────────────
   // ─── getHistory() – Pobiera historię aktywności
-  getHistory:   ()      => ipcRenderer.invoke('get-history'),
+  getHistory:   ()      => ipcRenderer.invoke('history:getAll'),
   // ─── addHistory(entry) – Dodaje nowy wpis do historii
-  addHistory:   (entry) => ipcRenderer.invoke('add-history', entry),
+  addHistory:   (entry) => ipcRenderer.invoke('history:add', entry),
   // ─── clearHistory() – Czyści historię aktywności
-  clearHistory: ()      => ipcRenderer.invoke('clear-history'),
+  clearHistory: ()      => ipcRenderer.invoke('history:clear'),
   
   // ─── WebView ──────────────────────────────────────────────────
   // ─── clearProfileCache(id) – Czyści pamięć podręczną (cache) dla profilu
@@ -73,13 +90,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
   
   // ─── Terminal ─────────────────────────────────────────────────
   // ─── createTerminal(cwd) – Tworzy nową sesję terminala w podanej ścieżce
-  createTerminal: (cwd)          => ipcRenderer.invoke('create-terminal', cwd),
+  createTerminal: (cwd)              => ipcRenderer.invoke('terminal:create', { cwd }),
   // ─── terminalWrite(id, data) – Przesyła dane do wejścia terminala
-  terminalWrite:  (id, data)     => ipcRenderer.invoke('terminal-write', id, data),
+  terminalWrite:  (id, data)         => ipcRenderer.invoke('terminal:write', { terminalId: id, data }),
   // ─── terminalResize(id, cols, rows) – Zmienia wymiary okna terminala
-  terminalResize: (id, cols, rows) => ipcRenderer.invoke('terminal-resize', id, cols, rows),
+  terminalResize: (id, cols, rows)   => ipcRenderer.invoke('terminal:resize', { terminalId: id, cols, rows }),
   // ─── killTerminal(id) – Zamyka proces terminala
-  killTerminal:   (id)           => ipcRenderer.invoke('kill-terminal', id),
+  killTerminal:   (id)               => ipcRenderer.invoke('terminal:kill', id),
   
   // ─── onTerminalData(callback) – Rejestruje słuchacz strumienia danych z terminala
   onTerminalData: (callback) => {
@@ -118,24 +135,36 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 
   // ─── LogWriter ────────────────────────────────────────────────
-  // ─── appendLogFile(payload) – Dopisuje dane do pliku logów aplikacji
+  // ─── appendLogFile(payload) – Dopisuje dane do pliku logów aplikacji [legacy — użyj logsAppend]
   appendLogFile: (payload) => ipcRenderer.invoke('append-log-file', payload),
-  // ─── getLogsFile() – Odczytuje zawartość pliku logów
+  // ─── getLogsFile() – Odczytuje zawartość pliku logów [legacy — użyj logsGet]
   getLogsFile: () => ipcRenderer.invoke('get-logs-file'),
-  // ─── clearLogsFile() – Usuwa zawartość pliku logów
+  // ─── clearLogsFile() – Usuwa zawartość pliku logów [legacy — użyj logsClear]
   clearLogsFile: () => ipcRenderer.invoke('clear-logs-file'),
+  // ─── logsAppend(payload) – nowa nazwa (Sprint 2): logs:append
+  logsAppend: (payload) => ipcRenderer.invoke('logs:append', payload),
+  // ─── logsGet() – nowa nazwa (Sprint 2): logs:get
+  logsGet: () => ipcRenderer.invoke('logs:get'),
+  // ─── logsClear() – nowa nazwa (Sprint 2): logs:clear
+  logsClear: () => ipcRenderer.invoke('logs:clear'),
 
   // ─── Cookie Grabber ───────────────────────────────────────────
   // ─── getCookies(partition) – Pobiera ciasteczka dla wybranej partycji WebView
   getCookies: (partition) => ipcRenderer.invoke('tools:getCookies', partition),
 
   // ─── Single App Mode, Screenshot, Resource Monitor ───────────
-  // ─── openSingleWindow(payload) – Otwiera stronę w osobnym oknie aplikacji
+  // ─── openSingleWindow(payload) – Otwiera stronę w osobnym oknie [legacy — użyj webviewOpenSingle]
   openSingleWindow: (payload) => ipcRenderer.invoke('open-single-window', payload),
-  // ─── captureWebView(tabId) – Przechwytuje obraz widoku WebView
+  // ─── captureWebView(tabId) – Przechwytuje obraz widoku WebView [legacy — użyj webviewCapture]
   captureWebView: (tabId) => ipcRenderer.invoke('capture-webview', tabId),
-  // ─── getWebViewResourceInfo(tabId) – Pobiera informacje o zużyciu RAM/CPU przez WebView
+  // ─── getWebViewResourceInfo(tabId) – Pobiera informacje o zużyciu RAM/CPU [legacy — użyj webviewGetResource]
   getWebViewResourceInfo: (tabId) => ipcRenderer.invoke('get-webview-resource', tabId),
+  // ─── webviewOpenSingle(payload) – nowa nazwa (Sprint 2): webview:openSingle
+  webviewOpenSingle: (payload) => ipcRenderer.invoke('webview:openSingle', payload),
+  // ─── webviewCapture(tabId) – nowa nazwa (Sprint 2): webview:capture
+  webviewCapture: (tabId) => ipcRenderer.invoke('webview:capture', tabId),
+  // ─── webviewGetResource(tabId) – nowa nazwa (Sprint 2): webview:getResource
+  webviewGetResource: (tabId) => ipcRenderer.invoke('webview:getResource', tabId),
 
   // ─── Hotkeys ──────────────────────────────────────────────────
   // ─── getHotkeys() – Pobiera listę zdefiniowanych skrótów klawiszowych
@@ -187,3 +216,4 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // ─── invoke(channel, ...args) – Wykonuje dowolne wywołanie kanału IPC
   invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args)
 });
+

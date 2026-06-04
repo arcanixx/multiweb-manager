@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: settingsStore.js
-// PATH: src/core/settingsStore.js
+// PATH: src/stores/settingsStore.js
 // VERSION: 0.0.3
 // PURPOSE: Ustawienia użytkownika — merge partial updates, reset do domyślnych.
 // FUNCTIONS: loadSettings, saveSettings, mergeSettings, updateSettings, resetSettings
@@ -31,6 +31,15 @@ const SETTINGS_FILE = () => {
 
 // ─── baseDefaults() – ładuje domyślne ustawienia z pliku lub używa DEFAULT_SETTINGS
 //   @returns {Object} – obiekt z domyślnymi ustawieniami
+//
+//   ARCHITEKTURA DOMYŚLNYCH USTAWIEŃ — dwa źródła, celowy podział:
+//   1. DEFAULT_SETTINGS (src/config.js)      — stałe techniczne (timeouty, flagi, prefixy)
+//   2. defaultSettings.json (src/data/)      — wartości UI (theme, language, kategorie, animacje)
+//
+//   Scalanie: { ...DEFAULT_SETTINGS, ...defaultSettings.json.data }
+//   → plik JSON NADPISUJE wartości z config.js jeśli klucz istnieje w obu.
+//   → klucze obecne tylko w JSON (np. showTooltips, enableAnimations) są dodawane.
+//   → NIE ŁĄCZYĆ tych dwóch źródeł — config.js to kod, JSON to dane konfiguracyjne deploymentu.
 function baseDefaults() {
   let extra = {};
   try {

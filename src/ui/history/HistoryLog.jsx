@@ -2,14 +2,14 @@
 // FILE: HistoryLog.jsx
 // PATH: src/ui/history/HistoryLog.jsx
 // VERSION: 0.0.3
-// PURPOSE: Historia przeglądania – lista ostatnio odwiedzonych profili
+// PURPOSE: Historia przeglądania – lista ostatnio odwiedzonych profili, komunikacja przez hook IPC useHistoryLog.
 // FUNCTIONS: HistoryLog
-// DEPENDS ON: react, historyStore.js, translations.js, loggerRenderer.js, icons.js, ConfirmModal.jsx, HistoryFilters.jsx, HistoryList.jsx
+// DEPENDS ON: react, useHistoryLog.js, translations.js, loggerRenderer.js, icons.js, ConfirmModal.jsx, HistoryFilters.jsx, HistoryList.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useState, useEffect, useContext } from 'react';
-import { loadHistory, clearHistory, addHistoryEntry } from '../../core/historyStore.js';
+import React, { useState, useContext } from 'react';
+import { useHistoryLog } from '../../hooks/useHistoryLog.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { logInfo, logError } from '../../utils/loggerRenderer.js';
 import { ICONS } from '../../utils/icons.js';
@@ -19,46 +19,38 @@ import HistoryList from './HistoryList.jsx';
 
 export default function HistoryLog() {
   const { t } = useContext(TranslationContext);
-  const [history, setHistory] = useState([]);
-  const [filteredHistory, setFilteredHistory] = useState([]);
+
+  // ─── hook IPC – komunikacja z backendem przez invoke()
+  const { entries, loading, reloadHistory } = useHistoryLog();
+
+  // ─── stan lokalny – tylko UI
+  const [filteredHistory, setFilteredHistory] = useState(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  // Wyświetlamy przefiltrowane lub wszystkie wpisy
+  const displayedHistory = filteredHistory ?? entries;
 
-  // ─── loadData() – Pobiera wpisy historii za pomocą funkcji loadHistory(), aktualizuje stan lokalny oraz obsługuje flagę ładowania (loading)
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const historyData = await loadHistory();
-      setHistory(historyData);
-      setFilteredHistory(historyData);
-      logInfo('ui', 'HistoryLog: loaded history');
-    } catch (error) {
-      logError('ui', 'HistoryLog: failed to load history', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ─── handleClearHistory() – Obsługuje proces czyszczenia całej historii przeglądania użytkownika, resetuje stany filtrowania oraz zamyka modal potwierdzający
+  // ─── handleClearHistory() – czyści historię przez IPC
   const handleClearHistory = async () => {
     try {
-      await clearHistory();
-      setHistory([]);
-      setFilteredHistory([]);
-      logInfo('ui', 'HistoryLog: cleared history');
+      const res = await window.electronAPI.clearHistory();
+      if (res?.ok) {
+        setFilteredHistory(null);
+        await reloadHistory();
+        logInfo('ui', 'HistoryLog: cleared history');
+      } else {
+        logError('ui', 'HistoryLog: clear failed', res?.error);
+      }
     } catch (error) {
-      logError('ui', 'HistoryLog: failed to clear history', error);
+      logError('ui', 'HistoryLog: handleClearHistory exception', error.message);
+    } finally {
+      setShowClearConfirm(false);
     }
-    setShowClearConfirm(false);
   };
 
-  // ─── handleFilter() – Filtruje dane historii na podstawie przekazanych kryteriów wyszukiwania (nazwa profilu lub adres URL) i aktualizuje stan przefiltrowanej historii
+  // ─── handleFilter() – filtruje lokalnie wpisy historii po kryteriach wyszukiwania
   const handleFilter = (filters) => {
-    let filtered = [...history];
+    let filtered = [...entries];
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
       filtered = filtered.filter(item =>
@@ -85,7 +77,7 @@ export default function HistoryLog() {
 
       <HistoryFilters onFilter={handleFilter} />
 
-      <HistoryList history={filteredHistory} />
+      <HistoryList history={displayedHistory} />
 
       <ConfirmModal
         isOpen={showClearConfirm}

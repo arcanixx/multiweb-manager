@@ -1934,4 +1934,247 @@
 
 ---
 
+### [Splash Screen – ekran ładowania przy starcie] :
+- **ID:** UIUX_REQ-021
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Ekran ładowania (`SplashScreen.jsx`) wyświetlany przy każdym starcie aplikacji przez ~1.8s. Zawiera: logo (PNG z `assets/splash_logo.png` lub SVG fallback), nazwę aplikacji (`app.name`), tagline (`splash.tagline`), animowany pasek postępu. Fade-out 300ms przed ukryciem. Callback `onFinished` po zakończeniu. Klucze i18n: `splash.loading`, `splash.tagline`.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Zaimplementowane w `src/ui/system/SplashScreen.jsx`. SVG fallback w `assets/splash_logo.svg`. Docelowo zastąpić PNG w `assets/splash_logo.png`. Podpięte w `App.jsx` (wyświetlane przed onboardingiem i głównym layoutem).
+
+---
+
+### [Onboarding Screen – kreator pierwszego uruchomienia] :
+- **ID:** UIUX_REQ-022
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** 5-krokowy wizard onboardingu wyświetlany gdy `settings.firstRun !== false`. Kroki: (1) Motyw (dark/light/system – zmiana live), (2) Język (PL/EN – zmiana live), (3) Prywatność + Disclaimer (checkbox akceptacji wymagany do przejścia dalej, toggle logów), (4) Szybki start (wybór aplikacji z `app-library.json` – max 4 per kategoria, pierwsze 4 kategorie), (5) Konto (placeholder – coming soon). Po zakończeniu: zapis do `settings` (`theme`, `language`, `logsEnabled`, `firstRun: false`), utworzenie profili z wybranych aplikacji. Przycisk „Pomiń" w krokach 4 i 5. Klucze i18n: sekcja `onboarding.*`.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Zaimplementowane w `src/ui/system/OnboardingScreen.jsx`. Podpięte w `App.jsx`. Grafika: SVG fallback `assets/splash_logo.svg` – zastąpić PNG. Krok konta jest placeholderem (przyciski disabled) – aktywować gdy będzie auth. Testowanie: wyczyść `settings.firstRun` lub ustaw `firstRun: true` i uruchom ponownie.
+
+---
+
+### [Onboarding – walidacja i testy] :
+- **ID:** TEST_REQ-012
+- **Sekcja:** TEST
+- **Opis:** Testy onboardingu: (1) `firstRun=true` → pokazuje OnboardingScreen zamiast MainLayout, (2) krok Privacy bez zaznaczenia checkboxa → przycisk Dalej disabled, (3) wybór aplikacji → profile tworzone po `onFinish`, (4) `firstRun=false` po finish → przy kolejnym uruchomieniu onboarding nie pokazuje się, (5) Splash zawsze widoczny przez ~1.8s niezależnie od stanu firstRun.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Manualnie: ustaw `firstRun: true` w electron-store i uruchom. Automatycznie: mock `getSettings` z `firstRun: true`.
+
+---
+
 *Koniec dokumentu wymagań — wersja 0.0.3*
+---
+
+## 🗂️ TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+
+> Wymagania naprawcze i architektoniczne dla systemu zadań (TaskPanel + AggregatedTasks). Priorytet: unifikacja modelu danych, spójność warstw, przyszłościowa rozszerzalność (mini-JIRA z reminderem).
+
+---
+
+### [Unifikacja Modelu Danych Zadania] :
+
+- **ID:** TASKS_ARCH-001
+- **Sekcja:** TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+- **Opis:** Każde zadanie musi mieć zunifikowany model: `{ id, name, desc, comment, priority, section, version, pinned, projectId, createdAt }`. Pola `title`/`description`/`status` (z `TASK_STATUS`) nie są używane w aktywnym UI i muszą zostać usunięte lub zmapowane. `section` przyjmuje wartości: `active | backlog | done`. `priority` przyjmuje: `A | B | C | D | E`. Pole `projectId` to identyfikator projektu (string lub number — musi być spójny z `projects.id`). Pole `name` jest wymagane (min. 1 znak, max. 200).
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+- **Komentarz:** Wykryto dwa równoległe modele: `TaskModal` (aktywny UI) używa `name/desc/comment`, `TaskEditor`/`TaskDetails`/`TaskList` używają `title/description/status`. Scalono w jednym modelu — canonical to `name/desc/comment/section`. `TaskEditor` i `TaskList` — martwy kod, nie podłączony do `TaskPanel` — do usunięcia lub integracji w kolejnym sprincie.
+
+---
+
+### [Identyfikator Projektu w Zadaniach] :
+
+- **ID:** TASKS_ARCH-002
+- **Sekcja:** TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+- **Opis:** `projectId` w zadaniu musi być spójny z `id` projektu z `projectsStore`. `tasksStore` zapisuje pliki po `projectId` (jako nazwa pliku). Przy tworzeniu projektu w `ProjectManager`: `id: Date.now().toString()` (string) lub UUID. `TaskPanel` przekazuje `projectId` jako prop — musi to być to samo `id` co w `projects[]`. Handler `tasks:getAll` bez payloadu zwraca płaską listę z polem `projectId` zmapowanym z `projectName` dla kompatybilności.
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+- **Komentarz:** Wykryto rozbieżność: `ProjectManager` tworzy projekty z `id: Date.now()` (number), `tasksStore` używa `projectName` (string) jako klucza pliku. Do ujednolicenia przy implementacji pełnego CRUD projektów. Tymczasowo: `projectId = projectName` (nazwa projektu jako ID).
+
+---
+
+### [Separacja Formatów: TaskPanel vs AggregatedTasks] :
+
+- **ID:** TASKS_ARCH-003
+- **Sekcja:** TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+- **Opis:** Dwa widoki mają różne potrzeby formatów danych: `TaskPanel` potrzebuje płaskiej listy zadań dla projektu (tablica `Task[]`), `AggregatedTasks` potrzebuje zgrupowanego obiektu `{ projectName: { active, backlog, done } }`. Kanały IPC: `tasks:getAll` (z/bez payloadu) → płaska lista; `tasks:getAllGrouped` → format per projekt dla AggregatedTasks. `preload.cjs`: `getAllTasks()` → `tasks:getAllGrouped`, `getTasks(project)` → `tasks:getAll`.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Naprawione: dodano `tasks:getAllGrouped` handler, przepięto `getAllTasks()` w preload. Dwa formaty są potrzebne — nie ma sensu płaskiej listy w AggregatedTasks (potrzebuje pogrupowania per projekt).
+
+---
+
+### [Spójność Przepływu CRUD Zadań] :
+
+- **ID:** TASKS_ARCH-004
+- **Sekcja:** TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+- **Opis:** Pełny przepływ CRUD przez IPC: `TaskPanel.jsx` → `useTasks.js` → `invoke('tasks:add/update/delete')` → `ipcMainHandlers_tasks.js` → `tasksStore.js`. Brakujące handlery IPC: `tasks:add`, `tasks:update`, `tasks:delete` — dodane. Każda operacja mutuje dane po stronie `tasksStore` i zwraca `{ ok, data?, error? }`. Hook `useTasks` stosuje optimistic update z rollbackiem przy błędzie. Po operacji `update` ze zmianą sekcji — zadanie musi być przeniesione między tablicami w pliku JSON projektu.
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+- **Komentarz:** Handlery `tasks:add/update/delete` dodane w poprzednim commicie. `tasks:update` obsługuje zmianę sekcji (przeniesienie między active/backlog/done). `tasks:delete` usuwa z dowolnej sekcji szukając po `projectId || projectName`.
+
+---
+
+### [Martwy Kod — TaskEditor i TaskList] :
+
+- **ID:** TASKS_ARCH-005
+- **Sekcja:** TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+- **Opis:** `TaskEditor.jsx` i `TaskList.jsx` nie są importowane ani używane przez `TaskPanel.jsx`. `TaskEditor` wywołuje `window.showToast()` — nieistniejąca funkcja w preload/renderer. `TaskList` używa `TASK_STATUS` (todo/in_progress/blocked) — model niezgodny z aktywnym UI. Do decyzji: usunięcie lub integracja jako alternatywny widok listy (zastępstwo `TaskSectionList`). `TASK_STATUS.BLOCKED` nie jest używany nigdzie indziej.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Nie usuwać przed decyzją produktową. Na razie zostawić jako `// TODO: rozważyć integrację lub usunięcie`. Jeśli `TaskList` ma zastąpić `TaskSectionList` — trzeba zmapować sekcje (active/backlog/done) na statusy (todo/in_progress/done) lub odwrotnie.
+
+---
+
+### [Naprawione: Błędy Krytyczne TaskPanel] :
+
+- **ID:** TASKS_ARCH-006
+- **Sekcja:** TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+- **Opis:** Lista naprawionych błędów krytycznych (sprint 0): (1) Błędne ścieżki importów w `src/ui/taskpanel/` — wszystkie `../utils/` zamienione na `../../utils/` (crashowało bundler). (2) `onDelete` w `TaskPanel.handlers` — `TaskItem` wysyłał `id` (string), handler oczekiwał obiektu `task` — naprawione przez lookup w `sections`. (3) `tasks:getAll` bez payloadu zwracał obiekt pogrupowany zamiast tablicy — naprawione (płaska lista). (4) `AggregatedTasks` używał `getAllTasks()` → format pogrupowany wymagany — dodano `tasks:getAllGrouped` i przepięto preload. (5) Syntax error w `ToolsContainer.jsx`: `props = {>` → `props = {}`.
+- **Status:** DONE
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+- **Komentarz:** Wszystkie błędy z tej listy zostały naprawione w commicie fix(tasks) na branchu UAT-v0.0.4.
+
+
+---
+
+## 🗂️ TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+
+> Wymagania dla systemu przypisania profili WebView do grup zadań (TaskGroup). Jeden TaskPanel = jedna TaskGroup. Profil domyślnie → TaskGroup 1:1. Opcjonalnie wiele profili → jedna TaskGroup (shared).
+
+---
+
+### [Model Danych — Task] :
+
+- **ID:** TASKS_MODEL-001
+- **Sekcja:** TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+- **Opis:** Kanoniczny model zadania:
+  ```
+  Task {
+    id:          string          // task_<timestamp>_<random>
+    taskGroupId: string          // ID grupy (tg_<profileId> dla 1:1, lub dowolny dla shared)
+    name:        string          // wymagane, max 200 znaków
+    desc:        string          // opcjonalny opis
+    comment:     string          // opcjonalny komentarz techniczny (kod, notatka)
+    status:      TaskStatus      // 'todo' | 'in_progress' | 'blocked' | 'done' | 'cancelled'
+    section:     TaskCategory    // 'active' | 'backlog' | 'done' — WYZNACZANA ze status
+    priority:    'A'|'B'|'C'|'D'|'E'  // A = najwyższy
+    pinned:      boolean         // zadania pinnowane zawsze na górze sekcji
+    version:     string          // opcjonalne, np. '0.0.3'
+    createdAt:   ISO string
+  }
+  ```
+  `section` NIE jest ustawiana przez użytkownika — jest automatycznie wyznaczana z `status` przez `normalizeTask()` po stronie backendu i frontendu.
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+
+---
+
+### [Model Danych — TaskStatus ↔ TaskCategory (Section)] :
+
+- **ID:** TASKS_MODEL-002
+- **Sekcja:** TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+- **Opis:** Mapowanie status → sekcja (reguły domenowe, implementowane w `tasksStore.normalizeTask()` i mirror w UI):
+  ```
+  in_progress → active   (zadanie w toku, sekcja Aktualne)
+  todo        → backlog  (do zrobienia, sekcja Backlog)
+  blocked     → backlog  (zablokowane, sekcja Backlog)
+  done        → done     (ukończone, sekcja Zrobione)
+  cancelled   → done     (anulowane / Out of Scope, sekcja Zrobione)
+  ```
+  Dozwolone statusy per sekcja:
+  - `active`:  tylko `in_progress`
+  - `backlog`: `todo`, `blocked`
+  - `done`:    `done`, `cancelled`
+
+  Przywrócenie z `done` → zawsze `todo` w `backlog` (nie można wrócić do `in_progress` bezpośrednio z Done).
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+
+---
+
+### [Model Danych — TaskGroup] :
+
+- **ID:** TASKS_MODEL-003
+- **Sekcja:** TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+- **Opis:** Model grupy zadań:
+  ```
+  TaskGroup {
+    id:         string     // 'tg_<profileId>' dla 1:1, lub 'tg_<timestamp>' dla shared
+    name:       string     // wyświetlana nazwa w nagłówku TaskPanel
+    profileIds: string[]   // lista profili współdzielących grupę
+    createdAt:  ISO string
+  }
+  ```
+  Plik danych: `userData/task_groups.json`. Zadania przechowywane w `userData/tasks/<taskGroupId>.json`.
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+
+---
+
+### [Przepływ: Profil → TaskGroup → TaskPanel] :
+
+- **ID:** TASKS_FLOW-001
+- **Sekcja:** TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+- **Opis:** Mechanizm otwarcia TaskPanel z kontekstu profilu WebView:
+  1. Użytkownik klik prawym na profil w Sidebar → `Otwórz zadania`
+  2. `Sidebar` wywołuje `onOpenTaskPanel(profile)` z pełnym obiektem profilu
+  3. `MainLayout.handleOpenTaskPanel()` wywołuje `taskGroups:ensureForProfile({ profileId, profileName })`
+  4. Handler IPC: szuka grupy dla `profileId` → jeśli brak, tworzy `{ id: tg_<profileId>, name: profileName, profileIds: [profileId] }`
+  5. Zwraca `TaskGroup` → `MainLayout` ustawia `currentGroup = { id, name }` i otwiera `TaskPanel`
+  6. `TaskPanel` otrzymuje `taskGroupId` i `groupName` jako props
+  7. `useTasks.reloadTasks(taskGroupId)` ładuje płaską listę zadań dla grupy
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+
+---
+
+### [Shared TaskGroup — Wiele Profili, Jeden Panel] :
+
+- **ID:** TASKS_FLOW-002
+- **Sekcja:** TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+- **Opis:** Użytkownik może przypisać wiele profili do jednej grupy zadań (np. wszystkie instancje Claude.ai → jedna grupa "Claude"). Mechanizm:
+  - Backend (zaimplementowane): `taskGroups:assignProfile({ groupId, profileId })` — przenosi profil z poprzedniej grupy do docelowej
+  - Backend (zaimplementowane): `taskGroups:unassignProfile({ profileId })` — odpina profil od grupy
+  - UI (FUTURE — Sprint 1 UI): w `ProfileModal` lub osobnym widoku: dropdown wyboru grupy + przycisk "Utwórz nową grupę"
+  - Przy otwarciu TaskPanel dla profilu: zawsze `ensureForProfile` → jeśli profil już ma grupę (shared), zwraca tę grupę, nie tworzy nowej
+  - Zadania shared grupy są widoczne dla wszystkich profili przypisanych do tej grupy
+- **Status:** IN_SPRINT (backend), FUTURE (UI)
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Backend gotowy: `taskGroupsStore.js`, `ipcMainHandlers_taskGroups.js`, `useTaskGroups.js`, preload. UI do implementacji w kolejnym sprincie.
+
+---
+
+### [AggregatedTasks — Widok Zbiorczy] :
+
+- **ID:** TASKS_FLOW-003
+- **Sekcja:** TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+- **Opis:** Widok zbiorczy (`AggregatedTasks` w ToolsPanel) pokazuje wszystkie zadania ze wszystkich grup. Funkcje:
+  - Grupowanie per `taskGroupId` z wyświetleniem `groupName`
+  - Filtrowanie po `status`: in_progress / todo / blocked / done / cancelled
+  - Filtrowanie po `priority`: A / B / C / D / E
+  - Filtrowanie po `section`: active / backlog / done
+  - Sortowanie po priority (A→E), date, status
+  - Zwijanie/rozwijanie per grupa
+  - Kanały IPC: `aggregatedTasks:getAll`, `aggregatedTasks:filter`, `aggregatedTasks:sort`
+  - `getAllTasks()` w preload → `tasks:getAllGrouped` (format per taskGroupId dla AggregatedTasks)
+- **Status:** IN_SPRINT (backend), FUTURE (UI filtry + zwijanie)
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+

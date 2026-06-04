@@ -43,7 +43,7 @@ export function useProjects() {
   //   @returns {Promise<Object>} – wynik operacji
   async function add(project) {
     try {
-      const res = await window.electronAPI.invoke("projects:add", project);
+      const res = await window.electronAPI.invoke("projects:create", project);
       if (res?.ok) {
         logInfo("store", "useProjects.add success", project.id);
         await load();

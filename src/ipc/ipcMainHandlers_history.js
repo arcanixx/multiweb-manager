@@ -14,7 +14,7 @@ import {
   addHistoryEntry,
   clearHistory,
   getRecentHistory
-} from "../core/historyStore.js";
+} from "../stores/historyStore.js";
 import { logError } from "../utils/logger.js";
 // ----------------------------------------------------------------
 // history:getAll – zwraca pełną historię z historyStore

@@ -2,14 +2,14 @@
 // FILE: ProjectManager.jsx
 // PATH: src/ui/projects/ProjectManager.jsx
 // VERSION: 0.0.3
-// PURPOSE: Zarządzanie projektami – lista, dodawanie, usuwanie, edycja
+// PURPOSE: Zarządzanie projektami – lista, dodawanie, usuwanie, edycja przez hook IPC useProjects.
 // FUNCTIONS: ProjectManager
-// DEPENDS ON: react, projectsStore.js, translations.js, loggerRenderer.js, icons.js, ConfirmModal.jsx, ProjectModal.jsx
+// DEPENDS ON: react, useProjects.js, translations.js, loggerRenderer.js, icons.js, ConfirmModal.jsx, ProjectModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useState, useEffect, useContext } from 'react';
-import { loadProjects, saveProjects, deleteProject, updateProject } from '../../core/projectsStore.js';
+import React, { useState, useContext } from 'react';
+import { useProjects } from '../../hooks/useProjects.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { logInfo, logError } from '../../utils/loggerRenderer.js';
 import { ICONS } from '../../utils/icons.js';
@@ -18,52 +18,35 @@ import ProjectModal from './ProjectModal.jsx';
 
 export default function ProjectManager() {
   const { t } = useContext(TranslationContext);
-  const [projects, setProjects] = useState([]);
+
+  // ─── hook IPC – komunikacja z backendem przez invoke()
+  const { projects, loading, addProject, updateProject, deleteProject } = useProjects();
+
+  // ─── stan lokalny – tylko UI
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  // ─── loadData() – ładuję listę projektów
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const projectsData = await loadProjects();
-      setProjects(projectsData);
-      logInfo('ui', 'ProjectManager: loaded projects');
-    } catch (error) {
-      logError('ui', 'ProjectManager: failed to load projects', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ─── handleSaveProject() – zapisuje nowy lub aktualizuje istniejący projekt
+  // ─── handleSaveProject() – zapisuje nowy lub aktualizuje istniejący projekt przez IPC
   const handleSaveProject = async (projectData) => {
     try {
-      let updatedProjects;
+      let res;
       if (editingProject) {
-        updatedProjects = projects.map(p =>
-          p.id === editingProject.id ? { ...projectData, id: editingProject.id } : p
-        );
-        await updateProject(editingProject.id, projectData);
-        logInfo('ui', `ProjectManager: updated project ${editingProject.id}`);
+        res = await updateProject(editingProject.id, projectData);
+        if (res?.ok) logInfo('ui', `ProjectManager: updated project ${editingProject.id}`);
+        else logError('ui', 'ProjectManager: update failed', res?.error);
       } else {
-        const newProject = { ...projectData, id: Date.now() };
-        updatedProjects = [...projects, newProject];
-        await saveProjects(updatedProjects);
-        logInfo('ui', `ProjectManager: added project ${newProject.id}`);
+        res = await addProject({ ...projectData, id: Date.now() });
+        if (res?.ok) logInfo('ui', 'ProjectManager: added project');
+        else logError('ui', 'ProjectManager: add failed', res?.error);
       }
-      setProjects(updatedProjects);
-      setShowProjectModal(false);
-      setEditingProject(null);
+      if (res?.ok) {
+        setShowProjectModal(false);
+        setEditingProject(null);
+      }
     } catch (error) {
-      logError('ui', 'ProjectManager: failed to save project', error);
+      logError('ui', 'ProjectManager: handleSaveProject exception', error.message);
     }
   };
 
@@ -73,15 +56,15 @@ export default function ProjectManager() {
     setShowDeleteConfirm(true);
   };
 
-  // ─── handleDeleteConfirm() – usuwa projekt po potwierdzeniu
+  // ─── handleDeleteConfirm() – usuwa projekt przez IPC po potwierdzeniu
   const handleDeleteConfirm = async () => {
     if (!projectToDelete) return;
     try {
-      await deleteProject(projectToDelete.id);
-      setProjects(projects.filter(p => p.id !== projectToDelete.id));
-      logInfo('ui', `ProjectManager: deleted project ${projectToDelete.id}`);
+      const res = await deleteProject(projectToDelete.id);
+      if (res?.ok) logInfo('ui', `ProjectManager: deleted project ${projectToDelete.id}`);
+      else logError('ui', 'ProjectManager: delete failed', res?.error);
     } catch (error) {
-      logError('ui', 'ProjectManager: failed to delete project', error);
+      logError('ui', 'ProjectManager: handleDeleteConfirm exception', error.message);
     } finally {
       setShowDeleteConfirm(false);
       setProjectToDelete(null);

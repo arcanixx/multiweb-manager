@@ -14,7 +14,7 @@ import { fileURLToPath } from "url";
 import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
 
-import { DEFAULT_PROFILE_CATEGORY } from '../config.js'; // Obecnie profil domyślny, moduł jest placeholderem, do użycia w VERSION 0.0.4
+import { DEFAULT_PROFILE_CATEGORY } from '../config.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // ─── PROFILES_FILE() – zwraca ścieżkę do pliku profili w userData
 //   @returns {string} – pełna ścieżka do profiles.json (lub fallback)
@@ -84,7 +84,12 @@ export function saveProfiles(profiles) {
 export function createProfile(profile) {
   try {
     const list = loadProfiles();
-    const next = [...list, profile];
+    // Przypisz domyślną kategorię jeśli nie podano
+    const profileWithDefaults = {
+      category: DEFAULT_PROFILE_CATEGORY,
+      ...profile,
+    };
+    const next = [...list, profileWithDefaults];
     saveProfiles(next);
     logInfo("store", "profilesStore.createProfile success", profile.id);
     return next;

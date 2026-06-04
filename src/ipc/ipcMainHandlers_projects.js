@@ -22,8 +22,8 @@ import {
   updateProject,
   deleteProject,
   archiveProject
-} from "../core/projectsStore.js";
-import { loadTasksByProject } from "../core/tasksStore.js";
+} from "../stores/projectsStore.js";
+import { loadTasksByProject } from "../stores/tasksStore.js";
 import { logError } from "../utils/logger.js";
 // =============================================================================
 // VALIDATION

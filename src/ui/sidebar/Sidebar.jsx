@@ -78,6 +78,29 @@ export default function Sidebar({ onSelect, activeItem, onOpenTaskPanel, onModal
           url: profileData.url
         }).catch(err => logError('store', 'Sidebar: failed to add history entry', err.message));
       }
+
+      // ─── Przypisanie do grupy zadań (shared TaskGroup)
+      //   Jeśli profil ma taskGroupId → przypisz przez IPC
+      //   Jeśli usunięto (puste) → odepnij od poprzedniej grupy
+      try {
+        if (profileData.taskGroupId) {
+          await window.electronAPI.invoke('taskGroups:assignProfile', {
+            groupId:   profileData.taskGroupId,
+            profileId: profileData.id,
+          });
+          logInfo('ui', `Sidebar: profil ${profileData.id} przypisany do grupy ${profileData.taskGroupId}`);
+        } else if (isEdit) {
+          // Sprawdź czy profil miał grupę — jeśli tak, odepnij
+          const prevProfile = profiles.find(p => p.id === profileData.id);
+          if (prevProfile?.taskGroupId) {
+            await window.electronAPI.invoke('taskGroups:unassignProfile', { profileId: profileData.id });
+            logInfo('ui', `Sidebar: profil ${profileData.id} odpięty od grupy`);
+          }
+        }
+      } catch (groupErr) {
+        logError('ui', 'Sidebar: taskGroup assignment failed', groupErr.message);
+      }
+
       setShowProfileModal(false);
       onSelect({ ...profileData, type: 'webview' });
       logInfo('ui', `Sidebar: profile ${isEdit ? 'updated' : 'created'}`, profileData.id);

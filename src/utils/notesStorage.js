@@ -7,6 +7,21 @@
 // DEPENDS ON: logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
+//
+// ARCHITEKTURA NOTATEK — dwa osobne systemy, celowy podział:
+//
+//   notesStorage.js (src/utils/ — ten plik, renderer process)
+//   → Cache zakładek notatnika w localStorage (fallback gdy IPC niedostępne)
+//   → Używany przez: useNotepadContent.js, useNotepadTabs.js
+//   → Docelowo zostanie zastąpiony przez StorageService
+//
+//   notesStore.js  (src/stores/ — main process)
+//   → Zapis/odczyt notatek przez fs do notes.json w userData
+//   → Używany przez: ipcMainHandlers_notes.js (CRUD przez IPC)
+//                    ipcMainHandlers_search.js (globalne wyszukiwanie Ctrl+K)
+//   → NIE importować w renderer process
+//
+// =============================================================================
 
 import { logError } from './logger.js';
 

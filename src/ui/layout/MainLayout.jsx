@@ -1,100 +1,40 @@
 // =============================================================================
-// FILE: MainLayout.jsx
-// PATH: src/ui/layout/MainLayout.jsx
-// VERSION: 0.0.3
-// PURPOSE: Główny szkielet interfejsu użytkownika (Shell) – definiuje siatkę aplikacji, koordynuje nawigację boczną, obszar roboczy (ContentRenderer) oraz integruje globalne mechanizmy modalne i powiadomienia sieciowe.
-// FUNCTIONS: MainLayout
-// DEPENDS ON: react, translations.js, loggerRenderer.js, Sidebar.jsx, ContentRenderer.jsx, ConfirmModal.jsx
+// FILE:       MainLayout.jsx
+// PATH:       src/ui/layout/MainLayout.jsx
+// VERSION:    0.0.3
+// PURPOSE:    Główny szkielet interfejsu użytkownika (Shell) – definiuje siatkę aplikacji, koordynuje nawigację boczną, obszar roboczy (ContentRenderer) oraz integruje globalne mechanizmy modalne. Logika stanu przeniesiona do useMainLayout.js.
+// FUNCTIONS:  MainLayout
+// DEPENDS ON: react, useMainLayout.js, Sidebar.jsx, ContentRenderer.jsx, ConfirmModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useState, useEffect, useContext, Suspense, lazy } from 'react';
-import { TranslationContext } from '../../utils/translations.js';
-import { logInfo, logDebug, logError } from '../../utils/loggerRenderer.js';
+import React, { Suspense, lazy } from 'react';
+import { useMainLayout } from '../../hooks/useMainLayout.js';
 import Sidebar from '../sidebar/Sidebar.jsx';
 import { ContentRenderer } from '../views/ContentRenderer.jsx';
 import ConfirmModal from '../modals/ConfirmModal.jsx';
 
-const TaskPanel = lazy(() => import('../taskpanel/TaskPanel'));
-
-// ─── NetToast() – powiadomienie o stanie połączenia sieciowego
-//   @param {string} props.message – treść powiadomienia
-//   @param {string} props.type    – 'online' | 'offline' | 'warning'
-//   @returns {JSX.Element|null}
-function NetToast({ message, type }) {
-  if (!message) return null;
-  const cls =
-    type === 'online'  ? 'toast toast-success' :
-    type === 'offline' ? 'toast toast-error'   :
-                         'toast toast-warning';
-  return <div className={cls}>{message}</div>;
-}
+const TaskPanel = lazy(() => import('../taskpanel/TaskPanel.jsx'));
 
 // ─── MainLayout() – główny układ: Sidebar po lewej, ContentRenderer po prawej
-//   @param {Object}   props.activeItem      – aktywny element
-//   @param {Object}   props.settings        – ustawienia aplikacji
-//   @param {Function} props.onSelect        – callback wyboru elementu z Sidebaru
-//   @param {Function} props.onSaveSettings  – callback zapisu ustawień
-//   @param {string}   props.netToast        – treść powiadomienia sieciowego
-//   @param {string}   props.netToastType    – typ powiadomienia sieciowego
+//   @param {Object}   props.activeItem     – aktywny element nawigacji
+//   @param {Object}   props.settings       – ustawienia aplikacji
+//   @param {Function} props.onSelect       – callback wyboru elementu z Sidebaru
+//   @param {Function} props.onSaveSettings – callback zapisu ustawień
 //   @returns {JSX.Element}
 export default function MainLayout({
   activeItem,
   settings,
   onSelect,
   onSaveSettings,
-  netToast,
-  netToastType,
 }) {
-  const { t } = useContext(TranslationContext);
-  const [showTaskPanel, setShowTaskPanel]   = useState(false);
-  const [currentProject, setCurrentProject] = useState('');
-  const [sidebarModalOpen, setSidebarModalOpen] = useState(false);
-  const [confirmState, setConfirmState] = useState({
-    isOpen: false, title: '', message: '', onConfirm: null,
-  });
-
-  // ─── showConfirm() – otwiera modal potwierdzenia
-  const showConfirm = (title, message, onConfirm) => {
-    try {
-      setConfirmState({ isOpen: true, title, message, onConfirm });
-    } catch (err) {
-      logError('ui', 'MainLayout: showConfirm failed', err.message);
-    }
-  };
-
-  // ─── handleOpenTaskPanel() – otwiera TaskPanel dla projektu / profilu
-  //   @param {string|Object} profileOrProject
-  const handleOpenTaskPanel = (profileOrProject) => {
-    const name =
-      typeof profileOrProject === 'string'
-        ? profileOrProject
-        : profileOrProject?.taskProject || profileOrProject?.name || 'default';
-    setCurrentProject(name);
-    setShowTaskPanel(true);
-    logInfo('ui', 'MainLayout: TaskPanel opened for', name);
-  };
-
-  // Nasłuchiwanie sygnału quit z procesu głównego
-  useEffect(() => {
-    if (!window.electronAPI?.onCheckBeforeQuit) return;
-    window.electronAPI.onCheckBeforeQuit(() => {
-      showConfirm(
-        t('app.close_confirm_title'),
-        t('app.close_confirm_message'),
-        () => window.electronAPI.confirmQuit(),
-      );
-    });
-  }, [t]);
-
-  // Klasa body tools-active (wyłącza animacje webview gdy moduł aktywny)
-  const isWebViewActive =
-    activeItem && (activeItem.type === 'webview' || (activeItem.url && activeItem.type !== 'special'));
-
-  useEffect(() => {
-    document.body.classList.toggle('tools-active', !isWebViewActive);
-    return () => document.body.classList.remove('tools-active');
-  }, [isWebViewActive]);
+  const {
+    showTaskPanel, setShowTaskPanel,
+    currentGroup,  handleOpenTaskPanel,
+    sidebarModalOpen, setSidebarModalOpen,
+    confirmState,  hideConfirm,
+    isWebViewActive,
+  } = useMainLayout(activeItem);
 
   return (
     <div className="flex h-screen app-root" style={{ background: 'var(--bg-primary)' }}>
@@ -120,7 +60,7 @@ export default function MainLayout({
             activeItem={activeItem}
             settings={settings}
             onSaveSettings={onSaveSettings}
-            onOpenTasks={(project) => { setCurrentProject(project); setShowTaskPanel(true); }}
+            onOpenTasks={handleOpenTaskPanel}
             sidebarModalOpen={sidebarModalOpen}
           />
         </div>
@@ -129,26 +69,23 @@ export default function MainLayout({
       {/* ── TaskPanel (lazy) ─────────────────────────────────────────────── */}
       <Suspense fallback={null}>
         <TaskPanel
-          projectName={currentProject}
+          taskGroupId={currentGroup.id}
+          groupName={currentGroup.name}
           visible={showTaskPanel}
           onClose={() => setShowTaskPanel(false)}
-          availableProjects={(settings.projects || []).map((p) => p.name)}
         />
       </Suspense>
 
-      {/* ── Powiadomienia sieciowe ────────────────────────────────────────── */}
-      <NetToast message={netToast} type={netToastType} />
-
-      {/* ── Modal potwierdzenia ───────────────────────────────────────────── */}
+      {/* ── Modal potwierdzenia (np. zamknięcie aplikacji) ───────────────── */}
       <ConfirmModal
         isOpen={confirmState.isOpen}
         title={confirmState.title}
         message={confirmState.message}
         onConfirm={() => {
           confirmState.onConfirm?.();
-          setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null });
+          hideConfirm();
         }}
-        onCancel={() => setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null })}
+        onCancel={hideConfirm}
       />
     </div>
   );

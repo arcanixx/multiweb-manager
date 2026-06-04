@@ -9,9 +9,9 @@
 // =============================================================================
 
 import React, { useState } from "react";
-import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
+import { logInfo, logError, logWarn, logDebug } from '../../utils/loggerRenderer.js';
 import { TASK_PRIORITIES, TASK_STATUS } from "../../constants.js";
-import { TranslationContext } from '../utils/translations.js';
+import { TranslationContext } from '../../utils/translations.js';
 
 // ─── TaskEditor() – modal edycji/dodawania zadania z formularzem
 //   @param {Object} props – właściwości komponentu
