@@ -207,8 +207,11 @@ export default function App() {
           type: 'webview',
         }));
         const merged = [...profiles, ...newProfiles];
+        // Dodaj nowe profile przez granularne IPC (createProfile per profil)
+        for (const profile of newProfiles) {
+          await window.electronAPI.createProfile(profile);
+        }
         setProfiles(merged);
-        await window.electronAPI.saveProfiles?.(merged);
         logInfo('ui', `OnboardingFinish: added ${newProfiles.length} profiles`);
       }
       setOnboardingDone(true);
