@@ -59,9 +59,9 @@ export default function Terminal({ cwd }) {
     async function startSession() {
       try {
         const res = await window.electronAPI?.createTerminal?.(cwd);
-        if (res?.ok && res?.terminalId) {
-          terminalIdRef.current = res.terminalId;
-          logDebug('terminal', 'Terminal session started', res.terminalId);
+        if (res?.ok && res?.data?.terminalId) {
+          terminalIdRef.current = res.data.terminalId;
+          logDebug('terminal', 'Terminal session started', res.data.terminalId);
         } else {
           logError('terminal', 'Terminal: createTerminal failed', res?.error);
         }
@@ -175,11 +175,11 @@ export default function Terminal({ cwd }) {
         await window.electronAPI?.killTerminal?.(terminalIdRef.current);
       }
       const res = await window.electronAPI?.createTerminal?.(cwd);
-      if (res?.ok && res?.terminalId) {
-        terminalIdRef.current = res.terminalId;
+      if (res?.ok && res?.data?.terminalId) {
+        terminalIdRef.current = res.data.terminalId;
         xtermRef.current?.clear();
         xtermRef.current?.write('\x1b[32m[Session restarted]\x1b[0m\r\n');
-        logDebug('terminal', 'Terminal restarted', res.terminalId);
+        logDebug('terminal', 'Terminal restarted', res.data.terminalId);
       } else {
         logError('terminal', 'Terminal: restart failed', res?.error);
       }
