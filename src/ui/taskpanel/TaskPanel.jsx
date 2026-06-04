@@ -125,7 +125,10 @@ export default function TaskPanel({ projectId, onClose }) {
       const task = sections[section]?.find(t => t.id === id);
       if (task) handleSaveTask({ ...task, pinned: !task.pinned });
     },
-    onDelete:      handleDeleteClick,
+    onDelete:      (id) => {
+      const task = [...sections.active, ...sections.backlog, ...sections.done].find(t => t.id === id);
+      if (task) handleDeleteClick(task);
+    },
     onEdit:        (task) => { setSelectedTask(task); setShowTaskModal(true); },
     onOpenComment: (task) => { setCommentTask(task); setShowCommentModal(true); },
   };

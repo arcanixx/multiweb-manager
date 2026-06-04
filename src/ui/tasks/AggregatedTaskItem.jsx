@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { logError } from '../utils/loggerRenderer.js';
+import { logError } from '../../utils/loggerRenderer.js';
 import { ICONS } from '../../utils/icons.js';
 
 // ─── PRIORITY_COLORS – mapa kolorów priorytetów zadań

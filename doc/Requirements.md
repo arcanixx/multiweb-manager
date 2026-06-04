@@ -1935,3 +1935,81 @@
 ---
 
 *Koniec dokumentu wymagań — wersja 0.0.3*
+---
+
+## 🗂️ TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+
+> Wymagania naprawcze i architektoniczne dla systemu zadań (TaskPanel + AggregatedTasks). Priorytet: unifikacja modelu danych, spójność warstw, przyszłościowa rozszerzalność (mini-JIRA z reminderem).
+
+---
+
+### [Unifikacja Modelu Danych Zadania] :
+
+- **ID:** TASKS_ARCH-001
+- **Sekcja:** TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+- **Opis:** Każde zadanie musi mieć zunifikowany model: `{ id, name, desc, comment, priority, section, version, pinned, projectId, createdAt }`. Pola `title`/`description`/`status` (z `TASK_STATUS`) nie są używane w aktywnym UI i muszą zostać usunięte lub zmapowane. `section` przyjmuje wartości: `active | backlog | done`. `priority` przyjmuje: `A | B | C | D | E`. Pole `projectId` to identyfikator projektu (string lub number — musi być spójny z `projects.id`). Pole `name` jest wymagane (min. 1 znak, max. 200).
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+- **Komentarz:** Wykryto dwa równoległe modele: `TaskModal` (aktywny UI) używa `name/desc/comment`, `TaskEditor`/`TaskDetails`/`TaskList` używają `title/description/status`. Scalono w jednym modelu — canonical to `name/desc/comment/section`. `TaskEditor` i `TaskList` — martwy kod, nie podłączony do `TaskPanel` — do usunięcia lub integracji w kolejnym sprincie.
+
+---
+
+### [Identyfikator Projektu w Zadaniach] :
+
+- **ID:** TASKS_ARCH-002
+- **Sekcja:** TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+- **Opis:** `projectId` w zadaniu musi być spójny z `id` projektu z `projectsStore`. `tasksStore` zapisuje pliki po `projectId` (jako nazwa pliku). Przy tworzeniu projektu w `ProjectManager`: `id: Date.now().toString()` (string) lub UUID. `TaskPanel` przekazuje `projectId` jako prop — musi to być to samo `id` co w `projects[]`. Handler `tasks:getAll` bez payloadu zwraca płaską listę z polem `projectId` zmapowanym z `projectName` dla kompatybilności.
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+- **Komentarz:** Wykryto rozbieżność: `ProjectManager` tworzy projekty z `id: Date.now()` (number), `tasksStore` używa `projectName` (string) jako klucza pliku. Do ujednolicenia przy implementacji pełnego CRUD projektów. Tymczasowo: `projectId = projectName` (nazwa projektu jako ID).
+
+---
+
+### [Separacja Formatów: TaskPanel vs AggregatedTasks] :
+
+- **ID:** TASKS_ARCH-003
+- **Sekcja:** TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+- **Opis:** Dwa widoki mają różne potrzeby formatów danych: `TaskPanel` potrzebuje płaskiej listy zadań dla projektu (tablica `Task[]`), `AggregatedTasks` potrzebuje zgrupowanego obiektu `{ projectName: { active, backlog, done } }`. Kanały IPC: `tasks:getAll` (z/bez payloadu) → płaska lista; `tasks:getAllGrouped` → format per projekt dla AggregatedTasks. `preload.cjs`: `getAllTasks()` → `tasks:getAllGrouped`, `getTasks(project)` → `tasks:getAll`.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Naprawione: dodano `tasks:getAllGrouped` handler, przepięto `getAllTasks()` w preload. Dwa formaty są potrzebne — nie ma sensu płaskiej listy w AggregatedTasks (potrzebuje pogrupowania per projekt).
+
+---
+
+### [Spójność Przepływu CRUD Zadań] :
+
+- **ID:** TASKS_ARCH-004
+- **Sekcja:** TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+- **Opis:** Pełny przepływ CRUD przez IPC: `TaskPanel.jsx` → `useTasks.js` → `invoke('tasks:add/update/delete')` → `ipcMainHandlers_tasks.js` → `tasksStore.js`. Brakujące handlery IPC: `tasks:add`, `tasks:update`, `tasks:delete` — dodane. Każda operacja mutuje dane po stronie `tasksStore` i zwraca `{ ok, data?, error? }`. Hook `useTasks` stosuje optimistic update z rollbackiem przy błędzie. Po operacji `update` ze zmianą sekcji — zadanie musi być przeniesione między tablicami w pliku JSON projektu.
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+- **Komentarz:** Handlery `tasks:add/update/delete` dodane w poprzednim commicie. `tasks:update` obsługuje zmianę sekcji (przeniesienie między active/backlog/done). `tasks:delete` usuwa z dowolnej sekcji szukając po `projectId || projectName`.
+
+---
+
+### [Martwy Kod — TaskEditor i TaskList] :
+
+- **ID:** TASKS_ARCH-005
+- **Sekcja:** TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+- **Opis:** `TaskEditor.jsx` i `TaskList.jsx` nie są importowane ani używane przez `TaskPanel.jsx`. `TaskEditor` wywołuje `window.showToast()` — nieistniejąca funkcja w preload/renderer. `TaskList` używa `TASK_STATUS` (todo/in_progress/blocked) — model niezgodny z aktywnym UI. Do decyzji: usunięcie lub integracja jako alternatywny widok listy (zastępstwo `TaskSectionList`). `TASK_STATUS.BLOCKED` nie jest używany nigdzie indziej.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Nie usuwać przed decyzją produktową. Na razie zostawić jako `// TODO: rozważyć integrację lub usunięcie`. Jeśli `TaskList` ma zastąpić `TaskSectionList` — trzeba zmapować sekcje (active/backlog/done) na statusy (todo/in_progress/done) lub odwrotnie.
+
+---
+
+### [Naprawione: Błędy Krytyczne TaskPanel] :
+
+- **ID:** TASKS_ARCH-006
+- **Sekcja:** TASKPANEL — ARCHITEKTURA I MODEL DANYCH
+- **Opis:** Lista naprawionych błędów krytycznych (sprint 0): (1) Błędne ścieżki importów w `src/ui/taskpanel/` — wszystkie `../utils/` zamienione na `../../utils/` (crashowało bundler). (2) `onDelete` w `TaskPanel.handlers` — `TaskItem` wysyłał `id` (string), handler oczekiwał obiektu `task` — naprawione przez lookup w `sections`. (3) `tasks:getAll` bez payloadu zwracał obiekt pogrupowany zamiast tablicy — naprawione (płaska lista). (4) `AggregatedTasks` używał `getAllTasks()` → format pogrupowany wymagany — dodano `tasks:getAllGrouped` i przepięto preload. (5) Syntax error w `ToolsContainer.jsx`: `props = {>` → `props = {}`.
+- **Status:** DONE
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+- **Komentarz:** Wszystkie błędy z tej listy zostały naprawione w commicie fix(tasks) na branchu UAT-v0.0.4.
+

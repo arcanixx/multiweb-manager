@@ -14,6 +14,7 @@ import {
   loadTasksByProject,
   saveTasksForProject,
   loadTasks,
+  loadAllTasksGrouped,
 } from "../core/tasksStore.js";
 import { logError, logInfo } from "../utils/logger.js";
 
@@ -131,7 +132,18 @@ ipcMain.handle("tasks:delete", async (_, payload) => {
   }
 });
 
-// ─── tasks:saveSections – zapisuje całe sekcje dla projektu (bulk, legacy)
+// ─── tasks:getAllGrouped – zwraca wszystkie zadania pogrupowane per projekt
+//   Używane przez AggregatedTasks.jsx (dashboard view)
+//   Format: { projectName: { active: [], backlog: [], done: [] } }
+ipcMain.handle("tasks:getAllGrouped", async () => {
+  try {
+    return { ok: true, data: loadAllTasksGrouped() };
+  } catch (err) {
+    logError("ipc", "tasks:getAllGrouped", err);
+    return { ok: false, error: err.message };
+  }
+});
+
 //   payload: { projectName, sections }
 ipcMain.handle("tasks:saveSections", async (_, payload) => {
   try {

@@ -9,28 +9,18 @@
 // =============================================================================
 
 import React, { useState } from "react";
-import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
-import { TASK_PRIORITIES, TASK_STATUS } from "../../constants.js";
-import { TranslationContext } from '../utils/translations.js';
+import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+import { TASK_PRIORITIES } from "../../constants.js";
+import { TranslationContext } from '../../utils/translations.js';
 
-// ─── TaskDetails() – szczegółowy widok zadania z możliwością edycji pól
-//   @param {Object} props – właściwości komponentu
-//   @param {Object} props.task – obiekt zadania do wyświetlenia
-//   @param {Function} props.onBack – callback powrotu do listy zadań
-//   @param {Function} props.onEdit – callback otwarcia edytora zadania
-//   @returns {JSX.Element} – renderowany widok szczegółów zadania
+// Model danych zadania: name, desc, comment, priority, section, version, pinned, projectId
+// Sekcje: active | backlog | done (zamiast TASK_STATUS z constants.js)
 
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
 export default function TaskDetails({ task, onBack, onEdit }) {
   const { t } = React.useContext(TranslationContext);
   const [local, setLocal] = useState(task);
 
   // ─── updateField() – aktualizuje pole zadania przez IPC
-  //   @param {string} field – nazwa pola do aktualizacji
-  //   @param {any} value – nowa wartość pola
-  //   @returns {Promise<void>}
   async function updateField(field, value) {
     try {
       const res = await window.electronAPI.invoke("tasks:update", {
@@ -45,58 +35,63 @@ export default function TaskDetails({ task, onBack, onEdit }) {
       }
     } catch (err) {
       logError('tasks', 'TaskDetails.updateField failed', err.message);
-      logWarn('tasks', 'Wystąpił błąd podczas aktualizacji pola');
     }
   }
+
   return (
     <div className="taskdetails">
       <button className="btn btn-secondary" onClick={onBack}>
         {t("tasks.details.back")}
       </button>
-      <h2>{local.title}</h2>
-      {/* Zmiana statusu zadania */}
-      <div className="taskdetails-section">
-        <label>{t("tasks.details.status")}</label>
-        <select
-          className="form-select"
-          value={local.status}
-          onChange={e => updateField("status", e.target.value)}
-        >
-          {Object.values(TASK_STATUS).map(s => (
-            <option key={s} value={s}>
-              {t(`tasks.status.${s}`)}
-            </option>
-          ))}
-        </select>
-      </div>
+      <h2>{local.name}</h2>
 
-      {/* Zmiana priorytetu zadania */}
+      {/* Priorytet */}
       <div className="taskdetails-section">
         <label>{t("tasks.details.priority")}</label>
         <select
           className="form-select"
-          value={local.priority}
+          value={local.priority || 'C'}
           onChange={e => updateField("priority", e.target.value)}
         >
           {TASK_PRIORITIES.map(p => (
-            <option key={p} value={p}>
-              {p}
-            </option>
+            <option key={p} value={p}>{p}</option>
           ))}
         </select>
       </div>
 
-      {/* Edycja opisu zadania */}
+      {/* Sekcja (zamiast status) */}
       <div className="taskdetails-section">
-        <label>{t("tasks.details.description")}</label>
+        <label>{t("tasks.field_section")}</label>
+        <select
+          className="form-select"
+          value={local.section || 'active'}
+          onChange={e => updateField("section", e.target.value)}
+        >
+          <option value="active">{t("tasks.section_active")}</option>
+          <option value="backlog">{t("tasks.section_backlog")}</option>
+          <option value="done">{t("tasks.section_done")}</option>
+        </select>
+      </div>
+
+      {/* Opis */}
+      <div className="taskdetails-section">
+        <label>{t("tasks.field_desc")}</label>
         <textarea
           className="form-textarea"
-          value={local.description || ""}
-          onChange={e => updateField("description", e.target.value)}
+          value={local.desc || ""}
+          onChange={e => updateField("desc", e.target.value)}
         />
       </div>
 
-      <button className="btn btn-primary" onClick={onEdit}>
+      {/* Komentarz / notatka techniczna */}
+      {local.comment && (
+        <div className="taskdetails-section">
+          <label>{t("tasks.field_comment")}</label>
+          <pre style={{ fontSize: 12, background: 'var(--bg-secondary)', padding: 8, borderRadius: 6 }}>{local.comment}</pre>
+        </div>
+      )}
+
+      <button className="btn btn-primary" onClick={() => onEdit(local)}>
         {t("tasks.details.edit")}
       </button>
     </div>

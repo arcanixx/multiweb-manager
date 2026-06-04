@@ -49,10 +49,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   }),
   
   // ─── Tasks ────────────────────────────────────────────────────
-  // ─── getTasks(project) – Pobiera zadania dla wybranego projektu (używa tasks:getAll z filtrem)
-  getTasks:    (project)       => ipcRenderer.invoke('tasks:getAll', project),
-  // ─── getAllTasks() – Pobiera wszystkie zadania ze wszystkich projektów
-  getAllTasks:  ()              => ipcRenderer.invoke('tasks:getAll'),
+  // ─── getTasks(project) – Pobiera płaską listę zadań dla projektu lub wszystkich
+  getTasks:         (project) => ipcRenderer.invoke('tasks:getAll', project),
+  // ─── getAllTasks() – Pobiera wszystkie zadania pogrupowane per projekt (dla AggregatedTasks)
+  getAllTasks:       ()        => ipcRenderer.invoke('tasks:getAllGrouped'),
   
   // ─── History ──────────────────────────────────────────────────
   // ─── getHistory() – Pobiera historię aktywności
