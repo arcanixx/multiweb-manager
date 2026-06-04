@@ -1934,6 +1934,39 @@
 
 ---
 
+### [Splash Screen – ekran ładowania przy starcie] :
+- **ID:** UIUX_REQ-021
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** Ekran ładowania (`SplashScreen.jsx`) wyświetlany przy każdym starcie aplikacji przez ~1.8s. Zawiera: logo (PNG z `assets/splash_logo.png` lub SVG fallback), nazwę aplikacji (`app.name`), tagline (`splash.tagline`), animowany pasek postępu. Fade-out 300ms przed ukryciem. Callback `onFinished` po zakończeniu. Klucze i18n: `splash.loading`, `splash.tagline`.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Zaimplementowane w `src/ui/system/SplashScreen.jsx`. SVG fallback w `assets/splash_logo.svg`. Docelowo zastąpić PNG w `assets/splash_logo.png`. Podpięte w `App.jsx` (wyświetlane przed onboardingiem i głównym layoutem).
+
+---
+
+### [Onboarding Screen – kreator pierwszego uruchomienia] :
+- **ID:** UIUX_REQ-022
+- **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
+- **Opis:** 5-krokowy wizard onboardingu wyświetlany gdy `settings.firstRun !== false`. Kroki: (1) Motyw (dark/light/system – zmiana live), (2) Język (PL/EN – zmiana live), (3) Prywatność + Disclaimer (checkbox akceptacji wymagany do przejścia dalej, toggle logów), (4) Szybki start (wybór aplikacji z `app-library.json` – max 4 per kategoria, pierwsze 4 kategorie), (5) Konto (placeholder – coming soon). Po zakończeniu: zapis do `settings` (`theme`, `language`, `logsEnabled`, `firstRun: false`), utworzenie profili z wybranych aplikacji. Przycisk „Pomiń" w krokach 4 i 5. Klucze i18n: sekcja `onboarding.*`.
+- **Status:** IN_SPRINT
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Zaimplementowane w `src/ui/system/OnboardingScreen.jsx`. Podpięte w `App.jsx`. Grafika: SVG fallback `assets/splash_logo.svg` – zastąpić PNG. Krok konta jest placeholderem (przyciski disabled) – aktywować gdy będzie auth. Testowanie: wyczyść `settings.firstRun` lub ustaw `firstRun: true` i uruchom ponownie.
+
+---
+
+### [Onboarding – walidacja i testy] :
+- **ID:** TEST_REQ-012
+- **Sekcja:** TEST
+- **Opis:** Testy onboardingu: (1) `firstRun=true` → pokazuje OnboardingScreen zamiast MainLayout, (2) krok Privacy bez zaznaczenia checkboxa → przycisk Dalej disabled, (3) wybór aplikacji → profile tworzone po `onFinish`, (4) `firstRun=false` po finish → przy kolejnym uruchomieniu onboarding nie pokazuje się, (5) Splash zawsze widoczny przez ~1.8s niezależnie od stanu firstRun.
+- **Status:** BACKLOG
+- **Priorytet:** MAJOR
+- **Version:** 0.0.5
+- **Komentarz:** Manualnie: ustaw `firstRun: true` w electron-store i uruchom. Automatycznie: mock `getSettings` z `firstRun: true`.
+
+---
+
 *Koniec dokumentu wymagań — wersja 0.0.3*
 ---
 

@@ -22,6 +22,8 @@ import {
 import { normalizeWebUrl } from './utils/urlUtils.js';
 import MainLayout from './ui/layout/MainLayout.jsx';
 import { Spinner } from './ui/views/Spinner.jsx';
+import SplashScreen from './ui/system/SplashScreen.jsx';
+import OnboardingScreen from './ui/system/OnboardingScreen.jsx';
 
 // =============================================================================
 // ─── AppErrorBoundary – przechwytuje błędy React, zapobiega białemu ekranowi
@@ -67,10 +69,13 @@ class AppErrorBoundary extends React.Component {
 export default function App() {
   const { t, loaded } = useContext(TranslationContext);
 
-  const [settings,   setSettings]   = useState({});
-  const [activeItem, setActiveItem] = useState(null);
+  const [settings,      setSettings]      = useState({});
+  const [profiles,      setProfiles]      = useState([]);
+  const [activeItem,    setActiveItem]    = useState(null);
   const [netToast,      setNetToast]      = useState(null);
   const [netToastType,  setNetToastType]  = useState('offline');
+  const [splashDone,    setSplashDone]    = useState(false);
+  const [onboardingDone,setOnboardingDone]= useState(false); // false = czeka na sprawdzenie firstRun
 
   // ─── applyTheme() – ustawia klasę dark na <html> w zależności od motywu
   //   @param {string} theme – 'dark' | 'light' | 'system'
@@ -111,8 +116,19 @@ export default function App() {
         setSettings(merged);
         setDebugMode(merged.debugMode !== false);
         applyTheme(merged.theme || 'system');
+        // firstRun: pokaż onboarding tylko przy pierwszym uruchomieniu
+        if (merged.firstRun === false) setOnboardingDone(true);
         logInfo('settings', 'App: settings loaded');
       }).catch((err) => logError('settings', 'App: failed to load settings', err.message));
+
+      window.electronAPI.getProfiles?.().then((p) => {
+        const list = (p || []).map(prof => {
+          const normalized = normalizeWebUrl(prof.url);
+          return normalized && normalized !== prof.url ? { ...prof, url: normalized } : prof;
+        });
+        setProfiles(list);
+        logInfo('ui', `App: profiles loaded (${list.length})`);
+      }).catch((err) => logError('ui', 'App: failed to load profiles', err.message));
     } catch (err) {
       console.error('[App] Init failed:', err);
     }
@@ -171,14 +187,54 @@ export default function App() {
     }
   };
 
+  // ─── handleOnboardingFinish() – zapisuje wybory z onboardingu i przechodzi do apki
+  const handleOnboardingFinish = async ({ theme, language, privacy, selectedApps }) => {
+    try {
+      const patch = {
+        theme, language,
+        logsEnabled: privacy.logsEnabled ?? false,
+        firstRun: false,
+      };
+      await window.electronAPI.saveSettings(patch);
+      setSettings(prev => ({ ...prev, ...patch }));
+      applyTheme(theme);
+
+      // Dodaj wybrane aplikacje jako profile
+      if (selectedApps?.length > 0) {
+        const newProfiles = selectedApps.map(app => ({
+          id: `${app.id}_${Date.now()}`,
+          name: app.name, url: app.url,
+          category: app.categoryId || app.id,
+          type: 'webview',
+        }));
+        const merged = [...profiles, ...newProfiles];
+        setProfiles(merged);
+        await window.electronAPI.saveProfiles?.(merged);
+        logInfo('ui', `OnboardingFinish: added ${newProfiles.length} profiles`);
+      }
+      setOnboardingDone(true);
+    } catch (err) {
+      logError('ui', 'handleOnboardingFinish failed', err.message);
+      setOnboardingDone(true); // nie blokuj apki przy błędzie zapisu
+    }
+  };
+
   if (!loaded) return <Spinner />;
+
+  // Splash screen
+  if (!splashDone) return <SplashScreen onFinished={() => setSplashDone(true)} />;
+
+  // Onboarding (tylko firstRun)
+  if (!onboardingDone) return <OnboardingScreen onFinish={handleOnboardingFinish} />;
 
   return (
     <AppErrorBoundary>
       <MainLayout
+        profiles={profiles}
         activeItem={activeItem}
         settings={settings}
         onSelect={setActiveItem}
+        onProfilesChange={setProfiles}
         onSaveSettings={handleSaveSettings}
         netToast={netToast}
         netToastType={netToastType}
