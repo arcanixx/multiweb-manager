@@ -17,34 +17,17 @@ import ConfirmModal from '../modals/ConfirmModal.jsx';
 
 const TaskPanel = lazy(() => import('../taskpanel/TaskPanel.jsx'));
 
-// ─── NetToast() – powiadomienie o stanie połączenia sieciowego
-//   @param {string} props.message – treść powiadomienia
-//   @param {string} props.type    – 'online' | 'offline' | 'warning'
-//   @returns {JSX.Element|null}
-function NetToast({ message, type }) {
-  if (!message) return null;
-  const cls =
-    type === 'online'  ? 'toast toast-success' :
-    type === 'offline' ? 'toast toast-error'   :
-                         'toast toast-warning';
-  return <div className={cls}>{message}</div>;
-}
-
 // ─── MainLayout() – główny układ: Sidebar po lewej, ContentRenderer po prawej
 //   @param {Object}   props.activeItem      – aktywny element
 //   @param {Object}   props.settings        – ustawienia aplikacji
 //   @param {Function} props.onSelect        – callback wyboru elementu z Sidebaru
 //   @param {Function} props.onSaveSettings  – callback zapisu ustawień
-//   @param {string}   props.netToast        – treść powiadomienia sieciowego
-//   @param {string}   props.netToastType    – typ powiadomienia sieciowego
 //   @returns {JSX.Element}
 export default function MainLayout({
   activeItem,
   settings,
   onSelect,
   onSaveSettings,
-  netToast,
-  netToastType,
 }) {
   const { t } = useContext(TranslationContext);
   const [showTaskPanel, setShowTaskPanel]   = useState(false);
@@ -160,9 +143,6 @@ export default function MainLayout({
           onClose={() => setShowTaskPanel(false)}
         />
       </Suspense>
-
-      {/* ── Powiadomienia sieciowe ────────────────────────────────────────── */}
-      <NetToast message={netToast} type={netToastType} />
 
       {/* ── Modal potwierdzenia ───────────────────────────────────────────── */}
       <ConfirmModal

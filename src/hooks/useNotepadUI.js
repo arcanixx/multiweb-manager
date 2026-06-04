@@ -13,6 +13,7 @@ import { TranslationContext } from '../utils/translations.js';
 import { useNotepadTabs } from './useNotepadTabs.js';
 import { useNotepadContent } from './useNotepadContent.js';
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+import { showToast as showGlobalToast } from '../utils/notificationsManager.js';
 
 // ─── useNotepadUI() – główny hook orkiestrator notatnika
 // @param {Object} props
@@ -57,8 +58,10 @@ export function useNotepadUI({ textareaRef }) {
     content, contentRef, setContent, handleContentChange, handleKeyDown, saveCurrentTab, saveToFile,
   } = useNotepadContent({ notesRef, setNotes: setNotesWithRef, textareaRef, onContentChangeCallback, onContentSavedCallback });
 
-  // ─── showToast() – wyświetla komunikat przez 2 sekundy
-  const showToast = useCallback((msg) => {
+  // ─── showInlineToast() – mini feedback w toolbarze notatnika ("Zapisano")
+  //   Celowo oddzielony od globalnego ToastContainer — mały komunikat w kontekście edytora.
+  //   Dla błędów używamy showGlobalToast (globalny system UIUX_REQ-021).
+  const showInlineToast = useCallback((msg) => {
     setToast(msg);
     const timer = setTimeout(() => setToast(''), 2000);
     return () => clearTimeout(timer);
@@ -166,32 +169,32 @@ export function useNotepadUI({ textareaRef }) {
   const wrappedSaveCurrentTab = useCallback(() => {
     const saved = saveCurrentTab();
     if (saved) {
-      showToast(t('notepad.saved'));
+      showInlineToast(t('notepad.saved'));
     }
-  }, [saveCurrentTab, showToast, t]);
+  }, [saveCurrentTab, showInlineToast, t]);
 
   // ─── Wrapper saveToFile z tostem
   const wrappedSaveToFile = useCallback(async () => {
     const activeTab = getActiveTab();
     const result = await saveToFile(activeTab?.title);
     if (result.ok) {
-      showToast(t('notepad.saved_to_file'));
+      showInlineToast(t('notepad.saved_to_file'));
     } else if (result.error === 'SAVE_UNAVAILABLE') {
-      showToast(t('notepad.save_as_unavailable'));
+      showInlineToast(t('notepad.save_as_unavailable'));
     } else {
-      showToast(t('notepad.save_failed'));
+      showGlobalToast('error', t('notepad.save_failed'));
       logWarn('ui', 'useNotepadUI: saveToFile failed', result.error);
     }
-  }, [saveToFile, getActiveTab, showToast, t]);
+  }, [saveToFile, getActiveTab, showInlineToast, t]);
 
   // ─── Wrapper handleKeyDown z tostem po zapisie
   const wrappedHandleKeyDown = useCallback((e, toggleFind) => {
     const result = handleKeyDown(e, toggleFind);
     if (result === 'saved') {
-      showToast(t('notepad.saved'));
+      showInlineToast(t('notepad.saved'));
     }
     return result;
-  }, [handleKeyDown, showToast, t]);
+  }, [handleKeyDown, showInlineToast, t]);
 
   // Aktywna zakładka jako obiekt (dla UI)
   const activeTabObj = notes.tabs.find(tab => tab.id === notes.activeTab) ?? null;
@@ -204,7 +207,7 @@ export function useNotepadUI({ textareaRef }) {
     // Refy
     contentRef, textareaRef,
     // Settery
-    showToast, setContent,
+    setContent,
     // Edycja
     handleContentChange,
     // Keyboard

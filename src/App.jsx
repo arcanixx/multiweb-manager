@@ -24,6 +24,8 @@ import MainLayout from './ui/layout/MainLayout.jsx';
 import { Spinner } from './ui/views/Spinner.jsx';
 import SplashScreen from './ui/system/SplashScreen.jsx';
 import OnboardingScreen from './ui/system/OnboardingScreen.jsx';
+import ToastContainer from './ui/system/ToastContainer.jsx';
+import { showToast } from './utils/notificationsManager.js';
 
 // =============================================================================
 // ─── AppErrorBoundary – przechwytuje błędy React, zapobiega białemu ekranowi
@@ -69,13 +71,11 @@ class AppErrorBoundary extends React.Component {
 export default function App() {
   const { t, loaded } = useContext(TranslationContext);
 
-  const [settings,      setSettings]      = useState({});
-  const [profiles,      setProfiles]      = useState([]);
-  const [activeItem,    setActiveItem]    = useState(null);
-  const [netToast,      setNetToast]      = useState(null);
-  const [netToastType,  setNetToastType]  = useState('offline');
-  const [splashDone,    setSplashDone]    = useState(false);
-  const [onboardingDone,setOnboardingDone]= useState(false); // false = czeka na sprawdzenie firstRun
+  const [settings,       setSettings]       = useState({});
+  const [profiles,       setProfiles]       = useState([]);
+  const [activeItem,     setActiveItem]     = useState(null);
+  const [splashDone,     setSplashDone]     = useState(false);
+  const [onboardingDone, setOnboardingDone] = useState(false); // false = czeka na sprawdzenie firstRun
 
   // ─── applyTheme() – ustawia klasę dark na <html> w zależności od motywu
   //   @param {string} theme – 'dark' | 'light' | 'system'
@@ -95,18 +95,16 @@ export default function App() {
     }
   }
 
-  // ─── showToastMsg() – wyświetla chwilowe powiadomienie sieciowe
-  const showToastMsg = (msg, type) => {
-    setNetToast(msg);
-    setNetToastType(type);
-    setTimeout(() => setNetToast(null), 4000);
-  };
-
   // ─── useEffect – inicjalizacja: logger, ustawienia, eventy sieci ──
   useEffect(() => {
     import('./ui/help/Help.jsx');
     import('./ui/notepad/Notepad.jsx');
     import('./ui/settings/Settings.jsx');
+
+    // ─── Globalna rejestracja window.showToast ───────────────────────────────
+    // Umożliwia wywołanie z miejsc bez importu modułu (TaskEditor, useWebViewActions).
+    // Właściwa implementacja w notificationsManager.js → ToastContainer.
+    window.showToast = showToast;
 
     try {
       initLogger().then(() => logInfo('ui', 'App: logger initialized'));
@@ -133,8 +131,8 @@ export default function App() {
       console.error('[App] Init failed:', err);
     }
 
-    const handleOnline  = () => showToastMsg(t('notifications.online'),  'online');
-    const handleOffline = () => showToastMsg(t('notifications.offline'), 'offline');
+    const handleOnline  = () => showToast('success', t('notifications.online'));
+    const handleOffline = () => showToast('warning', t('notifications.offline'));
     window.addEventListener('online',  handleOnline);
     window.addEventListener('offline', handleOffline);
 
@@ -192,7 +190,8 @@ export default function App() {
     try {
       const patch = {
         theme, language,
-        logsEnabled: privacy.logsEnabled ?? false,
+        logsEnabled:   privacy.logsEnabled   ?? false,
+        toastsEnabled: privacy.toastsEnabled ?? true,
         firstRun: false,
       };
       await window.electronAPI.saveSettings(patch);
@@ -236,9 +235,9 @@ export default function App() {
         onSelect={setActiveItem}
         onProfilesChange={setProfiles}
         onSaveSettings={handleSaveSettings}
-        netToast={netToast}
-        netToastType={netToastType}
       />
+      {/* ToastContainer poza MainLayout — nie wpływa na layout grid, nie koliduje z modalami (z-index 9000 < 20000) */}
+      <ToastContainer enabled={settings.toastsEnabled !== false} />
     </AppErrorBoundary>
   );
 }

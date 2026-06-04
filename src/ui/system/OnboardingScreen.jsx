@@ -161,9 +161,10 @@ function StepPrivacy({ privacy, onPrivacyChange, disclaimerAccepted, onDisclaime
 
       {/* Opcje prywatności */}
       {[
-        { key: 'logsEnabled',     labelKey: 'onboarding.privacy_logs_label',      descKey: 'onboarding.privacy_logs_desc' },
-        { key: 'analyticsEnabled',labelKey: 'onboarding.privacy_analytics_label', descKey: 'onboarding.privacy_analytics_desc' },
-      ].map(({ key, labelKey, descKey }) => (
+        { key: 'toastsEnabled',   labelKey: 'onboarding.privacy_toasts_label',    descKey: 'onboarding.privacy_toasts_desc',    defaultVal: true  },
+        { key: 'logsEnabled',     labelKey: 'onboarding.privacy_logs_label',       descKey: 'onboarding.privacy_logs_desc',      defaultVal: false },
+        { key: 'analyticsEnabled',labelKey: 'onboarding.privacy_analytics_label',  descKey: 'onboarding.privacy_analytics_desc', defaultVal: false },
+      ].map(({ key, labelKey, descKey, defaultVal }) => (
         <label key={key} style={{
           display: 'flex', gap: 12, alignItems: 'flex-start',
           cursor: 'pointer', marginBottom: 16,
@@ -173,7 +174,7 @@ function StepPrivacy({ privacy, onPrivacyChange, disclaimerAccepted, onDisclaime
         }}>
           <input
             type="checkbox"
-            checked={privacy[key] ?? false}
+            checked={privacy[key] ?? defaultVal}
             onChange={e => onPrivacyChange(key, e.target.checked)}
             style={{ marginTop: 2, width: 15, height: 15, accentColor: 'var(--accent, #6c63ff)', flexShrink: 0 }}
           />
@@ -284,7 +285,7 @@ export default function OnboardingScreen({ onFinish }) {
   const [step, setStep]                       = useState(0);
   const [theme, setTheme]                     = useState('dark');
   const [language, setLanguage]               = useState('pl');
-  const [privacy, setPrivacy]                 = useState({ logsEnabled: false, analyticsEnabled: false });
+  const [privacy, setPrivacy]                 = useState({ logsEnabled: false, analyticsEnabled: false, toastsEnabled: true });
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   const [selectedApps, setSelectedApps]       = useState([]);
 

@@ -11,6 +11,7 @@
 import { useState, useCallback, useContext } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+import { showToast } from '../utils/notificationsManager.js';
 
 // ─── useNotepadFindReplace() – hook do funkcjonalności znajdź/zastąp w notatniku
 //   @param {Object} props – obiekt z referencjami i funkcjami
@@ -18,9 +19,8 @@ import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 //   @param {Object} props.textareaRef – referencja do elementu textarea
 //   @param {Function} props.setContent – funkcja ustawiająca treść
 //   @param {Function} props.setDirty – funkcja ustawiająca flagę zmian
-//   @param {Function} props.showToast – funkcja wyświetlająca toast
 //   @returns {Object} – obiekt z stanem i funkcjami wyszukiwania
-export function useNotepadFindReplace({ contentRef, textareaRef, setContent, setDirty, showToast }) {
+export function useNotepadFindReplace({ contentRef, textareaRef, setContent, setDirty }) {
   const { t } = useContext(TranslationContext);
   const [findText, setFindText] = useState('');
   const [replaceText, setReplaceText] = useState('');
@@ -65,13 +65,13 @@ export function useNotepadFindReplace({ contentRef, textareaRef, setContent, set
       setContent(replaced);
       setDirty(true);
       setFindCount(0);
-      showToast(t('notepad.replaced'));
+      showToast('success', t('notepad.replaced'));
       logInfo("ui", "useNotepadFindReplace.handleReplace success", { from: findText, to: replaceText });
     } catch (err) {
       logError("ui", "useNotepadFindReplace.handleReplace failed", err.message);
       logWarn("ui", "Wystąpił błąd podczas zastępowania tekstu");
     }
-  }, [findText, replaceText, contentRef, setContent, setDirty, showToast, t]);
+  }, [findText, replaceText, contentRef, setContent, setDirty, t]);
 
   return {
     findText, setFindText,

@@ -37,7 +37,6 @@ export default function Notepad() {
     textareaRef,
     setContent: notepad.setContent,
     setDirty: notepad.setDirty,
-    showToast: notepad.showToast,
   });
 
   // ─── handleToggleFind() – obsługa przełączania widoczności wyszukiwania

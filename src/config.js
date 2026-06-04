@@ -166,6 +166,13 @@ export const DEFAULT_SETTINGS = {
   // Hotkeys
   hotkeysEnabled: true,
 
+  // Powiadomienia UI / systemowe (UIUX_REQ-021, UIUX_REQ-022)
+  toastsEnabled: true,                  // Globalny toggle toastów w UI
+  systemNotificationsEnabled: true,     // Natywne powiadomienia OS (Windows/macOS)
+
+  // Dziennik zdarzeń (ARCH_REQ-044) — opt-in, domyślnie wyłączony
+  eventLogEnabled: false,
+
   // Profile defaults
   defaultProfileCategory: "AI",
   defaultPartitionPrefix: "profile-"
