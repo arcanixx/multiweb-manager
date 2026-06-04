@@ -26,7 +26,7 @@ Każdy projekt powinien zaczynać się od następującej struktury:
 /project-root
 ├── assets/
 ├── src/
-│   ├── core/       # store'y (settings, profiles, tasks, notepad, projects, history, workspaces, clipboard)
+│   ├── stores/       # store'y (settings, profiles, tasks, notepad, projects, history, workspaces, clipboard)
 │   ├── engine/     # silniki (adBlocker, hotkeysManager, sleepTabsManager, updateService, webviewRegistry)
 │   ├── ui/         # komponenty React (modułowo: sidebar, taskpanel, notepad, tools, settings, ...)
 │   ├── utils/      # funkcje pomocnicze (logger, translations, icons, fileUtils, imageUtils, ...)
@@ -115,7 +115,7 @@ npm run electron:build
 
 | Typ projektu | Zalecenia startowe |
 |---|---|
-| React + Electron | Od razu planuj modułowość: `src/core/`, `src/ui/`, `src/engine/` |
+| React + Electron | Od razu planuj modułowość: `src/stores/`, `src/ui/`, `src/engine/` |
 | Web (HTML/JS/CSS) | Podział na `js/`, `css/`, `assets/`, `lib/` |
 | Chrome Extension | Od razu: `manifest.json`, `background/`, `content/`, `popup/` |
 
@@ -242,7 +242,7 @@ Każdy moduł powinien być: izolowany, testowalny, niezależny — posiadać w�
 
 | Warstwa | Odpowiedzialność |
 |---------|-----------------|
-| `core/` | Logika biznesowa (store'y) |
+| `stores/` | Logika biznesowa (store'y) |
 | `engine/` | Silniki (np. sleep tabs, resource monitor) |
 | `ui/` | Komponenty React |
 | `utils/` | Funkcje pomocnicze |
@@ -259,7 +259,7 @@ Brak hardcoded: tekstów, ikon, URL, promptów, alertów.
 
 ### 8.5. Zasada „Clean Imports"
 
-Importy uporządkowane w kolejności: biblioteki zewnętrzne → moduły core → utils → komponenty → style → dane.
+Importy uporządkowane w kolejności: biblioteki zewnętrzne → moduły stores → utils → komponenty → style → dane.
 
 ---
 
@@ -301,7 +301,7 @@ Structure.md
 ### 10.3. Utwórz strukturę katalogów
 
 ```
-src/core/
+src/stores/
 src/engine/
 src/ui/
 src/utils/
@@ -349,7 +349,7 @@ Mockupy (w pliku tymczasowym), layouty, modale, toasty, tooltipy, stany ładowan
 - Każdy modal, toast i tooltip jest komponentem.
 - Każdy WebView ma cleanup, każdy IPC ma walidację.
 - Każdy błąd ma logger, każdy build jest powtarzalny.
-- Nie mieszaj logiki z UI — `core/` i `engine/` są od tego.
+- Nie mieszaj logiki z UI — `stores/` i `engine/` są od tego.
 - Nie twórz `src/components/` — od razu `src/ui/[modul]/`.
 - Nie używaj `alert` / `prompt` — od razu modale.
 

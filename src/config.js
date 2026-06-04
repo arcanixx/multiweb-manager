@@ -69,7 +69,7 @@ export const DEBUG_MODULES = {
 // =============================================================================
 
 export const FEATURES = {
-  // Core
+  // stores
   startupTests: true,
   helpScreen: true,
   appLibrary: true,

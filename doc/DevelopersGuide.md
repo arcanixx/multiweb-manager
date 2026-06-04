@@ -170,7 +170,7 @@ export function updateSettings(partial) {
 
 ## 1g. Zapis profili po dodaniu/edycji
 
-**Pliki:** `src/ui/sidebar/Sidebar.jsx`, `src/core/profilesStore.js`
+**Pliki:** `src/ui/sidebar/Sidebar.jsx`, `src/stores/profilesStore.js`
 
 ```js
 function handleProfilesChange(nextProfiles) {
@@ -183,7 +183,7 @@ function handleProfilesChange(nextProfiles) {
 
 ## 1h. Autosave Notepad tylko przy zmianie
 
-**Pliki:** `src/ui/notepad/Notepad.jsx`, `src/core/notepadStore.js`
+**Pliki:** `src/ui/notepad/Notepad.jsx`, `src/stores/notepadStore.js`
 
 ```js
 useEffect(() => {
@@ -393,7 +393,7 @@ logError('engine', 'Błąd rejestracji hotkeya', err);
 
 **Pliki:**
 - `src/data/app-library.json`
-- `src/core/appLibraryStore.js`
+- `src/stores/appLibraryStore.js`
 - `src/ui/sidebar/Sidebar.jsx`
 - `src/ui/appLibrary/AppLibraryBrowser.jsx`
 - `src/locales/pl.json`, `en.json`
@@ -484,7 +484,7 @@ function handleAddFromLibrary(app) {
 **Pliki:**
 - `src/ui/sidebar/Sidebar.jsx`
 - `src/ui/sidebar/SidebarSearch.jsx`
-- `src/core/profilesStore.js`
+- `src/stores/profilesStore.js`
 
 **Cel:** Sidebar może mieć dziesiątki profili — potrzebna jest wyszukiwarka.
 
@@ -518,7 +518,7 @@ const filteredProfiles = profiles.filter(p =>
 ## 2c. Kategorie profili
 
 **Pliki:**
-- `src/core/profilesStore.js`
+- `src/stores/profilesStore.js`
 - `src/ui/sidebar/Sidebar.jsx`
 - `src/ui/sidebar/SidebarSection.jsx`
 
@@ -558,7 +558,7 @@ profiles.forEach(p => grouped[p.category].push(p));
 
 ## 2d. Ostatnio używane profile
 
-**Pliki:** `src/core/profilesStore.js`, `src/ui/sidebar/Sidebar.jsx`
+**Pliki:** `src/stores/profilesStore.js`, `src/ui/sidebar/Sidebar.jsx`
 
 **Cel:** Szybki dostęp do ostatnio otwieranych profili.
 
@@ -579,7 +579,7 @@ const lastUsed = [...profiles]
 
 ## 2e. Drag & drop profili
 
-**Pliki:** `src/ui/sidebar/Sidebar.jsx`, `src/core/profilesStore.js`
+**Pliki:** `src/ui/sidebar/Sidebar.jsx`, `src/stores/profilesStore.js`
 
 **Cel:** Użytkownik może zmieniać kolejność profili.
 
@@ -613,7 +613,7 @@ function reorderProfiles(targetId) {
 **Pliki:**
 - `src/ui/sidebar/SidebarProfileItem.jsx`
 - `src/ui/sidebar/ProfileModal.jsx`
-- `src/core/profilesStore.js`
+- `src/stores/profilesStore.js`
 
 **Cel:** Pełna edycja profilu w modalach, zamiast promptów.
 
@@ -632,7 +632,7 @@ showToast("success", t("profile.saved"));
 
 ## 2g. Multi-account login
 
-**Pliki:** `src/core/profilesStore.js`, `src/ui/webview/WebViewTab.jsx`
+**Pliki:** `src/stores/profilesStore.js`, `src/ui/webview/WebViewTab.jsx`
 
 **Cel:** Możliwość logowania na wiele kont (np. Google) poprzez osobne `partition`.
 
@@ -724,7 +724,7 @@ export default function WebViewTileView({ profiles }) {
 
 ## 3c. Custom User Agent per profil
 
-**Pliki:** `src/core/profilesStore.js`, `src/ui/sidebar/ProfileModal.jsx`, `src/ui/webview/WebViewTab.jsx`
+**Pliki:** `src/stores/profilesStore.js`, `src/ui/sidebar/ProfileModal.jsx`, `src/ui/webview/WebViewTab.jsx`
 
 **Cel:** Niektóre strony wymagają UA (np. mobilne wersje, starsze strony).
 
@@ -814,11 +814,11 @@ ipcMain.handle("open-single-window", async (_, payload) => {
 
 ## 3f. Resource Monitor
 
-**Pliki:** `src/core/resourceMonitor.js`, `src/ui/webview/WebViewTab.jsx`, `src/ui/settings/Settings.jsx`
+**Pliki:** `src/stores/resourceMonitor.js`, `src/ui/webview/WebViewTab.jsx`, `src/ui/settings/Settings.jsx`
 
 **Cel:** Pokazać zużycie RAM/CPU WebView w formie toastu.
 
-**Implementacja (core — istnieje):**
+**Implementacja (stores — istnieje):**
 ```js
 export function getSystemUsage() {
   const cpus = os.cpus();
@@ -846,7 +846,7 @@ async function handleResourceMonitor() {
 }
 ```
 
-**Status:** Core istnieje, UI brakuje → **BACKLOG**
+**Status:** stores istnieje, UI brakuje → **BACKLOG**
 
 ---
 
@@ -916,7 +916,7 @@ useEffect(() => {
 - `src/ui/notepad/Notepad.jsx`
 - `src/ui/notepad/NotepadTabs.jsx`
 - `src/ui/notepad/NotepadEditor.jsx`
-- `src/core/notepadStore.js`
+- `src/stores/notepadStore.js`
 
 **Cel:** Notepad działa jak edytor z zakładkami (VSCode style). Każda notatka to osobna karta.
 
@@ -987,7 +987,7 @@ Rich text: bold, italic, underline, listy, linki, nagłówki.
 **Pliki:**
 - `src/ui/taskpanel/TaskPanel.jsx`
 - `src/ui/taskpanel/TaskModal.jsx`
-- `src/core/tasksStore.js`
+- `src/stores/tasksStore.js`
 - `src/locales/pl.json`, `en.json`
 
 **Struktura zadania:**
@@ -1047,8 +1047,8 @@ const filtered = tasks.filter(t =>
 - `src/ui/tasks/AggregatedTasks.jsx`
 - `src/ui/tasks/AggregatedProjectSection.jsx`
 - `src/ui/tasks/AggregatedTaskItem.jsx`
-- `src/core/projectsStore.js`
-- `src/core/tasksStore.js`
+- `src/stores/projectsStore.js`
+- `src/stores/tasksStore.js`
 - `src/locales/pl.json`, `en.json`
 
 **Cel:** Wyświetlanie zadań pogrupowanych według projektów.
@@ -1156,7 +1156,7 @@ useEffect(() => {
 
 **Pliki:**
 - `src/ui/settings/HotkeysManager.jsx`
-- `src/core/hotkeysStore.js`
+- `src/stores/hotkeysStore.js`
 - `main.js` (globalShortcut)
 - `preload.cjs`
 
@@ -1272,7 +1272,7 @@ const cookies = await window.electronAPI.getCookies(profile.partition);
 **Pliki:**
 - `src/ui/appLibrary/AppLibraryBrowser.jsx`
 - `src/data/app-library.json`
-- `src/core/appLibraryStore.js`
+- `src/stores/appLibraryStore.js`
 
 **Cel:** Pełny widok App Library jako osobny moduł (nie tylko w Sidebarze).
 
@@ -1622,7 +1622,7 @@ Jeśli dwa pliki mają tę samą nazwę — skrypt zachowa rozróżnienie: `root
 
 1. Zaimportuj `Structure.md` i `DevelopersGuide.md` jako pełną specyfikację projektu MultiWeb Manager.
 2. Traktuj wszystkie sekcje jako wymagania implementacyjne.
-3. Dla każdego modułu (`Sidebar`, `TaskPanel`, `Notepad`, `ProjectManager`, `AggregatedTasks`, `WebViewTab`, `Terminal`, `HistoryLog`, `Settings`, `Help`, `Tools`, `App Library`, `Workspaces`, `engine`, `core`, `utils`, `hooks`): utwórz pliki zgodnie ze `Structure.md`, zaimplementuj funkcje zgodnie z opisem, stosuj zasady globalne (nagłówki, icons, locales, IPC, settings merge, modale, toasty, cleanup eventów).
+3. Dla każdego modułu (`Sidebar`, `TaskPanel`, `Notepad`, `ProjectManager`, `AggregatedTasks`, `WebViewTab`, `Terminal`, `HistoryLog`, `Settings`, `Help`, `Tools`, `App Library`, `Workspaces`, `engine`, `stores`, `utils`, `hooks`): utwórz pliki zgodnie ze `Structure.md`, zaimplementuj funkcje zgodnie z opisem, stosuj zasady globalne (nagłówki, icons, locales, IPC, settings merge, modale, toasty, cleanup eventów).
 4. Dla każdego feature'a z roadmapy: zaimplementuj go w odpowiednich plikach, zachowaj zgodność z opisem.
 5. Upewnij się, że:
    - nie ma `alert()` / `prompt()`

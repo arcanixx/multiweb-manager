@@ -106,7 +106,7 @@ Wgraj plik .clinerules do roota. Następnie utwórz plik README.md według szabl
 4. pending_updates_for_Definition_Mockups_UI_UX.md (pusty plik na przyszłe poprawki UI)
 5. DevelopersGuide.md (standardy czystego kodu, loggerów, testów i cleanupów)
 
-Zbuduj podstawowy szkielet projektu w oparciu o podział na warstwy: core/, ui/, utils/ oraz locales/ (w tym locales/help/). Nie pisz kodu funkcjonalnego, dopóki struktura dokumentów nie będzie gotowa i zatwierdzona!
+Zbuduj podstawowy szkielet projektu w oparciu o podział na warstwy: stores/, ui/, utils/ oraz locales/ (w tym locales/help/). Nie pisz kodu funkcjonalnego, dopóki struktura dokumentów nie będzie gotowa i zatwierdzona!
 ```
 
 ---

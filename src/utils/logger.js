@@ -95,7 +95,7 @@ export function error(...args) {
 }
 
 // ----------------------------------------------------------------
-// Aliasy kompatybilne z main process i core stores
+// Aliasy kompatybilne z main process i stores stores
 // ----------------------------------------------------------------
 
 // ─── normalizeLogArgs() – ustala moduł i argumenty wiadomości

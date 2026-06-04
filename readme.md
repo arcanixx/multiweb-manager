@@ -60,7 +60,7 @@ root/
 ├── config.js               # re-eksport konfiguracji (root)
 ├── public/index.html       # właściwy dokument HTML
 ├── src/
-│   ├── core/               # store'y (profiles, settings, tasks...)
+│   ├── stores/               # store'y (profiles, settings, tasks...)
 │   ├── engine/             # silniki (adBlocker, hotkeysManager, sleepTabsManager...)
 │   ├── ui/                 # komponenty React (modułowo: sidebar, taskpanel, notepad...)
 │   ├── utils/              # logger, testRunner, imageUtils, translations, icons...

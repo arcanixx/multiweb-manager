@@ -26,7 +26,7 @@ Kolejność STAŁA: `FILE → PATH → VERSION → PURPOSE → FUNCTIONS → DEP
 ```
 src/ui/ + src/hooks/  →  window.electronAPI.invoke('ns:action')
                                     ↓
-              src/ipc/ipcMainHandlers_*.js  →  src/core/*Store.js
+              src/ipc/ipcMainHandlers_*.js  →  src/stores/*Store.js
 ```
 
 - Hooki (`use*.js`) — tylko renderer, tylko IPC, bez Node.js

@@ -43,7 +43,7 @@
 - **Custom user agent** – per profil.
 - **AdBlocker globalny + per profil** – override globalnego ustawienia.
 - **Single App Mode** – otwieranie profilu w osobnym oknie.
-- **Resource Monitor** – core istnieje, UI brakuje (BACKLOG).
+- **Resource Monitor** – stores istnieje, UI brakuje (BACKLOG).
 - **Sleep Tabs** – usypianie nieaktywnych WebView po X minutach.
 - **Screenshot WebView** – zapis do schowka + toast.
 - **Cookie Grabber** – pobieranie cookies z aktywnego WebView.

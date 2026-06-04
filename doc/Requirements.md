@@ -228,7 +228,7 @@
 
 - **ID:** ARCH_REQ-019
 - **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
-- **Opis:** System komend (`src/core/commandRegistry.js`). Rejestracja: `registerCommand({ id, name, shortcut, action })`. Globalna palette (`Ctrl+K` lub `Ctrl+P`).
+- **Opis:** System komend (`src/stores/commandRegistry.js`). Rejestracja: `registerCommand({ id, name, shortcut, action })`. Globalna palette (`Ctrl+K` lub `Ctrl+P`).
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
@@ -1180,7 +1180,7 @@
 
 - **ID:** DOC_REQ-003
 - **Sekcja:** DOC
-- **Opis:** W `src/core/resourceMonitor.js` brak importu loggera. Dodać i użyć `logDebug` / `logError`.
+- **Opis:** W `src/stores/resourceMonitor.js` brak importu loggera. Dodać i użyć `logDebug` / `logError`.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
@@ -1484,7 +1484,7 @@
 - **Status:** BACKLOG
 - **Priorytet:** MAJOR
 - **Version:** 0.0.4
-- **Komentarz:** Po wydzieleniu – dodać `try-catch` w jednym miejscu (zgodnie z `GENERAL_REQ-010`), a nie w każdym pliku osobno. Dotyczy co najmniej: `src/core/persistence.js`, `src/core/profilesStore.js`, `src/core/projectsStore.js`.
+- **Komentarz:** Po wydzieleniu – dodać `try-catch` w jednym miejscu (zgodnie z `GENERAL_REQ-010`), a nie w każdym pliku osobno. Dotyczy co najmniej: `src/stores/persistence.js`, `src/stores/profilesStore.js`, `src/stores/projectsStore.js`.
 
 ---
 

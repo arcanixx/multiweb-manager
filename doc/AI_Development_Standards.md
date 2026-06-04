@@ -42,7 +42,7 @@ Każdy plik `*.js`, `*.cjs`, `*.jsx`:
 ## 2. BEZPIECZEŃSTWO IPC (KRYTYCZNE)
 
 ```
-src/ui/ i src/hooks/  →  window.electronAPI  →  preload.cjs  →  src/ipc/  →  src/core/
+src/ui/ i src/hooks/  →  window.electronAPI  →  preload.cjs  →  src/ipc/  →  src/stores/
 ```
 
 - **ZAKAZ** importu `electron`, `fs`, `path`, `child_process` w `src/*` (renderer process)
@@ -68,7 +68,7 @@ KomponentUI.jsx  →  useFeature.js (hook)  →  invoke('feature:action')
 | Hook pomocniczy | `useTaskPanelFilters.js` | wydzielona logika |
 | Hook domeny IPC | `useTasks.js` | dane domenowe przez IPC |
 
-Hook **NIGDY** nie importuje ze `src/core/` — tylko `window.electronAPI.invoke()`.
+Hook **NIGDY** nie importuje ze `src/stores/` — tylko `window.electronAPI.invoke()`.
 
 ---
 
@@ -187,7 +187,7 @@ Po każdej istotnej zmianie:
 |---|---|---|
 | Handler IPC | `src/ipc/ipcMainHandlers_*.js` | `ipcMainHandlers_tasks.js` |
 | Hook | `src/hooks/use*.js` | `useTaskPanel.js` |
-| Store | `src/core/*Store.js` | `tasksStore.js` |
+| Store | `src/stores/*Store.js` | `tasksStore.js` |
 | Engine | `src/engine/*.js` | `adBlocker.js` |
 | Komponent UI | `src/ui/[modul]/*.jsx` | `TaskPanel.jsx` |
 | Narzędzie (front) | `src/ui/tools/*.jsx` | `JsonFormatter.jsx` |

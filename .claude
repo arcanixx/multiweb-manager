@@ -16,7 +16,7 @@
 
 ## Warstwy
 ```
-UI/Hooks (src/ui/, src/hooks/)  →  invoke('ns:action')  →  IPC (src/ipc/)  →  Store (src/core/)
+UI/Hooks (src/ui/, src/hooks/)  →  invoke('ns:action')  →  IPC (src/ipc/)  →  Store (src/stores/)
 ```
 
 ## Branch roboczy: UAT-v0.0.4
