@@ -35,8 +35,8 @@ export function useNotepadUI({ textareaRef }) {
 
   // ─── Hooki podrzędne ───
   const {
-    notes, notesRef, setNotesWithRef, // Expose setNotesWithRef for useNotepadContent
-    loadNotes, addTab, switchTab, closeTab, renameTab, getActiveTab, markTabAsDirty,
+    notepad, notepadRef, setnotepadWithRef, // Expose setnotepadWithRef for useNotepadContent
+    loadnotepad, addTab, switchTab, closeTab, renameTab, getActiveTab, markTabAsDirty,
   } = useNotepadTabs();
 
   // ─── Callbacks dla useNotepadContent do zarządzania dirty state
@@ -56,7 +56,7 @@ export function useNotepadUI({ textareaRef }) {
 
   const {
     content, contentRef, setContent, handleContentChange, handleKeyDown, saveCurrentTab, saveToFile,
-  } = useNotepadContent({ notesRef, setNotes: setNotesWithRef, textareaRef, onContentChangeCallback, onContentSavedCallback });
+  } = useNotepadContent({ notepadRef, setnotepad: setnotepadWithRef, textareaRef, onContentChangeCallback, onContentSavedCallback });
 
   // ─── showInlineToast() – mini feedback w toolbarze notatnika ("Zapisano")
   //   Celowo oddzielony od globalnego ToastContainer — mały komunikat w kontekście edytora.
@@ -70,12 +70,12 @@ export function useNotepadUI({ textareaRef }) {
   // ─── Inicjalizacja – ładowanie notatek przy montowaniu
   useEffect(() => {
     if (isInitialized) return;
-    const loaded = loadNotes();
+    const loaded = loadnotepad();
     const active = loaded.tabs.find(tab => tab.id === loaded.activeTab) ?? loaded.tabs[0]; // Active tab might be dirty from previous session
     setContent(active?.content ?? '');
     setIsInitialized(true);
     logInfo('notepad', 'useNotepadUI: initialized');
-  }, [loadNotes, setContent, isInitialized]);
+  }, [loadnotepad, setContent, isInitialized]);
 
   // ─── AUTOSAVE – co 5 sekund, tylko gdy content faktycznie się zmienił
   useEffect(() => {
@@ -84,24 +84,24 @@ export function useNotepadUI({ textareaRef }) {
     const interval = setInterval(() => {
       if (!autosaveRef.current.enabled) return;
 
-      const currentNotes = notesRef.current;
+      const currentnotepad = notepadRef.current;
       const currentContent = contentRef.current;
-      const active = currentNotes.tabs.find(tab => tab.id === currentNotes.activeTab);
+      const active = currentnotepad.tabs.find(tab => tab.id === currentnotepad.activeTab);
       if (!active || active.content === currentContent) return;
 
-      const updatedTabs = currentNotes.tabs.map(tab =>
+      const updatedTabs = currentnotepad.tabs.map(tab =>
         tab.id === active.id
           ? { ...tab, content: currentContent, updatedAt: new Date().toISOString(), lastSaved: Date.now() }
           : tab // Keep dirty state for other tabs
       );
-      const updatedNotes = { ...currentNotes, tabs: updatedTabs };
-      setNotesWithRef(updatedNotes); // Use the actual setter
+      const updatednotepad = { ...currentnotepad, tabs: updatedTabs };
+      setnotepadWithRef(updatednotepad); // Use the actual setter
       markTabAsDirty(active.id, false); // Mark active tab as clean after autosave
       logInfo('notepad', `useNotepadUI: autosaved tab ${active.id}`);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isInitialized, notesRef, contentRef, markTabAsDirty, setNotesWithRef]);
+  }, [isInitialized, notepadRef, contentRef, markTabAsDirty, setnotepadWithRef]);
 
   // ─── Wrapper addTab z aktualizacją contentu
   const wrappedAddTab = useCallback(() => {
@@ -131,7 +131,7 @@ export function useNotepadUI({ textareaRef }) {
 
   // ─── Wrapper closeTab z aktualizacją contentu
   const wrappedCloseTab = useCallback((tabId) => {
-    const tabToClose = notesRef.current.tabs.find(tab => tab.id === tabId);
+    const tabToClose = notepadRef.current.tabs.find(tab => tab.id === tabId);
     if (tabToClose && tabToClose.dirty) {
       showConfirm(
         t('notepad.unsaved_changes_title'),
@@ -150,12 +150,12 @@ export function useNotepadUI({ textareaRef }) {
         setContent(result.nextContent);
       }
     }
-  }, [closeTab, setContent, notesRef, getActiveTab, showConfirm, t]);
+  }, [closeTab, setContent, notepadRef, getActiveTab, showConfirm, t]);
 
   // ─── Obsługa beforeunload dla niezapisanych zmian
   useEffect(() => {
     const handleBeforeUnload = (event) => {
-      const anyDirtyTab = notesRef.current.tabs.some(tab => tab.dirty);
+      const anyDirtyTab = notepadRef.current.tabs.some(tab => tab.dirty);
       if (anyDirtyTab) {
         event.preventDefault();
         event.returnValue = ''; // Standard for showing a confirmation dialog
@@ -163,7 +163,7 @@ export function useNotepadUI({ textareaRef }) {
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [notesRef]);
+  }, [notepadRef]);
 
   // ─── Wrapper saveCurrentTab z tostem
   const wrappedSaveCurrentTab = useCallback(() => {
@@ -197,11 +197,11 @@ export function useNotepadUI({ textareaRef }) {
   }, [handleKeyDown, showInlineToast, t]);
 
   // Aktywna zakładka jako obiekt (dla UI)
-  const activeTabObj = notes.tabs.find(tab => tab.id === notes.activeTab) ?? null;
+  const activeTabObj = notepad.tabs.find(tab => tab.id === notepad.activeTab) ?? null;
 
   return {
     // Stan (dirty jest teraz w activeTabObj.dirty)
-    notes, content, toast, activeTabObj,
+    notepad, content, toast, activeTabObj,
     dirty: activeTabObj?.dirty ?? false,
     confirmModal, // Expose confirm modal state
     // Refy

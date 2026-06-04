@@ -4,23 +4,23 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania treścią notatnika – stan edycji, zapis ręczny, zapis do pliku, skróty klawiszowe.
 // FUNCTIONS: useNotepadContent
-// DEPENDS ON: react, notesStorage.js, loggerRenderer.js
+// DEPENDS ON: react, notepadStorage.js, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { useState, useCallback, useRef } from 'react';
-import { saveNotesToStorage } from '../utils/notesStorage.js';
+import { savenotepadToStorage } from '../utils/notepadStorage.js';
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 
 // ─── useNotepadContent() – hook do zarządzania treścią i zapisem notatnika
 // @param {Object} options
-// @param {Object} options.notesRef – ref do stanu zakładek z useNotepadTabs
-// @param {Function} options.setNotes – setter stanu zakładek
+// @param {Object} options.notepadRef – ref do stanu zakładek z useNotepadTabs
+// @param {Function} options.setnotepad – setter stanu zakładek
 // @param {Object} options.textareaRef – ref do elementu textarea
 // @param {Function} options.onContentChangeCallback – callback wywoływany przy zmianie treści
 // @param {Function} options.onContentSavedCallback – callback wywoływany po zapisie treści
 // @returns {Object} – stan treści i funkcje edycji/zapisu
-export function useNotepadContent({ notesRef, setNotes, textareaRef, onContentChangeCallback, onContentSavedCallback }) {
+export function useNotepadContent({ notepadRef, setnotepad, textareaRef, onContentChangeCallback, onContentSavedCallback }) {
   const [content, setContent] = useState('');
   const contentRef = useRef(content);
   const setContentWithRef = useCallback((value) => {
@@ -36,22 +36,22 @@ export function useNotepadContent({ notesRef, setNotes, textareaRef, onContentCh
 
   // ─── saveCurrentTab() – zapis ręczny aktualnej zakładki
   const saveCurrentTab = useCallback(() => {
-    const currentNotes = notesRef.current;
-    const active = currentNotes.tabs.find(tab => tab.id === currentNotes.activeTab);
+    const currentnotepad = notepadRef.current;
+    const active = currentnotepad.tabs.find(tab => tab.id === currentnotepad.activeTab);
     if (!active) return false;
 
-    const updatedTabs = currentNotes.tabs.map(tab =>
+    const updatedTabs = currentnotepad.tabs.map(tab =>
       tab.id === active.id
         ? { ...tab, content: contentRef.current, updatedAt: new Date().toISOString(), lastSaved: Date.now() }
         : tab
     );
-    const updatedNotes = { ...currentNotes, tabs: updatedTabs }; // This updatedNotes now includes dirty: false for the active tab
-    setNotes(updatedNotes); // Use the actual setNotes from useNotepadTabs
-    saveNotesToStorage(updatedNotes); // Persist to storage
+    const updatednotepad = { ...currentnotepad, tabs: updatedTabs }; // This updatednotepad now includes dirty: false for the active tab
+    setnotepad(updatednotepad); // Use the actual setnotepad from useNotepadTabs
+    savenotepadToStorage(updatednotepad); // Persist to storage
     onContentSavedCallback?.(false);
     logInfo('notepad', `useNotepadContent: saved tab ${active.id}`);
     return true;
-  }, [notesRef, setNotes]);
+  }, [notepadRef, setnotepad]);
 
   // ─── saveToFile() – zapisuje zawartość do pliku przez electronAPI
   const saveToFile = useCallback(async (activeTabTitle) => {

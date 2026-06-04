@@ -332,7 +332,7 @@
     "field_section": "Section",
     "field_version": "Version (optional)",
     "field_version_placeholder": "e.g. 1.2.0",
-    "field_comment": "Comment / code / notes",
+    "field_comment": "Comment / code / notepad",
     "field_comment_placeholder": "Paste code, change description, link...",
     "field_project": "Project",
     "field_project_placeholder": "Select project...",

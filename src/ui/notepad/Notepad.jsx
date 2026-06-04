@@ -83,8 +83,8 @@ export default function Notepad() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--bg-primary)' }}>
        <NotepadTabs
-         tabs={notepad.notes.tabs}
-         activeId={notepad.notes.activeTab}
+         tabs={notepad.notepad.tabs}
+         activeId={notepad.notepad.activeTab}
          dirty={notepad.dirty}
          onSwitch={notepad.switchTab}
          onClose={handleTabCloseClick}

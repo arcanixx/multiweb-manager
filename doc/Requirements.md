@@ -419,7 +419,7 @@
 
 - **ID:** SIDEBAR_REQ-006
 - **Sekcja:** SIDEBAR / PROFILE MANAGER
-- **Opis:** Komponent `ProfileModal.jsx` z polami: Name, URL, Category, Label, Notes, User Agent, adBlocker, pinned. Walidacja URL.
+- **Opis:** Komponent `ProfileModal.jsx` z polami: Name, URL, Category, Label, notepad, User Agent, adBlocker, pinned. Walidacja URL.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
@@ -701,7 +701,7 @@
 
 - **ID:** SETTINGS_REQ-003
 - **Sekcja:** SETTINGS PANEL
-- **Opis:** Eksport do JSON: `{ version, exportedAt, settings, profiles, tasks, notes }`. Import z walidacją i modalem potwierdzenia.
+- **Opis:** Eksport do JSON: `{ version, exportedAt, settings, profiles, tasks, notepad }`. Import z walidacją i modalem potwierdzenia.
 - **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.3
@@ -1714,7 +1714,7 @@
 
 ---
 
-### [Quick Notes / Sticky notes] :
+### [Quick notepad / Sticky notepad] :
 - **ID:** UIUX_REQ-018
 - **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
 - **Opis:** Małe "przypinki" na pulpicie / w sidebarze. Tworzenie, edycja, usuwanie, kolory. Przypinki zapisywane w `notepadStore` z typem "sticky".
@@ -1871,7 +1871,7 @@
 ### [Crash recovery notatnika] :
 - **ID:** NOTEPAD_REQ-005
 - **Sekcja:** NOTEPAD EDITOR
-- **Opis:** Crash recovery notatnika. Autosave co 5 sekund (lub zgodnie z `AUTO_SAVE_INTERVAL`) do osobnego pliku `userData/recovery_notes.json`. Przy starcie aplikacji – sprawdzenie, czy istnieją niezapisane notatki (porównanie `lastSaved` z `recovery`). Jeśli tak – modal: "Wykryto niezapisane notatki. Przywrócić? [Tak] [Nie] [Pokaż różnice]". Po przywróceniu – usunięcie pliku recovery. Integracja z `ARCH_REQ-008` (autosave tylko przy zmianie).
+- **Opis:** Crash recovery notatnika. Autosave co 5 sekund (lub zgodnie z `AUTO_SAVE_INTERVAL`) do osobnego pliku `userData/recovery_notepad.json`. Przy starcie aplikacji – sprawdzenie, czy istnieją niezapisane notatki (porównanie `lastSaved` z `recovery`). Jeśli tak – modal: "Wykryto niezapisane notatki. Przywrócić? [Tak] [Nie] [Pokaż różnice]". Po przywróceniu – usunięcie pliku recovery. Integracja z `ARCH_REQ-008` (autosave tylko przy zmianie).
 - **Status:** BACKLOG
 - **Priorytet:** MAJOR
 - **Version:** 0.0.5

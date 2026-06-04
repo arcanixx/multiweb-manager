@@ -11,7 +11,7 @@
 
 import { ipcMain } from 'electron';
 import { buildSearchIndex, searchAll } from '../utils/searchIndex.js';
-import { getAllNotes } from '../stores/notepadStore.js';
+import { getAllnotepad } from '../stores/notepadStore.js';
 import { loadTasks } from '../stores/tasksStore.js';
 import { loadProjects } from '../stores/projectsStore.js';
 import { logDebug, logError } from '../utils/logger.js';
@@ -21,21 +21,21 @@ import { logDebug, logError } from '../utils/logger.js';
 //   @param {Object} payload
 //   @param {string} payload.query   – fraza wyszukiwania
 //   @param {Array}  payload.profiles – lista profili (przekazana z renderera, bo profiles są w pamięci)
-//   @param {Array}  [payload.types]  – opcjonalny filtr typów ['notes','tasks','projects','profiles']
+//   @param {Array}  [payload.types]  – opcjonalny filtr typów ['notepad','tasks','projects','profiles']
 //   @returns {{ ok: boolean, data: Object }} – przefiltrowane wyniki pogrupowane wg typów
 ipcMain.handle('search:global', async (_, { query, profiles = [], types }) => {
   try {
     logDebug('ipc', `search:global query="${query}" types=${JSON.stringify(types ?? 'all')}`);
 
     // Pobierz dane ze store'ów (main process ma do nich dostęp)
-    const [notes, tasks, projects] = await Promise.all([
-      Promise.resolve(getAllNotes()),
+    const [notepad, tasks, projects] = await Promise.all([
+      Promise.resolve(getAllnotepad()),
       Promise.resolve(loadTasks()),
       Promise.resolve(loadProjects()),
     ]);
 
     // Zbuduj indeks z aktualnych danych
-    const index = buildSearchIndex({ profiles, projects, tasks, notes });
+    const index = buildSearchIndex({ profiles, projects, tasks, notepad });
 
     // Przeszukaj
     let results = searchAll(index, query);
@@ -54,6 +54,6 @@ ipcMain.handle('search:global', async (_, { query, profiles = [], types }) => {
     return { ok: true, data: results };
   } catch (err) {
     logError('ipc', 'search:global failed', err.message);
-    return { ok: false, error: err.message, data: { profiles: [], projects: [], tasks: [], notes: [] } };
+    return { ok: false, error: err.message, data: { profiles: [], projects: [], tasks: [], notepad: [] } };
   }
 });

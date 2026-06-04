@@ -44,12 +44,12 @@ export const IPC_CHANNELS = {
     SAVE_SECTIONS: 'tasks:saveSections',
   },
 
-  // ─── Notes ─────────────────────────────────────────────────────
-  NOTES: {
-    GET_ALL: 'notes:getAll',
-    ADD:     'notes:add',
-    UPDATE:  'notes:update',
-    DELETE:  'notes:delete',
+  // ─── notepad ─────────────────────────────────────────────────────
+  notepad: {
+    GET_ALL: 'notepad:getAll',
+    ADD:     'notepad:add',
+    UPDATE:  'notepad:update',
+    DELETE:  'notepad:delete',
   },
 
   // ─── History ───────────────────────────────────────────────────

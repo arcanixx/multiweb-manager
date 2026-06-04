@@ -19,11 +19,11 @@ const TYPE_LABELS = {
   profiles: { label: 'sidebar.search_type_profiles', icon: ICONS.BROWSER },
   projects: { label: 'sidebar.search_type_projects', icon: ICONS.PROJECTMANAGER },
   tasks:    { label: 'sidebar.search_type_tasks',    icon: ICONS.AGGREGATEDTASKS },
-  notes:    { label: 'sidebar.search_type_notes',    icon: ICONS.NOTEPAD },
+  notepad:    { label: 'sidebar.search_type_notepad',    icon: ICONS.NOTEPAD },
 };
 
 // ─── GlobalSearchResults() – wyświetla wyniki globalnego wyszukiwania pogrupowane wg typu
-//   @param {Object}   props.results        – { profiles[], projects[], tasks[], notes[] }
+//   @param {Object}   props.results        – { profiles[], projects[], tasks[], notepad[] }
 //   @param {boolean}  props.isSearching    – czy trwa ładowanie
 //   @param {Function} props.onSelect       – callback wyboru wyniku { type, id, label }
 //   @returns {JSX.Element|null}

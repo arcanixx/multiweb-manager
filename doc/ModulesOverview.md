@@ -34,7 +34,7 @@
 - **Kategorie profili** – AI / Dev / Design / Productivity / Special.
 - **Ostatnio używane** – sortowanie po `lastUsedAt`.
 - **Drag & drop profili** – zmiana kolejności + zapis.
-- **Edycja profilu (modal)** – `name`, `url`, `label`, `notes`, `userAgent`, `adBlocker` per profil.
+- **Edycja profilu (modal)** – `name`, `url`, `label`, `notepad`, `userAgent`, `adBlocker` per profil.
 - **Multi-account login** – DO-ANALYSIS.
 ---
 ## 3. WEBVIEWTAB / PRZEGLĄDARKA
@@ -165,7 +165,7 @@
 - `TestRunner_Reexport.js` – testy re-eksportów (config.js, icons.js)
 - `TestRunner_Settings.js` – testy ustawień (dark mode toggle, eksport/import)
 - `TestRunner_SleepTabs.js` – testy Sleep Tabs (timeout, wake, threshold)
-- `TestRunner_Store.js` – testy store (settings, notes, history)
+- `TestRunner_Store.js` – testy store (settings, notepad, history)
 - `TestRunner_Tasks.js` – testy zadań (struktura, filtrowanie priorytetów, wyszukiwanie)
 - `TestRunner_Terminal.js` – testy terminala (xterm, node-pty, ANSI, historia komend)
 - `TestRunner_Tools.js` – testy narzędzi (JSON formatter, Regex Tester, Markdown Previewer)

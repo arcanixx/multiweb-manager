@@ -129,7 +129,7 @@ export const PATHS = {
 export const LIMITS = {
   maxClipboardItems: 50,
   maxRecentApps: 20,
-  maxNotes: 200,
+  maxnotepad: 200,
   maxTasks: 2000,
   maxProjects: 200,
   maxHistoryEntries: 5000,

@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE: notesStore.js
-// PATH: src/stores/notesStore.js
+// FILE: notepadStore.js
+// PATH: src/stores/notepadStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie notatkami użytkownika – ładowanie, zapisywanie oraz operacje CRUD na danych notatek.
-// FUNCTIONS: getAllNotes, addNote, updateNote, deleteNote
+// FUNCTIONS: getAllnotepad, addNote, updateNote, deleteNote
 // DEPENDS ON: fs, path, electron, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -12,12 +12,12 @@
 // ARCHITEKTURA NOTATEK — dwa osobne systemy, celowy podział:
 //
 //   notepadStore.js  (src/stores/ — ten plik, main process)
-//   → Zapis/odczyt notatek przez fs do notes.json w userData
-//   → Używany przez: ipcMainHandlers_notes.js (CRUD przez IPC)
+//   → Zapis/odczyt notatek przez fs do notepad.json w userData
+//   → Używany przez: ipcMainHandlers_notepad.js (CRUD przez IPC)
 //                    ipcMainHandlers_search.js (globalne wyszukiwanie Ctrl+K)
 //   → NIE importować w renderer process
 //
-//   notesStorage.js (src/utils/ — renderer process)
+//   notepadStorage.js (src/utils/ — renderer process)
 //   → Cache zakładek notatnika w localStorage (fallback gdy IPC niedostępne)
 //   → Używany przez: useNotepadContent.js, useNotepadTabs.js
 //   → Docelowo zostanie zastąpiony przez StorageService
@@ -28,29 +28,29 @@ import fs from "fs";
 import path from "path";
 import { app } from "electron";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
-const NOTES_FILE = path.join(app.getPath("userData"), "notes.json");
+const notepad_FILE = path.join(app.getPath("userData"), "notepad.json");
 
-// ─── loadStore() – Wczytuje i deserializuje dane notatek z pliku notes.json; w przypadku błędu lub braku pliku zwraca domyślną strukturę z pustą listą
+// ─── loadStore() – Wczytuje i deserializuje dane notatek z pliku notepad.json; w przypadku błędu lub braku pliku zwraca domyślną strukturę z pustą listą
 function loadStore() {
   try {
-    if (!fs.existsSync(NOTES_FILE)) {
+    if (!fs.existsSync(notepad_FILE)) {
       return { version: "0.0.3", data: [] };
     }
-    return JSON.parse(fs.readFileSync(NOTES_FILE, "utf8"));
+    return JSON.parse(fs.readFileSync(notepad_FILE, "utf8"));
   } catch (err) {
     logError("store", "notepadStore.loadStore failed", err.message);
     return { version: "0.0.3", data: [] };
   }
 }
 
-// ─── saveStore() – Zapisuje aktualną strukturę notatek do pliku notes.json w katalogu danych użytkownika; zwraca true w przypadku powodzenia lub false przy błędzie
+// ─── saveStore() – Zapisuje aktualną strukturę notatek do pliku notepad.json w katalogu danych użytkownika; zwraca true w przypadku powodzenia lub false przy błędzie
 function saveStore(store) {
   try {
     // Walidacja przed zapisem
     if (!store.data.every(n => n.id && typeof n.title === 'string')) {
       throw new Error("Validation failed: Note missing ID or Title");
     }
-    fs.writeFileSync(NOTES_FILE, JSON.stringify(store, null, 2), "utf8");
+    fs.writeFileSync(notepad_FILE, JSON.stringify(store, null, 2), "utf8");
     logInfo("store", "notepadStore.saveStore success");
     return true;
   } catch (err) {
@@ -59,12 +59,12 @@ function saveStore(store) {
   }
 }
 
-// ─── getAllNotes() – Pobiera i zwraca tablicę wszystkich zarejestrowanych notatek użytkownika
-export function getAllNotes() {
+// ─── getAllnotepad() – Pobiera i zwraca tablicę wszystkich zarejestrowanych notatek użytkownika
+export function getAllnotepad() {
   try {
     return loadStore().data || [];
   } catch (err) {
-    logError("store", "notepadStore.getAllNotes failed", err.message);
+    logError("store", "notepadStore.getAllnotepad failed", err.message);
     return [];
   }
 }

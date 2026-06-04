@@ -16,9 +16,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // ─── getProfiles() – Pobiera listę wszystkich profili użytkownika
   getProfiles:    ()           => ipcRenderer.invoke('profiles:getAll'),
   
-  // ─── Notes ────────────────────────────────────────────────────
-  // ─── getNotes() – Pobiera listę notatek
-  getNotes:   ()      => ipcRenderer.invoke('notes:getAll'),
+  // ─── notepad ────────────────────────────────────────────────────
+  // ─── getnotepad() – Pobiera listę notatek
+  getnotepad:   ()      => ipcRenderer.invoke('notepad:getAll'),
+
   
   // ─── Settings ─────────────────────────────────────────────────
   // ─── getSettings() – Pobiera aktualną konfigurację użytkownika

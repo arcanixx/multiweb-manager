@@ -2,7 +2,7 @@
 // FILE: useSidebarSearch.js
 // PATH: src/hooks/useSidebarSearch.js
 // VERSION: 0.0.3
-// PURPOSE: Hook React do wyszukiwania i filtrowania profilów w sidebarze – tryb lokalny (profile/kategorie) i globalny (notes, tasks, projects, profiles przez IPC).
+// PURPOSE: Hook React do wyszukiwania i filtrowania profilów w sidebarze – tryb lokalny (profile/kategorie) i globalny (notepad, tasks, projects, profiles przez IPC).
 // FUNCTIONS: useSidebarSearch
 // DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -74,7 +74,7 @@ export function useSidebarSearch(profiles) {
         const res = await window.electronAPI.invoke('search:global', {
           query: search,
           profiles,
-          types: ['notes', 'tasks', 'projects', 'profiles'],
+          types: ['notepad', 'tasks', 'projects', 'profiles'],
         });
         if (res?.ok) {
           setGlobalResults(res.data);

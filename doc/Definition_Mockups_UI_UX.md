@@ -211,7 +211,7 @@ Funkcje:
 ### 5.1. Tabs
 
 ```
-[ README.md ] [ Notes ] [ API ] [+]
+[ README.md ] [ notepad ] [ API ] [+]
 ```
 
 - Double click → rename
@@ -382,7 +382,7 @@ Jest to dokumentacja **rzeczywistego stanu aplikacji**, nie wizja czy backlog.
 - **Wpływ na inne komponenty:**
   - Nowy plik: `src/hooks/useNotepad.js` — stan zakładek, autosave, zapis, skróty klawiszowe
   - Nowy plik: `src/hooks/useNotepadFindReplace.js` — logika znajdź/zastąp
-  - Nowy plik: `src/utils/notesStorage.js` — `createNewTab`, `loadNotesFromStorage`, `saveNotesToStorage`
+  - Nowy plik: `src/utils/notepadStorage.js` — `createNewTab`, `loadnotepadFromStorage`, `savenotepadToStorage`
   - `NotepadTabs`, `NotepadToolbar`, `NotepadFindReplace`, `NotepadStatusBar` — bez zmian w API propsów
 
   ---

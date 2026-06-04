@@ -2,7 +2,7 @@
 // FILE: TestRunner_Store.js
 // PATH: tests/TestRunner_Store.js
 // VERSION: 0.0.3
-// PURPOSE: Testy struktury danych pobieranych z store (settings, notes, history)
+// PURPOSE: Testy struktury danych pobieranych z store (settings, notepad, history)
 // FUNCTIONS: runStoreTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -47,21 +47,21 @@ const tests = [
     }
   },
   {
-    name: 'notes is object',
+    name: 'notepad is object',
     run: async () => {
       if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
-      const notes = await window.electronAPI.getNotes().catch(() => null);
-      const ok = notes && typeof notes === 'object';
-      return { ok, details: ok ? '' : 'notes is not an object or null' };
+      const notepad = await window.electronAPI.getnotepad().catch(() => null);
+      const ok = notepad && typeof notepad === 'object';
+      return { ok, details: ok ? '' : 'notepad is not an object or null' };
     }
   },
   {
-    name: 'notes has tabs array',
+    name: 'notepad has tabs array',
     run: async () => {
       if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
-      const notes = await window.electronAPI.getNotes().catch(() => ({ tabs: [] }));
-      const ok = Array.isArray(notes.tabs);
-      return { ok, details: ok ? '' : 'notes.tabs is not an array' };
+      const notepad = await window.electronAPI.getnotepad().catch(() => ({ tabs: [] }));
+      const ok = Array.isArray(notepad.tabs);
+      return { ok, details: ok ? '' : 'notepad.tabs is not an array' };
     }
   },
   {

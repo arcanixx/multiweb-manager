@@ -64,12 +64,12 @@
     {
       "id": "intro",
       "title": "Introduction",
-      "content": "MultiWeb Manager is an application combining browser functions, developer tools, task management, projects, notes, and a set of Tools.\n\nOn the left is the Sidebar – navigation center. On the right – WebView, Notepad, TaskPanel, Tools and other modules."
+      "content": "MultiWeb Manager is an application combining browser functions, developer tools, task management, projects, notepad, and a set of Tools.\n\nOn the left is the Sidebar – navigation center. On the right – WebView, Notepad, TaskPanel, Tools and other modules."
     },
     {
       "id": "sidebar",
       "title": "Sidebar & Profiles",
-      "content": "Sidebar contains:\n- profile search bar,\n- categories (AI, Dev, Design, Productivity, Special),\n- profile list,\n- recently used,\n- Tools,\n- App Library,\n- Settings,\n- Help.\n\nEach profile is a separate app opened in WebView.\nYou can:\n- add profiles,\n- edit them in modals,\n- change order (drag & drop),\n- pin (isPinned),\n- mark as favorite (isFavorite),\n- set as default (isDefault),\n- add notes and labels,\n- set userAgent,\n- enable/disable AdBlocker per profile."
+      "content": "Sidebar contains:\n- profile search bar,\n- categories (AI, Dev, Design, Productivity, Special),\n- profile list,\n- recently used,\n- Tools,\n- App Library,\n- Settings,\n- Help.\n\nEach profile is a separate app opened in WebView.\nYou can:\n- add profiles,\n- edit them in modals,\n- change order (drag & drop),\n- pin (isPinned),\n- mark as favorite (isFavorite),\n- set as default (isDefault),\n- add notepad and labels,\n- set userAgent,\n- enable/disable AdBlocker per profile."
     },
     {
       "id": "webview",
@@ -79,7 +79,7 @@
     {
       "id": "notepad",
       "title": "Notepad",
-      "content": "Notepad works like a tabbed editor:\n- multi-tab,\n- rename tabs,\n- autosave only on change,\n- plain text mode,\n- syntax highlight (CodeMirror/Monaco),\n- rich text (bold, italic, lists).\n\nNotes are saved automatically and persistently."
+      "content": "Notepad works like a tabbed editor:\n- multi-tab,\n- rename tabs,\n- autosave only on change,\n- plain text mode,\n- syntax highlight (CodeMirror/Monaco),\n- rich text (bold, italic, lists).\n\nnotepad are saved automatically and persistently."
     },
     {
       "id": "tasks",

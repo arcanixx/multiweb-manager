@@ -26,7 +26,7 @@ Każdy projekt powinien zaczynać się od następującej struktury:
 /project-root
 ├── assets/
 ├── src/
-│   ├── core/       # store'y (settings, profiles, tasks, notes, projects, history, workspaces, clipboard)
+│   ├── core/       # store'y (settings, profiles, tasks, notepad, projects, history, workspaces, clipboard)
 │   ├── engine/     # silniki (adBlocker, hotkeysManager, sleepTabsManager, updateService, webviewRegistry)
 │   ├── ui/         # komponenty React (modułowo: sidebar, taskpanel, notepad, tools, settings, ...)
 │   ├── utils/      # funkcje pomocnicze (logger, translations, icons, fileUtils, imageUtils, ...)

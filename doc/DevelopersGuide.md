@@ -456,7 +456,7 @@ function handleAddFromLibrary(app) {
     url: app.url,
     category: currentCategory || "AI",
     label: app.name,
-    notes: "",
+    notepad: "",
     userAgent: "",
     adBlocker: undefined,
     isPinned: app.isPinned,
@@ -617,7 +617,7 @@ function reorderProfiles(targetId) {
 
 **Cel:** Pełna edycja profilu w modalach, zamiast promptów.
 
-**Pola w `ProfileModal`:** `name`, `url`, `category`, `label`, `notes` (rich text), `userAgent`, `adBlocker` (per profil), `isPinned`, `isFavorite`, `isDefault`
+**Pola w `ProfileModal`:** `name`, `url`, `category`, `label`, `notepad` (rich text), `userAgent`, `adBlocker` (per profil), `isPinned`, `isFavorite`, `isDefault`
 
 **Zapis profilu:**
 ```js
@@ -931,7 +931,7 @@ useEffect(() => {
 }
 ```
 
-**Funkcje w `notepadStore`:** `loadNotes()`, `saveNotes(notes)`, `createNote()`, `updateNote(id, patch)`, `deleteNote(id)`, `setActiveNote(id)`
+**Funkcje w `notepadStore`:** `loadnotepad()`, `savenotepad(notepad)`, `createNote()`, `updateNote(id, patch)`, `deleteNote(id)`, `setActiveNote(id)`
 
 **UI:**
 - Pasek zakładek u góry
@@ -1216,7 +1216,7 @@ useEffect(() => {
   "settings": {},
   "profiles": [],
   "tasks": [],
-  "notes": [],
+  "notepad": [],
   "projects": []
 }
 ```

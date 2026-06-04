@@ -33,7 +33,7 @@ export const APP_CATEGORIES_MAP = {
   CALENDAR: "Calendar",
   PROJECT_MANAGEMENT: "Project Management",
   TASK_MANAGEMENT: "Task Management",
-  NOTES: "Notes & Writing",
+  notepad: "notepad & Writing",
   STREAMING: "Streaming",
   MUSIC: "Music",
   FINANCE: "Finance & Banking",
