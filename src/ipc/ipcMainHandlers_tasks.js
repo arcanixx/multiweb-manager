@@ -17,12 +17,12 @@ import {
 import { logError } from "../utils/logger.js";
 ipcMain.handle("tasks:getAll", async (_, payload) => {
   try {
-    if (!payload || typeof payload !== 'string') {
+    // payload opcjonalny: string = projekt, brak/undefined = wszystkie
+    if (payload !== undefined && typeof payload !== 'string') {
       throw new Error('INVALID_PAYLOAD');
     }
-    const projectName = payload;
-    if (projectName) {
-      return { ok: true, data: loadTasksSections(projectName) };
+    if (payload) {
+      return { ok: true, data: loadTasksSections(payload) };
     }
     return { ok: true, data: loadAllTasksGrouped() };
   } catch (err) {
@@ -45,3 +45,4 @@ ipcMain.handle("tasks:saveSections", async (_, payload) => {
     return { ok: false, error: err.message };
   }
 });
+
