@@ -2,113 +2,118 @@
 // FILE: TestRunner_ElectronAPI.js
 // PATH: tests/TestRunner_ElectronAPI.js
 // VERSION: 0.0.3
-// PURPOSE: Testy dostępności i typu metod window.electronAPI
+// PURPOSE: Testy dostępności i poprawności metod window.electronAPI (preload bridge). Weryfikuje obecność, typy i brak legacy metod.
 // FUNCTIONS: runElectronAPITests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { runTests } from './testUtils.js';
+
+const WYMAGANE_METODY = [
+  // Core
+  'invoke',
+  // Profiles
+  'getProfiles', 'createProfile', 'updateProfile', 'deleteProfile',
+  // Settings
+  'getSettings', 'saveSettings',
+  // History
+  'getHistory', 'addHistory', 'clearHistory',
+  // Notes
+  'getNotes', 'saveNotes',
+  // Workspaces
+  'getWorkspaces', 'saveWorkspace', 'deleteWorkspace',
+  // Terminal (nowe API)
+  'createTerminal', 'terminalWrite', 'terminalResize', 'killTerminal',
+  'onTerminalData', 'onTerminalExit',
+  // Hotkeys
+  'getHotkeys', 'saveHotkeys',
+  // AdBlocker
+  'setGlobalAdBlocker', 'getGlobalAdBlocker',
+  // WebView
+  'openSingleWindow', 'captureWebView', 'getWebViewResourceInfo',
+  // Logs
+  'appendLogFile', 'getLogsFile', 'clearLogsFile',
+  // Shell
+  'openExternal',
+  // App
+  'getAppInfo', 'getDebugMode',
+];
+
+const LEGACY_METODY = [
+  'terminalStart', 'terminalKill',
+  'terminalWriteLegacy', 'terminalResizeLegacy', 'terminalKillLegacy',
+  // Stare kanały bez namespace
+  'saveProfiles', 'getTasks', 'saveTasks',
+];
+
 const tests = [
   {
-    name: 'window.electronAPI exists',
+    name: 'window.electronAPI istnieje',
     run: async () => {
-      const api = typeof window !== 'undefined' ? window.electronAPI : null;
-      const ok = !!api;
-      return { ok, details: ok ? '' : 'electronAPI not found' };
+      const ok = typeof window !== 'undefined' && !!window.electronAPI;
+      return { ok, details: ok ? '' : 'electronAPI nie zostało zainicjalizowane' };
     }
   },
   {
-    name: 'electronAPI.getProfiles is function',
-    run: async () => {
-      const api = window.electronAPI;
-      const ok = api && typeof api.getProfiles === 'function';
-      return { ok, details: ok ? '' : 'getProfiles missing or not a function' };
-    }
-  },
-  {
-    name: 'electronAPI.saveProfiles is function',
+    name: 'Wszystkie wymagane metody są funkcjami',
     run: async () => {
       const api = window.electronAPI;
-      const ok = api && typeof api.saveProfiles === 'function';
-      return { ok, details: ok ? '' : 'saveProfiles missing or not a function' };
+      if (!api) return { ok: false, details: 'electronAPI brak' };
+      const brakujace = WYMAGANE_METODY.filter(m => typeof api[m] !== 'function');
+      const ok = brakujace.length === 0;
+      return { ok, details: ok ? '' : `Brakujące metody: ${brakujace.join(', ')}` };
     }
   },
   {
-    name: 'electronAPI.getSettings is function',
+    name: 'Brak legacy metod (cleanup po W4)',
     run: async () => {
       const api = window.electronAPI;
-      const ok = api && typeof api.getSettings === 'function';
-      return { ok, details: ok ? '' : 'getSettings missing or not a function' };
+      if (!api) return { ok: false, details: 'electronAPI brak' };
+      const obecne = LEGACY_METODY.filter(m => typeof api[m] === 'function');
+      const ok = obecne.length === 0;
+      return {
+        ok,
+        details: ok ? '' : `Legacy metody do usunięcia z preload: ${obecne.join(', ')}`
+      };
     }
   },
+  // ─── Spot check – kilka metod wywołujemy i sprawdzamy kształt odpowiedzi
   {
-    name: 'electronAPI.saveSettings is function',
+    name: 'getSettings() – zwraca { ok: true, data: object }',
     run: async () => {
-      const api = window.electronAPI;
-      const ok = api && typeof api.saveSettings === 'function';
-      return { ok, details: ok ? '' : 'saveSettings missing or not a function' };
+      if (typeof window.electronAPI?.getSettings !== 'function') return { ok: false, details: 'getSettings missing' };
+      try {
+        const res = await window.electronAPI.getSettings();
+        const ok = res?.ok === true && typeof res?.data === 'object';
+        return { ok, details: ok ? '' : `Zły kształt: ${JSON.stringify(res)}` };
+      } catch (e) { return { ok: false, details: e.message }; }
     }
   },
   {
-    name: 'electronAPI.getTasks is function',
+    name: 'getProfiles() – zwraca { ok: true, data: array }',
     run: async () => {
-      const api = window.electronAPI;
-      const ok = api && typeof api.getTasks === 'function';
-      return { ok, details: ok ? '' : 'getTasks missing or not a function' };
+      if (typeof window.electronAPI?.getProfiles !== 'function') return { ok: false, details: 'getProfiles missing' };
+      try {
+        const res = await window.electronAPI.getProfiles();
+        const ok = res?.ok === true && Array.isArray(res?.data);
+        return { ok, details: ok ? '' : `Zły kształt: ${JSON.stringify(res)}` };
+      } catch (e) { return { ok: false, details: e.message }; }
     }
   },
   {
-    name: 'electronAPI.saveTasks is function',
+    name: 'getHistory() – zwraca { ok: true, data: array }',
     run: async () => {
-      const api = window.electronAPI;
-      const ok = api && typeof api.saveTasks === 'function';
-      return { ok, details: ok ? '' : 'saveTasks missing or not a function' };
+      if (typeof window.electronAPI?.getHistory !== 'function') return { ok: false, details: 'getHistory missing' };
+      try {
+        const res = await window.electronAPI.getHistory();
+        const ok = res?.ok === true && Array.isArray(res?.data);
+        return { ok, details: ok ? '' : `Zły kształt: ${JSON.stringify(res)}` };
+      } catch (e) { return { ok: false, details: e.message }; }
     }
   },
-  {
-    name: 'electronAPI.getHistory is function',
-    run: async () => {
-      const api = window.electronAPI;
-      const ok = api && typeof api.getHistory === 'function';
-      return { ok, details: ok ? '' : 'getHistory missing or not a function' };
-    }
-  },
-  {
-    name: 'electronAPI.clearHistory is function',
-    run: async () => {
-      const api = window.electronAPI;
-      const ok = api && typeof api.clearHistory === 'function';
-      return { ok, details: ok ? '' : 'clearHistory missing or not a function' };
-    }
-  }
-  {
-  name: 'electronAPI.appendLogFile is function',
-  run: async () => {
-    const api = window.electronAPI;
-    const ok = api && typeof api.appendLogFile === 'function';
-    return { ok, details: ok ? '' : 'appendLogFile missing or not a function' };
-  }
-  },
-  {
-  name: 'electronAPI.getHotkeys is function',
-  run: async () => {
-    const api = window.electronAPI;
-    const ok = api && typeof api.getHotkeys === 'function';
-    return { ok, details: ok ? '' : 'getHotkeys missing or not a function' };
-  }
-  },
-  {
-  name: 'electronAPI.setGlobalAdBlocker is function',
-  run: async () => {
-    const api = window.electronAPI;
-    const ok = api && typeof api.setGlobalAdBlocker === 'function';
-    return { ok, details: ok ? '' : 'setGlobalAdBlocker missing or not a function' };
-  }
 ];
 
 export async function runElectronAPITests() {
   return runTests('ElectronAPI', tests);
 }
-
-

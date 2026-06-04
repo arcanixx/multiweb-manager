@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_taskGroups.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla grup zadań (TaskGroup) — CRUD + przypisanie profili. Mapuje profile WebView na wspólne panele zadań.
-// FUNCTIONS: ipc:taskGroups:getAll, ipc:taskGroups:create, ipc:taskGroups:update, ipc:taskGroups:delete, ipc:taskGroups:getForProfile, ipc:taskGroups:ensureForProfile, ipc:taskGroups:assignProfile, ipc:taskGroups:unassignProfile
-// DEPENDS ON: electron, taskGroupsStore.js, logger.js
+// FUNCTIONS: -
+// DEPENDS ON: electron, ipcChannels.js, taskGroupsStore.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

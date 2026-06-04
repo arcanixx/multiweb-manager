@@ -1,7 +1,7 @@
 {
-  "_comment": "FILE: help.template.json | PATH: src/locales/templates/help.template.json | VERSION: 0.0.3 | PURPOSE: Szablon dla pomocy w nowym języku (kopiuj, zmień nazwę na help_[język].json i przetłumacz). PAMIĘTAJ: Jeśli dodajesz nowy język, zaktualizuj TestRunner_Locales.js (dodaj plik do LOCALE_FILES) ORAZ w src/utils/translations.js – w useEffect dla help, dodaj import help_[język].json. | FUNCTIONS: - | DEPENDS ON: - | UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.",
+  "_comment": "FILE: help_en.json | PATH: src/locales/help_en.json | VERSION: 0.0.3 | PURPOSE: Help content (EN) – translated from help_pl.json | FUNCTIONS: - | DEPENDS ON: - | UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.",
   "version": "0.0.3",
- "sections": [
+  "sections": [
     {
       "id": "toc",
       "title": "Table of Contents",

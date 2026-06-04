@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Kontener renderowania narzędzi specjalnych. Używa TOOLS_REGISTRY zamiast switch-case – nowe narzędzie = wpis w src/config/toolsRegistry.js, bez modyfikacji kontenera.
 // FUNCTIONS: ToolsContainer
-// DEPENDS ON: react, loggerRenderer.js, Spinner.jsx, toolsRegistry.js, translations.js
+// DEPENDS ON: react, loggerRenderer.js, translations.js, Spinner.jsx, toolsRegistry.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

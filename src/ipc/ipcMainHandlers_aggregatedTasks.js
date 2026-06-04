@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_aggregatedTasks.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla widoku zbiorczego zadań (AggregatedTasks). Łączy zadania z grupami (TaskGroup) i profilami.
-// FUNCTIONS: ipc:aggregatedTasks:getAll, ipc:aggregatedTasks:filter, ipc:aggregatedTasks:sort
-// DEPENDS ON: electron, tasksStore.js, taskGroupsStore.js, logger.js
+// FUNCTIONS: -
+// DEPENDS ON: electron, ipcChannels.js, tasksStore.js, taskGroupsStore.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

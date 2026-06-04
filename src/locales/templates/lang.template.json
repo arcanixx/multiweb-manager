@@ -1,5 +1,4 @@
 {
-  "_comment": "FILE: lang.template.json | PATH: src/locales/templates/lang.template.json | VERSION: 0.0.3 | PURPOSE:  | FUNCTIONS: - | DEPENDS ON: - | UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.",
   "app": {
     "name": "MultiWeb Manager",
     "loading": "Loading...",
@@ -549,7 +548,9 @@
     "testString": "Test string",
     "enterUrl": "Enter URL",
     "bodyPlaceholder": "Request body...",
-    "invalidHeaders": "Invalid headers"
+    "invalidHeaders": "Invalid headers",
+    "unknown_tool": "Unknown tool",
+    "disabled": "Tool disabled"
   },
   "hotkeys": {
     "title": "Keyboard Shortcuts",
