@@ -1717,7 +1717,7 @@
 ### [Quick Notes / Sticky notes] :
 - **ID:** UIUX_REQ-018
 - **Sekcja:** UI/UX DESIGN & UX IMPROVEMENTS
-- **Opis:** Małe "przypinki" na pulpicie / w sidebarze. Tworzenie, edycja, usuwanie, kolory. Przypinki zapisywane w `notesStore` z typem "sticky".
+- **Opis:** Małe "przypinki" na pulpicie / w sidebarze. Tworzenie, edycja, usuwanie, kolory. Przypinki zapisywane w `notepadStore` z typem "sticky".
 - **Status:** BACKLOG
 - **Priorytet:** MINOR
 - **Version:** 0.0.5

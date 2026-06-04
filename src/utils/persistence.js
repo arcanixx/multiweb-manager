@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: persistence.js
-// PATH: src/stores/persistence.js
+// PATH: src/utils/persistence.js
 // VERSION: 0.0.3
 // PURPOSE: Wspólne operacje I/O dla plików JSON – odczyt, zapis i zarządzanie ścieżkami w katalogu userData Electrona.
 // FUNCTIONS: getUserDataPath, readJsonFile, writeJsonFile

@@ -5,13 +5,13 @@
 // PURPOSE: IPC handler globalnego wyszukiwania (Ctrl+K / sidebar global search).
 //          search:global – buduje indeks ze store'ów i przeszukuje go wg query.
 // FUNCTIONS: ipc:search:global
-// DEPENDS ON: electron, searchIndex.js, notesStore.js, tasksStore.js, projectsStore.js, logger.js
+// DEPENDS ON: electron, searchIndex.js, notepadStore.js, tasksStore.js, projectsStore.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain } from 'electron';
 import { buildSearchIndex, searchAll } from '../utils/searchIndex.js';
-import { getAllNotes } from '../stores/notesStore.js';
+import { getAllNotes } from '../stores/notepadStore.js';
 import { loadTasks } from '../stores/tasksStore.js';
 import { loadProjects } from '../stores/projectsStore.js';
 import { logDebug, logError } from '../utils/logger.js';

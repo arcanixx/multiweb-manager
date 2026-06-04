@@ -11,7 +11,7 @@
 //
 // ARCHITEKTURA NOTATEK — dwa osobne systemy, celowy podział:
 //
-//   notesStore.js  (src/stores/ — ten plik, main process)
+//   notepadStore.js  (src/stores/ — ten plik, main process)
 //   → Zapis/odczyt notatek przez fs do notes.json w userData
 //   → Używany przez: ipcMainHandlers_notes.js (CRUD przez IPC)
 //                    ipcMainHandlers_search.js (globalne wyszukiwanie Ctrl+K)
@@ -38,7 +38,7 @@ function loadStore() {
     }
     return JSON.parse(fs.readFileSync(NOTES_FILE, "utf8"));
   } catch (err) {
-    logError("store", "notesStore.loadStore failed", err.message);
+    logError("store", "notepadStore.loadStore failed", err.message);
     return { version: "0.0.3", data: [] };
   }
 }
@@ -51,10 +51,10 @@ function saveStore(store) {
       throw new Error("Validation failed: Note missing ID or Title");
     }
     fs.writeFileSync(NOTES_FILE, JSON.stringify(store, null, 2), "utf8");
-    logInfo("store", "notesStore.saveStore success");
+    logInfo("store", "notepadStore.saveStore success");
     return true;
   } catch (err) {
-    logError("store", "notesStore.saveStore failed", err.message);
+    logError("store", "notepadStore.saveStore failed", err.message);
     return false;
   }
 }
@@ -64,7 +64,7 @@ export function getAllNotes() {
   try {
     return loadStore().data || [];
   } catch (err) {
-    logError("store", "notesStore.getAllNotes failed", err.message);
+    logError("store", "notepadStore.getAllNotes failed", err.message);
     return [];
   }
 }
@@ -75,10 +75,10 @@ export function addNote(note) {
     const store = loadStore();
     store.data.push(note);
     saveStore(store);
-    logInfo("store", "notesStore.addNote success", note.id);
+    logInfo("store", "notepadStore.addNote success", note.id);
     return note;
   } catch (err) {
-    logError("store", "notesStore.addNote failed", err.message);
+    logError("store", "notepadStore.addNote failed", err.message);
     return note;
   }
 }
@@ -89,15 +89,15 @@ export function updateNote(id, patch) {
     const store = loadStore();
     const idx = store.data.findIndex(n => n.id === id);
     if (idx === -1) {
-      logWarn("store", "notesStore.updateNote: Note not found", id);
+      logWarn("store", "notepadStore.updateNote: Note not found", id);
       return null;
     }
     store.data[idx] = { ...store.data[idx], ...patch };
     saveStore(store);
-    logInfo("store", "notesStore.updateNote success", id);
+    logInfo("store", "notepadStore.updateNote success", id);
     return store.data[idx];
   } catch (err) {
-    logError("store", "notesStore.updateNote failed", err.message);
+    logError("store", "notepadStore.updateNote failed", err.message);
     return null;
   }
 }
@@ -108,10 +108,10 @@ export function deleteNote(id) {
     const store = loadStore();
     store.data = store.data.filter(n => n.id !== id);
     saveStore(store);
-    logInfo("store", "notesStore.deleteNote success", id);
+    logInfo("store", "notepadStore.deleteNote success", id);
     return true;
   } catch (err) {
-    logError("store", "notesStore.deleteNote failed", err.message);
+    logError("store", "notepadStore.deleteNote failed", err.message);
     return false;
   }
 }

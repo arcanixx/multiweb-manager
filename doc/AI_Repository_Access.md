@@ -49,6 +49,7 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   ├── 📁 📁 engine/
 │   │   ├── 📜 [adBlocker.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/adBlocker.js)
 │   │   ├── 📜 [hotkeysManager.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/hotkeysManager.js)
+│   │   ├── 📜 [resourceMonitor.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/resourceMonitor.js)
 │   │   ├── 📜 [sleepTabsManager.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/sleepTabsManager.js)
 │   │   ├── 📜 [updateService.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/updateService.js)
 │   │   └── 📜 [webviewRegistry.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/webviewRegistry.js)
@@ -126,10 +127,8 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   ├── 📜 [clipboardStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/clipboardStore.js)
 │   │   ├── 📜 [historyStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/historyStore.js)
 │   │   ├── 📜 [notesStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/notesStore.js)
-│   │   ├── 📜 [persistence.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/persistence.js)
 │   │   ├── 📜 [profilesStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/profilesStore.js)
 │   │   ├── 📜 [projectsStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/projectsStore.js)
-│   │   ├── 📜 [resourceMonitor.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/resourceMonitor.js)
 │   │   ├── 📜 [settingsStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/settingsStore.js)
 │   │   ├── 📜 [taskGroupsStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/taskGroupsStore.js)
 │   │   ├── 📜 [tasksStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/tasksStore.js)
@@ -258,6 +257,7 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   ├── 📜 [networkUtils.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/networkUtils.js)
 │   │   ├── 📜 [notesStorage.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/notesStorage.js)
 │   │   ├── 📜 [notificationsManager.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/notificationsManager.js)
+│   │   ├── 📜 [persistence.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/persistence.js)
 │   │   ├── 📜 [searchIndex.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/searchIndex.js)
 │   │   ├── 📜 [sharpLoader.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/sharpLoader.js)
 │   │   │   📁 DEPENDS ON: komponenty z folderu sharp/

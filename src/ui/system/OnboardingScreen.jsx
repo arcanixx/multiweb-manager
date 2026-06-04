@@ -3,12 +3,12 @@
 // PATH: src/ui/system/OnboardingScreen.jsx
 // VERSION: 0.0.3
 // PURPOSE: Ekran onboardingu przy pierwszym uruchomieniu – 5 kroków: motyw, język, prywatność/disclaimer, szybki start (wybór aplikacji z App Library), konto (placeholder).
-// FUNCTIONS: OnboardingScreen, StepIndicator, StepTheme, StepLanguage, StepPrivacy, StepApps, StepAccount
-// DEPENDS ON: react, config.js, translations.js, icons.js, loggerRenderer.js, app-library.json
+// FUNCTIONS: OnboardingScreen
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js, app-library.json
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
-// UWAGA: Zastąp assets/splash_logo.svg plikiem assets/splash_logo.png gdy będzie dostępny.
 // =============================================================================
 
+// WAŻNE: Zastąp assets/splash_logo.svg plikiem assets/splash_logo.png gdy będzie dostępny.
 import React, { useState, useContext, useCallback } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
@@ -16,7 +16,7 @@ import { logInfo, logDebug } from '../../utils/loggerRenderer.js';
 import appLibraryData from '../../data/app-library.json';
 
 // ─── ONBOARDING_STEPS – definicja kroków wizarda
-// UWAGA: Ta stała celowo pozostaje w tym pliku – dotyczy wyłącznie logiki OnboardingScreen.
+// WAŻNE: Ta stała celowo pozostaje w tym pliku – dotyczy wyłącznie logiki OnboardingScreen.
 const ONBOARDING_STEPS = ['theme', 'language', 'privacy', 'apps', 'account'];
 
 // ─── QUICK_START_MAP – które aplikacje pokazać w onboardingu per kategoria

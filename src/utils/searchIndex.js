@@ -11,7 +11,7 @@
 // WAŻNE: Indeks jest budowany on-demand przy każdym zapytaniu (search:global IPC).
 //        Nie jest cache'owany – dane w store'ach mogą się zmienić między zapytaniami.
 //        Gdyby wydajność stała się problemem: dodać cache z TTL i inwalidację
-//        przez EventEmitter w store'ach (notesStore, tasksStore, projectsStore).
+//        przez EventEmitter w store'ach (notepadStore, tasksStore, projectsStore).
 
 import { logDebug } from "./logger.js";
 

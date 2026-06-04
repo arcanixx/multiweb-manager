@@ -16,7 +16,7 @@
 //   → Używany przez: useNotepadContent.js, useNotepadTabs.js
 //   → Docelowo zostanie zastąpiony przez StorageService
 //
-//   notesStore.js  (src/stores/ — main process)
+//   notepadStore.js  (src/stores/ — main process)
 //   → Zapis/odczyt notatek przez fs do notes.json w userData
 //   → Używany przez: ipcMainHandlers_notes.js (CRUD przez IPC)
 //                    ipcMainHandlers_search.js (globalne wyszukiwanie Ctrl+K)

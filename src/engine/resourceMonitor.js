@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: resourceMonitor.js
-// PATH: src/stores/resourceMonitor.js
+// PATH: src/engine/resourceMonitor.js
 // VERSION: 0.0.3
 // PURPOSE: Serwis monitorujący zużycie zasobów systemowych (CPU/RAM) przez aplikację i system operacyjny.
 // FUNCTIONS: getSystemUsage

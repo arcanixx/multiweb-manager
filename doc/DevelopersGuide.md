@@ -183,7 +183,7 @@ function handleProfilesChange(nextProfiles) {
 
 ## 1h. Autosave Notepad tylko przy zmianie
 
-**Pliki:** `src/ui/notepad/Notepad.jsx`, `src/core/notesStore.js`
+**Pliki:** `src/ui/notepad/Notepad.jsx`, `src/core/notepadStore.js`
 
 ```js
 useEffect(() => {
@@ -916,7 +916,7 @@ useEffect(() => {
 - `src/ui/notepad/Notepad.jsx`
 - `src/ui/notepad/NotepadTabs.jsx`
 - `src/ui/notepad/NotepadEditor.jsx`
-- `src/core/notesStore.js`
+- `src/core/notepadStore.js`
 
 **Cel:** Notepad działa jak edytor z zakładkami (VSCode style). Każda notatka to osobna karta.
 
@@ -931,7 +931,7 @@ useEffect(() => {
 }
 ```
 
-**Funkcje w `notesStore`:** `loadNotes()`, `saveNotes(notes)`, `createNote()`, `updateNote(id, patch)`, `deleteNote(id)`, `setActiveNote(id)`
+**Funkcje w `notepadStore`:** `loadNotes()`, `saveNotes(notes)`, `createNote()`, `updateNote(id, patch)`, `deleteNote(id)`, `setActiveNote(id)`
 
 **UI:**
 - Pasek zakładek u góry

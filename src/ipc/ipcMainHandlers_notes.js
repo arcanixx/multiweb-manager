@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC dla notatek (Notepad, hooks useNotepad).
 // FUNCTIONS: ipc:notes:getAll, ipc:notes:add, ipc:notes:update, ipc:notes:delete
-// DEPENDS ON: electron, notesStore.js, logger.js
+// DEPENDS ON: electron, notepadStore.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -14,7 +14,7 @@ import {
   addNote,
   updateNote,
   deleteNote
-} from "../stores/notesStore.js";
+} from "../stores/notepadStore.js";
 import { logError } from "../utils/logger.js";
 ipcMain.handle("notes:getAll", async () => {
   try {

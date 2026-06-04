@@ -171,6 +171,12 @@ root/
 │   │   │                                                          registerHotkeysFromList
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js, electron-store
 │   │   │                                               -->
+│   │   ├── 📜 resourceMonitor.js ❗                <!-- VERSION: 0.0.3 PATH: src/engine/resourceMonitor.js
+│   │   │                                               PURPOSE: Serwis monitorujący zużycie zasobów systemowych
+│   │   │                                                        (CPU/RAM) przez aplikację i system operacyjny.
+│   │   │                                               FUNCTIONS: getSystemUsage
+│   │   │                                               DEPENDS ON: os, config.js, logger.js
+│   │   │                                               -->
 │   │   ├── 📜 sleepTabsManager.js ❗               <!-- VERSION: 0.0.3 PATH: src/engine/sleepTabsManager.js
 │   │   │                                               PURPOSE: Logika zarządzania stanem bezczynności WebView –
 │   │   │                                                        obliczanie timeoutów i weryfikacja gotowości do
@@ -423,7 +429,7 @@ root/
 │   │   │                                               PURPOSE: IPC dla notatek (Notepad, hooks useNotepad).
 │   │   │                                               FUNCTIONS: ipc:notes:getAll, ipc:notes:add, ipc:notes:update,
 │   │   │                                                          ipc:notes:delete
-│   │   │                                               DEPENDS ON: electron, notesStore.js, logger.js
+│   │   │                                               DEPENDS ON: electron, notepadStore.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_notifications.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notifications.js
 │   │   │                                               PURPOSE: Handler IPC dla natywnych powiadomień systemowych OS
@@ -479,7 +485,7 @@ root/
 │   │   │                                                        global search). search:global – buduje indeks ze
 │   │   │                                                        store'ów i przeszukuje go wg query.
 │   │   │                                               FUNCTIONS: ipc:search:global
-│   │   │                                               DEPENDS ON: electron, searchIndex.js, notesStore.js,
+│   │   │                                               DEPENDS ON: electron, searchIndex.js, notepadStore.js,
 │   │   │                                                           tasksStore.js, projectsStore.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_settings.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_settings.js
@@ -675,12 +681,6 @@ root/
 │   │   │                                               FUNCTIONS: getAllNotes, addNote, updateNote, deleteNote
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 persistence.js ❗                    <!-- VERSION: 0.0.3 PATH: src/stores/persistence.js
-│   │   │                                               PURPOSE: Wspólne operacje I/O dla plików JSON – odczyt, zapis i
-│   │   │                                                        zarządzanie ścieżkami w katalogu userData Electrona.
-│   │   │                                               FUNCTIONS: getUserDataPath, readJsonFile, writeJsonFile
-│   │   │                                               DEPENDS ON: fs, path, electron, logger.js
-│   │   │                                               -->
 │   │   ├── 📜 profilesStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/profilesStore.js
 │   │   │                                               PURPOSE: Zarządzanie profilami WebView — odczyt z pliku, zapis,
 │   │   │                                                        tworzenie, aktualizacja i usuwanie (loadProfiles,
@@ -696,12 +696,6 @@ root/
 │   │   │                                               FUNCTIONS: loadProjects, saveProjects, createProject,
 │   │   │                                                          updateProject, archiveProject, deleteProject
 │   │   │                                               DEPENDS ON: persistence.js, settingsStore.js, logger.js, fs
-│   │   │                                               -->
-│   │   ├── 📜 resourceMonitor.js ❗                <!-- VERSION: 0.0.3 PATH: src/stores/resourceMonitor.js
-│   │   │                                               PURPOSE: Serwis monitorujący zużycie zasobów systemowych
-│   │   │                                                        (CPU/RAM) przez aplikację i system operacyjny.
-│   │   │                                               FUNCTIONS: getSystemUsage
-│   │   │                                               DEPENDS ON: os, config.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 settingsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/settingsStore.js
 │   │   │                                               PURPOSE: Ustawienia użytkownika — merge partial updates, reset
@@ -1135,8 +1129,8 @@ root/
 │   │   │   │                                                    start (wybór aplikacji z App Library), konto
 │   │   │   │                                                    (placeholder).
 │   │   │   │                                           FUNCTIONS: OnboardingScreen
-│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, icons.js,
-│   │   │   │                                                       loggerRenderer.js, app-library.json
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js,
+│   │   │   │                                                       app-library.json
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ SplashScreen.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/system/SplashScreen.jsx
 │   │   │   │                                           PURPOSE: Ekran ładowania aplikacji wyświetlany przy starcie
@@ -1492,6 +1486,12 @@ root/
 │   │   │                                                        zarządza stanem React.
 │   │   │                                               FUNCTIONS: showToast, showSystemNotification
 │   │   │                                               DEPENDS ON: logger.js
+│   │   │                                               -->
+│   │   ├── 📜 persistence.js ❗                    <!-- VERSION: 0.0.3 PATH: src/utils/persistence.js
+│   │   │                                               PURPOSE: Wspólne operacje I/O dla plików JSON – odczyt, zapis i
+│   │   │                                                        zarządzanie ścieżkami w katalogu userData Electrona.
+│   │   │                                               FUNCTIONS: getUserDataPath, readJsonFile, writeJsonFile
+│   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 searchIndex.js                      <!-- VERSION: 0.0.3 PATH: src/utils/searchIndex.js
 │   │   │                                               PURPOSE: Budowanie ujednoliconego indeksu wyszukiwania
@@ -1955,6 +1955,12 @@ root/
 │   │   │                                                          registerHotkeysFromList
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js, electron-store
 │   │   │                                               -->
+│   │   ├── 📜 resourceMonitor.js ❗                <!-- VERSION: 0.0.3 PATH: src/engine/resourceMonitor.js
+│   │   │                                               PURPOSE: Serwis monitorujący zużycie zasobów systemowych
+│   │   │                                                        (CPU/RAM) przez aplikację i system operacyjny.
+│   │   │                                               FUNCTIONS: getSystemUsage
+│   │   │                                               DEPENDS ON: os, config.js, logger.js
+│   │   │                                               -->
 │   │   ├── 📜 sleepTabsManager.js ❗               <!-- VERSION: 0.0.3 PATH: src/engine/sleepTabsManager.js
 │   │   │                                               PURPOSE: Logika zarządzania stanem bezczynności WebView –
 │   │   │                                                        obliczanie timeoutów i weryfikacja gotowości do
@@ -2207,7 +2213,7 @@ root/
 │   │   │                                               PURPOSE: IPC dla notatek (Notepad, hooks useNotepad).
 │   │   │                                               FUNCTIONS: ipc:notes:getAll, ipc:notes:add, ipc:notes:update,
 │   │   │                                                          ipc:notes:delete
-│   │   │                                               DEPENDS ON: electron, notesStore.js, logger.js
+│   │   │                                               DEPENDS ON: electron, notepadStore.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_notifications.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notifications.js
 │   │   │                                               PURPOSE: Handler IPC dla natywnych powiadomień systemowych OS
@@ -2263,7 +2269,7 @@ root/
 │   │   │                                                        global search). search:global – buduje indeks ze
 │   │   │                                                        store'ów i przeszukuje go wg query.
 │   │   │                                               FUNCTIONS: ipc:search:global
-│   │   │                                               DEPENDS ON: electron, searchIndex.js, notesStore.js,
+│   │   │                                               DEPENDS ON: electron, searchIndex.js, notepadStore.js,
 │   │   │                                                           tasksStore.js, projectsStore.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_settings.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_settings.js
@@ -2459,12 +2465,6 @@ root/
 │   │   │                                               FUNCTIONS: getAllNotes, addNote, updateNote, deleteNote
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 persistence.js ❗                    <!-- VERSION: 0.0.3 PATH: src/stores/persistence.js
-│   │   │                                               PURPOSE: Wspólne operacje I/O dla plików JSON – odczyt, zapis i
-│   │   │                                                        zarządzanie ścieżkami w katalogu userData Electrona.
-│   │   │                                               FUNCTIONS: getUserDataPath, readJsonFile, writeJsonFile
-│   │   │                                               DEPENDS ON: fs, path, electron, logger.js
-│   │   │                                               -->
 │   │   ├── 📜 profilesStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/profilesStore.js
 │   │   │                                               PURPOSE: Zarządzanie profilami WebView — odczyt z pliku, zapis,
 │   │   │                                                        tworzenie, aktualizacja i usuwanie (loadProfiles,
@@ -2480,12 +2480,6 @@ root/
 │   │   │                                               FUNCTIONS: loadProjects, saveProjects, createProject,
 │   │   │                                                          updateProject, archiveProject, deleteProject
 │   │   │                                               DEPENDS ON: persistence.js, settingsStore.js, logger.js, fs
-│   │   │                                               -->
-│   │   ├── 📜 resourceMonitor.js ❗                <!-- VERSION: 0.0.3 PATH: src/stores/resourceMonitor.js
-│   │   │                                               PURPOSE: Serwis monitorujący zużycie zasobów systemowych
-│   │   │                                                        (CPU/RAM) przez aplikację i system operacyjny.
-│   │   │                                               FUNCTIONS: getSystemUsage
-│   │   │                                               DEPENDS ON: os, config.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 settingsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/settingsStore.js
 │   │   │                                               PURPOSE: Ustawienia użytkownika — merge partial updates, reset
@@ -2919,8 +2913,8 @@ root/
 │   │   │   │                                                    start (wybór aplikacji z App Library), konto
 │   │   │   │                                                    (placeholder).
 │   │   │   │                                           FUNCTIONS: OnboardingScreen
-│   │   │   │                                           DEPENDS ON: react, config.js, translations.js, icons.js,
-│   │   │   │                                                       loggerRenderer.js, app-library.json
+│   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js,
+│   │   │   │                                                       app-library.json
 │   │   │   │                                           -->
 │   │   │   ├── ⚛️ SplashScreen.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/system/SplashScreen.jsx
 │   │   │   │                                           PURPOSE: Ekran ładowania aplikacji wyświetlany przy starcie
@@ -3276,6 +3270,12 @@ root/
 │   │   │                                                        zarządza stanem React.
 │   │   │                                               FUNCTIONS: showToast, showSystemNotification
 │   │   │                                               DEPENDS ON: logger.js
+│   │   │                                               -->
+│   │   ├── 📜 persistence.js ❗                    <!-- VERSION: 0.0.3 PATH: src/utils/persistence.js
+│   │   │                                               PURPOSE: Wspólne operacje I/O dla plików JSON – odczyt, zapis i
+│   │   │                                                        zarządzanie ścieżkami w katalogu userData Electrona.
+│   │   │                                               FUNCTIONS: getUserDataPath, readJsonFile, writeJsonFile
+│   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 searchIndex.js                      <!-- VERSION: 0.0.3 PATH: src/utils/searchIndex.js
 │   │   │                                               PURPOSE: Budowanie ujednoliconego indeksu wyszukiwania
