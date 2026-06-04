@@ -15,14 +15,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // ─── Profiles ─────────────────────────────────────────────────
   // ─── getProfiles() – Pobiera listę wszystkich profili użytkownika
   getProfiles:    ()           => ipcRenderer.invoke('profiles:getAll'),
-  // ─── saveProfiles(profiles) – Zapisuje aktualny stan listy profili (bulk, legacy)
-  saveProfiles:   (profiles)   => ipcRenderer.invoke('profiles:getAll', profiles),
   
   // ─── Notes ────────────────────────────────────────────────────
   // ─── getNotes() – Pobiera listę notatek
   getNotes:   ()      => ipcRenderer.invoke('notes:getAll'),
-  // ─── saveNotes(notes) – Zapisuje listę notatek (legacy — używaj invoke bezpośrednio)
-  saveNotes:  (notes) => ipcRenderer.invoke('notes:add', notes),
   
   // ─── Settings ─────────────────────────────────────────────────
   // ─── getSettings() – Pobiera aktualną konfigurację użytkownika
@@ -111,14 +107,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return () => ipcRenderer.removeListener('terminal:exit', listener);
   },
 
-  // ─── terminalStart() – Uruchamia terminal (API legacy)
-  terminalStart: () => ipcRenderer.invoke('terminal:start'),
-  // ─── terminalWriteLegacy(data) – Wysyła dane do terminala (API legacy)
-  terminalWriteLegacy: (data) => ipcRenderer.invoke('terminal:write', data),
-  // ─── terminalResizeLegacy(cols, rows) – Zmienia rozmiar terminala (API legacy)
-  terminalResizeLegacy: (cols, rows) => ipcRenderer.invoke('terminal:resize', cols, rows),
-  // ─── terminalKillLegacy() – Kończy sesję terminala (API legacy)
-  terminalKillLegacy: () => ipcRenderer.invoke('terminal:kill'),
+
 
   // ─── Misc ─────────────────────────────────────────────────────
   // ─── openExternal(url) – Otwiera link w zewnętrznej przeglądarce
@@ -216,4 +205,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // ─── invoke(channel, ...args) – Wykonuje dowolne wywołanie kanału IPC
   invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args)
 });
+
 
