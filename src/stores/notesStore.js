@@ -1,11 +1,26 @@
 // =============================================================================
 // FILE: notesStore.js
-// PATH: src/core/notesStore.js
+// PATH: src/stores/notesStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie notatkami użytkownika – ładowanie, zapisywanie oraz operacje CRUD na danych notatek.
 // FUNCTIONS: getAllNotes, addNote, updateNote, deleteNote
 // DEPENDS ON: fs, path, electron, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+// =============================================================================
+//
+// ARCHITEKTURA NOTATEK — dwa osobne systemy, celowy podział:
+//
+//   notesStore.js  (src/stores/ — ten plik, main process)
+//   → Zapis/odczyt notatek przez fs do notes.json w userData
+//   → Używany przez: ipcMainHandlers_notes.js (CRUD przez IPC)
+//                    ipcMainHandlers_search.js (globalne wyszukiwanie Ctrl+K)
+//   → NIE importować w renderer process
+//
+//   notesStorage.js (src/utils/ — renderer process)
+//   → Cache zakładek notatnika w localStorage (fallback gdy IPC niedostępne)
+//   → Używany przez: useNotepadContent.js, useNotepadTabs.js
+//   → Docelowo zostanie zastąpiony przez StorageService
+//
 // =============================================================================
 
 import fs from "fs";
