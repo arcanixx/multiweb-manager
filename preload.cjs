@@ -49,10 +49,29 @@ contextBridge.exposeInMainWorld('electronAPI', {
   }),
   
   // ─── Tasks ────────────────────────────────────────────────────
-  // ─── getTasks(project) – Pobiera płaską listę zadań dla projektu lub wszystkich
-  getTasks:         (project) => ipcRenderer.invoke('tasks:getAll', project),
-  // ─── getAllTasks() – Pobiera wszystkie zadania pogrupowane per projekt (dla AggregatedTasks)
-  getAllTasks:       ()        => ipcRenderer.invoke('tasks:getAllGrouped'),
+  // ─── getTasks(taskGroupId?) – Pobiera płaską listę zadań dla grupy lub wszystkich
+  getTasks:         (taskGroupId) => ipcRenderer.invoke('tasks:getAll', taskGroupId),
+  // ─── getAllTasks() – Pobiera zadania pogrupowane per taskGroupId (dla AggregatedTasks)
+  getAllTasks:       ()            => ipcRenderer.invoke('tasks:getAllGrouped'),
+
+  // ─── TaskGroups ───────────────────────────────────────────────
+  // ─── getTaskGroups() – Pobiera wszystkie grupy zadań
+  getTaskGroups:        ()                    => ipcRenderer.invoke('taskGroups:getAll'),
+  // ─── createTaskGroup(data) – Tworzy nową grupę zadań
+  createTaskGroup:      (data)               => ipcRenderer.invoke('taskGroups:create', data),
+  // ─── updateTaskGroup(id, patch) – Aktualizuje grupę
+  updateTaskGroup:      (id, patch)          => ipcRenderer.invoke('taskGroups:update', { id, patch }),
+  // ─── deleteTaskGroup(id) – Usuwa grupę
+  deleteTaskGroup:      (id)                 => ipcRenderer.invoke('taskGroups:delete', { id }),
+  // ─── getTaskGroupForProfile(profileId) – Zwraca grupę dla profilu lub null
+  getTaskGroupForProfile: (profileId)        => ipcRenderer.invoke('taskGroups:getForProfile', { profileId }),
+  // ─── ensureTaskGroupForProfile(profileId, profileName) – Zwraca lub tworzy domyślną grupę 1:1
+  ensureTaskGroupForProfile: (profileId, profileName) => ipcRenderer.invoke('taskGroups:ensureForProfile', { profileId, profileName }),
+  // ─── assignProfileToTaskGroup(groupId, profileId) – Przypisuje profil do grupy
+  assignProfileToTaskGroup: (groupId, profileId)      => ipcRenderer.invoke('taskGroups:assignProfile', { groupId, profileId }),
+  // ─── unassignProfileFromTaskGroup(profileId) – Odłącza profil od grupy
+  unassignProfileFromTaskGroup: (profileId)           => ipcRenderer.invoke('taskGroups:unassignProfile', { profileId }),
+
   
   // ─── History ──────────────────────────────────────────────────
   // ─── getHistory() – Pobiera historię aktywności

@@ -2046,3 +2046,135 @@
 - **Version:** 0.0.3
 - **Komentarz:** Wszystkie błędy z tej listy zostały naprawione w commicie fix(tasks) na branchu UAT-v0.0.4.
 
+
+---
+
+## 🗂️ TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+
+> Wymagania dla systemu przypisania profili WebView do grup zadań (TaskGroup). Jeden TaskPanel = jedna TaskGroup. Profil domyślnie → TaskGroup 1:1. Opcjonalnie wiele profili → jedna TaskGroup (shared).
+
+---
+
+### [Model Danych — Task] :
+
+- **ID:** TASKS_MODEL-001
+- **Sekcja:** TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+- **Opis:** Kanoniczny model zadania:
+  ```
+  Task {
+    id:          string          // task_<timestamp>_<random>
+    taskGroupId: string          // ID grupy (tg_<profileId> dla 1:1, lub dowolny dla shared)
+    name:        string          // wymagane, max 200 znaków
+    desc:        string          // opcjonalny opis
+    comment:     string          // opcjonalny komentarz techniczny (kod, notatka)
+    status:      TaskStatus      // 'todo' | 'in_progress' | 'blocked' | 'done' | 'cancelled'
+    section:     TaskCategory    // 'active' | 'backlog' | 'done' — WYZNACZANA ze status
+    priority:    'A'|'B'|'C'|'D'|'E'  // A = najwyższy
+    pinned:      boolean         // zadania pinnowane zawsze na górze sekcji
+    version:     string          // opcjonalne, np. '0.0.3'
+    createdAt:   ISO string
+  }
+  ```
+  `section` NIE jest ustawiana przez użytkownika — jest automatycznie wyznaczana z `status` przez `normalizeTask()` po stronie backendu i frontendu.
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+
+---
+
+### [Model Danych — TaskStatus ↔ TaskCategory (Section)] :
+
+- **ID:** TASKS_MODEL-002
+- **Sekcja:** TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+- **Opis:** Mapowanie status → sekcja (reguły domenowe, implementowane w `tasksStore.normalizeTask()` i mirror w UI):
+  ```
+  in_progress → active   (zadanie w toku, sekcja Aktualne)
+  todo        → backlog  (do zrobienia, sekcja Backlog)
+  blocked     → backlog  (zablokowane, sekcja Backlog)
+  done        → done     (ukończone, sekcja Zrobione)
+  cancelled   → done     (anulowane / Out of Scope, sekcja Zrobione)
+  ```
+  Dozwolone statusy per sekcja:
+  - `active`:  tylko `in_progress`
+  - `backlog`: `todo`, `blocked`
+  - `done`:    `done`, `cancelled`
+
+  Przywrócenie z `done` → zawsze `todo` w `backlog` (nie można wrócić do `in_progress` bezpośrednio z Done).
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+
+---
+
+### [Model Danych — TaskGroup] :
+
+- **ID:** TASKS_MODEL-003
+- **Sekcja:** TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+- **Opis:** Model grupy zadań:
+  ```
+  TaskGroup {
+    id:         string     // 'tg_<profileId>' dla 1:1, lub 'tg_<timestamp>' dla shared
+    name:       string     // wyświetlana nazwa w nagłówku TaskPanel
+    profileIds: string[]   // lista profili współdzielących grupę
+    createdAt:  ISO string
+  }
+  ```
+  Plik danych: `userData/task_groups.json`. Zadania przechowywane w `userData/tasks/<taskGroupId>.json`.
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+
+---
+
+### [Przepływ: Profil → TaskGroup → TaskPanel] :
+
+- **ID:** TASKS_FLOW-001
+- **Sekcja:** TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+- **Opis:** Mechanizm otwarcia TaskPanel z kontekstu profilu WebView:
+  1. Użytkownik klik prawym na profil w Sidebar → `Otwórz zadania`
+  2. `Sidebar` wywołuje `onOpenTaskPanel(profile)` z pełnym obiektem profilu
+  3. `MainLayout.handleOpenTaskPanel()` wywołuje `taskGroups:ensureForProfile({ profileId, profileName })`
+  4. Handler IPC: szuka grupy dla `profileId` → jeśli brak, tworzy `{ id: tg_<profileId>, name: profileName, profileIds: [profileId] }`
+  5. Zwraca `TaskGroup` → `MainLayout` ustawia `currentGroup = { id, name }` i otwiera `TaskPanel`
+  6. `TaskPanel` otrzymuje `taskGroupId` i `groupName` jako props
+  7. `useTasks.reloadTasks(taskGroupId)` ładuje płaską listę zadań dla grupy
+- **Status:** IN_SPRINT
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.3
+
+---
+
+### [Shared TaskGroup — Wiele Profili, Jeden Panel] :
+
+- **ID:** TASKS_FLOW-002
+- **Sekcja:** TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+- **Opis:** Użytkownik może przypisać wiele profili do jednej grupy zadań (np. wszystkie instancje Claude.ai → jedna grupa "Claude"). Mechanizm:
+  - Backend (zaimplementowane): `taskGroups:assignProfile({ groupId, profileId })` — przenosi profil z poprzedniej grupy do docelowej
+  - Backend (zaimplementowane): `taskGroups:unassignProfile({ profileId })` — odpina profil od grupy
+  - UI (FUTURE — Sprint 1 UI): w `ProfileModal` lub osobnym widoku: dropdown wyboru grupy + przycisk "Utwórz nową grupę"
+  - Przy otwarciu TaskPanel dla profilu: zawsze `ensureForProfile` → jeśli profil już ma grupę (shared), zwraca tę grupę, nie tworzy nowej
+  - Zadania shared grupy są widoczne dla wszystkich profili przypisanych do tej grupy
+- **Status:** IN_SPRINT (backend), FUTURE (UI)
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+- **Komentarz:** Backend gotowy: `taskGroupsStore.js`, `ipcMainHandlers_taskGroups.js`, `useTaskGroups.js`, preload. UI do implementacji w kolejnym sprincie.
+
+---
+
+### [AggregatedTasks — Widok Zbiorczy] :
+
+- **ID:** TASKS_FLOW-003
+- **Sekcja:** TASKPANEL — GRUPY ZADAŃ I PRZEPŁYW PROFIL→TASKGROUP
+- **Opis:** Widok zbiorczy (`AggregatedTasks` w ToolsPanel) pokazuje wszystkie zadania ze wszystkich grup. Funkcje:
+  - Grupowanie per `taskGroupId` z wyświetleniem `groupName`
+  - Filtrowanie po `status`: in_progress / todo / blocked / done / cancelled
+  - Filtrowanie po `priority`: A / B / C / D / E
+  - Filtrowanie po `section`: active / backlog / done
+  - Sortowanie po priority (A→E), date, status
+  - Zwijanie/rozwijanie per grupa
+  - Kanały IPC: `aggregatedTasks:getAll`, `aggregatedTasks:filter`, `aggregatedTasks:sort`
+  - `getAllTasks()` w preload → `tasks:getAllGrouped` (format per taskGroupId dla AggregatedTasks)
+- **Status:** IN_SPRINT (backend), FUTURE (UI filtry + zwijanie)
+- **Priorytet:** MAJOR
+- **Version:** 0.0.3
+

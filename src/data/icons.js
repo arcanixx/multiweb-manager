@@ -96,6 +96,15 @@ export const ICONS = {
   THEME_DARK: "🌙",
   THEME_SYSTEM: "🖥️",
 
+  // ========== Statusy zadań (TaskPanel) ==========
+  STATUS_TODO:        "○",
+  STATUS_IN_PROGRESS: "▶",
+  STATUS_BLOCKED:     "⊘",
+  STATUS_DONE:        "✓",
+  STATUS_CANCELLED:   "✕",
+  TASK_GROUP:         "🗂️",
+  ADD:                "＋",
+
   // ========== Priorytety ==========
   PRIORITY_A: "🔴",
   PRIORITY_B: "🟠",
