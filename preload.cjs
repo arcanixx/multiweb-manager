@@ -16,9 +16,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // ─── getProfiles() – Pobiera listę wszystkich profili użytkownika
   getProfiles:    ()           => ipcRenderer.invoke('profiles:getAll'),
   
-  // ─── notepad ────────────────────────────────────────────────────
-  // ─── getnotepad() – Pobiera listę notatek
-  getnotepad:   ()      => ipcRenderer.invoke('notepad:getAll'),
+  // ─── Notepad ──────────────────────────────────────────────────
+  // ─── getNotepad() – Pobiera wszystkie wpisy notepad
+  getNotepad:          ()             => ipcRenderer.invoke('notepad:getAll'),
+  // ─── addNotepadEntry(entry) – Dodaje nowy wpis do notepad
+  addNotepadEntry:     (entry)        => ipcRenderer.invoke('notepad:add', entry),
+  // ─── updateNotepadEntry(id, patch) – Aktualizuje wpis notepad
+  updateNotepadEntry:  (id, patch)    => ipcRenderer.invoke('notepad:update', { id, patch }),
+  // ─── deleteNotepadEntry(id) – Usuwa wpis notepad
+  deleteNotepadEntry:  (id)           => ipcRenderer.invoke('notepad:delete', id),
 
   
   // ─── Settings ─────────────────────────────────────────────────
@@ -94,6 +100,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   terminalResize: (id, cols, rows)   => ipcRenderer.invoke('terminal:resize', { terminalId: id, cols, rows }),
   // ─── killTerminal(id) – Zamyka proces terminala
   killTerminal:   (id)               => ipcRenderer.invoke('terminal:kill', id),
+  // ─── terminalGetBuffer(id) – Pobiera bufor historii terminala (np. po reconnect)
+  terminalGetBuffer: (id)            => ipcRenderer.invoke('terminal:getBuffer', id),
+  // ─── terminalRestart(id, cwd) – Restartuje sesję terminala zachowując cwd
+  terminalRestart: (id, cwd)         => ipcRenderer.invoke('terminal:restart', { terminalId: id, cwd }),
   
   // ─── onTerminalData(callback) – Rejestruje słuchacz strumienia danych z terminala
   onTerminalData: (callback) => {
@@ -206,5 +216,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // ─── invoke(channel, ...args) – Wykonuje dowolne wywołanie kanału IPC
   invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args)
 });
+
 
 
