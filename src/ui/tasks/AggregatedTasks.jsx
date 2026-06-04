@@ -38,7 +38,7 @@ export default function AggregatedTasks() {
     setLoading(true);
     try {
       const [tasksRes, settings] = await Promise.all([
-        window.electronAPI.invoke('aggregatedTasks:getAll'),
+        window.electronAPI.invoke('tasks:getAllGrouped'),
         window.electronAPI.getSettings(),
       ]);
       if (tasksRes?.ok) {
