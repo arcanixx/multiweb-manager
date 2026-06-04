@@ -2,19 +2,18 @@
 // FILE: AppLibraryBrowser.jsx
 // PATH: src/ui/appLibrary/AppLibraryBrowser.jsx
 // VERSION: 0.0.3
-// PURPOSE: Główny widok biblioteki aplikacji (App Library) – umożliwia przeglądanie skatalogowanych usług webowych, ich wyszukiwanie oraz szybkie dodawanie do profili użytkownika. Współpracuje z appLibraryStore.
+// PURPOSE: Główny widok biblioteki aplikacji (App Library) – przeglądanie skatalogowanych usług webowych, wyszukiwanie i dodawanie do profili. Komunikacja przez hook IPC useAppLibrary.
 // FUNCTIONS: AppLibraryBrowser
-// DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons, appLibraryStore
+// DEPENDS ON: react, config.js, useAppLibrary.js, translations.js, loggerRenderer.js, icons.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { isFeatureEnabled } from '../../config.js';
+import { useAppLibrary } from '../../hooks/useAppLibrary.js';
 import { TranslationContext } from '../../utils/translations.js';
-import { logDebug, logError, logInfo, logWarn } from '../../utils/loggerRenderer';
-import { ICONS } from '../../utils/icons';
-
-import { loadAppLibrary, searchAppLibrary, getAppsByCategory } from '../../core/appLibraryStore'; // getAppsByCategory to helper do filtrowania aplikacji po kategorii, loadAppLibrary i searchAppLibrary to funkcje do pobierania danych z appLibraryStore
+import { logDebug, logInfo } from '../../utils/loggerRenderer.js';
+import { ICONS } from '../../utils/icons.js';
 
 // ─── AppIcon() – ikona aplikacji z fallbackiem na ikonę domyślną przy błędzie ładowania
 //   @param {string} icon – URL ikony aplikacji (może być niedostępny lub null)
@@ -36,78 +35,50 @@ function AppIcon({ icon }) {
 //   @param {Function} props.onAddProfile – callback dodawania profilu
 //   @returns {JSX.Element} – renderowany komponent
 export default function AppLibraryBrowser({ onAddProfile }) {
-  const { t } = React.useContext(TranslationContext);
-  const [categories, setCategories] = useState([]);
+  const { t } = useContext(TranslationContext);
+
+  // ─── hooki (WSZYSTKIE przed warunkami feature flag – zasada .clinerules)
+  const { categories, loading, search, searchResults } = useAppLibrary();
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  // ─── useEffect – ładowanie biblioteki aplikacji przy montowaniu
-  useEffect(() => {
-    try {
-      const lib = loadAppLibrary();
-      setCategories(lib);
-      logDebug('ui', `AppLibraryBrowser: loaded ${lib.length} categories`);
-      logInfo('ui', 'AppLibraryBrowser: library loaded successfully');
-    } catch (err) {
-      logError('ui', 'AppLibraryBrowser: failed to load library', err.message);
-      logWarn('ui', 'Nie można załadować biblioteki aplikacji');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // ─── feature flag PO wszystkich hookach
+  if (!isFeatureEnabled('appLibrary')) return null;
 
-  // ─── useEffect – wyszukiwanie aplikacji przy zmianie zapytania
+  // ─── useEffect – wyszukiwanie przez IPC przy zmianie zapytania
   useEffect(() => {
-    if (searchQuery.trim()) {
-      try {
-        const results = searchAppLibrary(searchQuery);
-        setSearchResults(results);
-        setSelectedCategory(null);
-        logInfo('ui', `AppLibraryBrowser: found ${results.length} results for "${searchQuery}"`);
-      } catch (err) {
-        logError('ui', 'AppLibraryBrowser: search failed', err.message);
-        logWarn('ui', 'Wystąpił błąd podczas wyszukiwania aplikacji');
-        setSearchResults([]);
-      }
-    } else {
-      setSearchResults([]);
-    }
+    search(searchQuery);
+    if (searchQuery) setSelectedCategory(null);
   }, [searchQuery]);
 
-  if (!isFeatureEnabled("appLibrary")) return null;
-
-  // ─── handleCategoryClick() – Obsługuje zdarzenie kliknięcia kategorii aplikacji; ustawia wybraną kategorię jako aktywny filtr i resetuje pole wyszukiwania
-  //   @param {string} categoryId – identyfikator kategorii
-  //   @returns {void}
+  // ─── handleCategoryClick() – ustawia aktywną kategorię i resetuje wyszukiwanie
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);
     setSearchQuery('');
     logInfo('ui', `AppLibraryBrowser: category selected ${categoryId}`);
   };
 
-  // ─── handleAddApp() – Obsługuje dodawanie wybranej aplikacji z biblioteki do profili użytkownika poprzez wywołanie zewnętrznego callbacku onAddProfile
+  // ─── handleAddApp() – przekazuje aplikację do callbacku onAddProfile
   const handleAddApp = (app) => {
     logDebug('ui', `AppLibraryBrowser: adding app ${app.name}`);
     onAddProfile?.(app);
   };
 
-   // ─── renderAppCard() – Funkcja pomocnicza renderująca kartę graficzną aplikacji (nazwę, URL, ikonę oraz przycisk dodawania) w strukturze JSX
-   const renderAppCard = (app, categoryId) => (
-     <div key={app.id} className="app-card">
-       <div className="app-card-icon">
-         <AppIcon icon={app.icon} />
-       </div>
-       <div className="app-card-info">
-         <h3>{app.name}</h3>
-         <p className="app-card-url">{app.url}</p>
-       </div>
-       <button onClick={() => handleAddApp({ ...app, categoryId })} className="btn-primary">
-         {ICONS.PLUS} {t('appLibrary.add')}
-       </button>
-     </div>
-   );
+  // ─── renderAppCard() – renderuje kartę pojedynczej aplikacji
+  const renderAppCard = (app, categoryId) => (
+    <div key={app.id} className="app-card">
+      <div className="app-card-icon">
+        <AppIcon icon={app.icon} />
+      </div>
+      <div className="app-card-info">
+        <h3>{app.name}</h3>
+        <p className="app-card-url">{app.url}</p>
+      </div>
+      <button onClick={() => handleAddApp({ ...app, categoryId })} className="btn-primary">
+        {ICONS.PLUS} {t('appLibrary.add')}
+      </button>
+    </div>
+  );
 
   if (loading) {
     return <div className="loading">{t('common.loading')}</div>;
