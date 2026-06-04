@@ -3,7 +3,7 @@
  PATH: doc/DevelopersGuide.md
  VERSION: 0.0.3
  PURPOSE: Dokumentacja specyfikacji projektowej - Kompletny przewodnik developerski MultiWeb Manager
- FUNCTIONS: Dokumentacja: 17 sekcji głównych
+ FUNCTIONS: Dokumentacja: 19 sekcji głównych
  DEPENDS ON: -
  UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
  ============================================================================= -->
@@ -153,7 +153,7 @@ process.on("unhandledRejection", (reason) => logError("unhandledRejection", reas
 
 ## 1f. Poprawne zapisywanie settings (merge, nie overwrite)
 
-**Plik:** `src/core/settingsStore.js`
+**Plik:** `src/stores/settingsStore.js`
 
 **Cel:** Nigdy nie nadpisywać całego settings jednym polem.
 
@@ -742,7 +742,7 @@ export default function WebViewTileView({ profiles }) {
 
 ## 3d. AdBlocker globalny + per profil
 
-**Pliki:** `main.js`, `src/core/settingsStore.js`, `src/ui/sidebar/ProfileModal.jsx`, `src/ui/webview/WebViewTab.jsx`
+**Pliki:** `main.js`, `src/stores/settingsStore.js`, `src/ui/sidebar/ProfileModal.jsx`, `src/ui/webview/WebViewTab.jsx`
 
 **Cel:** Możliwość włączenia/wyłączenia AdBlockera globalnie oraz nadpisania ustawienia per profil.
 
@@ -887,7 +887,7 @@ ipcMain.handle("capture-webview", async (_, tabId) => {
 
 ## 3h. Sleep Tabs
 
-**Pliki:** `src/ui/webview/WebViewTab.jsx`, `src/engine/sleepTabsManager.js`, `src/core/settingsStore.js`, `src/config.js`
+**Pliki:** `src/ui/webview/WebViewTab.jsx`, `src/engine/sleepTabsManager.js`, `src/stores/settingsStore.js`, `src/config.js`
 
 **Cel:** Usypianie nieaktywnych WebView po X minutach.
 
@@ -1485,28 +1485,7 @@ const tools = allTools.filter(tool => !tool.feature || isFeatureEnabled(tool.fea
 
 ---
 
-# 14. DYNAMICZNE ŁADOWANIE HANDLERÓW IPC (`ipcLoader.js`)
-
-**Plik:** `src/loaders/ipcLoader.js`
-
-**Cel:** Automatyczne ładowanie wszystkich handlerów IPC z folderu `src/ipc/`.
-
-**Działanie:**
-- Skanuje folder `src/ipc/` w poszukiwaniu plików `ipcMainHandlers_*.js`
-- Pomija: `ipcLegacyBridge.js` (ładowany osobno jako most legacy)
-- Importuje każdy plik — handlery rejestrują się przez side-effect
-
-**Użycie w `main.js`:**
-```js
-import { loadAllIpcHandlers } from './loaders/ipcLoader.js';
-await loadAllIpcHandlers();
-```
-
-> Nowe handlery dodajesz tylko jako plik — nie modyfikujesz `main.js`. Łatwiejsze utrzymanie i mniej konfliktów merge. `ipcLoader` loguje które handlery zostały załadowane, pominięte lub dały błąd.
-
----
-
-# 15. WEBVIEW MAPY W `main.js`
+# 14. WEBVIEW MAPY W `main.js`
 
 Do prawidłowego działania Screenshot, Resource Monitor i AdBlockera, w `main.js` utrzymujemy mapy:
 
@@ -1532,7 +1511,7 @@ ipcMain.handle('unregister-webview', (_, tabId) => {
 
 ---
 
-# 16. NAGŁÓWKI PLIKÓW — STANDARD
+# 15. NAGŁÓWKI PLIKÓW — STANDARD
 
 ## 16.1. Kolejność pól (STAŁA)
 
@@ -1639,7 +1618,7 @@ Jeśli dwa pliki mają tę samą nazwę — skrypt zachowa rozróżnienie: `root
 
 ---
 
-# 17. INSTRUKCJA DLA AI — JAK KORZYSTAĆ Z TEGO DOKUMENTU
+# 16. INSTRUKCJA DLA AI — JAK KORZYSTAĆ Z TEGO DOKUMENTU
 
 1. Zaimportuj `Structure.md` i `DevelopersGuide.md` jako pełną specyfikację projektu MultiWeb Manager.
 2. Traktuj wszystkie sekcje jako wymagania implementacyjne.
@@ -1655,102 +1634,197 @@ Jeśli dwa pliki mają tę samą nazwę — skrypt zachowa rozróżnienie: `root
 
 > Ten dokument jest kompletną specyfikacją — na jego podstawie da się odtworzyć cały projekt 1:1, bez zgadywania.
 
+
 ---
 
-# 17. FEATURE FLAGS — WARUNKOWE ŁADOWANIE MODUŁÓW
+# 17. ONBOARDING FLOW
 
-## 17.1. Przeznaczenie
+## 17.1. Kiedy się pojawia
 
-Obiekt `FEATURES` w `src/config.js` steruje włączaniem/wyłączaniem poszczególnych modułów aplikacji bez konieczności usuwania kodu. Pozwala szybko wyłączyć dowolny feature na czas debugów lub testów.
+Onboarding wyświetla się przy pierwszym uruchomieniu (`settings.firstRun === true`).
 
-## 17.2. Implementacja w komponentach React
+Flow w `App.jsx`:
+1. `SplashScreen` (animacja startowa, ~2s) → `setSplashDone(true)`
+2. `settings.firstRun !== false` → `<OnboardingScreen onFinish={handleOnboardingFinish} />`
+3. Po ukończeniu → `handleOnboardingFinish()` zapisuje patch do settings → `setOnboardingDone(true)` → `<MainLayout />`
 
-**Zasada: WSZYSTKIE hooki muszą być PRZED warunkiem feature.**
+## 17.2. Kroki (`ONBOARDING_STEPS`)
 
-React wymaga, żeby hooki były wywoływane bezwarunkowo i zawsze w tej samej kolejności. Umieszczenie `if (!isFeatureEnabled(...)) return null` przed `useState` / `useEffect` / `useContext` jest błędem (`React Hook called conditionally`).
+| # | ID | Komponent | Co ustawia |
+|---|---|---|---|
+| 1 | `theme` | `StepTheme` | `settings.theme` (`'dark'`/`'light'`/`'system'`) |
+| 2 | `language` | `StepLanguage` | `settings.language` (`'pl'`/`'en'`) |
+| 3 | `privacy` | `StepPrivacy` | `toastsEnabled`, `logsEnabled`, `analyticsEnabled` |
+| 4 | `apps` | `StepApps` | Tworzy profile z App Library |
+| 5 | `account` | `StepAccount` | (placeholder, v0.0.4+) |
 
-```jsx
-// ✅ POPRAWNIE — hooki przed warunkiem
-import { isFeatureEnabled } from '../../config.js';
+## 17.3. StepPrivacy — toggles
 
-export default function MojKomponent() {
-  const { t } = useContext(TranslationContext); // ✅ hook zawsze na górze
-  const [stan, setStan] = useState(null);        // ✅ hook zawsze na górze
+Każdy toggle to klucz w stanie `privacy` przekazywanym do `handleOnboardingFinish`:
 
-  if (!isFeatureEnabled('nazwaFeature')) return null; // ✅ warunek PO hookach
+| Klucz | Domyślnie | Opis |
+|---|---|---|
+| `toastsEnabled` | `true` | Czy pokazywać toasty UI |
+| `logsEnabled` | `false` | Czy zapisywać logi testów |
+| `analyticsEnabled` | `false` | (placeholder) |
 
-  return <div>...</div>;
-}
+Patch zapisywany przez `window.electronAPI.saveSettings(patch)` z `firstRun: false`.
 
-// ❌ ŹLE — warunek przed hookami
-export default function MojKomponent() {
-  if (!isFeatureEnabled('nazwaFeature')) return null; // ❌ BŁĄD!
-  const [stan, setStan] = useState(null);
-  // ...
-}
+## 17.4. Dodanie nowego kroku — checklista
+
+1. Dodaj `'nazwaKroku'` do `ONBOARDING_STEPS[]`
+2. Napisz komponent `StepNazwa({ ...props, t })`
+3. Dodaj `case 'nazwaKroku'` w renderze
+4. Dodaj klucz `onboarding.step_nazwaKroku` w locales (pl/en/template)
+5. Jeśli krok wymaga walidacji przed przejściem dalej — dodaj warunek w `canGoNext()`
+
+## 17.5. Dodanie nowego togglea do StepPrivacy — checklista
+
+1. Dodaj klucz do stanu `privacy` w `OnboardingScreen` (`useState`)
+2. Dodaj obiekt `{ key, labelKey, descKey, defaultVal }` do tablicy w `StepPrivacy`
+3. Dodaj klucz do `DEFAULT_SETTINGS` w `config.js`
+4. W `handleOnboardingFinish` w `App.jsx` dodaj `nowyKlucz: privacy.nowyKlucz ?? defaultVal`
+5. Dodaj klucze tłumaczeń `onboarding.privacy_X_label` i `onboarding.privacy_X_desc` do pl/en/template
+
+---
+
+# 18. SYSTEM POWIADOMIEŃ (TOAST QUEUE)
+
+> Powiązane wymagania: `UIUX_REQ-021`, `UIUX_REQ-022`
+
+## 18.1. Architektura
+
+```
+showToast(type, message)              ← jedyne publiczne API
+    ↓ CustomEvent 'mwm:toast'
+ToastContainer.jsx (useReducer)       ← subskrybuje event, zarządza stanem
+    active[] (max 3) + queue[] (FIFO)
+    ↓ CSS .toast-enter / .toast-exit
+DOM — widoczność 2s, animacja 0.3s    ← łącznie ~4.6s na ekranie
 ```
 
-**Wyjątek — komponenty z `useEffect`:** Jeśli komponent ma useEffect (np. ładuje dane przy mount), warunek feature powinien wystąpić po hookach, ale logika efektu nie ulegnie zmianie — komponent po prostu zwróci null zanim wyrenderuje UI.
-
-## 17.3. Implementacja w modułach logicznych (`.js`)
+## 18.2. Jak wywołać toast
 
 ```js
-// ✅ POPRAWNIE — warunek na początku funkcji (nie hook, więc można przed logiką)
-export function initAdBlocker() {
-  if (!isFeatureEnabled('adBlocker')) return;
-  // ... logika inicjalizacji
-}
+// Import bezpośredni (zalecane)
+import { showToast } from '../utils/notificationsManager.js';
+showToast('success', t('klucz.komunikatu'));
+showToast('error',   t('klucz.bledu'));
+showToast('warning', 'Treść ostrzeżenia');
+showToast('info',    'Informacja');
+
+// Przez window (legacy — niektóre stare komponenty)
+window.showToast?.('success', 'Komunikat');
 ```
 
-## 17.4. Mapowanie FEATURES → pliki
+Typy: `success` | `error` | `warning` | `info`
 
-| Flaga | Plik(i) | Sposób warunkowania |
+## 18.3. Stałe (`ToastContainer.jsx`)
+
+| Stała | Wartość | Opis |
 |---|---|---|
-| `helpScreen` | `src/ui/help/Help.jsx` | `return null` w komponencie |
-| `appLibrary` | `src/ui/appLibrary/AppLibraryBrowser.jsx` | `return null` w komponencie |
-| `unifiedSearch` | `src/ui/system/GlobalSearch.jsx` (jeśli istnieje) | `return null` w komponencie |
-| `tileView` | `src/ui/webview/WebViewTileView.jsx` (jeśli istnieje) | `return null` w komponencie |
-| `singleAppMode` | `src/ui/webview/WebViewTab.jsx` | prop `onSingleAppMode` = `undefined` |
-| `screenshotWebView` | `src/ui/webview/WebViewTab.jsx` | prop `onScreenshot` = `undefined` |
-| `resourceMonitor` | `src/ui/webview/WebViewTab.jsx` | prop `onResourceMonitor` = `undefined` |
-| `sleepTabs` | `src/engine/sleepTabsManager.js` | `return 0` w `getSleepTimeoutMs()` |
-| `adBlocker` | `src/engine/adBlocker.js` | `return` w `initAdBlocker()` |
-| `jsonYamlXmlFormatter` | `src/ui/tools/JsonFormatter.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
-| `regexTester` | `src/ui/tools/RegexTester.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
-| `markdownPreviewer` | `src/ui/tools/MarkdownPreviewer.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
-| `imageTools` | `src/ui/tools/ImageTools.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
-| `svgToPng` | `src/ui/tools/SvgToPngConverter.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
-| `filePreviewer` | `src/ui/tools/FilePreviewer.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
-| `miniPostman` | `src/ui/tools/MiniPostman.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
-| `clipboardHistory` | `src/ui/tools/ClipboardHistory.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
-| `cookieGrabber` | `src/ui/tools/CookieGrabber.jsx` + `ToolsPanel.jsx` | `return null` + filtr listy |
-| `hotkeysManager` | `src/ui/settings/HotkeysManager.jsx` + `Settings.jsx` | `return null` + `{isFeatureEnabled && <HotkeysManager />}` |
-| `exportImport` | `src/ui/settings/DataLogsSection.jsx` | warunkowe renderowanie przycisków |
-| `logsAccess` | `src/ui/settings/DataLogsSection.jsx` | warunkowe renderowanie przycisku |
+| `MAX_ACTIVE` | 3 | Maks. widocznych toastów jednocześnie |
+| `VISIBLE_MS` | 2000 | Czas widoczności (ms) |
+| `ANIMATE_MS` | 300 | Czas animacji wejścia/wyjścia (ms) |
+| `TOAST_EVENT` | `'mwm:toast'` | Nazwa CustomEvent |
 
-## 17.5. Wzorzec filtrowania zakładek w ToolsPanel
+## 18.4. Toggle w Settings / Onboarding
 
-Lista narzędzi w `ToolsPanel.jsx` używa pola `feature` i filtruje tablicę `allTools`:
+- Klucz: `settings.toastsEnabled` (default: `true`)
+- Settings: `NotificationsSection.jsx` → toggle + `settings:update`
+- Onboarding: `StepPrivacy` → klucz `toastsEnabled`
+- Montowanie: `App.jsx` → `<ToastContainer enabled={settings.toastsEnabled !== false} />`
 
-```jsx
-const allTools = [
-  { id: 'jsonFormatter', icon: ICONS.JSON, label: t('tools.jsonFormatter'), feature: 'jsonYamlXmlFormatter' },
-  { id: 'removebg', icon: ICONS.REMOVEBG, label: t('tools.removebg'), feature: null }, // null = zawsze widoczne
-  // ...
-];
-const tools = allTools.filter(tool => !tool.feature || isFeatureEnabled(tool.feature));
+## 18.5. Powiadomienia systemowe OS
+
+```js
+import { showSystemNotification } from '../utils/notificationsManager.js';
+showSystemNotification('Tytuł', 'Treść');
+// → IPC 'notifications:showSystem' → ipcMainHandlers_notifications.js → electron.Notification
 ```
 
-## 17.6. Dodawanie nowego feature flaga — checklista
+Toggle: `settings.systemNotificationsEnabled` (default: `true`). Działa przy zminimalizowanym oknie.
 
-1. Dodaj wpis do `FEATURES` w `src/config.js`
-2. Dodaj `import { isFeatureEnabled } from '../../config.js'` w docelowym pliku
-3. W komponencie React: dodaj `if (!isFeatureEnabled('klucz')) return null;` **PO wszystkich hookach**
-4. W module JS: dodaj `if (!isFeatureEnabled('klucz')) return;` na początku funkcji inicjalizacyjnej
-5. Jeśli tool pojawia się w `ToolsPanel` — dodaj pole `feature: 'klucz'` w `allTools`
-6. Zaktualizuj tablicę mapowania w sekcji 17.4 powyżej
-7. Dodaj wpis do `.clinerules` (sekcja DEBUG / FEATURES)
+## 18.6. Dodanie nowego typu toastu
+
+```js
+// W TOAST_CONFIG w ToastContainer.jsx:
+nowyTyp: { icon: ICONS.NAZWA, bgVar: 'var(--kolor)', textColor: '#fff', label: 'Opis' }
+```
+
+Gotowe — `showToast('nowyTyp', ...)` działa od razu.
 
 ---
+
+# 19. DZIENNIK ZDARZEŃ APLIKACJI (EVENT LOG)
+
+> Powiązane wymagania: `ARCH_REQ-044`
+
+## 19.1. Kiedy używać
+
+Do logowania kluczowych akcji użytkownika dla celów debugowania produkcji.
+
+**NIE** mylić z:
+- `logger.js` → konsola deweloperska (debugMode)
+- `logWriter.js` → błędy testów → `test-fails.log`
+
+## 19.2. API
+
+```js
+import { logEvent } from '../utils/eventLogger.js';
+
+logEvent(module, fn, action, params, source);
+// Przykład:
+logEvent('TaskPanel', 'handleSaveTask', 'task_created', { id: 123, title: 'Zrób coś' }, 'user');
+```
+
+| Parametr | Typ | Opis |
+|---|---|---|
+| `module` | string | Nazwa komponentu/modułu |
+| `fn` | string | Nazwa funkcji |
+| `action` | string | Identyfikator zdarzenia (snake_case) |
+| `params` | object | Parametry akcji (shallow, sanityzowane) |
+| `source` | `'user'`/`'system'`/`'ipc'` | Skąd pochodzi zdarzenie |
+
+## 19.3. Zachowanie
+
+- **Fire-and-forget** — nie rzuca wyjątków, nie blokuje UI
+- **Guard**: zapisuje tylko gdy `settings.eventLogEnabled === true` (domyślnie `false`, opt-in)
+- **Cache settings**: lazy-load przy pierwszym wywołaniu, inwalidowany przez `CustomEvent 'mwm:settings-changed'`
+- **Sanityzacja params**: usuwa klucze z blacklisty (`password`, `token`, `cookie`, `key`, `secret`, `apiKey`, `accessToken`, `auth`, `credentials`), limit 500 znaków
+
+## 19.4. Plik logu
+
+- Ścieżka: `userData/logs/events.log`
+- Format: NDJSON (jeden JSON per linia)
+- Rotacja: po przekroczeniu 2MB → `events.log.1` → `events.log.2` (max 2 archiwa)
+- Przykładowy wpis:
+  ```json
+  {"ts":1717000000000,"module":"TaskPanel","fn":"handleSaveTask","action":"task_created","params":{"id":123},"source":"user"}
+  ```
+
+## 19.5. Handlery IPC (`ipcMainHandlers_logs.js`)
+
+| Kanał | Opis |
+|---|---|
+| `events:append` | Dopisuje wpis, rotuje jeśli >2MB |
+| `events:getFile` | Zwraca `{ path, content }` |
+| `events:clear` | Usuwa aktualny plik (archiwa zostają) |
+
+## 19.6. Toggle w Settings
+
+Klucz: `settings.eventLogEnabled` (default: `false`)
+Lokalizacja: `LogsSection.jsx` → sekcja "Dziennik zdarzeń aplikacji"
+
+## 19.7. Gdzie dodawać wywołania `logEvent` (docelowo)
+
+- Zapis/usunięcie zadania (`TaskPanel`)
+- Dodanie/usunięcie profilu (`Sidebar`)
+- Zapis notatki (`Notepad`)
+- Screenshot (`useWebViewActions`)
+- Export/import danych (`DataLogsSection`)
+- Zmiana ustawień (`Settings`)
+
+
 <!-- KONIEC DOKUMENTU -->
 <!-- ============================================================================= -->

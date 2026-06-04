@@ -122,6 +122,21 @@
 
 ---
 
+## 10b. ONBOARDING
+
+- **SplashScreen** – animacja startowa (~2s) przy każdym uruchomieniu. SVG/PNG logo, nazwa aplikacji, animowany pasek postępu. Fade-out 300ms. Komponent: `src/ui/system/SplashScreen.jsx`.
+- **OnboardingScreen** – wieloetapowy wizard przy `firstRun === true`. Kroki: `theme` → `language` → `privacy` → `apps` → `account`. Po ukończeniu zapisuje patch do settings przez IPC i ustawia `firstRun: false`. Komponent: `src/ui/system/OnboardingScreen.jsx`.
+- **StepPrivacy** – krok z toggleami opt-in: `toastsEnabled`, `logsEnabled`, `analyticsEnabled`.
+
+## 10c. SYSTEM POWIADOMIEŃ
+
+- **Toast Queue** – kolejka toastów UI (`success`/`error`/`warning`/`info`). Max 3 aktywne, reszta w FIFO queue. Czas widoczności: 2s, animacja 0.3s. API: `showToast(type, msg)` z `notificationsManager.js`. Komponent: `src/ui/system/ToastContainer.jsx`.
+- **System Notifications** – powiadomienia systemowe OS przez `electron.Notification`. Działają przy zminimalizowanym oknie. IPC: `notifications:showSystem`. Toggle: `settings.systemNotificationsEnabled`.
+
+## 10d. DZIENNIK ZDARZEŃ (EVENT LOG)
+
+- **eventLogger.js** – fire-and-forget logger kluczowych akcji użytkownika do pliku `userData/logs/events.log`. Format: NDJSON. Rotacja co 2MB (max 2 archiwa). Sanityzacja params (blacklista: password, token, cookie itp.). Guard: `settings.eventLogEnabled === false` → nic nie zapisuje. API: `logEvent(module, fn, action, params, source)`. Toggle w `LogsSection.jsx`.
+
 ## 11. LOADERY (DYNAMICZNE ŁADOWANIE)
 
 - **`testsLoader.js`** – dynamiczne ładowanie `TestRunner_*.js` z folderu `tests/`

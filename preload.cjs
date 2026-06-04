@@ -14,15 +14,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
   
   // ─── Profiles ─────────────────────────────────────────────────
   // ─── getProfiles() – Pobiera listę wszystkich profili użytkownika
-  getProfiles:    ()           => ipcRenderer.invoke('get-profiles'),
-  // ─── saveProfiles(profiles) – Zapisuje aktualny stan listy profili
-  saveProfiles:   (profiles)   => ipcRenderer.invoke('save-profiles', profiles),
+  getProfiles:    ()           => ipcRenderer.invoke('profiles:getAll'),
+  // ─── saveProfiles(profiles) – Zapisuje aktualny stan listy profili (bulk, legacy)
+  saveProfiles:   (profiles)   => ipcRenderer.invoke('profiles:getAll', profiles),
   
   // ─── Notes ────────────────────────────────────────────────────
   // ─── getNotes() – Pobiera listę notatek
-  getNotes:   ()      => ipcRenderer.invoke('get-notes'),
-  // ─── saveNotes(notes) – Zapisuje listę notatek
-  saveNotes:  (notes) => ipcRenderer.invoke('save-notes', notes),
+  getNotes:   ()      => ipcRenderer.invoke('notes:getAll'),
+  // ─── saveNotes(notes) – Zapisuje listę notatek (legacy — używaj invoke bezpośrednio)
+  saveNotes:  (notes) => ipcRenderer.invoke('notes:add', notes),
   
   // ─── Settings ─────────────────────────────────────────────────
   // ─── getSettings() – Pobiera aktualną konfigurację użytkownika
