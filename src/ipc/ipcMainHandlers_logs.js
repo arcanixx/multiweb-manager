@@ -136,6 +136,56 @@ export function registerLogsHandlers() {
     }
   });
 
+
+  // ─── logs:append – nowa nazwa dla 'append-log-file' (migracja Sprint 2)
+  //   Alias kompatybilności — preload.cjs używa jeszcze 'append-log-file'
+  ipcMain.handle('logs:append', async (_, payload) => {
+    try {
+      if (!payload || typeof payload !== 'object' ||
+          !('timestamp' in payload) || !('module' in payload) ||
+          !('test' in payload) || !('details' in payload)) {
+        throw new Error('INVALID_PAYLOAD');
+      }
+      ensureLogsDir();
+      const logFile = getLogFile();
+      if (fs.existsSync(logFile)) {
+        const { size } = fs.statSync(logFile);
+        if (size >= MAX_LOG_SIZE) rotateLogs(logFile, MAX_ARCHIVES);
+      }
+      const line = `[${new Date(payload.timestamp).toISOString()}] FAIL: ${payload.module} / ${payload.test} – ${payload.details}\n`;
+      fs.appendFileSync(logFile, line, 'utf8');
+      return { ok: true };
+    } catch (err) {
+      logError('ipc', 'logs:append error', err);
+      return { ok: false, error: err.message };
+    }
+  });
+
+  // ─── logs:get – nowa nazwa dla 'get-logs-file' (migracja Sprint 2)
+  ipcMain.handle('logs:get', async () => {
+    try {
+      const logFile = getLogFile();
+      if (!fs.existsSync(logFile)) return { ok: true, data: { path: logFile, content: '' } };
+      return { ok: true, data: { path: logFile, content: fs.readFileSync(logFile, 'utf8') } };
+    } catch (err) {
+      logError('ipc', 'logs:get error', err);
+      return { ok: false, error: err.message };
+    }
+  });
+
+  // ─── logs:clear – nowa nazwa dla 'clear-logs-file' (migracja Sprint 2)
+  ipcMain.handle('logs:clear', async () => {
+    try {
+      const logFile = getLogFile();
+      if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
+      logInfo('ipc', 'logs:clear: log cleared');
+      return { ok: true };
+    } catch (err) {
+      logError('ipc', 'logs:clear error', err);
+      return { ok: false, error: err.message };
+    }
+  });
+
   // ─── events:append – dopisuje zdarzenie do dziennika (ARCH_REQ-044)
   //   Format wpisu: NDJSON (jeden JSON per linia)
   //   Zapis tylko gdy settings.eventLogEnabled === true (guard po stronie renderera w eventLogger.js)
@@ -306,17 +356,6 @@ export function registerLogsHandlers() {
     }
   });
 
-  // ─── logs:getFile – alias dla get-logs-file z rozszerzonym response (ścieżka + treść)
-  ipcMain.handle('logs:getFile', async () => {
-    try {
-      const logFile = getLogFile();
-      if (!fs.existsSync(logFile)) return { ok: true, data: { path: logFile, content: '' } };
-      return { ok: true, data: { path: logFile, content: fs.readFileSync(logFile, 'utf8') } };
-    } catch (err) {
-      logError('ipc', 'logs:getFile failed', err.message);
-      return { ok: false, error: err.message };
-    }
-  });
 }
 
 // ─── Auto-rejestracja przy imporcie przez ipcLoader.js (side-effect pattern)
