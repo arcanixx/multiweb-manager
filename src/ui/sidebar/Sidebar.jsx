@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny panel nawigacyjny aplikacji – orkiestrator, deleguje logikę do hooków i podkomponentów.
 // FUNCTIONS: Sidebar
-// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, useProfiles.js, useCategories.js, useSidebarSearch.js, useWorkspaces.js, SidebarHeader, SidebarProfileList, SidebarTools, SidebarWorkspaces, ProfileModal, CategoryModal, ConfirmModal
+// DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js, config.js, useProfiles.js, useCategories.js, useSidebarSearch.js, useWorkspaces.js, SidebarHeader, SidebarProfileList, SidebarTools, SidebarWorkspaces, ProfileModal, CategoryModal, ConfirmModal
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -12,6 +12,7 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { logInfo, logError, logWarn, logDebug } from '../../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
+import { isFeatureEnabled } from '../../config.js';
 
 // ─── Hooki
 import { useProfiles } from '../../hooks/useProfiles.js';
@@ -212,6 +213,25 @@ export default function Sidebar({ onSelect, activeItem, onOpenTaskPanel, onModal
         isGlobalSearching={isGlobalSearching}
         onGlobalSelect={handleGlobalSelect}
       />
+
+      {/* ─── App Library – główny punkt wejścia do biblioteki aplikacji, przypięty nad listą profili ─── */}
+      {isFeatureEnabled('appLibrary') && (
+        <button
+          onClick={() => onSelect({ id: 'appLibrary', type: 'special', name: t('appLibrary.title') })}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            margin: '4px 8px 0', padding: '8px 12px',
+            background: activeItem?.id === 'appLibrary' ? 'var(--accent)' : 'transparent',
+            color: activeItem?.id === 'appLibrary' ? 'var(--accent-text, #fff)' : 'var(--text)',
+            border: '1px solid var(--border)', borderRadius: 8,
+            cursor: 'pointer', width: 'calc(100% - 16px)',
+            fontSize: 13, fontWeight: 500, transition: 'background 0.15s'
+          }}
+        >
+          <span>{ICONS.APP_LIBRARY}</span>
+          <span>{t('appLibrary.title')}</span>
+        </button>
+      )}
 
       {/* ─── Lista profili ─── */}
       <SidebarProfileList
