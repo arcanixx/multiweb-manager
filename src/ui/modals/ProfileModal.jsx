@@ -8,13 +8,14 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { normalizeWebUrl } from '../../utils/urlUtils.js';
 import ModalPortal from '../system/ModalPortal';
 import { showNotification } from '../../utils/notificationsManager.js';
+import { useTaskGroups } from '../../hooks/useTaskGroups.js';
 
 // ─── ProfileModal() – modal dodawania lub edycji profilu WebView
 //   @param {Object} props – właściwości komponentu
@@ -25,13 +26,17 @@ import { showNotification } from '../../utils/notificationsManager.js';
 //   @returns {JSX.Element} – renderowany modal profilu
 export default function ProfileModal({ profile, categories, onSave, onClose }) {
   const { t } = useContext(TranslationContext);
-  const [name, setName] = useState(profile?.name || '');
-  const [url, setUrl] = useState(profile?.url || '');
-  const [icon, setIcon] = useState(profile?.icon || '');
-  const [category, setCategory] = useState(profile?.category || '');
-  const [adBlock, setAdBlock] = useState(profile?.adBlock || false);
-  const [notifs, setNotifs] = useState(profile?.notifs || false);
+  const [name,        setName]        = useState(profile?.name     || '');
+  const [url,         setUrl]         = useState(profile?.url      || '');
+  const [icon,        setIcon]        = useState(profile?.icon     || '');
+  const [category,    setCategory]    = useState(profile?.category || '');
+  const [adBlock,     setAdBlock]     = useState(profile?.adBlock  || false);
+  const [notifs,      setNotifs]      = useState(profile?.notifs   || false);
+  const [taskGroupId, setTaskGroupId] = useState(profile?.taskGroupId || '');
   const isEdit = !!profile;
+
+  // ─── Grupy zadań – do dropdown przypisania shared TaskGroup
+  const { groups, loading: groupsLoading } = useTaskGroups();
 
   // ─── handleSave() – obsługa zapisu profilu z walidacją URL
   //   @returns {void}
@@ -52,7 +57,8 @@ export default function ProfileModal({ profile, categories, onSave, onClose }) {
         id, name: name.trim(), url: finalUrl, icon: icon.trim() || ICONS.DEFAULT,
         category: category.trim(), type: 'webview', favorite: profile?.favorite || false,
         zoom: profile?.zoom || 1, partition: profile?.partition || `persist:profile-${id}`,
-        adBlock, notifs
+        adBlock, notifs,
+        taskGroupId: taskGroupId || null,
       });
       logInfo('ui', `ProfileModal: profile ${isEdit ? 'updated' : 'created'} ${id}`);
     } catch (err) {
@@ -84,6 +90,25 @@ export default function ProfileModal({ profile, categories, onSave, onClose }) {
             <input className="form-input" value={category} placeholder={t('profile_modal.category_placeholder')} list="category-list" onChange={e => setCategory(e.target.value)} />
             <datalist id="category-list">{categories.map(c => <option key={c.id} value={c.name} />)}</datalist>
           </div>
+          {/* ─── Przypisanie do grupy zadań (TaskGroup) ─── */}
+          <div>
+            <label className="form-label">{t('profile_modal.task_group_label')}</label>
+            <select
+              className="form-select"
+              value={taskGroupId}
+              onChange={e => setTaskGroupId(e.target.value)}
+              disabled={groupsLoading}
+            >
+              <option value="">{t('profile_modal.task_group_default')}</option>
+              {groups.map(g => (
+                <option key={g.id} value={g.id}>{g.name}</option>
+              ))}
+            </select>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 3 }}>
+              {t('profile_modal.task_group_hint')}
+            </div>
+          </div>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{ICONS.BELL} {t('profile_modal.notifications_label')}</span>

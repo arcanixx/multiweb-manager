@@ -61,7 +61,10 @@
     "notifications_label": "Notifications",
     "save": "Save",
     "cancel": "Cancel",
-    "invalid_url": "Enter a valid URL, e.g. https://google.com or chat.openai.com"
+    "invalid_url": "Enter a valid URL, e.g. https://google.com or chat.openai.com",
+    "task_group_label": "Task Group (TaskPanel)",
+    "task_group_default": "— Default (1:1 with profile) —",
+    "task_group_hint": "Pick an existing group to share a TaskPanel across multiple profiles."
   },
   "category_modal": {
     "add_title": "Add category",
@@ -355,12 +358,21 @@
   "aggregatedTasks": {
     "title": "All tasks",
     "subtitle": "Tasks from all projects",
-    "hide_project": "Hide project",
-    "show_project": "Show project",
+    "hide_project": "Hide group",
+    "show_project": "Show group",
     "collapse_all": "Collapse all",
     "expand_all": "Expand all",
     "no_tasks": "No tasks",
-    "filter_label": "Filter projects"
+    "filter_label": "Filter projects",
+    "stat_active": "active",
+    "stat_total": "total",
+    "stat_groups": "groups",
+    "filter_all_statuses": "All statuses",
+    "filter_all_priorities": "All priorities",
+    "filter_all_sections": "All sections",
+    "clear_filters": "Clear filters",
+    "no_results": "No results for selected filters",
+    "hidden": "hidden"
   },
   "history": {
     "title": "History",
