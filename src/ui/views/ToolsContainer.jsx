@@ -2,7 +2,7 @@
 // FILE: ToolsContainer.jsx
 // PATH: src/ui/views/ToolsContainer.jsx
 // VERSION: 0.0.3
-// PURPOSE: Kontener renderowania narzędzi specjalnych (Notepad, ProjectManager, RemoveBg, itp.)
+// PURPOSE: Kontener renderowania narzędzi specjalnych (Notepad, ProjectManager, RemoveBg, AppLibrary itp.)
 // FUNCTIONS: ToolsContainer
 // DEPENDS ON: react, loggerRenderer.js, Spinner.jsx, config.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -13,11 +13,12 @@ import { logWarn, logDebug } from '../../utils/loggerRenderer.js';
 import { Spinner } from './Spinner.jsx';
 import { isFeatureEnabled } from '../../config.js';
 
-const Notepad        = lazy(() => import('../notepad/Notepad'));
-const ProjectManager = lazy(() => import('../projects/ProjectManager'));
-const RemoveBgTool   = lazy(() => import('../tools/RemoveBgTool'));
-const StringCombiner = lazy(() => import('../tools/StringCombiner'));
-const Terminal       = lazy(() => import('../terminal/Terminal'));
+const Notepad            = lazy(() => import('../notepad/Notepad'));
+const ProjectManager     = lazy(() => import('../projects/ProjectManager'));
+const RemoveBgTool       = lazy(() => import('../tools/RemoveBgTool'));
+const StringCombiner     = lazy(() => import('../tools/StringCombiner'));
+const Terminal           = lazy(() => import('../terminal/Terminal'));
+const AppLibraryBrowser  = lazy(() => import('../appLibrary/AppLibraryBrowser'));
 
 // ─── ToolsContainer() – renderuje odpowiednie narzędzie na podstawie activeItem.id
 //   @param {Object} props.activeItem – aktywny element specjalny
@@ -62,6 +63,14 @@ export default function ToolsContainer({ activeItem, settings, onOpenTasks }) {
 
     case 'terminal':
       return wrap(Terminal, { cwd: activeItem.cwd });
+
+    case 'appLibrary':
+      // ─── Guard feature flag: appLibrary
+      if (!isFeatureEnabled('appLibrary')) {
+        logWarn('ui', 'ToolsContainer: appLibrary disabled via feature flag');
+        return <div style={{ padding: 32 }}>Biblioteka aplikacji wyłączona.</div>;
+      }
+      return wrap(AppLibraryBrowser);
 
     default:
       logWarn('ui', `ToolsContainer: unknown tool id "${activeItem.id}"`);
