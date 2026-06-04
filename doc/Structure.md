@@ -425,10 +425,10 @@ root/
 │   │   │                                                          ipc:events:clear
 │   │   │                                               DEPENDS ON: electron, fs, path, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_notepad.js ❗          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notepad.js
+│   │   ├── 📜 ipcMainHandlers_notepad.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notepad.js
 │   │   │                                               PURPOSE: IPC dla notatek (Notepad, hooks useNotepad).
-│   │   │                                               FUNCTIONS: ipc:notepad:getAll, ipc:notepad:add, ipc:notepad:update,
-│   │   │                                                          ipc:notepad:delete
+│   │   │                                               FUNCTIONS: ipc:notepad:getAll, ipc:notepad:add,
+│   │   │                                                          ipc:notepad:update, ipc:notepad:delete
 │   │   │                                               DEPENDS ON: electron, notepadStore.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_notifications.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notifications.js
@@ -675,7 +675,7 @@ root/
 │   │   │                                                          clearHistory, getRecentHistory
 │   │   │                                               DEPENDS ON: config.js, persistence.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 notepadStore.js ❗                     <!-- VERSION: 0.0.3 PATH: src/stores/notepadStore.js
+│   │   ├── 📜 notepadStore.js ❗                   <!-- VERSION: 0.0.3 PATH: src/stores/notepadStore.js
 │   │   │                                               PURPOSE: Zarządzanie notatkami użytkownika – ładowanie,
 │   │   │                                                        zapisywanie oraz operacje CRUD na danych notatek.
 │   │   │                                               FUNCTIONS: getAllnotepad, addNote, updateNote, deleteNote
@@ -1472,7 +1472,7 @@ root/
 │   │   │                                               FUNCTIONS: pingUrl
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 notepadStorage.js ❗                   <!-- VERSION: 0.0.3 PATH: src/utils/notepadStorage.js
+│   │   ├── 📜 notepadStorage.js ❗                 <!-- VERSION: 0.0.3 PATH: src/utils/notepadStorage.js
 │   │   │                                               PURPOSE: Pomocnicze funkcje zapisu i odczytu notatek oraz
 │   │   │                                                        fabryka zakładek
 │   │   │                                               FUNCTIONS: createNewTab, loadnotepadFromStorage,
@@ -1495,8 +1495,9 @@ root/
 │   │   │                                               -->
 │   │   ├── 📜 searchIndex.js                      <!-- VERSION: 0.0.3 PATH: src/utils/searchIndex.js
 │   │   │                                               PURPOSE: Budowanie ujednoliconego indeksu wyszukiwania
-│   │   │                                                        (profiles, projects, tasks, notepad) dla globalnej palety
-│   │   │                                                        komend (Ctrl+K) i globalnego wyszukiwania w sidebarze.
+│   │   │                                                        (profiles, projects, tasks, notepad) dla globalnej
+│   │   │                                                        palety komend (Ctrl+K) i globalnego wyszukiwania w
+│   │   │                                                        sidebarze.
 │   │   │                                               FUNCTIONS: buildSearchIndex, searchAll
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
@@ -2209,10 +2210,10 @@ root/
 │   │   │                                                          ipc:events:clear
 │   │   │                                               DEPENDS ON: electron, fs, path, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_notepad.js ❗          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notepad.js
+│   │   ├── 📜 ipcMainHandlers_notepad.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notepad.js
 │   │   │                                               PURPOSE: IPC dla notatek (Notepad, hooks useNotepad).
-│   │   │                                               FUNCTIONS: ipc:notepad:getAll, ipc:notepad:add, ipc:notepad:update,
-│   │   │                                                          ipc:notepad:delete
+│   │   │                                               FUNCTIONS: ipc:notepad:getAll, ipc:notepad:add,
+│   │   │                                                          ipc:notepad:update, ipc:notepad:delete
 │   │   │                                               DEPENDS ON: electron, notepadStore.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_notifications.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notifications.js
@@ -2459,7 +2460,7 @@ root/
 │   │   │                                                          clearHistory, getRecentHistory
 │   │   │                                               DEPENDS ON: config.js, persistence.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 notepadStore.js ❗                     <!-- VERSION: 0.0.3 PATH: src/stores/notepadStore.js
+│   │   ├── 📜 notepadStore.js ❗                   <!-- VERSION: 0.0.3 PATH: src/stores/notepadStore.js
 │   │   │                                               PURPOSE: Zarządzanie notatkami użytkownika – ładowanie,
 │   │   │                                                        zapisywanie oraz operacje CRUD na danych notatek.
 │   │   │                                               FUNCTIONS: getAllnotepad, addNote, updateNote, deleteNote
@@ -3256,7 +3257,7 @@ root/
 │   │   │                                               FUNCTIONS: pingUrl
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 notepadStorage.js ❗                   <!-- VERSION: 0.0.3 PATH: src/utils/notepadStorage.js
+│   │   ├── 📜 notepadStorage.js ❗                 <!-- VERSION: 0.0.3 PATH: src/utils/notepadStorage.js
 │   │   │                                               PURPOSE: Pomocnicze funkcje zapisu i odczytu notatek oraz
 │   │   │                                                        fabryka zakładek
 │   │   │                                               FUNCTIONS: createNewTab, loadnotepadFromStorage,
@@ -3279,8 +3280,9 @@ root/
 │   │   │                                               -->
 │   │   ├── 📜 searchIndex.js                      <!-- VERSION: 0.0.3 PATH: src/utils/searchIndex.js
 │   │   │                                               PURPOSE: Budowanie ujednoliconego indeksu wyszukiwania
-│   │   │                                                        (profiles, projects, tasks, notepad) dla globalnej palety
-│   │   │                                                        komend (Ctrl+K) i globalnego wyszukiwania w sidebarze.
+│   │   │                                                        (profiles, projects, tasks, notepad) dla globalnej
+│   │   │                                                        palety komend (Ctrl+K) i globalnego wyszukiwania w
+│   │   │                                                        sidebarze.
 │   │   │                                               FUNCTIONS: buildSearchIndex, searchAll
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->

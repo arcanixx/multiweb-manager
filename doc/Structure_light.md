@@ -422,8 +422,8 @@ root/
 │ │ │ -->
 │ │ ├── ipcMainHandlers_notepad.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notepad.js
 │ │ │ PURPOSE: IPC dla notatek (Notepad, hooks useNotepad).
-│ │ │ FUNCTIONS: ipc:notepad:getAll, ipc:notepad:add, ipc:notepad:update,
-│ │ │ ipc:notepad:delete
+│ │ │ FUNCTIONS: ipc:notepad:getAll, ipc:notepad:add,
+│ │ │ ipc:notepad:update, ipc:notepad:delete
 │ │ │ DEPENDS ON: electron, notepadStore.js, logger.js
 │ │ │ -->
 │ │ ├── ipcMainHandlers_notifications.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notifications.js
@@ -1490,8 +1490,9 @@ root/
 │ │ │ -->
 │ │ ├── searchIndex.js <!-- VERSION: 0.0.3 PATH: src/utils/searchIndex.js
 │ │ │ PURPOSE: Budowanie ujednoliconego indeksu wyszukiwania
-│ │ │ (profiles, projects, tasks, notepad) dla globalnej palety
-│ │ │ komend (Ctrl+K) i globalnego wyszukiwania w sidebarze.
+│ │ │ (profiles, projects, tasks, notepad) dla globalnej
+│ │ │ palety komend (Ctrl+K) i globalnego wyszukiwania w
+│ │ │ sidebarze.
 │ │ │ FUNCTIONS: buildSearchIndex, searchAll
 │ │ │ DEPENDS ON: logger.js
 │ │ │ -->
