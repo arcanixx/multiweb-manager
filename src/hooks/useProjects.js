@@ -2,109 +2,97 @@
 // FILE: useProjects.js
 // PATH: src/hooks/useProjects.js
 // VERSION: 0.0.3
-// PURPOSE: Hook React do zarządzania projektami użytkownika – obsługa operacji CRUD przez mostek IPC.
+// PURPOSE: Hook React do zarządzania projektami użytkownika – CRUD przez mostek IPC z optimistic updates i rollbackiem.
 // FUNCTIONS: useProjects
-// DEPENDS ON: react, loggerRenderer.js
+// DEPENDS ON: react, loggerRenderer.js, useAsync.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { useEffect, useState } from "react";
-import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+import { useCallback, useState, useEffect } from 'react';
+import { logWarn } from '../utils/loggerRenderer.js';
+import { useAsync, useAsyncMutation } from './useAsync.js';
 
-// ─── useProjects() – hook do zarządzania projektami
-//   @returns {Object} – obiekt z projects, loading i funkcjami CRUD
+// ─── useProjects() – hook do zarządzania projektami z optimistic updates
+//   @returns {Object} – projects, loading, error, reloadProjects, addProject, updateProject, deleteProject
 export function useProjects() {
+  // Lokalny stan dla optimistic updates (zsynchronizowany z danymi z useAsync)
   const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  // ─── load() – ładuje wszystkie projekty z backendu
-  //   @returns {Promise<void>}
-  async function load() {
-    try {
-      setLoading(true);
-      const res = await window.electronAPI.invoke("projects:getAll");
-      if (res?.ok) {
-        setProjects(res.data);
-        logInfo("store", "useProjects.load success", res.data.length);
-      } else {
-        logError("store", "useProjects.load failed", res?.error);
-        logWarn("store", "Nie można załadować projektów");
-      }
-      setLoading(false);
-    } catch (err) {
-      logError("store", "useProjects.load exception", err.message);
-      logWarn("store", "Wystąpił błąd podczas ładowania projektów");
-      setLoading(false);
-    }
-  }
+  // ─── loadFn – ładuje wszystkie projekty przez IPC
+  const loadFn = useCallback(
+    () => window.electronAPI.invoke('projects:getAll'),
+    []
+  );
 
-  // ─── add() – dodaje nowy projekt
-  //   @param {Object} project – obiekt projektu
-  //   @returns {Promise<Object>} – wynik operacji
-  async function add(project) {
-    try {
-      const res = await window.electronAPI.invoke("projects:create", project);
-      if (res?.ok) {
-        logInfo("store", "useProjects.add success", project.id);
-        await load();
-      } else {
-        logError("store", "useProjects.add failed", res?.error);
-        logWarn("store", "Nie można dodać projektu");
-      }
-      return res;
-    } catch (err) {
-      logError("store", "useProjects.add exception", err.message);
-      logWarn("store", "Wystąpił błąd podczas dodawania projektu");
-      return { ok: false, error: err.message };
-    }
-  }
+  const { data: serverProjects, loading, error, execute: reloadProjects } = useAsync(loadFn, {
+    key: 'useProjects',
+    initialData: [],
+    runOnMount: true,
+  });
 
-  // ─── update() – aktualizuje istniejący projekt
-  //   @param {string} id – identyfikator projektu
-  //   @param {Object} patch – obiekt z polami do zaktualizowania
-  //   @returns {Promise<Object>} – wynik operacji
-  async function update(id, patch) {
-    try {
-      const res = await window.electronAPI.invoke("projects:update", { id, patch });
-      if (res?.ok) {
-        logInfo("store", "useProjects.update success", id);
-        await load();
-      } else {
-        logError("store", "useProjects.update failed", res?.error);
-        logWarn("store", "Nie można zaktualizować projektu");
-      }
-      return res;
-    } catch (err) {
-      logError("store", "useProjects.update exception", err.message);
-      logWarn("store", "Wystąpił błąd podczas aktualizacji projektu");
-      return { ok: false, error: err.message };
-    }
-  }
-
-  // ─── remove() – usuwa projekt
-  //   @param {string} id – identyfikator projektu
-  //   @returns {Promise<Object>} – wynik operacji
-  async function remove(id) {
-    try {
-      const res = await window.electronAPI.invoke("projects:delete", { id });
-      if (res?.ok) {
-        logInfo("store", "useProjects.remove success", id);
-        await load();
-      } else {
-        logError("store", "useProjects.remove failed", res?.error);
-        logWarn("store", "Nie można usunąć projektu");
-      }
-      return res;
-    } catch (err) {
-      logError("store", "useProjects.remove exception", err.message);
-      logWarn("store", "Wystąpił błąd podczas usuwania projektu");
-      return { ok: false, error: err.message };
-    }
-  }
-
+  // Synchronizuj lokalny stan z danymi serwera po każdym załadowaniu
   useEffect(() => {
-    load();
-  }, []);
+    if (serverProjects) setProjects(serverProjects);
+  }, [serverProjects]);
 
-  return { projects, loading, reloadProjects: load, addProject: add, updateProject: update, deleteProject: remove };
+  if (error) logWarn('store', `useProjects: ${error}`);
+
+  // ─── addProject – dodaje nowy projekt z optimistic update
+  const { execute: addProject, loading: adding } = useAsyncMutation(
+    (project) => window.electronAPI.invoke('projects:create', project),
+    {
+      key: 'useProjects.add',
+      onMutate: (project) => {
+        const snapshot = [...projects];
+        setProjects(prev => [...prev, { ...project, _optimistic: true }]);
+        return { snapshot };
+      },
+      onSuccess: (data) => { if (data) setProjects(data); else reloadProjects(); },
+      onError:   (_, ctx) => setProjects(ctx?.snapshot ?? projects),
+    }
+  );
+
+  // ─── updateProject – aktualizuje istniejący projekt z optimistic update
+  //   @param {string} id    – ID projektu
+  //   @param {Object} patch – pola do zaktualizowania
+  const { execute: _updateExecute, loading: updating } = useAsyncMutation(
+    ({ id, patch }) => window.electronAPI.invoke('projects:update', { id, patch }),
+    {
+      key: 'useProjects.update',
+      onMutate: ({ id, patch }) => {
+        const snapshot = [...projects];
+        setProjects(prev => prev.map(p => p.id === id ? { ...p, ...patch } : p));
+        return { snapshot };
+      },
+      onSuccess: (data) => { if (data) setProjects(data); else reloadProjects(); },
+      onError:   (_, ctx) => setProjects(ctx?.snapshot ?? projects),
+    }
+  );
+  const updateProject = useCallback(
+    (id, patch) => _updateExecute({ id, patch }),
+    [_updateExecute]
+  );
+
+  // ─── deleteProject – usuwa projekt z optimistic update
+  const { execute: deleteProject, loading: deleting } = useAsyncMutation(
+    (id) => window.electronAPI.invoke('projects:delete', { id }),
+    {
+      key: 'useProjects.delete',
+      onMutate: (id) => {
+        const snapshot = [...projects];
+        setProjects(prev => prev.filter(p => p.id !== id));
+        return { snapshot };
+      },
+      onSuccess: (data) => { if (data) setProjects(data); else reloadProjects(); },
+      onError:   (_, ctx) => setProjects(ctx?.snapshot ?? projects),
+    }
+  );
+
+  return {
+    projects, loading, error,
+    reloadProjects,
+    addProject,    adding,
+    updateProject, updating,
+    deleteProject, deleting,
+  };
 }

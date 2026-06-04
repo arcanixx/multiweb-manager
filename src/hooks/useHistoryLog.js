@@ -4,41 +4,41 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania i odświeżania logów historii aktywności użytkownika. Komunikuje się z historyStore przez mostek IPC.
 // FUNCTIONS: useHistoryLog
-// DEPENDS ON: react, loggerRenderer.js
+// DEPENDS ON: react, loggerRenderer.js, useAsync.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { useEffect, useState } from "react";
-import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+import { useCallback } from 'react';
+import { logWarn } from '../utils/loggerRenderer.js';
+import { useAsync, useAsyncMutation } from './useAsync.js';
 
 // ─── useHistoryLog() – hook do zarządzania historią akcji użytkownika
-//   @returns {Object} – obiekt z entries, loading i reloadHistory
+//   @returns {Object} – entries, loading, error, reloadHistory, clearHistory
 export function useHistoryLog() {
-  const [entries, setEntries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  
-  // ─── load() – ładuje wszystkie wpisy historii z backendu
-  //   @returns {Promise<void>}
-  async function load() {
-    try {
-      setLoading(true);
-      const res = await window.electronAPI.invoke("history:getAll");
-      if (res?.ok) {
-        setEntries(res.data);
-        logInfo("store", "useHistoryLog.load success", res.data.length);
-      } else {
-        logError("store", "useHistoryLog.load failed", res?.error);
-        logWarn("store", "Nie można załadować historii");
-      }
-      setLoading(false);
-    } catch (err) {
-      logError("store", "useHistoryLog.load exception", err.message);
-      logWarn("store", "Wystąpił błąd podczas ładowania historii");
-      setLoading(false);
+
+  // ─── loadFn – ładuje wszystkie wpisy historii przez IPC
+  const loadFn = useCallback(
+    () => window.electronAPI.invoke('history:getAll'),
+    []
+  );
+
+  const { data: entries = [], loading, error, execute: reloadHistory } = useAsync(loadFn, {
+    key: 'useHistoryLog',
+    initialData: [],
+    runOnMount: true,
+  });
+
+  if (error) logWarn('store', `useHistoryLog: ${error}`);
+
+  // ─── clearHistory – usuwa wszystkie wpisy historii
+  const { execute: clearHistory, loading: clearing } = useAsyncMutation(
+    () => window.electronAPI.invoke('history:clear'),
+    {
+      key: 'useHistoryLog.clear',
+      onSuccess: () => reloadHistory(),
+      onError: (err) => logWarn('store', `useHistoryLog.clear failed: ${err}`),
     }
-  }
-  useEffect(() => {
-    load();
-  }, []);
-  return { entries, loading, reloadHistory: load };
+  );
+
+  return { entries, loading, error, reloadHistory, clearHistory, clearing };
 }

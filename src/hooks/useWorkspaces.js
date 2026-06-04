@@ -4,13 +4,12 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania przestrzeniami roboczymi (workspaces) użytkownika przez mostek IPC.
 // FUNCTIONS: useWorkspaces
-// DEPENDS ON: react, loggerRenderer.js, ConfirmModal, translations.js
+// DEPENDS ON: react, loggerRenderer.js, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { useEffect, useState, useContext } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
-// import ConfirmModal from '../../ui/modals/ConfirmModal'; // TODO: do użycia gdy potwierdzenie będzie renderowane w komponencie (np. Sidebar.jsx) – hook otrzymuje showConfirm jako callback
 import { TranslationContext } from '../../utils/translations.js';
 
 // ─── useWorkspaces() – hook do zarządzania workspace'ami

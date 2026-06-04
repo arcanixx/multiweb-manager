@@ -3,16 +3,17 @@
 // PATH: src/ipc/ipcMainHandlers_webview_controls.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla User Agent, Single App Mode, Resource Monitor, Sleep Tabs. Używa ESM import path/url zamiast require() (ES module context).
-// FUNCTIONS: ipc:webview:setUserAgent, ipc:webview:openInWindow, ipc:webview:getUsage, ipc:webview:sleep, ipc:webview:wake
-// DEPENDS ON: electron, path, url, logger.js, config.js
+// FUNCTIONS: ipc:webview:setUserAgent, ipc:webview:openInWindow, ipc:webview:getUsage, ipc:webview:sleep, ipc:webview:wake, ipc:webview:scheduleInjection, ipc:webview:removeInjection
+// DEPENDS ON: electron, path, url, logger.js, config.js, webviewScriptInjector.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain, BrowserWindow } from 'electron';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { logError } from '../utils/logger.js';
-import { FEATURES, DEFAULT_SETTINGS } from '../../config.js';
+import { logError, logInfo } from '../utils/logger.js';
+import { FEATURES, DEFAULT_SETTINGS } from '../config.js';
+import { scheduleInjectionOnLoad, removeInjectionListeners } from '../engine/webviewScriptInjector.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // ─── getWebContentsById() – Wyszukuje i zwraca obiekt WebContents powiązany z podanym identyfikatorem w zestawie wszystkich aktywnych okien Electrona
@@ -118,6 +119,39 @@ ipcMain.handle('webview:wake', async (_, payload) => {
     return { ok: true };
   } catch (err) {
     logError('ipc', 'webview:wake failed', err);
+    return { ok: false, error: err.message };
+  }
+});
+
+// ─── webview:scheduleInjection – rejestruje wstrzykiwanie CSS/skryptu dla profilu przy did-finish-load
+//   Deleguje do webviewScriptInjector.scheduleInjectionOnLoad()
+ipcMain.handle('webview:scheduleInjection', async (_, payload) => {
+  try {
+    if (!payload?.id) throw new Error('INVALID_PAYLOAD');
+    const { id, profileId, userCSS, userScript } = payload;
+    const wc = getWebContentsById(id);
+    if (!wc) throw new Error('WEBVIEW_NOT_FOUND');
+    scheduleInjectionOnLoad(wc, profileId ?? String(id), { userCSS, userScript });
+    logInfo('ipc', `webview:scheduleInjection registered for wcId=${id}`);
+    return { ok: true };
+  } catch (err) {
+    logError('ipc', 'webview:scheduleInjection failed', err.message);
+    return { ok: false, error: err.message };
+  }
+});
+
+// ─── webview:removeInjection – usuwa listener wstrzykiwania dla webContents (cleanup przy zamknięciu profilu)
+//   Deleguje do webviewScriptInjector.removeInjectionListeners()
+ipcMain.handle('webview:removeInjection', async (_, payload) => {
+  try {
+    if (!payload?.id) throw new Error('INVALID_PAYLOAD');
+    const wc = getWebContentsById(payload.id);
+    if (!wc) return { ok: true }; // już zamknięty – OK
+    removeInjectionListeners(wc);
+    logInfo('ipc', `webview:removeInjection cleaned for wcId=${payload.id}`);
+    return { ok: true };
+  } catch (err) {
+    logError('ipc', 'webview:removeInjection failed', err.message);
     return { ok: false, error: err.message };
   }
 });

@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       endpoints.js
-// PATH:       src/config/endpoints.js
-// VERSION:    0.0.3
-// PURPOSE:    Adresy zewnętrznych API używanych przez aplikację (API_ENDPOINTS).
-// FUNCTIONS:  -
+// FILE: endpoints.js
+// PATH: src/config/endpoints.js
+// VERSION: 0.0.3
+// PURPOSE: Adresy zewnętrznych API używanych przez aplikację (API_ENDPOINTS).
+// FUNCTIONS: -
 // DEPENDS ON: -
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

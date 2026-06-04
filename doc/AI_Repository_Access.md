@@ -39,6 +39,13 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 ├── 📁 📁 public/
 │   └── 🌐 [index.html](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/public/index.html)
 ├── 📁 📁 src/
+│   ├── 📁 📁 config/
+│   │   ├── 📜 [app.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/config/app.js)
+│   │   ├── 📜 [endpoints.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/config/endpoints.js)
+│   │   ├── 📜 [features.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/config/features.js)
+│   │   ├── 📜 [limits.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/config/limits.js)
+│   │   ├── 📜 [paths.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/config/paths.js)
+│   │   └── 📜 [settings.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/config/settings.js)
 │   ├── 📁 📁 constants/
 │   │   └── 📜 [ipcChannels.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/constants/ipcChannels.js)
 │   ├── 📁 📁 data/
@@ -52,9 +59,11 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   ├── 📜 [resourceMonitor.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/resourceMonitor.js)
 │   │   ├── 📜 [sleepTabsManager.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/sleepTabsManager.js)
 │   │   ├── 📜 [updateService.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/updateService.js)
-│   │   └── 📜 [webviewRegistry.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/webviewRegistry.js)
+│   │   ├── 📜 [webviewRegistry.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/webviewRegistry.js)
+│   │   └── 📜 [webviewScriptInjector.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/webviewScriptInjector.js)
 │   ├── 📁 📁 hooks/
 │   │   ├── 📜 [useAppLibrary.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useAppLibrary.js)
+│   │   ├── 📜 [useAsync.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useAsync.js)
 │   │   ├── 📜 [useCategories.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useCategories.js)
 │   │   ├── 📜 [useHistoryLog.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useHistoryLog.js)
 │   │   ├── 📜 [useMainLayout.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useMainLayout.js)
@@ -122,6 +131,7 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   ├── 📦 [help_pl.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/locales/help_pl.json)
 │   │   └── 📦 [pl.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/locales/pl.json)
 │   ├── 📁 📁 stores/
+│   │   ├── 📜 [StorageService.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/StorageService.js)
 │   │   ├── 📜 [accountsStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/accountsStore.js)
 │   │   ├── 📜 [appLibraryStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/appLibraryStore.js)
 │   │   ├── 📜 [clipboardStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/clipboardStore.js)
@@ -302,6 +312,7 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   ├── 📜 [TestRunner_Tasks.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_Tasks.js)
 │   ├── 📜 [TestRunner_Terminal.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_Terminal.js)
 │   ├── 📜 [TestRunner_Tools.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_Tools.js)
+│   ├── 📜 [TestRunner_UseAsync.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_UseAsync.js)
 │   ├── 📜 [TestRunner_WebView.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_WebView.js)
 │   └── 📜 [testUtils.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/testUtils.js)
 ├── 📜 [config.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/config.js)

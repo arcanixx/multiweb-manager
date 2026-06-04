@@ -235,43 +235,59 @@ Plik logów jest ograniczony do 500 linii (nadpisywane od najstarszych). Można 
 
 ## 1j. `config.js`
 
-**Pliki:** `src/config.js`, `config.js` (root)
+**Pliki:** `config.js` (root fasada) → `src/config.js` (fasada src) → `src/config/*.js` (podpliki)
 
-**Cel:** Stałe, limity, wartości domyślne, feature flags.
+**Cel:** Stałe, limity, wartości domyślne, feature flags. Podzielone na osobne pliki wg odpowiedzialności.
 
-```js
-export const CONFIG = {
-  debugMode: false,
-  sleepTabsTimeout: 15 * 60 * 1000,
-  resourceMonitor: { warnAt: 70, criticalAt: 90 },
-  historyLimit: 200,
-  featureFlags: {
-    screenshotWebView: true,
-    cookieGrabber: true
-  }
-};
+**Architektura re-eksportów:**
+```
+config.js (root)           export * from "./src/config.js"
+  └── src/config.js        export * from "./config/app.js" + features + limits + ...
+        ├── config/app.js        APP_ENV, LANGUAGES, UI_ZOOM, stałe profilowe
+        ├── config/features.js   FEATURES, isFeatureEnabled(), isToolEnabled()
+        ├── config/limits.js     LIMITS, getLimit()
+        ├── config/paths.js      PATHS
+        ├── config/settings.js   DEBUG_MODULES, DEFAULT_SETTINGS, getDefaultSetting()
+        └── config/endpoints.js  API_ENDPOINTS
 ```
 
-**Podział `config.js`:**
+**Importy — zasada:** Wszystkie importy wskazują na `config.js` lub `src/config.js` (zależnie od głębokości pliku). Nie importuj bezpośrednio z `src/config/*.js`.
 
-| Sekcja | Opis |
-|--------|------|
-| `APP_ENV` | Środowisko (`development` / `production`) |
-| `DEBUG_DEFAULT` | Domyślny tryb debug (`true`) |
-| `LANGUAGES` | Lista dostępnych języków (`pl`, `en`) |
-| `DEFAULT_LANGUAGE` | Domyślny język (`pl`) |
-| `UI_ZOOM` | Konfiguracja zoomu UI (min, max, step, default) |
-| `CLIPBOARD_HISTORY_MAX` | Maks. wpisów w historii schowka |
-| `SLEEP_TABS_TIMEOUT_DEFAULT` | Domyślny timeout usypiania (15 min) |
-| `MAX_LAST_USED_PROFILES` | Maks. profili w „ostatnio używane" |
-| `RESOURCE_WARN_AT` | Próg ostrzeżenia RAM/CPU (%) |
-| `RESOURCE_CRITICAL_AT` | Próg krytyczny RAM/CPU (%) |
-| `DEFAULT_PROFILE_CATEGORY` | Domyślna kategoria profilu (`AI`) |
-| `FEATURES` | Feature flags (włącz/wyłącz moduły) |
-| `PATHS` | Ścieżki do katalogów |
-| `LIMITS` | Limity (max zadań, notatek, projektów, WebView) |
-| `DEFAULT_SETTINGS` | Domyślne ustawienia użytkownika |
-| `API_ENDPOINTS` | Zewnętrzne API (np. remove.bg) |
+```js
+// pliki w src/engine/, src/hooks/, src/stores/, src/utils/
+import { isFeatureEnabled, LIMITS } from '../config.js';
+
+// pliki w src/ipc/, src/ui/**
+import { isFeatureEnabled } from '../../config.js';
+
+// main.js (root)
+import { DEFAULT_SETTINGS } from './config.js';
+   
+  
+```
+
+**Podział `src/config/`:**
+
+| Plik | Eksportuje | Opis |
+|------|-----------|------|
+| `app.js` | `APP_ENV`, `DEBUG_DEFAULT`, `LANGUAGES`, `DEFAULT_LANGUAGE`, `UI_ZOOM`, stałe (`CLIPBOARD_HISTORY_MAX` itp.) | Podstawowe stałe aplikacji |
+| `features.js` | `FEATURES`, `isFeatureEnabled()`, `isToolEnabled()` | Feature flags |
+| `limits.js` | `LIMITS`, `getLimit()` | Limity kolekcji |
+												
+															   
+															  
+																	   
+																	
+													   
+														
+																   
+														 
+| `paths.js` | `PATHS` | Ścieżki w userData |
+																
+| `settings.js` | `DEBUG_MODULES`, `DEFAULT_SETTINGS`, `getDefaultSetting()` | Domyślne ustawienia |
+| `endpoints.js` | `API_ENDPOINTS` | Zewnętrzne API |
+
+**Dodawanie nowej stałej:** Edytuj odpowiedni podplik w `src/config/`. Nie modyfikuj `src/config.js` ani root `config.js`.
 
 ---
 
@@ -1825,6 +1841,254 @@ Lokalizacja: `LogsSection.jsx` → sekcja "Dziennik zdarzeń aplikacji"
 - Export/import danych (`DataLogsSection`)
 - Zmiana ustawień (`Settings`)
 
+---
+
+# 20. HOOKI ASYNCHRONICZNE (useAsync)
+
+## 20.1. useAsync
+
+**Plik:** `src/hooks/useAsync.js`
+
+**Cel:** Uniwersalny hook do obsługi operacji asynchronicznych z automatycznym zarządzaniem stanem (data/loading/error) oraz zapobieganiem aktualizacji stanu po odmontowaniu komponentu.
+
+**Podstawowe użycie:**
+```jsx
+import { useAsync } from '../hooks/useAsync';
+
+function MyComponent() {
+  const { data, loading, error, execute, reset } = useAsync(
+    asyncFn, // funkcja asynchroniczna zwracająca Promise
+    { 
+      immediate: true, // czy wykonać od razu przy montowaniu
+      onSuccess: (data) => {/* callback */},
+      onError: (error) => {/* callback */}
+    }
+  );
+
+  return (
+    <div>
+      {loading && <p>Ładowanie...</p>}
+      {error && <p>Błąd: {error.message}</p>}
+      {data && <p>Dane: {JSON.stringify(data)}</p>}
+      <button onClick={execute}>Odśwież</button>
+      <button onClick={reset}>Reset</button>
+    </div>
+  );
+}
+```
+
+**Zwracana wartość:**
+- `data` - wynik operacji asynchronicznej
+- `loading` - boolean wskazujący czy operacja jest w toku
+- `error` - obiekt błędu lub null
+- `execute` - funkcja do ręcznego wywołania operacji
+- `reset` - funkcja do resetowania stanu
+
+**Obsługiwane formaty wyniku:**
+Hook obsługuje zarówno zwykłe wartości, jak i obiekty w formacie `{ ok: boolean, data: any }` (standard używany w IPC), automatycznie ekstrakcja danych z pola `data` gdy format jest rozpoznany.
+
+**Zapobieganie aktualizacji po unmount:**
+Wykorzystuje `mountedRef` (ref) aby zapobiec wywołaniu `setState` na już odmontowanym komponencie.
+
+## 20.2. useAsyncMutation
+
+**Plik:** `src/hooks/useAsync.js`
+
+**Cel:** Specjalizowany hook dla operacji mutacji (zapis, aktualizacja, usuwanie) z obsługą optymistycznej aktualizacji UI i automatycznym rollbackiem w przypadku błędu.
+
+**Podstawowe użycie:**
+```jsx
+import { useAsyncMutation } from '../hooks/useAsync';
+
+function MyComponent({ initialData }) {
+  const { 
+    data, 
+    loading, 
+    error, 
+    trigger, 
+    reset,
+    isMutating
+  } = useAsyncMutation(
+    asyncFn, // funkcja mutacji asynchronicznej
+    {
+      onMutate: (variables) => {
+        // zwróć snapshot danych do potencjalnego rollbacku
+        return { previousData: data };
+      },
+      onSuccess: (data, variables, context) => {
+        // operacja po sukcesie
+      },
+      onError: (error, variables, context) => {
+        // operacja po błędzie
+        // wykonaj rollback jeśli potrzebny
+        if (context?.previousData !== undefined) {
+          // przywróć poprzedni stan
+        }
+      },
+      onSettled: (data, error, variables, context) => {
+        // operacja niezależnie od wyniku
+      }
+    }
+  );
+
+  const handleSave = async () => {
+    await trigger({ /* zmienne dla funkcji mutacji */ });
+  };
+
+  return (
+    <div>
+      {loading && <p>Zapisywanie...</p>}
+      {error && <p>Błąd: {error.message}</p>}
+      <button onClick={handleSave} disabled={isMutating}>
+        Zapisz
+      </button>
+    </div>
+  );
+}
+```
+
+## 20.3. Integracja z istniejącymi hookami
+
+### useHistoryLog
+Zrefaktorowany aby używać `useAsync` dla operacji ładowania oraz `useAsyncMutation` dla operacji czyszczenia historii:
+- `load()` → używa `useAsync` wewnętrznie
+- `clearHistory()` → używa `useAsyncMutation` z optymistycznym czyszczeniem listy
+
+### useWorkspaces
+Zrefaktorowany aby używać:
+- `load()` → `useAsync`
+- `saveWorkspace()` → `useAsyncMutation` z zachowaniem potwierdzenia `ConfirmModal` jako wrapper
+- `deleteWorkspace()` → `useAsyncMutation`
+
+### useProjects
+Kompletnie zrefaktorowany aby używać:
+- `load()` → `useAsync` + `useEffect` do synchronizacji ze zmianami w storage
+- Wszystkie trzy mutacje (create/update/delete) → `useAsyncMutation` z optymistyczną aktualizacją i automatycznym rollbackiem
+
+---
+
+# 21. STORAGESERVICE
+
+**Plik:** `src/stores/StorageService.js`
+
+**Cel:** Singletonowa usługa do zarządzania danymi aplikacji z buforowaniem, deduplikacją żądań i wzorcem obserwatora dla automatycznej synchronizacji stanu między komponentami.
+
+## 21.1. Główne funkcje
+
+### Buforowanie z TTL
+- Przechowuje dane w pamięci z konfiguracją TTL (domyślnie 30 sekund)
+- Przy kolejnych żądaniach o te same dane zwraca wersję z bufora jeśli jest świeża
+- Przy błędach IPC zwraca ostatnio znane dane z bufora jako fallback (jeśli dostępne)
+
+### Deduplikacja żądań
+- Gdy wiele komponentów żąda tych samych danych jednocześnie, tworzony jest tylko jeden promise IPC
+- Wszystkie komponenty czekają na ten sam wynik, eliminując zbędne wywołania do backendu
+
+### Wzorzec obserwatora
+- Komponenty mogą subskrybować zmiany dla konkretnych kluczy danych
+- Przy każdej aktualizacji danych (poprzez IPC lub ręczną inwalidację) wszyscy subskrybenci są powiadamiani
+- Funkcja `unsubscribe` zwracana przez `subscribe` może być użyta w `useEffect` cleanup aby uniknąć wycieków pamięci
+
+### Kontrola bufora
+- `invalidate(key)` - usuwa konkretny klucz z bufora
+- `invalidateAll()` - czyści cały bufor (przydatne po wylogowaniu użytkownika)
+- `getCacheSnapshot()` - zwraca kopię aktualnego stanu bufora (do celów debugowania)
+
+## 21.2. Integracja z hookami
+
+### useProfiles
+- Pełna integracja z `StorageService`
+- Operacje CRUD (dodaj, aktualizuj, usuń, przełącz ulubiony) wykorzystują optymistyczną aktualizację z automatycznym rollbackiem
+- Automatyczna subskrypcja na zmiany w danych profili - gdy jeden komponent zmieni dane, wszystkie inne komponenty używające `useProfiles` otrzymują aktualizację w czasie rzeczywistym
+
+### useSettings
+- Pełna integracja z `StorageService`
+- Subskrypcja na zmiany w ustawieniach zapewnia spójność między wszystkimi komponentami używającymi ustawień jednocześnie
+- Przykład: gdy jeden komponent zmienia temat przez `useSettings`, wszystkie inne komponenty natychmiast widzą zmianę bez konieczności przeładowania
+
+## 21.3. Korzyści
+- Eliminacja podżądań o te same dane
+- Automatyczna synchronizacja stanu między komponentami
+- Lepsze doświadczenie użytkownika poprzez optymistyczne aktualizacje
+- Bezpieczne zarządzanie stanem z automatycznym rollbackiem w przypadku błędów
+- Zredukowana liczba wywołań IPC dzięki buforowaniu i deduplikacji
+
+---
+
+# 22. WEBVIEW SCRIPT INJECTOR
+
+**Plik:** `src/engine/webviewScriptInjector.js`
+
+**Cel:** Bezpieczne wstrzykiwanie niestandardowych skryptów i stylów CSS do WebView profilów z automatycznym zarządzaniem cykl życia wstrzyknięć aby zapobiec wyciekom pamięci.
+
+## 22.1. Główne funkcje
+
+### Wstrzykiwanie CSS
+- `injectUserCSS(webContents, css)` - wstrzyguje niestandardowy CSS do WebView przy użyciu `wc.insertCSS()`
+- Zwraca unikalny klucz potrzebny do późniejszego usunięcia wstrzyknięcia
+- Automatycznie śledzi aktywne wstrzyknięcia per `webContentsId`
+
+### Usuwanie CSS
+- `removeUserCSS(webContents, key)` - usuwa wcześniej wstrzyknięty CSS przy użyciu podanego klucza
+- Automatycznie aktualizuje śledzenie aktywnych wstrzyknięć
+
+### Wstrzykiwanie skryptów
+- `injectUserScript(webContents, script)` - wykonuje niestandardowy JavaScript w kontekście WebView przy użyciu `wc.executeJavaScript()`
+- Używa flagi `userGesture=true` gdy to możliwe dla lepszej kompatybilności z ograniczającymi przeglądarkami
+- Zwraca promise który rozwiązuje się gdy skrypt zostanie wykonany
+
+### Harmonogram wstrzykiwania przy ładowaniu
+- `scheduleInjectionOnLoad(webContents, profileId, opts)` - rejestruje nasłuchiwacz na zdarzenie `did-finish-load` WebView
+- Automatycznie czyści poprzedniego nasłuchiwacza przed rejestracją nowego dla tego samego `webContentsId` (zapobiega akumulacji nasłuchiwaczy)
+- Przy załadowaniu strony automatycznie wstrzyguje określone CSS i/lub JavaScript
+- `opts` może zawierać: `css` (string), `script` (string), `runOnEveryLoad` (boolean)
+
+### Czyszczenie nasłuchiwaczy
+- `removeInjectionListeners(webContents)` - usuwa wszystkie zarejestrowane nasłuchiwacze `did-finish-load` dla danego `webContentsId`
+- Wywoływany automatycznie przy zamknięciu profilu aby zapobiec wyciekom pamięci
+
+## 22.2. Bezpieczeństwo i feature flag
+
+### Warunkowe ładowanie
+- Cała funkcjonalność jest chroniona przez sprawdzenie `isFeatureEnabled('webviewScriptInjector')`
+- Jeśli feature jest wyłączony, wszystkie funkcje zwracają bezpieczne wartości domyślne (null, false, obietnice rozwiązujące się od razu)
+
+### Śledzenie nasłuchiwaczy
+- Wewnętrzna mapa `injectionListeners` śledzi aktywne nasłuchiwacze per `webContentsId`
+- Zapobiega przypadkowemu podwójnemu rejestrowaniu tego samego nasłuchiwacza
+- Ułatwia czyszczenie przy zamknięciu WebView
+
+## 22.3. Integracja z IPC
+
+### ipcMainHandlers_webview_controls.js
+- Dodano dwa nowe kanały IPC:
+  1. `webview:scheduleInjection` - planuje wstrzyknięcie CSS/JS przy następnym załadowaniu strony
+  2. `webview:removeInjection` - usuwa wcześniej zaplanowane wstrzyknięcie
+- Poprawiono błędną ścieżkę importu konfiguracji: zmieniono `../../config.js` na `../config.js`
+
+### Przykład użycia z poziomu renderer procesu:
+```js
+// Aby zaplanować wstrzyknięcie CSS przy następnym załadowaniu:
+window.electronAPI.invoke('webview:scheduleInjection', {
+  profileId: 'profile-uuid',
+  css: 'body { background-color: #f0f0f0; }',
+  runOnEveryLoad: true
+});
+
+// Aby usunąć zaplanowane wstrzyknięcie:
+window.electronAPI.invoke('webview:removeInjection', {
+  profileId: 'profile-uuid'
+});
+```
+
+## 22.4. Korzyści
+- Bezpieczne wstrzykiwanie niestandardowych stylów i skryptów bez ryzyka wycieków pamięci
+- Automatyczne zarządzanie cykl życia wstrzyknięć (rejestracja i czyszczenie nasłuchiwaczy)
+- Możliwość definiowania różnych wstrzyknięć dla różnych profili
+- Wsparcie dla zarówno jednorazowego, jak i powtarzalnego wstrzykiwania przy każdym ładowaniu strony
+- Kompleksowa izolacja odpowiedzialności - WebView sama zarządza swoimi wstrzyknięciami
+
+---
 
 <!-- KONIEC DOKUMENTU -->
 <!-- ============================================================================= -->

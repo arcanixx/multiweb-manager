@@ -2,126 +2,117 @@
 // FILE: useProfiles.js
 // PATH: src/hooks/useProfiles.js
 // VERSION: 0.0.3
-// PURPOSE: Hook React do zarządzania profilami WebView – CRUD, favorite, persistencja przez IPC (granularne kanały profiles:create/update/delete).
+// PURPOSE: Hook React do zarządzania profilami WebView – CRUD, favorite, persistencja przez StorageService (cache + IPC). Optimistic updates z rollbackiem.
 // FUNCTIONS: useProfiles
-// DEPENDS ON: react, loggerRenderer.js
+// DEPENDS ON: react, loggerRenderer.js, StorageService.js, useAsync.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { useState, useCallback, useEffect } from 'react';
-import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
+import { logDebug, logWarn } from '../utils/loggerRenderer.js';
+import { storageService } from '../stores/StorageService.js';
+import { useAsyncMutation } from './useAsync.js';
 
-// ─── useProfiles() – hook do zarządzania profilami z persistencją przez IPC
-// @returns {Object} – profiles, loading, addProfile, updateProfile, deleteProfile, toggleFavorite, reloadProfiles
+// ─── useProfiles() – hook do zarządzania profilami z cache (StorageService) i optimistic updates
+//   @returns {Object} – profiles, loading, error, reloadProfiles, addProfile, updateProfile, deleteProfile, toggleFavorite
 export function useProfiles() {
   const [profiles, setProfiles] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading,  setLoading]  = useState(true);
+  const [error,    setError]    = useState(null);
 
-  // ─── reloadProfiles() – ładuje profile z backendu (używane przy inicjalizacji i po operacjach)
-  const reloadProfiles = useCallback(async () => {
+  // ─── loadFromService() – ładuje profile przez StorageService (cache → IPC)
+  const loadFromService = useCallback(async (force = false) => {
+    setLoading(true);
+    setError(null);
     try {
-      if (!window.electronAPI?.getProfiles) {
-        setProfiles([]);
-        setLoading(false);
-        logWarn('store', 'useProfiles: electronAPI.getProfiles unavailable');
-        return;
-      }
-      const res = await window.electronAPI.getProfiles();
-      if (res?.ok) {
-        setProfiles(res.data || []);
-        logInfo('store', 'useProfiles: loaded', res.data?.length);
-      } else {
-        logError('store', 'useProfiles: load failed', res?.error);
-      }
+      const data = await storageService.get('profiles', force);
+      setProfiles(data ?? []);
+      logDebug('store', `useProfiles: loaded ${data?.length ?? 0} profiles (cache=${!force})`);
     } catch (err) {
-      logError('store', 'useProfiles: load exception', err.message);
+      setError(err.message);
+      logWarn('store', `useProfiles: load failed – ${err.message}`);
     } finally {
       setLoading(false);
     }
   }, []);
 
+  // ─── reloadProfiles() – wymusza odświeżenie z pominięciem cache
+  const reloadProfiles = useCallback(() => loadFromService(true), [loadFromService]);
+
+  // Załaduj przy montowaniu + subskrybuj zmiany (np. z innego komponentu)
   useEffect(() => {
-    reloadProfiles();
-  }, [reloadProfiles]);
+    loadFromService();
+    const unsubscribe = storageService.subscribe('profiles', (data) => {
+      setProfiles(data ?? []);
+      logDebug('store', `useProfiles: received update via subscribe (${data?.length ?? 0} profiles)`);
+    });
+    return unsubscribe;
+  }, [loadFromService]);
 
-  // ─── addProfile() – tworzy nowy profil przez IPC (profiles:create)
-  const addProfile = useCallback(async (profileData) => {
-    try {
-      const res = await window.electronAPI.createProfile(profileData);
-      if (res?.ok) {
-        setProfiles(res.data || []);
-        logInfo('store', 'useProfiles: added', profileData.id);
-      } else {
-        logError('store', 'useProfiles: add failed', res?.error);
-      }
-      return res;
-    } catch (err) {
-      logError('store', 'useProfiles: add exception', err.message);
-      return { ok: false, error: err.message };
+  // ─── addProfile – dodaje nowy profil z optimistic update
+  const { execute: addProfile, loading: adding } = useAsyncMutation(
+    (profileData) => storageService.set('profiles', { action: 'create', profile: profileData }),
+    {
+      key: 'useProfiles.add',
+      onMutate: (profileData) => {
+        const snapshot = [...profiles];
+        setProfiles(prev => [...prev, { ...profileData, _optimistic: true }]);
+        return { snapshot };
+      },
+      onSuccess: (data) => { if (data) setProfiles(data); },
+      onError:   (_, ctx) => setProfiles(ctx?.snapshot ?? profiles),
     }
-  }, []);
+  );
 
-  // ─── updateProfile() – aktualizuje istniejący profil przez IPC (profiles:update)
-  const updateProfile = useCallback(async (id, patch) => {
-    try {
-      const res = await window.electronAPI.updateProfile(id, patch);
-      if (res?.ok) {
-        setProfiles(res.data || []);
-        logInfo('store', 'useProfiles: updated', id);
-      } else {
-        logError('store', 'useProfiles: update failed', res?.error);
-      }
-      return res;
-    } catch (err) {
-      logError('store', 'useProfiles: update exception', err.message);
-      return { ok: false, error: err.message };
+  // ─── updateProfile – aktualizuje profil z optimistic update
+  //   @param {string} id    – ID profilu
+  //   @param {Object} patch – pola do zaktualizowania
+  const { execute: _updateExecute, loading: updating } = useAsyncMutation(
+    ({ id, patch }) => storageService.set('profiles', { action: 'update', id, patch }),
+    {
+      key: 'useProfiles.update',
+      onMutate: ({ id, patch }) => {
+        const snapshot = [...profiles];
+        setProfiles(prev => prev.map(p => p.id === id ? { ...p, ...patch } : p));
+        return { snapshot };
+      },
+      onSuccess: (data) => { if (data) setProfiles(data); },
+      onError:   (_, ctx) => setProfiles(ctx?.snapshot ?? profiles),
     }
-  }, []);
+  );
+  const updateProfile = useCallback(
+    (id, patch) => _updateExecute({ id, patch }),
+    [_updateExecute]
+  );
 
-  // ─── deleteProfile() – usuwa profil przez IPC (profiles:delete)
-  const deleteProfile = useCallback(async (id) => {
-    try {
-      const res = await window.electronAPI.deleteProfile(id);
-      if (res?.ok) {
-        setProfiles(res.data || []);
-        logInfo('store', 'useProfiles: deleted', id);
-      } else {
-        logError('store', 'useProfiles: delete failed', res?.error);
-      }
-      return res;
-    } catch (err) {
-      logError('store', 'useProfiles: delete exception', err.message);
-      return { ok: false, error: err.message };
+  // ─── deleteProfile – usuwa profil z optimistic update
+  const { execute: deleteProfile, loading: deleting } = useAsyncMutation(
+    (id) => storageService.set('profiles', { action: 'delete', id }),
+    {
+      key: 'useProfiles.delete',
+      onMutate: (id) => {
+        const snapshot = [...profiles];
+        setProfiles(prev => prev.filter(p => p.id !== id));
+        return { snapshot };
+      },
+      onSuccess: (data) => { if (data) setProfiles(data); },
+      onError:   (_, ctx) => setProfiles(ctx?.snapshot ?? profiles),
     }
-  }, []);
+  );
 
-  // ─── toggleFavorite() – przełącza status ulubionego przez IPC (profiles:update)
+  // ─── toggleFavorite – przełącza favorite z optimistic update
   const toggleFavorite = useCallback(async (id) => {
-    try {
-      const profile = profiles.find(p => p.id === id);
-      if (!profile) return { ok: false, error: 'NOT_FOUND' };
-      const res = await window.electronAPI.updateProfile(id, { favorite: !profile.favorite });
-      if (res?.ok) {
-        setProfiles(res.data || []);
-        logDebug('store', 'useProfiles: favorite toggled', id);
-        return { ok: true, favorite: !profile.favorite };
-      } else {
-        logError('store', 'useProfiles: toggleFavorite failed', res?.error);
-        return res;
-      }
-    } catch (err) {
-      logError('store', 'useProfiles: toggleFavorite exception', err.message);
-      return { ok: false, error: err.message };
-    }
-  }, [profiles]);
+    const profile = profiles.find(p => p.id === id);
+    if (!profile) return { ok: false, error: 'NOT_FOUND' };
+    return updateProfile(id, { favorite: !profile.favorite });
+  }, [profiles, updateProfile]);
 
   return {
-    profiles,
-    loading,
+    profiles, loading, error,
     reloadProfiles,
-    addProfile,
-    updateProfile,
-    deleteProfile,
+    addProfile,    adding,
+    updateProfile, updating,
+    deleteProfile, deleting,
     toggleFavorite,
   };
 }

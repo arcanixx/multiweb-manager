@@ -2,66 +2,74 @@
 // FILE: useSettings.js
 // PATH: src/hooks/useSettings.js
 // VERSION: 0.0.3
-// PURPOSE: Hook React do zarządzania ustawieniami użytkownika – ładowanie, aktualizacja i synchronizacja stanu z settingsStore przez mostek IPC.
+// PURPOSE: Hook React do zarządzania ustawieniami użytkownika – ładowanie przez StorageService (cache + IPC), zapis z notyfikacją subskrybentów.
 // FUNCTIONS: useSettings
-// DEPENDS ON: react, loggerRenderer.js
+// DEPENDS ON: react, loggerRenderer.js, StorageService.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { useEffect, useState } from "react";
-import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+import { useState, useCallback, useEffect } from 'react';
+import { logDebug, logWarn } from '../utils/loggerRenderer.js';
+import { storageService } from '../stores/StorageService.js';
 
-// ─── useSettings() – Hook React do zarządzania ustawieniami użytkownika
-//   @returns {Object} – Obiekt zawierający aktualne settings, stan loading oraz funkcje reloadSettings i saveSettings
+// ─── useSettings() – hook do zarządzania ustawieniami z cache (StorageService)
+//   @returns {Object} – settings, loading, error, reloadSettings, saveSettings
 export function useSettings() {
   const [settings, setSettings] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading,  setLoading]  = useState(true);
+  const [error,    setError]    = useState(null);
+  const [saving,   setSaving]   = useState(false);
 
-  // ─── load() – ładuje ustawienia z backendu
-  //   @returns {Promise<void>}
-  async function load() {
+  // ─── loadFromService() – ładuje ustawienia przez StorageService (cache → IPC)
+  const loadFromService = useCallback(async (force = false) => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      const res = await window.electronAPI.invoke("settings:get");
-      if (res?.ok) {
-        setSettings(res.data);
-        logInfo("settings", "useSettings.load success", Object.keys(res.data).length);
-      } else {
-        logError("settings", "useSettings.load failed", res?.error);
-        logWarn("settings", "Nie można załadować ustawień");
-      }
-      setLoading(false);
+      const data = await storageService.get('settings', force);
+      setSettings(data ?? {});
+      logDebug('settings', `useSettings: loaded (${Object.keys(data ?? {}).length} keys, cache=${!force})`);
     } catch (err) {
-      logError("settings", "useSettings.load exception", err.message);
-      logWarn("settings", "Wystąpił błąd podczas ładowania ustawień");
+      setError(err.message);
+      logWarn('settings', `useSettings: load failed – ${err.message}`);
+    } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
-  // ─── save() – zapisuje zmiany w ustawieniach
-  //   @param {Object} patch – obiekt z polami do zaktualizowania
-  //   @returns {Promise<Object>} – wynik operacji
-  async function save(patch) {
+  // ─── reloadSettings() – wymusza odświeżenie z pominięciem cache
+  const reloadSettings = useCallback(() => loadFromService(true), [loadFromService]);
+
+  // Załaduj przy montowaniu + subskrybuj zmiany
+  useEffect(() => {
+    loadFromService();
+    const unsubscribe = storageService.subscribe('settings', (data) => {
+      setSettings(data ?? {});
+      logDebug('settings', 'useSettings: received update via subscribe');
+    });
+    return unsubscribe;
+  }, [loadFromService]);
+
+  // ─── saveSettings() – zapisuje patch ustawień przez StorageService
+  //   @param {Object} patch – obiekt z polami do zaktualizowania (merge po stronie main)
+  //   @returns {Promise<{ ok: boolean, data?: Object }>}
+  const saveSettings = useCallback(async (patch) => {
+    setSaving(true);
     try {
-      const res = await window.electronAPI.invoke("settings:update", patch);
-      if (res?.ok) {
+      const res = await storageService.set('settings', patch);
+      if (res?.ok && res.data) {
         setSettings(res.data);
-        logInfo("settings", "useSettings.save success");
+        logDebug('settings', `useSettings: saved (${Object.keys(patch).length} keys)`);
       } else {
-        logError("settings", "useSettings.save failed", res?.error);
-        logWarn("settings", "Nie można zapisać ustawień");
+        logWarn('settings', `useSettings: save failed – ${res?.error}`);
       }
       return res;
     } catch (err) {
-      logError("settings", "useSettings.save exception", err.message);
-      logWarn("settings", "Wystąpił błąd podczas zapisu ustawień");
+      logWarn('settings', `useSettings: save exception – ${err.message}`);
       return { ok: false, error: err.message };
+    } finally {
+      setSaving(false);
     }
-  }
-
-  useEffect(() => {
-    load();
   }, []);
 
-  return { settings, loading, reloadSettings: load, saveSettings: save };
+  return { settings, loading, error, saving, reloadSettings, saveSettings };
 }

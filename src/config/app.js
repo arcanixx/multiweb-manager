@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       app.js
-// PATH:       src/config/app.js
-// VERSION:    0.0.3
-// PURPOSE:    Podstawowe stałe aplikacji – środowisko, język, zoom UI, limity UI i stałe profili.
-// FUNCTIONS:  -
+// FILE: app.js
+// PATH: src/config/app.js
+// VERSION: 0.0.3
+// PURPOSE: Podstawowe stałe aplikacji – środowisko, język, zoom UI, limity UI i stałe profili.
+// FUNCTIONS: -
 // DEPENDS ON: -
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       limits.js
-// PATH:       src/config/limits.js
-// VERSION:    0.0.3
-// PURPOSE:    Limity aplikacji – maksymalne liczby elementów w kolekcjach (LIMITS) i helper getLimit.
-// FUNCTIONS:  getLimit
+// FILE: limits.js
+// PATH: src/config/limits.js
+// VERSION: 0.0.3
+// PURPOSE: Limity aplikacji – maksymalne liczby elementów w kolekcjach (LIMITS) i helper getLimit.
+// FUNCTIONS: getLimit
 // DEPENDS ON: -
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

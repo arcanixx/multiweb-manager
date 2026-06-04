@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       features.js
-// PATH:       src/config/features.js
-// VERSION:    0.0.3
-// PURPOSE:    Feature flags – włączanie/wyłączanie modułów aplikacji (FEATURES) oraz helpery isFeatureEnabled, isToolEnabled.
-// FUNCTIONS:  isFeatureEnabled, isToolEnabled
+// FILE: features.js
+// PATH: src/config/features.js
+// VERSION: 0.0.3
+// PURPOSE: Feature flags – włączanie/wyłączanie modułów aplikacji (FEATURES) oraz helpery isFeatureEnabled, isToolEnabled.
+// FUNCTIONS: isFeatureEnabled, isToolEnabled
 // DEPENDS ON: -
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

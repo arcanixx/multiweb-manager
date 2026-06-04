@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE:       settings.js
-// PATH:       src/config/settings.js
-// VERSION:    0.0.3
-// PURPOSE:    Domyślne ustawienia aplikacji (DEFAULT_SETTINGS), per-modułowe flagi debugowania (DEBUG_MODULES) i helper getDefaultSetting.
-// FUNCTIONS:  getDefaultSetting
+// FILE: settings.js
+// PATH: src/config/settings.js
+// VERSION: 0.0.3
+// PURPOSE: Domyślne ustawienia aplikacji (DEFAULT_SETTINGS), per-modułowe flagi debugowania (DEBUG_MODULES) i helper getDefaultSetting.
+// FUNCTIONS: getDefaultSetting
 // DEPENDS ON: app.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

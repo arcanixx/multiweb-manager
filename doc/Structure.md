@@ -121,6 +121,44 @@ root/
 │                                                       DEPENDS ON: -
 │                                                       -->
 ├── 📁 src/
+│   ├── 📁 config/
+│   │   ├── 📜 app.js                              <!-- VERSION: 0.0.3 PATH: src/config/app.js
+│   │   │                                               PURPOSE: Podstawowe stałe aplikacji – środowisko, język, zoom
+│   │   │                                                        UI, limity UI i stałe profili.
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: -
+│   │   │                                               -->
+│   │   ├── 📜 endpoints.js                        <!-- VERSION: 0.0.3 PATH: src/config/endpoints.js
+│   │   │                                               PURPOSE: Adresy zewnętrznych API używanych przez aplikację
+│   │   │                                                        (API_ENDPOINTS).
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: -
+│   │   │                                               -->
+│   │   ├── 📜 features.js ❗                       <!-- VERSION: 0.0.3 PATH: src/config/features.js
+│   │   │                                               PURPOSE: Feature flags – włączanie/wyłączanie modułów aplikacji
+│   │   │                                                        (FEATURES) oraz helpery isFeatureEnabled,
+│   │   │                                                        isToolEnabled.
+│   │   │                                               FUNCTIONS: isFeatureEnabled, isToolEnabled
+│   │   │                                               DEPENDS ON: -
+│   │   │                                               -->
+│   │   ├── 📜 limits.js ❗                         <!-- VERSION: 0.0.3 PATH: src/config/limits.js
+│   │   │                                               PURPOSE: Limity aplikacji – maksymalne liczby elementów w
+│   │   │                                                        kolekcjach (LIMITS) i helper getLimit.
+│   │   │                                               FUNCTIONS: getLimit
+│   │   │                                               DEPENDS ON: -
+│   │   │                                               -->
+│   │   ├── 📜 paths.js                            <!-- VERSION: 0.0.3 PATH: src/config/paths.js
+│   │   │                                               PURPOSE: Ścieżki katalogów i plików w userData (PATHS).
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: -
+│   │   │                                               -->
+│   │   └── 📜 settings.js ❗                       <!-- VERSION: 0.0.3 PATH: src/config/settings.js
+│   │                                                   PURPOSE: Domyślne ustawienia aplikacji (DEFAULT_SETTINGS),
+│   │                                                            per-modułowe flagi debugowania (DEBUG_MODULES) i helper
+│   │                                                            getDefaultSetting.
+│   │                                                   FUNCTIONS: getDefaultSetting
+│   │                                                   DEPENDS ON: app.js
+│   │                                                   -->
 │   ├── 📁 constants/
 │   │   └── 📜 ipcChannels.js ❗                    <!-- VERSION: 0.0.3 PATH: src/constants/ipcChannels.js
 │   │                                                   PURPOSE: Centralny rejestr nazw kanałów IPC – single source of
@@ -191,17 +229,36 @@ root/
 │   │   │                                               FUNCTIONS: checkForUpdates
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   └── 📜 webviewRegistry.js ❗                <!-- VERSION: 0.0.3 PATH: src/engine/webviewRegistry.js
-│   │                                                   PURPOSE: Rejestracja WebView (mapy tabId ↔ webContentsId)
-│   │                                                   FUNCTIONS: registerWebView, unregisterWebView, getWebViewEntry,
-│   │                                                              getAllWebContents
-│   │                                                   DEPENDS ON: logger.js, electron
+│   │   ├── 📜 webviewRegistry.js ❗                <!-- VERSION: 0.0.3 PATH: src/engine/webviewRegistry.js
+│   │   │                                               PURPOSE: Rejestracja WebView (mapy tabId ↔ webContentsId)
+│   │   │                                               FUNCTIONS: registerWebView, unregisterWebView, getWebViewEntry,
+│   │   │                                                          getAllWebContents
+│   │   │                                               DEPENDS ON: logger.js, electron
+│   │   │                                               -->
+│   │   └── 📜 webviewScriptInjector.js ❗          <!-- VERSION: 0.0.3 PATH: src/engine/webviewScriptInjector.js
+│   │                                                   PURPOSE: Wstrzykiwanie CSS i skryptów użytkownika (user styles,
+│   │                                                            user scripts) do webview po załadowaniu strony.
+│   │                                                            Uruchamiany przez main process przy zdarzeniu
+│   │                                                            did-finish-load. Oddzielony od adBlocker.js – tamten
+│   │                                                            blokuje requesty na poziomie sieciowym, ten modyfikuje
+│   │                                                            DOM po załadowaniu.
+│   │                                                   FUNCTIONS: injectUserCSS, removeUserCSS, injectUserScript,
+│   │                                                              scheduleInjectionOnLoad, removeInjectionListeners
+│   │                                                   DEPENDS ON: config.js, logger.js
 │   │                                                   -->
 │   ├── 📁 hooks/
 │   │   ├── 📜 useAppLibrary.js ❗                  <!-- VERSION: 0.0.3 PATH: src/hooks/useAppLibrary.js
 │   │   │                                               PURPOSE: Hook React do pobierania i wyszukiwania w bibliotece
 │   │   │                                                        aplikacji (App Library) przez IPC.
 │   │   │                                               FUNCTIONS: useAppLibrary
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               -->
+│   │   ├── 📜 useAsync.js                         <!-- VERSION: 0.0.3 PATH: src/hooks/useAsync.js
+│   │   │                                               PURPOSE: Generyczny hook do obsługi operacji asynchronicznych
+│   │   │                                                        (load/error/loading) oraz mutacji z optimistic updates
+│   │   │                                                        i rollbackiem. Eliminuje duplikację wzorca load() w
+│   │   │                                                        hookach danych.
+│   │   │                                               FUNCTIONS: useAsync, useAsyncMutation
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useCategories.js                    <!-- VERSION: 0.0.3 PATH: src/hooks/useCategories.js
@@ -215,7 +272,7 @@ root/
 │   │   │                                                        aktywności użytkownika. Komunikuje się z historyStore
 │   │   │                                                        przez mostek IPC.
 │   │   │                                               FUNCTIONS: useHistoryLog
-│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js, useAsync.js
 │   │   │                                               -->
 │   │   ├── 📜 useMainLayout.js ❗                  <!-- VERSION: 0.0.3 PATH: src/hooks/useMainLayout.js
 │   │   │                                               PURPOSE: Hook zarządzający stanem globalnym layoutu aplikacji –
@@ -254,23 +311,24 @@ root/
 │   │   │                                               -->
 │   │   ├── 📜 useProfiles.js                      <!-- VERSION: 0.0.3 PATH: src/hooks/useProfiles.js
 │   │   │                                               PURPOSE: Hook React do zarządzania profilami WebView – CRUD,
-│   │   │                                                        favorite, persistencja przez IPC (granularne kanały
-│   │   │                                                        profiles:create/update/delete).
+│   │   │                                                        favorite, persistencja przez StorageService (cache +
+│   │   │                                                        IPC). Optimistic updates z rollbackiem.
 │   │   │                                               FUNCTIONS: useProfiles
-│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js, StorageService.js,
+│   │   │                                                           useAsync.js
 │   │   │                                               -->
 │   │   ├── 📜 useProjects.js ❗                    <!-- VERSION: 0.0.3 PATH: src/hooks/useProjects.js
-│   │   │                                               PURPOSE: Hook React do zarządzania projektami użytkownika –
-│   │   │                                                        obsługa operacji CRUD przez mostek IPC.
+│   │   │                                               PURPOSE: Hook React do zarządzania projektami użytkownika – CRUD
+│   │   │                                                        przez mostek IPC z optimistic updates i rollbackiem.
 │   │   │                                               FUNCTIONS: useProjects
-│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js, useAsync.js
 │   │   │                                               -->
 │   │   ├── 📜 useSettings.js ❗                    <!-- VERSION: 0.0.3 PATH: src/hooks/useSettings.js
 │   │   │                                               PURPOSE: Hook React do zarządzania ustawieniami użytkownika –
-│   │   │                                                        ładowanie, aktualizacja i synchronizacja stanu z
-│   │   │                                                        settingsStore przez mostek IPC.
+│   │   │                                                        ładowanie przez StorageService (cache + IPC), zapis z
+│   │   │                                                        notyfikacją subskrybentów.
 │   │   │                                               FUNCTIONS: useSettings
-│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js, StorageService.js
 │   │   │                                               -->
 │   │   ├── 📜 useSidebarSearch.js                 <!-- VERSION: 0.0.3 PATH: src/hooks/useSidebarSearch.js
 │   │   │                                               PURPOSE: Hook React do wyszukiwania i filtrowania profilów w
@@ -314,8 +372,7 @@ root/
 │   │                                                   PURPOSE: Hook React do zarządzania przestrzeniami roboczymi
 │   │                                                            (workspaces) użytkownika przez mostek IPC.
 │   │                                                   FUNCTIONS: useWorkspaces
-│   │                                                   DEPENDS ON: react, loggerRenderer.js, ConfirmModal,
-│   │                                                               translations.js
+│   │                                                   DEPENDS ON: react, loggerRenderer.js, translations.js
 │   │                                                   -->
 │   ├── 📁 ipc/
 │   │   ├── 📜 ipcMainHandlers_adBlocker.js ❗      <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_adBlocker.js
@@ -546,8 +603,10 @@ root/
 │   │   │                                                        require() (ES module context).
 │   │   │                                               FUNCTIONS: ipc:webview:setUserAgent, ipc:webview:openInWindow,
 │   │   │                                                          ipc:webview:getUsage, ipc:webview:sleep,
-│   │   │                                                          ipc:webview:wake
-│   │   │                                               DEPENDS ON: electron, path, url, logger.js, config.js
+│   │   │                                                          ipc:webview:wake, ipc:webview:scheduleInjection,
+│   │   │                                                          ipc:webview:removeInjection
+│   │   │                                               DEPENDS ON: electron, path, url, logger.js, config.js,
+│   │   │                                                           webviewScriptInjector.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_webview_extra.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_extra.js
 │   │   │                                               PURPOSE: Dodatkowe handlery IPC dla WebView – tryb Single App,
@@ -643,6 +702,15 @@ root/
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   ├── 📁 stores/
+│   │   ├── 📜 StorageService.js                   <!-- VERSION: 0.0.3 PATH: src/stores/StorageService.js
+│   │   │                                               PURPOSE: Centralna warstwa dostępu do danych w procesie
+│   │   │                                                        renderera – cache per klucz z TTL, pattern observer
+│   │   │                                                        (subscribe/notify), ujednolicone invoke do IPC,
+│   │   │                                                        deduplicacja równoległych żądań. Używana przez hooki
+│   │   │                                                        danych (useProfiles, useSettings i inne).
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 accountsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/accountsStore.js
 │   │   │                                               PURPOSE: Zarządzanie kontami użytkownika (Google, GitHub, AI,
 │   │   │                                                        itp.) – obsługa trwałości i operacji CRUD na danych
@@ -695,7 +763,7 @@ root/
 │   │   │                                                        projects.json.
 │   │   │                                               FUNCTIONS: loadProjects, saveProjects, createProject,
 │   │   │                                                          updateProject, archiveProject, deleteProject
-│   │   │                                               DEPENDS ON: persistence.js, settingsStore.js, logger.js, fs
+│   │   │                                               DEPENDS ON: persistence.js, logger.js, fs
 │   │   │                                               -->
 │   │   ├── 📜 settingsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/settingsStore.js
 │   │   │                                               PURPOSE: Ustawienia użytkownika — merge partial updates, reset
@@ -1555,12 +1623,14 @@ root/
 │   │                                                               SplashScreen.jsx, OnboardingScreen.jsx,
 │   │                                                               ToastContainer.jsx, notificationsManager.js
 │   │                                                   -->
-│   ├── 📜 config.js ❗                             <!-- VERSION: 0.0.3 PATH: src/config.js
-│   │                                                   PURPOSE: Centralna konfiguracja aplikacji - flagi funkcji,
-│   │                                                            limity i domyślne ustawienia.
-│   │                                                   FUNCTIONS: isFeatureEnabled, isToolEnabled, getDefaultSetting,
-│   │                                                              getLimit
-│   │                                                   DEPENDS ON: -
+│   ├── 📜 config.js                               <!-- VERSION: 0.0.3 PATH: src/config.js
+│   │                                                   PURPOSE: Re-eksport centralnej konfiguracji aplikacji z
+│   │                                                            src/config/*. Wszystkie importy from '../config.js' lub
+│   │                                                            '../../config.js' trafiają tutaj. Nie modyfikuj tego
+│   │                                                            pliku bezpośrednio – edytuj podpliki w src/config/.
+│   │                                                   FUNCTIONS: -
+│   │                                                   DEPENDS ON: app.js, features.js, limits.js, paths.js,
+│   │                                                               settings.js, endpoints.js
 │   │                                                   -->
 │   ├── 📜 constants.js                            <!-- VERSION: 0.0.3 PATH: src/constants.js
 │   │                                                   PURPOSE: Application-wide constants and enums (tasks, app
@@ -1746,6 +1816,13 @@ root/
 │   │                                                   PURPOSE: Testy jednostkowe dla narzędzi (JSON, Regex, Markdown,
 │   │                                                            Clipboard)
 │   │                                                   FUNCTIONS: runToolsTests
+│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   -->
+│   ├── 📜 TestRunner_UseAsync.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_UseAsync.js
+│   │                                                   PURPOSE: Testy hooka useAsync i useAsyncMutation – poprawność
+│   │                                                            stanów loading/error/data, obsługa błędów IPC,
+│   │                                                            optimistic updates, rollback.
+│   │                                                   FUNCTIONS: runUseAsyncTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_WebView.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_WebView.js
@@ -1906,6 +1983,44 @@ root/
 │                                                       DEPENDS ON: -
 │                                                       -->
 ├── 📁 src/
+│   ├── 📁 config/
+│   │   ├── 📜 app.js                              <!-- VERSION: 0.0.3 PATH: src/config/app.js
+│   │   │                                               PURPOSE: Podstawowe stałe aplikacji – środowisko, język, zoom
+│   │   │                                                        UI, limity UI i stałe profili.
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: -
+│   │   │                                               -->
+│   │   ├── 📜 endpoints.js                        <!-- VERSION: 0.0.3 PATH: src/config/endpoints.js
+│   │   │                                               PURPOSE: Adresy zewnętrznych API używanych przez aplikację
+│   │   │                                                        (API_ENDPOINTS).
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: -
+│   │   │                                               -->
+│   │   ├── 📜 features.js ❗                       <!-- VERSION: 0.0.3 PATH: src/config/features.js
+│   │   │                                               PURPOSE: Feature flags – włączanie/wyłączanie modułów aplikacji
+│   │   │                                                        (FEATURES) oraz helpery isFeatureEnabled,
+│   │   │                                                        isToolEnabled.
+│   │   │                                               FUNCTIONS: isFeatureEnabled, isToolEnabled
+│   │   │                                               DEPENDS ON: -
+│   │   │                                               -->
+│   │   ├── 📜 limits.js ❗                         <!-- VERSION: 0.0.3 PATH: src/config/limits.js
+│   │   │                                               PURPOSE: Limity aplikacji – maksymalne liczby elementów w
+│   │   │                                                        kolekcjach (LIMITS) i helper getLimit.
+│   │   │                                               FUNCTIONS: getLimit
+│   │   │                                               DEPENDS ON: -
+│   │   │                                               -->
+│   │   ├── 📜 paths.js                            <!-- VERSION: 0.0.3 PATH: src/config/paths.js
+│   │   │                                               PURPOSE: Ścieżki katalogów i plików w userData (PATHS).
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: -
+│   │   │                                               -->
+│   │   └── 📜 settings.js ❗                       <!-- VERSION: 0.0.3 PATH: src/config/settings.js
+│   │                                                   PURPOSE: Domyślne ustawienia aplikacji (DEFAULT_SETTINGS),
+│   │                                                            per-modułowe flagi debugowania (DEBUG_MODULES) i helper
+│   │                                                            getDefaultSetting.
+│   │                                                   FUNCTIONS: getDefaultSetting
+│   │                                                   DEPENDS ON: app.js
+│   │                                                   -->
 │   ├── 📁 constants/
 │   │   └── 📜 ipcChannels.js ❗                    <!-- VERSION: 0.0.3 PATH: src/constants/ipcChannels.js
 │   │                                                   PURPOSE: Centralny rejestr nazw kanałów IPC – single source of
@@ -1976,17 +2091,36 @@ root/
 │   │   │                                               FUNCTIONS: checkForUpdates
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   └── 📜 webviewRegistry.js ❗                <!-- VERSION: 0.0.3 PATH: src/engine/webviewRegistry.js
-│   │                                                   PURPOSE: Rejestracja WebView (mapy tabId ↔ webContentsId)
-│   │                                                   FUNCTIONS: registerWebView, unregisterWebView, getWebViewEntry,
-│   │                                                              getAllWebContents
-│   │                                                   DEPENDS ON: logger.js, electron
+│   │   ├── 📜 webviewRegistry.js ❗                <!-- VERSION: 0.0.3 PATH: src/engine/webviewRegistry.js
+│   │   │                                               PURPOSE: Rejestracja WebView (mapy tabId ↔ webContentsId)
+│   │   │                                               FUNCTIONS: registerWebView, unregisterWebView, getWebViewEntry,
+│   │   │                                                          getAllWebContents
+│   │   │                                               DEPENDS ON: logger.js, electron
+│   │   │                                               -->
+│   │   └── 📜 webviewScriptInjector.js ❗          <!-- VERSION: 0.0.3 PATH: src/engine/webviewScriptInjector.js
+│   │                                                   PURPOSE: Wstrzykiwanie CSS i skryptów użytkownika (user styles,
+│   │                                                            user scripts) do webview po załadowaniu strony.
+│   │                                                            Uruchamiany przez main process przy zdarzeniu
+│   │                                                            did-finish-load. Oddzielony od adBlocker.js – tamten
+│   │                                                            blokuje requesty na poziomie sieciowym, ten modyfikuje
+│   │                                                            DOM po załadowaniu.
+│   │                                                   FUNCTIONS: injectUserCSS, removeUserCSS, injectUserScript,
+│   │                                                              scheduleInjectionOnLoad, removeInjectionListeners
+│   │                                                   DEPENDS ON: config.js, logger.js
 │   │                                                   -->
 │   ├── 📁 hooks/
 │   │   ├── 📜 useAppLibrary.js ❗                  <!-- VERSION: 0.0.3 PATH: src/hooks/useAppLibrary.js
 │   │   │                                               PURPOSE: Hook React do pobierania i wyszukiwania w bibliotece
 │   │   │                                                        aplikacji (App Library) przez IPC.
 │   │   │                                               FUNCTIONS: useAppLibrary
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               -->
+│   │   ├── 📜 useAsync.js                         <!-- VERSION: 0.0.3 PATH: src/hooks/useAsync.js
+│   │   │                                               PURPOSE: Generyczny hook do obsługi operacji asynchronicznych
+│   │   │                                                        (load/error/loading) oraz mutacji z optimistic updates
+│   │   │                                                        i rollbackiem. Eliminuje duplikację wzorca load() w
+│   │   │                                                        hookach danych.
+│   │   │                                               FUNCTIONS: useAsync, useAsyncMutation
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useCategories.js                    <!-- VERSION: 0.0.3 PATH: src/hooks/useCategories.js
@@ -2000,7 +2134,7 @@ root/
 │   │   │                                                        aktywności użytkownika. Komunikuje się z historyStore
 │   │   │                                                        przez mostek IPC.
 │   │   │                                               FUNCTIONS: useHistoryLog
-│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js, useAsync.js
 │   │   │                                               -->
 │   │   ├── 📜 useMainLayout.js ❗                  <!-- VERSION: 0.0.3 PATH: src/hooks/useMainLayout.js
 │   │   │                                               PURPOSE: Hook zarządzający stanem globalnym layoutu aplikacji –
@@ -2039,23 +2173,24 @@ root/
 │   │   │                                               -->
 │   │   ├── 📜 useProfiles.js                      <!-- VERSION: 0.0.3 PATH: src/hooks/useProfiles.js
 │   │   │                                               PURPOSE: Hook React do zarządzania profilami WebView – CRUD,
-│   │   │                                                        favorite, persistencja przez IPC (granularne kanały
-│   │   │                                                        profiles:create/update/delete).
+│   │   │                                                        favorite, persistencja przez StorageService (cache +
+│   │   │                                                        IPC). Optimistic updates z rollbackiem.
 │   │   │                                               FUNCTIONS: useProfiles
-│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js, StorageService.js,
+│   │   │                                                           useAsync.js
 │   │   │                                               -->
 │   │   ├── 📜 useProjects.js ❗                    <!-- VERSION: 0.0.3 PATH: src/hooks/useProjects.js
-│   │   │                                               PURPOSE: Hook React do zarządzania projektami użytkownika –
-│   │   │                                                        obsługa operacji CRUD przez mostek IPC.
+│   │   │                                               PURPOSE: Hook React do zarządzania projektami użytkownika – CRUD
+│   │   │                                                        przez mostek IPC z optimistic updates i rollbackiem.
 │   │   │                                               FUNCTIONS: useProjects
-│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js, useAsync.js
 │   │   │                                               -->
 │   │   ├── 📜 useSettings.js ❗                    <!-- VERSION: 0.0.3 PATH: src/hooks/useSettings.js
 │   │   │                                               PURPOSE: Hook React do zarządzania ustawieniami użytkownika –
-│   │   │                                                        ładowanie, aktualizacja i synchronizacja stanu z
-│   │   │                                                        settingsStore przez mostek IPC.
+│   │   │                                                        ładowanie przez StorageService (cache + IPC), zapis z
+│   │   │                                                        notyfikacją subskrybentów.
 │   │   │                                               FUNCTIONS: useSettings
-│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js, StorageService.js
 │   │   │                                               -->
 │   │   ├── 📜 useSidebarSearch.js                 <!-- VERSION: 0.0.3 PATH: src/hooks/useSidebarSearch.js
 │   │   │                                               PURPOSE: Hook React do wyszukiwania i filtrowania profilów w
@@ -2099,8 +2234,7 @@ root/
 │   │                                                   PURPOSE: Hook React do zarządzania przestrzeniami roboczymi
 │   │                                                            (workspaces) użytkownika przez mostek IPC.
 │   │                                                   FUNCTIONS: useWorkspaces
-│   │                                                   DEPENDS ON: react, loggerRenderer.js, ConfirmModal,
-│   │                                                               translations.js
+│   │                                                   DEPENDS ON: react, loggerRenderer.js, translations.js
 │   │                                                   -->
 │   ├── 📁 ipc/
 │   │   ├── 📜 ipcMainHandlers_adBlocker.js ❗      <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_adBlocker.js
@@ -2331,8 +2465,10 @@ root/
 │   │   │                                                        require() (ES module context).
 │   │   │                                               FUNCTIONS: ipc:webview:setUserAgent, ipc:webview:openInWindow,
 │   │   │                                                          ipc:webview:getUsage, ipc:webview:sleep,
-│   │   │                                                          ipc:webview:wake
-│   │   │                                               DEPENDS ON: electron, path, url, logger.js, config.js
+│   │   │                                                          ipc:webview:wake, ipc:webview:scheduleInjection,
+│   │   │                                                          ipc:webview:removeInjection
+│   │   │                                               DEPENDS ON: electron, path, url, logger.js, config.js,
+│   │   │                                                           webviewScriptInjector.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_webview_extra.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_extra.js
 │   │   │                                               PURPOSE: Dodatkowe handlery IPC dla WebView – tryb Single App,
@@ -2428,6 +2564,15 @@ root/
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   ├── 📁 stores/
+│   │   ├── 📜 StorageService.js                   <!-- VERSION: 0.0.3 PATH: src/stores/StorageService.js
+│   │   │                                               PURPOSE: Centralna warstwa dostępu do danych w procesie
+│   │   │                                                        renderera – cache per klucz z TTL, pattern observer
+│   │   │                                                        (subscribe/notify), ujednolicone invoke do IPC,
+│   │   │                                                        deduplicacja równoległych żądań. Używana przez hooki
+│   │   │                                                        danych (useProfiles, useSettings i inne).
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 accountsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/accountsStore.js
 │   │   │                                               PURPOSE: Zarządzanie kontami użytkownika (Google, GitHub, AI,
 │   │   │                                                        itp.) – obsługa trwałości i operacji CRUD na danych
@@ -2480,7 +2625,7 @@ root/
 │   │   │                                                        projects.json.
 │   │   │                                               FUNCTIONS: loadProjects, saveProjects, createProject,
 │   │   │                                                          updateProject, archiveProject, deleteProject
-│   │   │                                               DEPENDS ON: persistence.js, settingsStore.js, logger.js, fs
+│   │   │                                               DEPENDS ON: persistence.js, logger.js, fs
 │   │   │                                               -->
 │   │   ├── 📜 settingsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/settingsStore.js
 │   │   │                                               PURPOSE: Ustawienia użytkownika — merge partial updates, reset
@@ -3340,12 +3485,14 @@ root/
 │   │                                                               SplashScreen.jsx, OnboardingScreen.jsx,
 │   │                                                               ToastContainer.jsx, notificationsManager.js
 │   │                                                   -->
-│   ├── 📜 config.js ❗                             <!-- VERSION: 0.0.3 PATH: src/config.js
-│   │                                                   PURPOSE: Centralna konfiguracja aplikacji - flagi funkcji,
-│   │                                                            limity i domyślne ustawienia.
-│   │                                                   FUNCTIONS: isFeatureEnabled, isToolEnabled, getDefaultSetting,
-│   │                                                              getLimit
-│   │                                                   DEPENDS ON: -
+│   ├── 📜 config.js                               <!-- VERSION: 0.0.3 PATH: src/config.js
+│   │                                                   PURPOSE: Re-eksport centralnej konfiguracji aplikacji z
+│   │                                                            src/config/*. Wszystkie importy from '../config.js' lub
+│   │                                                            '../../config.js' trafiają tutaj. Nie modyfikuj tego
+│   │                                                            pliku bezpośrednio – edytuj podpliki w src/config/.
+│   │                                                   FUNCTIONS: -
+│   │                                                   DEPENDS ON: app.js, features.js, limits.js, paths.js,
+│   │                                                               settings.js, endpoints.js
 │   │                                                   -->
 │   ├── 📜 constants.js                            <!-- VERSION: 0.0.3 PATH: src/constants.js
 │   │                                                   PURPOSE: Application-wide constants and enums (tasks, app
@@ -3531,6 +3678,13 @@ root/
 │   │                                                   PURPOSE: Testy jednostkowe dla narzędzi (JSON, Regex, Markdown,
 │   │                                                            Clipboard)
 │   │                                                   FUNCTIONS: runToolsTests
+│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   -->
+│   ├── 📜 TestRunner_UseAsync.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_UseAsync.js
+│   │                                                   PURPOSE: Testy hooka useAsync i useAsyncMutation – poprawność
+│   │                                                            stanów loading/error/data, obsługa błędów IPC,
+│   │                                                            optimistic updates, rollback.
+│   │                                                   FUNCTIONS: runUseAsyncTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_WebView.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_WebView.js
