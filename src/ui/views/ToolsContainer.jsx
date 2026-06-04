@@ -25,7 +25,7 @@ const Terminal       = lazy(() => import('../terminal/Terminal'));
 //   @returns {JSX.Element|null}
 export default function ToolsContainer({ activeItem, settings, onOpenTasks }) {
   useEffect(() => { logDebug('ui', 'ToolsContainer mounted'); }, []);
-   const wrap = (Component, props = {>) => (
+  const wrap = (Component, props = {}) => (
      // ─── wrap() – zawija komponent w Suspense z fallback Spinner
      //   @param {React.ComponentType} Component – komponent do leniwego ładowania
      //   @param {Object} props – dodatkowe propsy przekazane do komponentu
