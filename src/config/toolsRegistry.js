@@ -4,12 +4,13 @@
 // VERSION: 0.0.3
 // PURPOSE: Centralny rejestr narzędzi (tools) używanych w ToolsContainer. Eliminuje switch-case z kontenera – nowe narzędzie = nowy wpis w rejestrze. Zawiera lazy import, featureFlag, propsy i opis.
 // FUNCTIONS: getToolComponent
-// DEPENDS ON: react, config.js
+// DEPENDS ON: react, config.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { lazy } from 'react';
 import { isFeatureEnabled } from '../config.js';
+import { logWarn } from '../utils/logger.js';
 
 // ─── TOOLS_REGISTRY – mapa id narzędzia → konfiguracja
 //   id:          string  — zgodne z activeItem.id (Sidebar)
@@ -60,10 +61,14 @@ export const TOOLS_REGISTRY = [
 //   @returns {{ component, featureFlag, getProps, disabled }|null}
 export function getToolComponent(id) {
   const entry = TOOLS_REGISTRY.find(t => t.id === id);
-  if (!entry) return null;
+  if (!entry) {
+    logWarn('ui', `toolsRegistry: unknown tool id "${id}"`);
+    return null;
+  }
 
   // Sprawdź feature flag
   if (entry.featureFlag && !isFeatureEnabled(entry.featureFlag)) {
+    logWarn('ui', `toolsRegistry: tool "${id}" disabled by feature flag "${entry.featureFlag}"`);
     return { ...entry, disabled: true };
   }
 
