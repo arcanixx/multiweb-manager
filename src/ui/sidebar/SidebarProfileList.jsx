@@ -14,7 +14,7 @@ import { ICONS } from '../../utils/icons.js';
 import { logError } from '../../utils/loggerRenderer.js';
 import SidebarCategory from './SidebarCategory';
 import SidebarProfileItem from './SidebarProfileItem';
-import ContextMenu from './ContextMenu';
+import ContextMenu from '../common/ContextMenu';
 
 // ─── SidebarProfileList() – renderuje listę profilów z kategoriami i ulubionymi
 // @param {Object} props
