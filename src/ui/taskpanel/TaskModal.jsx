@@ -49,6 +49,7 @@ export default function TaskModal({ task, taskGroupId, onSave, onClose }) {
   // Sekcja wyświetlana jako informacja (readonly – wyznaczana ze statusu)
   const derivedSection = STATUS_TO_SECTION[status] || 'backlog';
 
+  // ─── handleSave() – waliduje formularz i wywołuje onSave z danymi zadania
   const handleSave = () => {
     try {
       if (!name.trim()) {
@@ -167,3 +168,4 @@ export default function TaskModal({ task, taskGroupId, onSave, onClose }) {
     </div>
   );
 }
+
