@@ -23,6 +23,8 @@ export function useAppInitialization() {
   const [splashDone, setSplashDone] = useState(false);
   const [onboardingDone, setOnboardingDone] = useState(false);
 
+  // ─── applyTheme() – aplikuje motyw kolorystyczny do dokumentu HTML
+  //   @param {'dark'|'light'|'system'} theme – wybrany motyw
   function applyTheme(theme) {
     try {
       const html = document.documentElement;
@@ -34,8 +36,8 @@ export function useAppInitialization() {
     }
   }
 
+  // ─── useEffect() – inicjalizacja: preload komponentów, logger, settings, profile, eventy sieciowe
   useEffect(() => {
-    import('../ui/help/Help.jsx');
     import('../ui/notepad/Notepad.jsx');
     import('../ui/settings/Settings.jsx');
     window.showToast = showToast;
@@ -69,6 +71,7 @@ export function useAppInitialization() {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ─── useEffect() – rejestracja listenera globalnych skrótów klawiszowych (hotkeys)
   useEffect(() => {
     if (!isFeatureEnabled('hotkeysManager') || !window.electronAPI?.onHotkeyTrigger) return;
     const dispose = window.electronAPI.onHotkeyTrigger(async (data) => {
@@ -83,8 +86,11 @@ export function useAppInitialization() {
     return () => dispose?.();
   }, []);
 
+  // ─── useEffect() – synchronizacja motywu przy zmianie settings.theme
   useEffect(() => { if (settings.theme) applyTheme(settings.theme); }, [settings.theme]);
 
+  // ─── handleSaveSettings() – zapisuje patch ustawień przez IPC i aplikuje motyw
+  //   @param {Object} patch – obiekt z polami do zaktualizowania
   const handleSaveSettings = async (patch) => {
     const merged = { ...settings, ...patch };
     setSettings(merged);
@@ -92,6 +98,8 @@ export function useAppInitialization() {
     applyTheme(merged.theme || 'system');
   };
 
+  // ─── handleOnboardingFinish() – finalizuje onboarding: zapisuje ustawienia, tworzy profile z wybranych apps
+  //   @param {{ theme, language, privacy, selectedApps }} payload – dane z kroków onboardingu
   const handleOnboardingFinish = async ({ theme, language, privacy, selectedApps }) => {
     const patch = { theme, language, logsEnabled: privacy.logsEnabled, firstRun: false };
     await window.electronAPI.saveSettings(patch);
