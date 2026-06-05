@@ -10,7 +10,8 @@
 
 import { ipcMain, app } from 'electron';
 import { logError } from '../utils/logger.js';
-ipcMain.handle('app:getInfo', async () => {
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
+ipcMain.handle('app:getInfo', async () => { // legacy alias
   try {
     return {
       ok: true,

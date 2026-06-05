@@ -503,7 +503,15 @@
     "searchResults": "Wyniki wyszukiwania",
     "add": "Dodaj",
     "noResults": "Nie znaleziono aplikacji",
-    "loading": "Ładowanie biblioteki..."
+    "loading": "Ładowanie biblioteki...",
+    "cat_ai": "Sztuczna Inteligencja",
+    "cat_dev": "Narzędzia Programistyczne",
+    "cat_productivity": "Produktywność",
+    "cat_communication": "Komunikacja",
+    "cat_social": "Media Społecznościowe",
+    "cat_design": "Design i Grafika",
+    "cat_cloud": "Chmura i Dane",
+    "cat_entertainment": "Rozrywka"
   },
   "tools": {
     "removebg": "Remove.bg",

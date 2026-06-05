@@ -12,10 +12,11 @@ import { ipcMain } from 'electron';
 import fs from 'fs';
 import { logError } from '../utils/logger.js';
 import { loadSharp } from '../utils/sharpLoader.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // ─── ipc:tools:svgToPng – konwertuje plik SVG na PNG o podanych wymiarach
 //   Oczekuje: { svgPath, outputPath, width, height }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:svgToPng', async (_, payload) => {
+ipcMain.handle('tools:svgToPng', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
   try {
     if (!payload || typeof payload !== 'object' || !('svgPath' in payload) || !('outputPath' in payload) || !('width' in payload) || !('height' in payload)) {
       throw new Error('INVALID_PAYLOAD');

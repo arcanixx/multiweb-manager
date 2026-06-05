@@ -11,6 +11,7 @@
 import { ipcMain, Notification, app } from 'electron';
 import path from 'path';
 import { logInfo, logError, logWarn } from '../utils/logger.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── Ikona aplikacji dla powiadomień systemowych
 //   Ścieżka od root projektu (plik spakowany w asar lub bezpośrednio)
@@ -28,7 +29,7 @@ function getAppIcon() {
 //   @param {string} payload.title  – tytuł powiadomienia (wymagany)
 //   @param {string} payload.body   – treść powiadomienia
 //   @returns {{ ok: boolean, error?: string }}
-ipcMain.handle('notifications:showSystem', async (_event, payload) => {
+ipcMain.handle('notifications:showSystem', async (_event, payload) => { // legacy alias - no constant in IPC_CHANNELS yet
   try {
     if (!payload || typeof payload !== 'object') {
       return { ok: false, error: 'INVALID_PAYLOAD' };

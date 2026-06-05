@@ -15,7 +15,8 @@ import {
   deleteWorkspace
 } from "../stores/workspacesStore.js";
 import { logError } from "../utils/logger.js";
-ipcMain.handle("workspaces:getAll", async () => {
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
+ipcMain.handle(IPC_CHANNELS.WORKSPACES.GET_ALL, async () => {
   try {
     return { ok: true, data: getAllWorkspaces() };
   } catch (err) {
@@ -23,7 +24,7 @@ ipcMain.handle("workspaces:getAll", async () => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle("workspaces:save", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.WORKSPACES.SAVE, async (_, payload) => {
   try {
     if (!payload || !Array.isArray(payload)) {
       return { ok: false, error: "INVALID_WORKSPACES" };
@@ -36,7 +37,7 @@ ipcMain.handle("workspaces:save", async (_, payload) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle("workspaces:delete", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.WORKSPACES.DELETE, async (_, payload) => {
   try {
     if (!payload || typeof payload !== "object" || !payload.id) {
       return { ok: false, error: "INVALID_WORKSPACE_ID" };

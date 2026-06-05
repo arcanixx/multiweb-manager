@@ -10,11 +10,12 @@
 
 import { ipcMain, app } from 'electron';
 import { logInfo, logError } from '../utils/logger.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── app:confirmQuit – potwierdza zamknięcie aplikacji po zgodzie użytkownika
 //   Wywoływane przez useMainLayout po kliknięciu "Potwierdź" w ConfirmModal
 //   Aliasy: 'confirm-quit' (legacy — do usunięcia po migracji preloadu)
-ipcMain.handle('app:confirmQuit', async () => {
+ipcMain.handle(IPC_CHANNELS.APP.CONFIRM_QUIT, async () => {
   try {
     logInfo('ipc', 'app:confirmQuit – zamykanie aplikacji');
     app.quit();
@@ -26,7 +27,7 @@ ipcMain.handle('app:confirmQuit', async () => {
 });
 
 // Alias legacy — preload.cjs używa jeszcze 'confirm-quit'
-ipcMain.handle('confirm-quit', async () => {
+ipcMain.handle('confirm-quit', async () => { // legacy alias
   try {
     logInfo('ipc', 'confirm-quit (legacy alias) – zamykanie aplikacji');
     app.quit();

@@ -11,10 +11,11 @@
 import { ipcMain } from 'electron';
 import { logError } from '../utils/logger.js';
 import { loadYaml } from '../utils/yamlLoader.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // ─── ipc:tools:formatJSON – formatuje tekst JSON z wcięciami
 //   Oczekuje: { text: string }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:formatJSON', async (_, payload) => {
+ipcMain.handle('tools:formatJSON', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
   try {
     if (!payload || typeof payload !== 'object' || !('text' in payload)) {
       throw new Error('INVALID_PAYLOAD');
@@ -31,7 +32,7 @@ ipcMain.handle('tools:formatJSON', async (_, payload) => {
 // ─── ipc:tools:yamlToJson – konwertuje YAML na sformatowany JSON
 //   Oczekuje: { text: string }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:yamlToJson', async (_, payload) => {
+ipcMain.handle('tools:yamlToJson', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
   try {
     if (!payload || typeof payload !== 'object' || !('text' in payload)) {
       throw new Error('INVALID_PAYLOAD');
@@ -50,7 +51,7 @@ ipcMain.handle('tools:yamlToJson', async (_, payload) => {
 // ─── ipc:tools:jsonToYaml – konwertuje JSON na YAML
 //   Oczekuje: { text: string }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:jsonToYaml', async (_, payload) => {
+ipcMain.handle('tools:jsonToYaml', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
   try {
     if (!payload || typeof payload !== 'object' || !('text' in payload)) {
       throw new Error('INVALID_PAYLOAD');

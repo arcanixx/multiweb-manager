@@ -17,10 +17,11 @@ import {
   mergeSettings
 } from "../stores/settingsStore.js";
 import { DEFAULT_SETTINGS } from "../../config.js";
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // ----------------------------------------------------------------
 // settings:get – zwraca aktualne ustawienia z settingsStore
 // ----------------------------------------------------------------
-ipcMain.handle("settings:get", async () => {
+ipcMain.handle(IPC_CHANNELS.SETTINGS.GET, async () => {
   try {
     const settings = loadSettings();
     return { ok: true, data: settings };
@@ -33,7 +34,7 @@ ipcMain.handle("settings:get", async () => {
 // settings:update – merge patch z istniejącymi settings (nie nadpisuje!)
 //   patch: Partial<Settings> – tylko zmieniane klucze
 // ----------------------------------------------------------------
-ipcMain.handle("settings:update", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.SETTINGS.UPDATE, async (_, payload) => {
   try {
     if (!payload || typeof payload !== "object") {
       throw new Error("INVALID_SETTINGS_PATCH");
@@ -51,7 +52,7 @@ ipcMain.handle("settings:update", async (_, payload) => {
 // ----------------------------------------------------------------
 // settings:reset – przywraca DEFAULT_SETTINGS i zapisuje
 // ----------------------------------------------------------------
-ipcMain.handle("settings:reset", async () => {
+ipcMain.handle(IPC_CHANNELS.SETTINGS.RESET, async () => {
   try {
     const reset = resetSettings();
     return { ok: true, data: reset };
@@ -64,7 +65,7 @@ ipcMain.handle("settings:reset", async () => {
 // ----------------------------------------------------------------
 // settings:export – zapisuje ustawienia do pliku JSON pod exportPath
 // ----------------------------------------------------------------
-ipcMain.handle("settings:export", async (_, exportPath) => {
+ipcMain.handle(IPC_CHANNELS.SETTINGS.EXPORT, async (_, exportPath) => {
   try {
     if (!exportPath || typeof exportPath !== 'string' || exportPath.trim() === '') {
       throw new Error('INVALID_EXPORT_PATH');
@@ -82,7 +83,7 @@ ipcMain.handle("settings:export", async (_, exportPath) => {
 // ----------------------------------------------------------------
 // settings:import – wczytuje JSON z importPath i merge z istniejącymi
 // ----------------------------------------------------------------
-ipcMain.handle("settings:import", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.SETTINGS.IMPORT, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'string') {
       throw new Error('INVALID_PAYLOAD');
@@ -108,7 +109,7 @@ ipcMain.handle("settings:import", async (_, payload) => {
 // ----------------------------------------------------------------
 // settings:getDefaults – zwraca DEFAULT_SETTINGS z config.js
 // ----------------------------------------------------------------
-ipcMain.handle("settings:getDefaults", async () => {
+ipcMain.handle(IPC_CHANNELS.SETTINGS.GET_DEFAULTS, async () => {
   try {
     return { ok: true, data: DEFAULT_SETTINGS };
   } catch (err) {

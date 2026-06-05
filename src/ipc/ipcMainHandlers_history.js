@@ -16,10 +16,11 @@ import {
   getRecentHistory
 } from "../stores/historyStore.js";
 import { logError } from "../utils/logger.js";
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // ----------------------------------------------------------------
 // history:getAll – zwraca pełną historię z historyStore
 // ----------------------------------------------------------------
-ipcMain.handle("history:getAll", async () => {
+ipcMain.handle(IPC_CHANNELS.HISTORY.GET_ALL, async () => {
   try {
     const history = loadHistory();
     return { ok: true, data: history };
@@ -32,7 +33,7 @@ ipcMain.handle("history:getAll", async () => {
 // history:add – dodaje nowy wpis i zapisuje do store
 //   entry: { profileName, url, timestamp?, level? }
 // ----------------------------------------------------------------
-ipcMain.handle("history:add", async (_, entry) => {
+ipcMain.handle(IPC_CHANNELS.HISTORY.ADD, async (_, entry) => {
   try {
     if (!entry || typeof entry !== "object") {
       throw new Error("INVALID_HISTORY_ENTRY");
@@ -47,7 +48,7 @@ ipcMain.handle("history:add", async (_, entry) => {
 // ----------------------------------------------------------------
 // history:clear – czyści historię, zwraca pustą tablicę
 // ----------------------------------------------------------------
-ipcMain.handle("history:clear", async () => {
+ipcMain.handle(IPC_CHANNELS.HISTORY.CLEAR, async () => {
   try {
     const empty = clearHistory();
     return { ok: true, data: empty };
@@ -60,7 +61,7 @@ ipcMain.handle("history:clear", async () => {
 // ----------------------------------------------------------------
 // history:getRecent – zwraca ostatnie 100 wpisów (quick access)
 // ----------------------------------------------------------------
-ipcMain.handle("history:getRecent", async () => {
+ipcMain.handle("history:getRecent", async () => { // legacy alias
   try {
     const recent = getRecentHistory(100);
     return { ok: true, data: recent };

@@ -11,9 +11,10 @@
 import { ipcMain } from "electron";
 import { loadAppLibrary, filterApps, getAppById } from "../stores/appLibraryStore.js";
 import { logError } from "../utils/logger.js";
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── appLibrary:getAll – zwraca wszystkie kategorie z aplikacjami
-ipcMain.handle("appLibrary:getAll", async () => {
+ipcMain.handle(IPC_CHANNELS.APP_LIBRARY.GET_ALL, async () => {
   try {
     const categories = loadAppLibrary();
     return { ok: true, data: categories };
@@ -24,7 +25,7 @@ ipcMain.handle("appLibrary:getAll", async () => {
 });
 
 // ─── appLibrary:search – wyszukuje aplikacje po frazie tekstowej
-ipcMain.handle("appLibrary:search", async (_, query) => {
+ipcMain.handle(IPC_CHANNELS.APP_LIBRARY.SEARCH, async (_, query) => {
   try {
     if (!query || typeof query !== 'string') {
       throw new Error('INVALID_QUERY');
@@ -38,7 +39,7 @@ ipcMain.handle("appLibrary:search", async (_, query) => {
 });
 
 // ─── appLibrary:getByCategory – zwraca aplikacje dla konkretnej kategorii
-ipcMain.handle("appLibrary:getByCategory", async (_, categoryId) => {
+ipcMain.handle(IPC_CHANNELS.APP_LIBRARY.GET_BY_CATEGORY, async (_, categoryId) => {
   try {
     if (!categoryId || typeof categoryId !== 'string') {
       throw new Error('INVALID_CATEGORY_ID');

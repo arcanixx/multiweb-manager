@@ -10,7 +10,8 @@
 
 import { ipcMain, session } from 'electron';
 import { logError } from '../utils/logger.js';
-ipcMain.handle('tools:getCookies', async (_, payload) => {
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
+ipcMain.handle(IPC_CHANNELS.COOKIES.GET_ALL, async (_, payload) => {
   try {
     // TODO: Add rate limiting for cookies (e.g., using timestamp map)
     if (!payload || typeof payload !== 'object' || !('partition' in payload)) {

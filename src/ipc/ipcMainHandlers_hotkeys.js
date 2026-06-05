@@ -11,10 +11,11 @@
 import { ipcMain } from 'electron';
 import { getAllHotkeys, saveHotkeys, registerHotkeysFromList } from '../engine/hotkeysManager.js';
 import { logError } from '../utils/logger.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // -----------------------------------------------------------------------------
 // Pobierz wszystkie zdefiniowane skróty klawiszowe
 // -----------------------------------------------------------------------------
-ipcMain.handle('hotkeys:getAll', async () => {
+ipcMain.handle(IPC_CHANNELS.HOTKEYS.GET_ALL, async () => {
   try {
     return { ok: true, data: getAllHotkeys() };
   } catch (err) {
@@ -23,7 +24,7 @@ ipcMain.handle('hotkeys:getAll', async () => {
   }
 });
 // Zapisz listę skrótów do store (nie rejestruje ich globalnie)
-ipcMain.handle('hotkeys:save', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.HOTKEYS.SAVE, async (_, payload) => {
   try {
     if (!payload || !Array.isArray(payload)) {
       throw new Error('HOTKEYS_MUST_BE_ARRAY');
@@ -39,7 +40,7 @@ ipcMain.handle('hotkeys:save', async (_, payload) => {
 // -----------------------------------------------------------------------------
 // Zarejestruj skróty globalnie w systemie operacyjnym
 // -----------------------------------------------------------------------------
-ipcMain.handle('hotkeys:register', async (_, hotkeys) => {
+ipcMain.handle(IPC_CHANNELS.HOTKEYS.REGISTER, async (_, hotkeys) => {
   try {
     if (!Array.isArray(hotkeys)) throw new Error('HOTKEYS_MUST_BE_ARRAY');
     registerHotkeysFromList(hotkeys);

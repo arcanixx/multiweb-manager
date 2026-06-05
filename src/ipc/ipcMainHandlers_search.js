@@ -15,6 +15,7 @@ import { getAllnotepad } from '../stores/notepadStore.js';
 import { loadTasks } from '../stores/tasksStore.js';
 import { loadProjects } from '../stores/projectsStore.js';
 import { logDebug, logError } from '../utils/logger.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── search:global – przeszukuje profile, projekty, zadania i notatki
 //   @param {Object} _ – event IPC (nieużywany)
@@ -23,7 +24,7 @@ import { logDebug, logError } from '../utils/logger.js';
 //   @param {Array}  payload.profiles – lista profili (przekazana z renderera, bo profiles są w pamięci)
 //   @param {Array}  [payload.types]  – opcjonalny filtr typów ['notepad','tasks','projects','profiles']
 //   @returns {{ ok: boolean, data: Object }} – przefiltrowane wyniki pogrupowane wg typów
-ipcMain.handle('search:global', async (_, { query, profiles = [], types }) => {
+ipcMain.handle(IPC_CHANNELS.SEARCH.GLOBAL, async (_, { query, profiles = [], types }) => {
   try {
     logDebug('ipc', `search:global query="${query}" types=${JSON.stringify(types ?? 'all')}`);
 

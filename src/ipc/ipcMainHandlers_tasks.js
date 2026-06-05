@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_tasks.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla zadań (TaskPanel) – CRUD z walidacją section↔status i mapowaniem na taskGroupId.
-// FUNCTIONS: -
+// FUNCTIONS: const:IPC_CHANNELS.TASKS.GET_ALL, const:IPC_CHANNELS.TASKS.GET_ALL_GROUPED, const:IPC_CHANNELS.TASKS.ADD, const:IPC_CHANNELS.TASKS.UPDATE, const:IPC_CHANNELS.TASKS.DELETE, const:IPC_CHANNELS.TASKS.SAVE_SECTIONS
 // DEPENDS ON: electron, ipcChannels.js, tasksStore.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

@@ -11,7 +11,8 @@
 import { ipcMain } from 'electron';
 import fs from 'fs';
 import { logError } from '../utils/logger.js';
-ipcMain.handle('fs:readFile', async (_, filePath) => {
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
+ipcMain.handle('fs:readFile', async (_, filePath) => { // legacy alias
   try {
     if (!fs.existsSync(filePath)) throw new Error('FILE_NOT_FOUND');
     const data = fs.readFileSync(filePath, 'utf8');
@@ -21,7 +22,7 @@ ipcMain.handle('fs:readFile', async (_, filePath) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('fs:writeFile', async (_, payload) => {
+ipcMain.handle('fs:writeFile', async (_, payload) => { // legacy alias
   try {
     if (!payload || typeof payload !== 'object' || !payload.filePath || typeof payload.filePath !== 'string' || !payload.content || typeof payload.content !== 'string') {
       throw new Error('INVALID_FILE_PAYLOAD');

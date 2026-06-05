@@ -1,0 +1,22 @@
+[
+  { "id": "chatgpt", "name": "ChatGPT", "url": "https://chatgpt.com", "icon": "https://chatgpt.com/favicon.ico", "categoryId": "ai" },
+  { "id": "claude", "name": "Claude", "url": "https://claude.ai", "icon": "https://claude.ai/favicon.ico", "categoryId": "ai" },
+  { "id": "perplexity", "name": "Perplexity", "url": "https://www.perplexity.ai", "icon": "https://www.perplexity.ai/favicon.ico", "categoryId": "ai" },
+  { "id": "gemini", "name": "Gemini", "url": "https://gemini.google.com", "icon": "https://www.gstatic.com/lamda/images/favicon_v2_16x16.png", "categoryId": "ai" },
+  { "id": "poe", "name": "Poe", "url": "https://poe.com", "icon": "https://poe.com/favicon.ico", "categoryId": "ai" },
+  { "id": "deepseek", "name": "DeepSeek", "url": "https://chat.deepseek.com", "icon": "https://chat.deepseek.com/favicon.ico", "categoryId": "ai" },
+  { "id": "midjourney", "name": "Midjourney", "url": "https://www.midjourney.com", "icon": "https://www.midjourney.com/favicon.ico", "categoryId": "ai" },
+  { "id": "huggingface", "name": "Hugging Face", "url": "https://huggingface.co", "icon": "https://huggingface.co/favicon.ico", "categoryId": "ai" },
+  { "id": "characterai", "name": "Character.ai", "url": "https://character.ai", "icon": "https://character.ai/favicon.ico", "categoryId": "ai" },
+  { "id": "jasper", "name": "Jasper", "url": "https://www.jasper.ai", "icon": "https://www.jasper.ai/favicon.ico", "categoryId": "ai" },
+  { "id": "copyai", "name": "Copy.ai", "url": "https://www.copy.ai", "icon": "https://www.copy.ai/favicon.ico", "categoryId": "ai" },
+  { "id": "pi", "name": "Pi.ai", "url": "https://pi.ai", "icon": "https://pi.ai/favicon.ico", "categoryId": "ai" },
+  { "id": "phind", "name": "Phind", "url": "https://www.phind.com", "icon": "https://www.phind.com/favicon.ico", "categoryId": "ai" },
+  { "id": "you", "name": "You.com", "url": "https://you.com", "icon": "https://you.com/favicon.ico", "categoryId": "ai" },
+  { "id": "quillbot", "name": "Quillbot", "url": "https://quillbot.com", "icon": "https://quillbot.com/favicon.ico", "categoryId": "ai" },
+  { "id": "grammarly", "name": "Grammarly", "url": "https://www.grammarly.com", "icon": "https://www.grammarly.com/favicon.ico", "categoryId": "ai" },
+  { "id": "notionai", "name": "Notion AI", "url": "https://www.notion.so/product/ai", "icon": "https://www.notion.so/favicon.ico", "categoryId": "ai" },
+  { "id": "github_copilot", "name": "GitHub Copilot", "url": "https://github.com/features/copilot", "icon": "https://github.com/favicon.ico", "categoryId": "ai" },
+  { "id": "mistral", "name": "Mistral AI", "url": "https://chat.mistral.ai", "icon": "https://mistral.ai/favicon.ico", "categoryId": "ai" },
+  { "id": "groq", "name": "Groq", "url": "https://groq.com", "icon": "https://groq.com/favicon.ico", "categoryId": "ai" }
+]

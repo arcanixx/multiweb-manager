@@ -11,7 +11,8 @@
 import { ipcMain } from 'electron';
 import path from 'path';
 import { logError } from '../utils/logger.js';
-ipcMain.handle('path:join', async (_, payload) => {
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
+ipcMain.handle('path:join', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
   try {
     if (!payload || !Array.isArray(payload)) {
       throw new Error('INVALID_PAYLOAD');

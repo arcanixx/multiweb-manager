@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE: ipcMainHandlers_webview_extra.js
-// PATH: src/ipc/ipcMainHandlers_webview_extra.js
+// FILE: ipcMainHandlers_webview_tools.js
+// PATH: src/ipc/ipcMainHandlers_webview_tools.js
 // VERSION: 0.0.3
-// PURPOSE: Dodatkowe handlery IPC dla WebView – tryb Single App, screenshot, monitor zasobów.
-// FUNCTIONS: registerWebViewExtraHandlers, ipc:webview:openSingle, ipc:open-single-window, ipc:webview:capture, ipc:capture-webview, ipc:webview:getResource, ipc:get-webview-resource
+// PURPOSE: Handlery IPC dla narzędzi WebView: tryb Single App, zrzuty ekranu i monitor zasobów.
+// FUNCTIONS: registerWebViewExtraHandlers
 // DEPENDS ON: electron, path, logger.js, webviewRegistry.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -12,6 +12,7 @@ import { ipcMain, BrowserWindow } from 'electron';
 import path from 'path';
 import { logError } from '../utils/logger.js';
 import { getWebViewEntry, getAllWebContents } from '../engine/webviewRegistry.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 const PRELOAD_PATH = path.join(__dirname, '../../preload.cjs');
 
 // ─── registerWebViewExtraHandlers() – Rejestruje dodatkowe handlery IPC dedykowane dla WebView:
@@ -20,7 +21,7 @@ export function registerWebViewExtraHandlers() {
 
   // ─── webview:openSingle – otwiera URL w osobnym oknie (Single App Mode)
   //   Alias: 'open-single-window' (legacy — do usunięcia po migracji preloadu)
-  ipcMain.handle('webview:openSingle', async (_, payload) => {
+  ipcMain.handle(IPC_CHANNELS.WEBVIEW.OPEN_SINGLE, async (_, payload) => {
     try {
       if (!payload || typeof payload !== 'object') {
         throw new Error('INVALID_PAYLOAD');
@@ -68,7 +69,7 @@ export function registerWebViewExtraHandlers() {
 
   // ─── webview:capture – wykonuje screenshot widocznego obszaru WebView
   //   Alias: 'capture-webview' (legacy — do usunięcia po migracji preloadu)
-  ipcMain.handle('webview:capture', async (_, payload) => {
+  ipcMain.handle(IPC_CHANNELS.WEBVIEW.CAPTURE, async (_, payload) => {
     try {
       if (!payload || typeof payload !== 'object' || !('tabId' in payload)) {
         throw new Error('INVALID_PAYLOAD');
@@ -107,7 +108,7 @@ export function registerWebViewExtraHandlers() {
 
   // ─── webview:getResource – zwraca dane o zasobach WebView (pamięć, CPU)
   //   Alias: 'get-webview-resource' (legacy — do usunięcia po migracji preloadu)
-  ipcMain.handle('webview:getResource', async (_, payload) => {
+  ipcMain.handle(IPC_CHANNELS.WEBVIEW.GET_RESOURCE, async (_, payload) => {
     try {
       if (!payload || typeof payload !== 'object' || !('tabId' in payload)) {
         throw new Error('INVALID_PAYLOAD');
@@ -158,3 +159,5 @@ export function registerWebViewExtraHandlers() {
     }
   });
 }
+
+registerWebViewExtraHandlers();

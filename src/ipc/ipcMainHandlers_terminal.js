@@ -10,6 +10,7 @@
 
 import { ipcMain } from "electron";
 import { logError } from "../utils/logger.js";
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 import pty from "node-pty";
 import os from "os";
 // =============================================================================
@@ -73,7 +74,7 @@ function spawnPty(terminalId, cwd) {
 // =============================================================================
 // CREATE TERMINAL SESSION
 // =============================================================================
-ipcMain.handle("terminal:create", async (_, { cwd }) => {
+ipcMain.handle(IPC_CHANNELS.TERMINAL.CREATE, async (_, { cwd }) => {
   try {
     const ptyProcess = spawnPty('_tmp', cwd); // tymczasowe ID przed poznaniem PID
     const terminalId = String(ptyProcess.pid);
@@ -93,7 +94,7 @@ ipcMain.handle("terminal:create", async (_, { cwd }) => {
 // WRITE TO TERMINAL
 // =============================================================================
 
-ipcMain.handle("terminal:write", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TERMINAL.WRITE, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || !('terminalId' in payload) || !('data' in payload)) {
       throw new Error('INVALID_PAYLOAD');
@@ -114,7 +115,7 @@ ipcMain.handle("terminal:write", async (_, payload) => {
 // RESIZE TERMINAL
 // =============================================================================
 
-ipcMain.handle("terminal:resize", async (_, { terminalId, cols, rows }) => {
+ipcMain.handle(IPC_CHANNELS.TERMINAL.RESIZE, async (_, { terminalId, cols, rows }) => {
   try {
     const term = terminals[terminalId];
     if (!term) throw new Error("TERMINAL_NOT_FOUND");
@@ -131,7 +132,7 @@ ipcMain.handle("terminal:resize", async (_, { terminalId, cols, rows }) => {
 // READ BUFFER (initial dump for xterm)
 // =============================================================================
 
-ipcMain.handle("terminal:getBuffer", async (_, terminalId) => {
+ipcMain.handle(IPC_CHANNELS.TERMINAL.GET_BUFFER, async (_, terminalId) => {
   try {
     const buffer = terminalBuffers[terminalId] || [];
     return { ok: true, data: buffer.join("") };
@@ -145,7 +146,7 @@ ipcMain.handle("terminal:getBuffer", async (_, terminalId) => {
 // KILL TERMINAL
 // =============================================================================
 
-ipcMain.handle("terminal:kill", async (_, terminalId) => {
+ipcMain.handle(IPC_CHANNELS.TERMINAL.KILL, async (_, terminalId) => {
   try {
     const term = terminals[terminalId];
     if (!term) throw new Error("TERMINAL_NOT_FOUND");
@@ -165,7 +166,7 @@ ipcMain.handle("terminal:kill", async (_, terminalId) => {
 // RESTART TERMINAL
 // =============================================================================
 
-ipcMain.handle("terminal:restart", async (_, { terminalId, cwd }) => {
+ipcMain.handle(IPC_CHANNELS.TERMINAL.RESTART, async (_, { terminalId, cwd }) => {
   try {
     const old = terminals[terminalId];
     if (old) old.kill();

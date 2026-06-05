@@ -17,6 +17,7 @@ import {
   createProfile
 } from "../stores/profilesStore.js";
 import { logError } from "../utils/logger.js";
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // =============================================================================
 // VALIDATION HELPERS
 // =============================================================================
@@ -34,7 +35,7 @@ function validateProfile(p) {
 // IPC HANDLERS
 // =============================================================================
 // Pobiera wszystkie profile
-ipcMain.handle("profiles:getAll", async () => {
+ipcMain.handle(IPC_CHANNELS.PROFILES.GET_ALL, async () => {
   try {
     const profiles = loadProfiles();
     return { ok: true, data: profiles };
@@ -44,7 +45,7 @@ ipcMain.handle("profiles:getAll", async () => {
   }
 });
 // Tworzy nowy profil
-ipcMain.handle("profiles:create", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.PROFILES.CREATE, async (_, payload) => {
   try {
     validateProfile(payload);
     const newList = createProfile(payload);
@@ -57,7 +58,7 @@ ipcMain.handle("profiles:create", async (_, payload) => {
 });
 
 // Aktualizuje istniejący profil
-ipcMain.handle("profiles:update", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.PROFILES.UPDATE, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || !('id' in payload) || !('patch' in payload)) {
       throw new Error('INVALID_PAYLOAD');
@@ -75,7 +76,7 @@ ipcMain.handle("profiles:update", async (_, payload) => {
 });
 
 // Usuwa profil
-ipcMain.handle("profiles:delete", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.PROFILES.DELETE, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'string') {
       throw new Error('INVALID_PAYLOAD');
@@ -92,7 +93,7 @@ ipcMain.handle("profiles:delete", async (_, payload) => {
 });
 
 // Ustawia lastUsedAt
-ipcMain.handle("profiles:touch", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.PROFILES.TOUCH, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'string') {
       throw new Error('INVALID_PAYLOAD');

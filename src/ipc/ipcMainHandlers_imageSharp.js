@@ -11,10 +11,11 @@
 import { ipcMain } from 'electron';
 import { logError } from '../utils/logger.js';
 import { loadSharp } from '../utils/sharpLoader.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // ─── ipc:tools:image:resize – zmienia rozmiar obrazu
 //   Oczekuje: { inputPath, width, height, outputPath }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:image:resize', async (_, payload) => {
+ipcMain.handle('tools:image:resize', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
   try {
     if (!payload || typeof payload !== 'object' || 
         !('inputPath' in payload) || !('width' in payload) || 
@@ -34,7 +35,7 @@ ipcMain.handle('tools:image:resize', async (_, payload) => {
 // ─── ipc:tools:image:convert – konwertuje obraz do wskazanego formatu
 //   Oczekuje: { inputPath, format, outputPath }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:image:convert', async (_, payload) => {
+ipcMain.handle('tools:image:convert', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
   try {
     if (!payload || typeof payload !== 'object' || 
         !('inputPath' in payload) || !('format' in payload) || 
@@ -54,7 +55,7 @@ ipcMain.handle('tools:image:convert', async (_, payload) => {
 // ─── ipc:tools:image:compress – kompresuje obraz JPEG do podanej jakości
 //   Oczekuje: { inputPath, quality, outputPath }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:image:compress', async (_, payload) => {
+ipcMain.handle('tools:image:compress', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
   try {
     if (!payload || typeof payload !== 'object' || 
         !('inputPath' in payload) || !('quality' in payload) || 

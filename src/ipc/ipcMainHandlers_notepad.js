@@ -16,7 +16,8 @@ import {
   deleteNote
 } from "../stores/notepadStore.js";
 import { logError } from "../utils/logger.js";
-ipcMain.handle("notepad:getAll", async () => {
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
+ipcMain.handle(IPC_CHANNELS.notepad.GET_ALL, async () => {
   try {
     return { ok: true, data: getAllnotepad() };
   } catch (err) {
@@ -24,7 +25,7 @@ ipcMain.handle("notepad:getAll", async () => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle("notepad:add", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.notepad.ADD, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object') {
       throw new Error('NOTE_INVALID_PAYLOAD');
@@ -39,7 +40,7 @@ ipcMain.handle("notepad:add", async (_, payload) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle("notepad:update", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.notepad.UPDATE, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || !('id' in payload) || !('patch' in payload)) {
       throw new Error('INVALID_PAYLOAD');
@@ -53,7 +54,7 @@ ipcMain.handle("notepad:update", async (_, payload) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle("notepad:delete", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.notepad.DELETE, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'string') {
       throw new Error('NOTE_ID_REQUIRED');

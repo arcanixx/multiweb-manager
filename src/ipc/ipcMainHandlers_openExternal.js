@@ -10,7 +10,8 @@
 
 import { ipcMain, shell } from 'electron';
 import { logError } from '../utils/logger.js';
-ipcMain.handle('shell:openExternal', async (_, payload) => {
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
+ipcMain.handle(IPC_CHANNELS.SHELL.OPEN_EXTERNAL, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'string') {
       throw new Error('INVALID_PAYLOAD');

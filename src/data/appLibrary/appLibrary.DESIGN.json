@@ -1,0 +1,15 @@
+[
+  { "id": "figma", "name": "Figma", "url": "https://www.figma.com", "icon": "https://www.figma.com/favicon.ico", "categoryId": "design" },
+  { "id": "canva", "name": "Canva", "url": "https://www.canva.com", "icon": "https://www.canva.com/favicon.ico", "categoryId": "design" },
+  { "id": "adobe_express", "name": "Adobe Express", "url": "https://new.express.adobe.com", "icon": "https://www.adobe.com/favicon.ico", "categoryId": "design" },
+  { "id": "photopea", "name": "Photopea", "url": "https://www.photopea.com", "icon": "https://www.photopea.com/promo/thumb256.png", "categoryId": "design" },
+  { "id": "dribbble", "name": "Dribbble", "url": "https://dribbble.com", "icon": "https://dribbble.com/favicon.ico", "categoryId": "design" },
+  { "id": "behance", "name": "Behance", "url": "https://www.behance.net", "icon": "https://www.behance.net/favicon.ico", "categoryId": "design" },
+  { "id": "miro", "name": "Miro", "url": "https://miro.com", "icon": "https://miro.com/favicon.ico", "categoryId": "design" },
+  { "id": "mural", "name": "Mural", "url": "https://www.mural.co", "icon": "https://www.mural.co/favicon.ico", "categoryId": "design" },
+  { "id": "whimsical", "name": "Whimsical", "url": "https://whimsical.com", "icon": "https://whimsical.com/favicon.ico", "categoryId": "design" },
+  { "id": "excalidraw", "name": "Excalidraw", "url": "https://excalidraw.com", "icon": "https://excalidraw.com/favicon.ico", "categoryId": "design" },
+  { "id": "spline", "name": "Spline", "url": "https://spline.design", "icon": "https://spline.design/favicon.ico", "categoryId": "design" },
+  { "id": "webflow", "name": "Webflow", "url": "https://webflow.com", "icon": "https://webflow.com/favicon.ico", "categoryId": "design" },
+  { "id": "framer", "name": "Framer", "url": "https://www.framer.com", "icon": "https://www.framer.com/favicon.ico", "categoryId": "design" }
+]

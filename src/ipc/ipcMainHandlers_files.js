@@ -12,13 +12,14 @@ import { ipcMain, dialog } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { logInfo, logError } from '../utils/logger.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── files:saveText – otwiera dialog zapisu i zapisuje tekst do pliku
 //   @param {string} content – treść do zapisania
 //   @param {string} name    – sugerowana nazwa pliku
 //   @param {string} folder  – sugerowany katalog (opcjonalny)
 //   Alias: 'save-text-to-file' (legacy — do usunięcia po migracji preloadu)
-ipcMain.handle('files:saveText', async (_, content, name, folder) => {
+ipcMain.handle(IPC_CHANNELS.FILES.SAVE_TEXT, async (_, content, name, folder) => {
   try {
     const dialogOptions = {
       defaultPath: folder ? path.join(folder, name || 'plik.txt') : (name || 'plik.txt'),
@@ -36,7 +37,7 @@ ipcMain.handle('files:saveText', async (_, content, name, folder) => {
 });
 
 // Alias legacy
-ipcMain.handle('save-text-to-file', async (_, content, name, folder) => {
+ipcMain.handle('save-text-to-file', async (_, content, name, folder) => { // legacy alias
   try {
     const dialogOptions = {
       defaultPath: folder ? path.join(folder, name || 'plik.txt') : (name || 'plik.txt'),
@@ -56,7 +57,7 @@ ipcMain.handle('save-text-to-file', async (_, content, name, folder) => {
 // ─── files:saveBinary – zapisuje dane binarne (Buffer/Uint8Array) do pliku przez dialog
 //   @param {Object} payload – { data: Buffer|Uint8Array, name?: string, folder?: string }
 //   Alias: 'save-file' (legacy — do usunięcia po migracji preloadu)
-ipcMain.handle('files:saveBinary', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.FILES.SAVE_BINARY, async (_, payload) => {
   try {
     if (!payload || !payload.data) return { ok: false, error: 'INVALID_PAYLOAD' };
     const dialogOptions = {
@@ -77,7 +78,7 @@ ipcMain.handle('files:saveBinary', async (_, payload) => {
 });
 
 // Alias legacy
-ipcMain.handle('save-file', async (_, payload) => {
+ipcMain.handle('save-file', async (_, payload) => { // legacy alias
   try {
     if (!payload || !payload.data) return { ok: false, error: 'INVALID_PAYLOAD' };
     const dialogOptions = {

@@ -73,7 +73,7 @@ root/
 │   ├── App.jsx             # główny komponent React
 │   ├── index.jsx           # entrypoint React
 │   ├── config.js           # konfiguracja (feature flags, limity, ścieżki)
-│   └── constants.js        # stałe (enumy, kategorie)
+│   └── constants/          # stałe (enumy, kategorie)
 ├── tests/                  # testRunner_*.js
 ├── doc/                    # dokumentacja (.md)
 └── package.json

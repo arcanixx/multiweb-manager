@@ -10,7 +10,7 @@
 
 import React, { useState } from "react";
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
-import { TASK_PRIORITIES } from "../../constants.js";
+import { TASK_PRIORITIES } from "../../constants/constants.js";
 import { TranslationContext } from '../../utils/translations.js';
 
 // Model danych zadania: name, desc, comment, priority, section, version, pinned, projectId

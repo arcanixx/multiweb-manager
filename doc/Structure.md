@@ -391,11 +391,13 @@ root/
 │   │   │                                                          ipc:adblocker:getForProfile
 │   │   │                                               DEPENDS ON: electron, adBlocker.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_aggregatedTasks.js  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_aggregatedTasks.js
+│   │   ├── 📜 ipcMainHandlers_aggregatedTasks.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_aggregatedTasks.js
 │   │   │                                               PURPOSE: IPC handlers dla widoku zbiorczego zadań
 │   │   │                                                        (AggregatedTasks). Łączy zadania z grupami (TaskGroup)
 │   │   │                                                        i profilami.
-│   │   │                                               FUNCTIONS: -
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.AGGREGATED_TASKS.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.AGGREGATED_TASKS.FILTER,
+│   │   │                                                          const:IPC_CHANNELS.AGGREGATED_TASKS.SORT
 │   │   │                                               DEPENDS ON: electron, ipcChannels.js, tasksStore.js,
 │   │   │                                                           taskGroupsStore.js, logger.js
 │   │   │                                               -->
@@ -570,18 +572,30 @@ root/
 │   │   │                                               FUNCTIONS: ipc:tools:svgToPng
 │   │   │                                               DEPENDS ON: electron, fs, logger.js, sharpLoader.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_taskGroups.js       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_taskGroups.js
+│   │   ├── 📜 ipcMainHandlers_taskGroups.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_taskGroups.js
 │   │   │                                               PURPOSE: IPC handlers dla grup zadań (TaskGroup) — CRUD +
 │   │   │                                                        przypisanie profili. Mapuje profile WebView na wspólne
 │   │   │                                                        panele zadań.
-│   │   │                                               FUNCTIONS: -
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TASK_GROUPS.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.CREATE,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.UPDATE,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.DELETE,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.GET_FOR_PROFILE,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.ENSURE_FOR_PROFILE,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.ASSIGN_PROFILE,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.UNASSIGN_PROFILE
 │   │   │                                               DEPENDS ON: electron, ipcChannels.js, taskGroupsStore.js,
 │   │   │                                                           logger.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_tasks.js            <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_tasks.js
+│   │   ├── 📜 ipcMainHandlers_tasks.js ❗          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_tasks.js
 │   │   │                                               PURPOSE: IPC handlers dla zadań (TaskPanel) – CRUD z walidacją
 │   │   │                                                        section↔status i mapowaniem na taskGroupId.
-│   │   │                                               FUNCTIONS: -
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TASKS.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.TASKS.GET_ALL_GROUPED,
+│   │   │                                                          const:IPC_CHANNELS.TASKS.ADD,
+│   │   │                                                          const:IPC_CHANNELS.TASKS.UPDATE,
+│   │   │                                                          const:IPC_CHANNELS.TASKS.DELETE,
+│   │   │                                                          const:IPC_CHANNELS.TASKS.SAVE_SECTIONS
 │   │   │                                               DEPENDS ON: electron, ipcChannels.js, tasksStore.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_terminal.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_terminal.js
@@ -2337,11 +2351,13 @@ root/
 │   │   │                                                          ipc:adblocker:getForProfile
 │   │   │                                               DEPENDS ON: electron, adBlocker.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_aggregatedTasks.js  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_aggregatedTasks.js
+│   │   ├── 📜 ipcMainHandlers_aggregatedTasks.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_aggregatedTasks.js
 │   │   │                                               PURPOSE: IPC handlers dla widoku zbiorczego zadań
 │   │   │                                                        (AggregatedTasks). Łączy zadania z grupami (TaskGroup)
 │   │   │                                                        i profilami.
-│   │   │                                               FUNCTIONS: -
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.AGGREGATED_TASKS.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.AGGREGATED_TASKS.FILTER,
+│   │   │                                                          const:IPC_CHANNELS.AGGREGATED_TASKS.SORT
 │   │   │                                               DEPENDS ON: electron, ipcChannels.js, tasksStore.js,
 │   │   │                                                           taskGroupsStore.js, logger.js
 │   │   │                                               -->
@@ -2516,18 +2532,30 @@ root/
 │   │   │                                               FUNCTIONS: ipc:tools:svgToPng
 │   │   │                                               DEPENDS ON: electron, fs, logger.js, sharpLoader.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_taskGroups.js       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_taskGroups.js
+│   │   ├── 📜 ipcMainHandlers_taskGroups.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_taskGroups.js
 │   │   │                                               PURPOSE: IPC handlers dla grup zadań (TaskGroup) — CRUD +
 │   │   │                                                        przypisanie profili. Mapuje profile WebView na wspólne
 │   │   │                                                        panele zadań.
-│   │   │                                               FUNCTIONS: -
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TASK_GROUPS.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.CREATE,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.UPDATE,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.DELETE,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.GET_FOR_PROFILE,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.ENSURE_FOR_PROFILE,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.ASSIGN_PROFILE,
+│   │   │                                                          const:IPC_CHANNELS.TASK_GROUPS.UNASSIGN_PROFILE
 │   │   │                                               DEPENDS ON: electron, ipcChannels.js, taskGroupsStore.js,
 │   │   │                                                           logger.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_tasks.js            <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_tasks.js
+│   │   ├── 📜 ipcMainHandlers_tasks.js ❗          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_tasks.js
 │   │   │                                               PURPOSE: IPC handlers dla zadań (TaskPanel) – CRUD z walidacją
 │   │   │                                                        section↔status i mapowaniem na taskGroupId.
-│   │   │                                               FUNCTIONS: -
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TASKS.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.TASKS.GET_ALL_GROUPED,
+│   │   │                                                          const:IPC_CHANNELS.TASKS.ADD,
+│   │   │                                                          const:IPC_CHANNELS.TASKS.UPDATE,
+│   │   │                                                          const:IPC_CHANNELS.TASKS.DELETE,
+│   │   │                                                          const:IPC_CHANNELS.TASKS.SAVE_SECTIONS
 │   │   │                                               DEPENDS ON: electron, ipcChannels.js, tasksStore.js, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_terminal.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_terminal.js

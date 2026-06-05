@@ -8,12 +8,14 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useContext } from 'react';
 import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
+import { TranslationContext } from '../utils/translations.js';
 
 // ─── useAppLibrary() – hook do zarządzania biblioteką aplikacji przez IPC
 // @returns {Object} – categories, loading, search, searchResults, getByCategory
 export function useAppLibrary() {
+  const { t } = useContext(TranslationContext);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchResults, setSearchResults] = useState([]);
@@ -24,8 +26,14 @@ export function useAppLibrary() {
       try {
         const res = await window.electronAPI.invoke('appLibrary:getAll');
         if (res?.ok) {
-          setCategories(res.data || []);
-          logInfo('ui', 'useAppLibrary: loaded', res.data?.length);
+          const rawData = res.data || [];
+          // Mapujemy surowe dane, tłumacząc klucze nazw kategorii na tekst UI
+          const translated = rawData.map(cat => ({
+            ...cat,
+            name: t(cat.name)
+          }));
+          setCategories(translated);
+          logInfo('ui', 'useAppLibrary: loaded and translated', translated.length);
         } else {
           logError('ui', 'useAppLibrary: load failed', res?.error);
           logWarn('ui', 'Nie można załadować biblioteki aplikacji');
@@ -37,7 +45,7 @@ export function useAppLibrary() {
       }
     };
     load();
-  }, []);
+  }, [t]);
 
   // ─── search() – wyszukuje aplikacje po frazie przez IPC
   //   @param {string} query – fraza do wyszukania

@@ -10,7 +10,8 @@
 
 import { ipcMain, dialog } from 'electron';
 import { logError } from '../utils/logger.js';
-ipcMain.handle('dialog:openFile', async (_, payload) => {
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
+ipcMain.handle('dialog:openFile', async (_, payload) => { // legacy alias
   try {
     if (!payload || typeof payload !== 'object') {
       throw new Error('INVALID_PAYLOAD');
@@ -23,7 +24,7 @@ ipcMain.handle('dialog:openFile', async (_, payload) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('dialog:saveFile', async (_, payload) => {
+ipcMain.handle('dialog:saveFile', async (_, payload) => { // legacy alias
   try {
     if (!payload || typeof payload !== 'object') {
       throw new Error('INVALID_PAYLOAD');

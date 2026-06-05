@@ -168,6 +168,15 @@ export const ICONS = {
   CONFIRM: "❓",
   ALERT: "🚨",
   SUCCESS: "✅",
-  ERROR: "❌"
-};
+  ERROR: "❌",
 
+  // ========== Kategorie App Library ==========
+  CAT_AI: "🤖",
+  CAT_DEV: "💻",
+  CAT_PRODUCTIVITY: "🚀",
+  CAT_COMMUNICATION: "💬",
+  CAT_SOCIAL: "🌐",
+  CAT_DESIGN: "🎨",
+  CAT_CLOUD: "☁️",
+  CAT_ENTERTAINMENT: "📺"
+};

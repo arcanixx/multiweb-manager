@@ -10,6 +10,7 @@
 
 import { ipcMain } from 'electron';
 import { logError } from '../utils/logger.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 ipcMain.handle('tools:regexTest', async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || 
@@ -25,23 +26,13 @@ ipcMain.handle('tools:regexTest', async (_, payload) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('tools:markdownRender', async (_, payload) => {
+ipcMain.handle('tools:markdownRender', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
   try {
     if (!payload || typeof payload !== 'string') {
       throw new Error('INVALID_PAYLOAD');
     }
-    const markdownText = payload;
     const { marked } = await import('marked');
-    const html = marked(markdownText);
-    return { ok: true, data: html };
-  } catch (err) {
-    return { ok: false, error: err.message };
-  }
-});
-ipcMain.handle('tools:markdownRender', async (_, markdownText) => {
-  try {
-    const { marked } = await import('marked');
-    const html = marked(markdownText);
+    const html = marked(payload);
     return { ok: true, data: html };
   } catch (err) {
     return { ok: false, error: err.message };

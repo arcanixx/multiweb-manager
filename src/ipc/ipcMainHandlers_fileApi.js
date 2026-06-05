@@ -12,7 +12,8 @@ import { ipcMain, clipboard } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { logError } from '../utils/logger.js';
-ipcMain.handle('tools:filePreview', async (_, payload) => {
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
+ipcMain.handle('tools:filePreview', async (_, payload) => { // legacy alias
   try {
     if (!payload || typeof payload !== 'string') {
       throw new Error('INVALID_PAYLOAD');
@@ -27,7 +28,7 @@ ipcMain.handle('tools:filePreview', async (_, payload) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('tools:apiRequest', async (_, payload) => {
+ipcMain.handle('tools:apiRequest', async (_, payload) => { // legacy alias
   try {
     if (!payload || typeof payload !== 'object' || 
         !('url' in payload) || !('method' in payload) || 
@@ -54,7 +55,7 @@ ipcMain.handle('tools:apiRequest', async (_, payload) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('tools:clipboard:get', async () => {
+ipcMain.handle('tools:clipboard:get', async () => { // legacy alias
   try {
     const text = clipboard.readText();
     const img = clipboard.readImage();

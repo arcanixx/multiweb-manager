@@ -25,6 +25,7 @@ import {
 } from "../stores/projectsStore.js";
 import { loadTasksByProject } from "../stores/tasksStore.js";
 import { logError } from "../utils/logger.js";
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // =============================================================================
 // VALIDATION
 // =============================================================================
@@ -40,7 +41,7 @@ function validateProject(p) {
 // IPC HANDLERS
 // =============================================================================
 // Pobiera wszystkie projekty
-ipcMain.handle("projects:getAll", async () => {
+ipcMain.handle(IPC_CHANNELS.PROJECTS.GET_ALL, async () => {
   try {
     const projects = loadProjects();
     return { ok: true, data: projects };
@@ -50,7 +51,7 @@ ipcMain.handle("projects:getAll", async () => {
   }
 });
 // Pobiera projekt + jego zadania
-ipcMain.handle("projects:getWithTasks", async (_, projectId) => {
+ipcMain.handle("projects:getWithTasks", async (_, projectId) => { // legacy alias - no constant in IPC_CHANNELS
   try {
     if (!projectId) throw new Error("PROJECT_ID_REQUIRED");
     const projects = loadProjects();
@@ -73,7 +74,7 @@ ipcMain.handle("projects:getWithTasks", async (_, projectId) => {
 });
 
 // Tworzy projekt
-ipcMain.handle("projects:create", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.PROJECTS.CREATE, async (_, payload) => {
   try {
     validateProject(payload);
     const updated = createProject(payload);
@@ -86,7 +87,7 @@ ipcMain.handle("projects:create", async (_, payload) => {
 });
 
 // Aktualizuje projekt
-ipcMain.handle("projects:update", async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.PROJECTS.UPDATE, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || !('id' in payload) || !('patch' in payload)) {
       throw new Error('INVALID_PAYLOAD');
@@ -104,7 +105,7 @@ ipcMain.handle("projects:update", async (_, payload) => {
 });
 
 // Archiwizuje projekt
-ipcMain.handle("projects:archive", async (_, id) => {
+ipcMain.handle('projects:archive', async (_, id) => { // legacy alias - no constant in IPC_CHANNELS
   try {
     if (!id) throw new Error("PROJECT_ID_REQUIRED");
     const updated = archiveProject(id);
@@ -117,7 +118,7 @@ ipcMain.handle("projects:archive", async (_, id) => {
 });
 
 // Usuwa projekt
-ipcMain.handle("projects:delete", async (_, id) => {
+ipcMain.handle(IPC_CHANNELS.PROJECTS.DELETE, async (_, id) => {
   try {
     if (!id) throw new Error("PROJECT_ID_REQUIRED");
     const updated = deleteProject(id);

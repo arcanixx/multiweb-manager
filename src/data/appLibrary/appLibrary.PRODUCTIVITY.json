@@ -1,0 +1,22 @@
+[
+  { "id": "slack", "name": "Slack", "url": "https://slack.com", "icon": "https://slack.com/favicon.ico", "categoryId": "productivity" },
+  { "id": "teams", "name": "Microsoft Teams", "url": "https://teams.microsoft.com", "icon": "https://teams.microsoft.com/favicon.ico", "categoryId": "productivity" },
+  { "id": "discord", "name": "Discord", "url": "https://discord.com", "icon": "https://discord.com/favicon.ico", "categoryId": "productivity" },
+  { "id": "notion", "name": "Notion", "url": "https://www.notion.so", "icon": "https://www.notion.so/favicon.ico", "categoryId": "productivity" },
+  { "id": "evernote", "name": "Evernote", "url": "https://evernote.com", "icon": "https://evernote.com/favicon.ico", "categoryId": "productivity" },
+  { "id": "todoist", "name": "Todoist", "url": "https://todoist.com", "icon": "https://todoist.com/favicon.ico", "categoryId": "productivity" },
+  { "id": "asana", "name": "Asana", "url": "https://asana.com", "icon": "https://asana.com/favicon.ico", "categoryId": "productivity" },
+  { "id": "monday", "name": "Monday.com", "url": "https://monday.com", "icon": "https://monday.com/favicon.ico", "categoryId": "productivity" },
+  { "id": "clickup", "name": "ClickUp", "url": "https://clickup.com", "icon": "https://clickup.com/favicon.ico", "categoryId": "productivity" },
+  { "id": "linear", "name": "Linear", "url": "https://linear.app", "icon": "https://linear.app/favicon.ico", "categoryId": "productivity" },
+  { "id": "zoom", "name": "Zoom", "url": "https://zoom.us", "icon": "https://zoom.us/favicon.ico", "categoryId": "productivity" },
+  { "id": "google_calendar", "name": "Google Calendar", "url": "https://calendar.google.com", "icon": "https://www.gstatic.com/calendar/images/favicon_v2014_31.ico", "categoryId": "productivity" },
+  { "id": "outlook", "name": "Outlook", "url": "https://outlook.live.com", "icon": "https://outlook.live.com/favicon.ico", "categoryId": "productivity" },
+  { "id": "protonmail", "name": "ProtonMail", "url": "https://mail.proton.me", "icon": "https://mail.proton.me/favicon.ico", "categoryId": "productivity" },
+  { "id": "gmail", "name": "Gmail", "url": "https://mail.google.com", "icon": "https://ssl.gstatic.com/ui/v1/icons/mail/images/2/favicon.ico", "categoryId": "productivity" },
+  { "id": "whatsapp", "name": "WhatsApp", "url": "https://web.whatsapp.com", "icon": "https://web.whatsapp.com/favicon.ico", "categoryId": "productivity" },
+  { "id": "telegram", "name": "Telegram", "url": "https://web.telegram.org", "icon": "https://web.telegram.org/favicon.ico", "categoryId": "productivity" },
+  { "id": "linkedin", "name": "LinkedIn", "url": "https://www.linkedin.com", "icon": "https://www.linkedin.com/favicon.ico", "categoryId": "productivity" },
+  { "id": "feedly", "name": "Feedly", "url": "https://feedly.com", "icon": "https://feedly.com/favicon.ico", "categoryId": "productivity" },
+  { "id": "pocket", "name": "Pocket", "url": "https://getpocket.com", "icon": "https://getpocket.com/favicon.ico", "categoryId": "productivity" }
+]
