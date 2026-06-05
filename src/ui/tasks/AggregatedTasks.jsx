@@ -96,18 +96,22 @@ export default function AggregatedTasks() {
     window.electronAPI.saveSettings({ hiddenTaskGroups: next }).catch(() => {});
   }, [hidden]);
 
+  // ─── collapseAll() – zwija wszystkie widoczne grupy i zapisuje stan w settings
   const collapseAll = () => {
     const next = Object.fromEntries(grouped.map(g => [g.groupId, true]));
     setCollapsed(next);
     window.electronAPI.saveSettings({ collapsedTaskGroups: next }).catch(() => {});
   };
+  // ─── expandAll() – rozwija wszystkie grupy i zapisuje stan w settings
   const expandAll = () => {
     setCollapsed({});
     window.electronAPI.saveSettings({ collapsedTaskGroups: {} }).catch(() => {});
   };
+  // ─── clearFilters() – resetuje wszystkie aktywne filtry
   const clearFilters = () => {
     setFilterText(''); setFilterStatus(''); setFilterPriority(''); setFilterSection('');
   };
+  // ─── hasFilter – true gdy co najmniej jeden filtr jest aktywny
   const hasFilter = filterText || filterStatus || filterPriority || filterSection;
 
   if (loading) {
@@ -203,3 +207,4 @@ export default function AggregatedTasks() {
     </div>
   );
 }
+
