@@ -25,15 +25,16 @@ const HistoryLog     = lazy(() => import('../history/HistoryLog'));
 //   @returns {JSX.Element|null}
 export default function SettingsContainer({ activeItem, settings, onSaveSettings }) {
   useEffect(() => { logDebug('ui', 'SettingsContainer mounted'); }, []);
-   const wrap = (Component, props = {}) => (
-     // ─── wrap() – zawija komponent w Suspense z fallback Spinner
-     //   @param {React.ComponentType} Component – komponent do leniwego ładowania
-     //   @param {Object} props – dodatkowe propsy przekazane do komponentu
-     //   @returns {JSX.Element} – komponent zawijany w Suspense
-     <Suspense fallback={<Spinner />}>
-       <Component {...props} />
-     </Suspense>
-   );
+
+  // ─── wrap() – zawija komponent w Suspense z fallback Spinner
+  //   @param {React.ComponentType} Component – komponent do leniwego ładowania
+  //   @param {Object} props – dodatkowe propsy przekazane do komponentu
+  //   @returns {JSX.Element}
+  const wrap = (Component, props = {}) => (
+    <Suspense fallback={<Spinner />}>
+      <Component {...props} />
+    </Suspense>
+  );
 
   switch (activeItem.id) {
     case 'settings':
