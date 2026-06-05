@@ -62,7 +62,7 @@ export default function LogsSection() {
 
   const handleViewLogs = async () => {
     try {
-      const content = await window.electronAPI?.getLogsFile?.();
+      const content = await window.electronAPI?.logsGet?.();
       if (content?.ok) {
         setLogsContent(content.data || '');
         setShowLogsModal(true);
@@ -74,7 +74,7 @@ export default function LogsSection() {
 
   const handleClearLogs = async () => {
     try {
-      await window.electronAPI?.clearLogsFile?.();
+      await window.electronAPI?.logsClear?.();
       setLogsContent('');
       logInfo('settings', 'LogsSection: logs cleared');
     } catch (err) {
@@ -240,7 +240,7 @@ export default function LogsSection() {
   // ─── handleViewLogs() – wyświetla zawartość pliku z logami
   const handleViewLogs = async () => {
     try {
-      const content = await window.electronAPI?.getLogsFile?.();
+      const content = await window.electronAPI?.logsGet?.();
       if (content?.ok) {
         setLogsContent(content.data || '');
         setShowLogsModal(true);
@@ -258,7 +258,7 @@ export default function LogsSection() {
   // ─── handleClearLogs() – czyści plik z logami
   const handleClearLogs = async () => {
     try {
-      await window.electronAPI?.clearLogsFile?.();
+      await window.electronAPI?.logsClear?.();
       setLogsContent('');
       logInfo('settings', 'LogsSection: logs cleared');
     } catch (err) {

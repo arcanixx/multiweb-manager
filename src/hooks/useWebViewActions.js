@@ -97,7 +97,7 @@ export function useWebViewActions({ webviewRef, url, profile, setZoomFactor, rel
   const takeScreenshot = useCallback(async () => {
     if (!isFeatureEnabled('screenshotWebView')) return;
     try {
-      const result = await window.electronAPI?.captureWebView?.(
+      const result = await window.electronAPI?.webviewCapture?.(
         webviewRef.current?.getWebContentsId()
       );
       if (result?.ok && result.data) {
@@ -114,7 +114,7 @@ export function useWebViewActions({ webviewRef, url, profile, setZoomFactor, rel
   const openSingleAppMode = useCallback(() => {
     if (!isFeatureEnabled('singleAppMode')) return;
     try {
-      window.electronAPI?.openSingleWindow?.({ url, profile });
+      window.electronAPI?.webviewOpenSingle?.({ url, profile });
       logInfo('webview', `useWebViewActions: single app mode for ${profile.id}`);
     } catch (err) {
       logError('webview', 'useWebViewActions: openSingleAppMode failed', err);
@@ -126,7 +126,7 @@ export function useWebViewActions({ webviewRef, url, profile, setZoomFactor, rel
     if (!isFeatureEnabled('resourceMonitor')) return;
     try {
       const webContentsId = webviewRef.current?.getWebContentsId();
-      const result = await window.electronAPI?.getWebViewResourceInfo?.(webContentsId);
+      const result = await window.electronAPI?.webviewGetResource?.(webContentsId);
       if (result?.ok && result.data) {
         logInfo('webview', `useWebViewActions: resources – RAM: ${result.data.ram}MB, CPU: ${result.data.cpu}%`);
         window.showToast?.(`RAM: ${result.data.ram}MB, CPU: ${result.data.cpu}%`, 'info');

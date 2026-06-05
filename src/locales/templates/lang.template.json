@@ -233,7 +233,8 @@
     "account_placeholder": "Profile and settings sync between devices — coming soon (v0.0.4+).",
     "sign_in": "Sign in",
     "sync_now": "Sync now",
-    "coming_soon": "Coming soon"
+    "coming_soon": "Coming soon",
+    "unknown_view": ""
   },
   "help": {
     "title": "Help",
@@ -629,5 +630,6 @@
     "back": "Back",
     "finish": "Start using the app!",
     "step_of": "Step {current} of {total}"
-  }
+  },
+  "_comment": ""
 }

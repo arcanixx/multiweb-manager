@@ -87,14 +87,11 @@ async function appendLogFileLogic(payload) {
 
 // ─── registerLogsHandlers() – rejestruje handlery IPC dla logów
 export function registerLogsHandlers() {
-  // ─── logs:append – nowa nazwa (Sprint 2)
+  // ─── logs:append – dopisuje do pliku logów
   ipcMain.handle(IPC_CHANNELS.LOGS.APPEND, async (_, payload) => appendLogFileLogic(payload));
 
-  // Alias legacy – kompatybilność z kodem nieużywającym jeszcze stałych
-  ipcMain.handle('append-log-file', async (_, payload) => appendLogFileLogic(payload));
-
-   // ─── logs:get – pobiera treść logów
-   ipcMain.handle(IPC_CHANNELS.LOGS.GET, async () => {
+  // ─── logs:get – pobiera treść logów
+  ipcMain.handle(IPC_CHANNELS.LOGS.GET, async () => {
     try {
       const logFile = getLogFile();
       if (!fs.existsSync(logFile)) return { ok: true, data: '' };
@@ -105,13 +102,8 @@ export function registerLogsHandlers() {
     }
   });
 
-  ipcMain.handle('get-logs-file', async () => {
-    const logFile = getLogFile();
-    return fs.existsSync(logFile) ? { ok: true, data: fs.readFileSync(logFile, 'utf8') } : { ok: true, data: '' };
-  });
-
-   // ─── logs:clear – czyści plik logów
-   ipcMain.handle(IPC_CHANNELS.LOGS.CLEAR, async () => {
+  // ─── logs:clear – czyści plik logów
+  ipcMain.handle(IPC_CHANNELS.LOGS.CLEAR, async () => {
     try {
       const logFile = getLogFile();
       if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
@@ -121,12 +113,6 @@ export function registerLogsHandlers() {
       logError('ipc', 'logs:clear error', err);
       return { ok: false, error: err.message };
     }
-  });
-
-  ipcMain.handle('clear-logs-file', async () => {
-    const logFile = getLogFile();
-    if (fs.existsSync(logFile)) fs.unlinkSync(logFile);
-    return { ok: true };
   });
 }
 

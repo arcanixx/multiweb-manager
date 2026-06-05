@@ -234,7 +234,8 @@
     "account_placeholder": "Synchronizacja profili i ustawień między urządzeniami — w przygotowaniu (v0.0.4+).",
     "sign_in": "Zaloguj się",
     "sync_now": "Synchronizuj",
-    "coming_soon": "Wkrótce"
+    "coming_soon": "Wkrótce",
+    "unknown_view": "Nieznany widok"
   },
   "help": {
     "title": "Pomoc",

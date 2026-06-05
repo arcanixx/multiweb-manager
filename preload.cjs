@@ -184,12 +184,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
      return () => ipcRenderer.removeListener('webview:http-error', listener);
    },
 
-   // ─── WebView registry (dla screenshot/resource) ───────────────
-   // ─── registerWebView(tabId, webContentsId) – Rejestruje mapowanie karty na ID Electron
-   registerWebView: (tabId, webContentsId) => ipcRenderer.invoke('register-webview', tabId, webContentsId),
-   // ─── unregisterWebView(tabId) – Usuwa mapowanie karty
-   unregisterWebView: (tabId) => ipcRenderer.invoke('unregister-webview', tabId),
-
   // ─── Generic invoke (dla nowych kanałów namespaced) ───────────
   // ─── invoke(channel, ...args) – Wykonuje dowolne wywołanie kanału IPC
   invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args)
