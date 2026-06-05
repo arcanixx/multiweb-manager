@@ -221,6 +221,67 @@ const tests = [
       const ok = content.includes('export *') && content.includes('src/config.js');
       return { ok, details: ok ? '' : 'root/config.js does not re-export src/config.js' };
     }
+  },
+
+  // ── settingsRegistry.js ────────────────────────────────────────────────────
+  {
+    name: 'src/config/settingsRegistry.js exists',
+    run: async () => {
+      const exists = existsSync(join(ROOT, 'src/config/settingsRegistry.js'));
+      return { ok: exists, details: exists ? '' : 'src/config/settingsRegistry.js not found' };
+    }
+  },
+  {
+    name: 'settingsRegistry – SETTINGS_REGISTRY is non-empty array',
+    run: async () => {
+      const r = await importModule('src/config/settingsRegistry.js');
+      if (!r.ok) return { ok: false, details: r.error };
+      const { SETTINGS_REGISTRY } = r.data;
+      const ok = Array.isArray(SETTINGS_REGISTRY) && SETTINGS_REGISTRY.length > 0;
+      return { ok, details: ok ? '' : 'SETTINGS_REGISTRY empty or not array' };
+    }
+  },
+  {
+    name: 'settingsRegistry – getSettingsComponent exported as function',
+    run: async () => {
+      const r = await importModule('src/config/settingsRegistry.js');
+      if (!r.ok) return { ok: false, details: r.error };
+      const ok = typeof r.data.getSettingsComponent === 'function';
+      return { ok, details: ok ? '' : 'getSettingsComponent not a function' };
+    }
+  },
+  {
+    name: 'settingsRegistry – getSettingsComponent returns null for unknown id (no logger needed for no-op)',
+    run: async () => {
+      const r = await importModule('src/config/settingsRegistry.js');
+      if (!r.ok) return { ok: false, details: r.error };
+      const result = r.data.getSettingsComponent('__nonexistent__');
+      // UWAGA: settingsRegistry nie używa logger.js — getSettingsComponent cicho zwraca null.
+      // toolsRegistry używa logWarn przy null — rozważyć ujednolicenie w przyszłości.
+      return { ok: result === null, details: result === null ? '' : `Expected null, got ${JSON.stringify(result)}` };
+    }
+  },
+  {
+    name: 'settingsRegistry – disabled=false for entry without featureFlag',
+    run: async () => {
+      const r = await importModule('src/config/settingsRegistry.js');
+      if (!r.ok) return { ok: false, details: r.error };
+      // 'settings' nie ma featureFlag — powinno być zawsze dostępne
+      const entry = r.data.getSettingsComponent('settings');
+      const ok = entry !== null && entry.disabled === false;
+      return { ok, details: ok ? '' : `entry=${JSON.stringify(entry)}` };
+    }
+  },
+  {
+    name: 'settingsRegistry – no duplicate ids',
+    run: async () => {
+      const r = await importModule('src/config/settingsRegistry.js');
+      if (!r.ok) return { ok: false, details: r.error };
+      const ids = r.data.SETTINGS_REGISTRY.map(e => e.id);
+      const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
+      const ok = dupes.length === 0;
+      return { ok, details: ok ? '' : `Duplicate ids: ${dupes.join(', ')}` };
+    }
   }
 ];
 
