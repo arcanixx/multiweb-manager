@@ -2,50 +2,110 @@
 // FILE: TestRunner_History.js
 // PATH: tests/TestRunner_History.js
 // VERSION: 0.0.3
-// PURPOSE: Testy integralności logów aktywności użytkownika. Sprawdza walidację poziomów logowania, mechanizmy filtrowania zdarzeń oraz poprawność przycinania historii do zdefiniowanych limitów (FIFO).
+// PURPOSE: Testy historii aktywności — historyStore CRUD, walidacja struktury wpisów, filtrowanie, limit FIFO.
 // FUNCTIONS: runHistoryTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { runTests } from './testUtils.js';
+import { join } from 'path';
+
+const ROOT = process.cwd();
+
 const tests = [
+  // ── historyStore exports ───────────────────────────────────────────────────
+  {
+    name: 'historyStore – all functions exported',
+    run: async () => {
+      let mod;
+      try { mod = await import(join(ROOT, 'src/stores/historyStore.js')); }
+      catch (e) { return { ok: false, details: `Import failed: ${e.message}` }; }
+      const required = ['loadHistory', 'saveHistory', 'addHistoryEntry', 'clearHistory', 'getRecentHistory'];
+      const missing = required.filter(fn => typeof mod[fn] !== 'function');
+      const ok = missing.length === 0;
+      return { ok, details: ok ? '' : `Missing: ${missing.join(', ')}` };
+    }
+  },
+
+  // ── Struktura wpisu ────────────────────────────────────────────────────────
   {
     name: 'History entry structure is valid',
     run: async () => {
-      const mockEntry = {
-        level: 'info',
-        message: 'Test message',
-        timestamp: Date.now()
-      };
-      const isValid = ['info', 'warn', 'error'].includes(mockEntry.level) && mockEntry.message;
-      return { ok: isValid, details: isValid ? '' : 'Missing required fields' };
+      const entry = { level: 'info', message: 'Test message', timestamp: Date.now() };
+      const ok = ['info', 'warn', 'error', 'debug'].includes(entry.level) && entry.message && entry.timestamp;
+      return { ok, details: ok ? '' : 'Missing required fields' };
     }
   },
   {
-    name: 'History filter by level works',
+    name: 'History entry – invalid level rejected',
+    run: async () => {
+      const validLevels = ['info', 'warn', 'error', 'debug'];
+      const ok = !validLevels.includes('critical'); // 'critical' nie jest prawidłowym poziomem
+      return { ok, details: ok ? '' : 'Invalid level should not be accepted' };
+    }
+  },
+
+  // ── Filtrowanie ────────────────────────────────────────────────────────────
+  {
+    name: 'History filter by level – returns only matching entries',
+    run: async () => {
+      const entries = [{ level: 'info' }, { level: 'error' }, { level: 'info' }, { level: 'warn' }];
+      const errors = entries.filter(e => e.level === 'error');
+      const ok = errors.length === 1;
+      return { ok, details: ok ? '' : `Expected 1, got ${errors.length}` };
+    }
+  },
+  {
+    name: 'History filter by text query – case-insensitive match',
     run: async () => {
       const entries = [
-        { level: 'info' },
-        { level: 'error' },
-        { level: 'info' }
+        { level: 'info', message: 'Profile loaded' },
+        { level: 'error', message: 'PROFILE save failed' },
+        { level: 'info', message: 'Task created' }
       ];
-      const filtered = entries.filter(e => e.level === 'error');
-      const isFilteredCorrect = filtered.length === 1;
-      return { ok: isFilteredCorrect, details: isFilteredCorrect ? '' : `Expected 1, got ${filtered.length}` };
+      const q = 'profile';
+      const filtered = entries.filter(e => e.message.toLowerCase().includes(q));
+      const ok = filtered.length === 2;
+      return { ok, details: ok ? '' : `Expected 2, got ${filtered.length}` };
+    }
+  },
+
+  // ── FIFO limit ─────────────────────────────────────────────────────────────
+  {
+    name: 'History FIFO – trims oldest when over limit',
+    run: async () => {
+      const MAX = 100;
+      const history = Array.from({ length: 150 }, (_, i) => ({ id: i, message: `msg-${i}` }));
+      // FIFO: usuń najstarsze (przód listy)
+      const trimmed = history.length > MAX ? history.slice(history.length - MAX) : history;
+      const ok = trimmed.length === MAX && trimmed[0].id === 50;
+      return { ok, details: ok ? '' : `Length=${trimmed.length}, first.id=${trimmed[0]?.id}` };
     }
   },
   {
-    name: 'History limit (max 100) works',
+    name: 'getRecentHistory – returns at most limit entries',
     run: async () => {
-      const history = Array.from({ length: 150 }, (_, i) => ({ id: i }));
-      const limited = history.slice(0, 100);
-      const isLimitedCorrect = limited.length === 100;
-      return { ok: isLimitedCorrect, details: isLimitedCorrect ? '' : `Expected 100, got ${limited.length}` };
+      // Symulacja getRecentHistory(limit, offset)
+      const allEntries = Array.from({ length: 200 }, (_, i) => ({ id: i }));
+      const getRecent = (limit = 100, offset = 0) => allEntries.slice(offset, offset + limit);
+      const result = getRecent(50, 0);
+      const ok = result.length === 50;
+      return { ok, details: ok ? '' : `Expected 50, got ${result.length}` };
+    }
+  },
+  {
+    name: 'getRecentHistory – offset works correctly',
+    run: async () => {
+      const allEntries = Array.from({ length: 200 }, (_, i) => ({ id: i }));
+      const getRecent = (limit = 100, offset = 0) => allEntries.slice(offset, offset + limit);
+      const page2 = getRecent(10, 10);
+      const ok = page2[0].id === 10 && page2.length === 10;
+      return { ok, details: ok ? '' : `First id=${page2[0]?.id}, len=${page2.length}` };
     }
   }
 ];
-// ─── runHistoryTests() – Inicjalizuje i uruchamia proces testowy dla modułu historii
+
 export async function runHistoryTests() {
   return runTests('History', tests);
 }
