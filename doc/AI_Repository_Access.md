@@ -342,7 +342,6 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   ├── 📜 [TestRunner_Settings.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_Settings.js)
 │   ├── 📜 [TestRunner_SleepTabs.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_SleepTabs.js)
 │   ├── 📜 [TestRunner_SplashScreen.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_SplashScreen.js)
-│   ├── 📜 [TestRunner_Store.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_Store.js)
 │   ├── 📜 [TestRunner_Stores.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_Stores.js)
 │   ├── 📜 [TestRunner_Tasks.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_Tasks.js)
 │   ├── 📜 [TestRunner_TasksPanel.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_TasksPanel.js)

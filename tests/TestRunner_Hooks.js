@@ -221,6 +221,48 @@ const tests = [
       }
     }
   },
+
+  // ─── Brakujące hooki z audytu ──────────────────────────────────────────────
+  {
+    name: 'useAppInitialization – eksportowany jako funkcja',
+    run: async () => {
+      const mod = await import('../src/hooks/useAppInitialization.js');
+      const ok = typeof mod.useAppInitialization === 'function';
+      return { ok, details: ok ? '' : 'useAppInitialization not exported' };
+    }
+  },
+  {
+    name: 'useMainLayout – eksportowany jako funkcja',
+    run: async () => {
+      const mod = await import('../src/hooks/useMainLayout.js');
+      const ok = typeof mod.useMainLayout === 'function';
+      return { ok, details: ok ? '' : 'useMainLayout not exported' };
+    }
+  },
+  {
+    name: 'useNotepadAutosave – eksportowany jako funkcja',
+    run: async () => {
+      const mod = await import('../src/hooks/useNotepadAutosave.js');
+      const ok = typeof mod.useNotepadAutosave === 'function';
+      return { ok, details: ok ? '' : 'useNotepadAutosave not exported' };
+    }
+  },
+  {
+    name: 'useNotepadModals – eksportowany jako funkcja',
+    run: async () => {
+      const mod = await import('../src/hooks/useNotepadModals.js');
+      const ok = typeof mod.useNotepadModals === 'function';
+      return { ok, details: ok ? '' : 'useNotepadModals not exported' };
+    }
+  },
+  {
+    name: 'useNotepadTabActions – eksportowany jako funkcja',
+    run: async () => {
+      const mod = await import('../src/hooks/useNotepadTabActions.js');
+      const ok = typeof mod.useNotepadTabActions === 'function';
+      return { ok, details: ok ? '' : 'useNotepadTabActions not exported' };
+    }
+  },
 ];
 
 export async function runHooksTests() {

@@ -2065,12 +2065,6 @@ root/
 │ │ FUNCTIONS: runSplashScreenTests
 │ │ DEPENDS ON: react, testUtils.js, react-dom
 │ │ -->
-│ ├── TestRunner_Store.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Store.js
-│ │ PURPOSE: Testy struktury danych pobieranych z store (settings,
-│ │ notepad, history)
-│ │ FUNCTIONS: runStoreTests
-│ │ DEPENDS ON: testUtils.js
-│ │ -->
 │ ├── TestRunner_Stores.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Stores.js
 │ │ PURPOSE: Testy wszystkich stores (main process) — eksporty CRUD,
 │ │ logika domenowa: workspacesStore, accountsStore,
@@ -2102,10 +2096,12 @@ root/
 │ │ DEPENDS ON: testUtils.js
 │ │ -->
 │ ├── TestRunner_Tools.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Tools.js
-│ │ PURPOSE: Testy jednostkowe dla narzędzi (JSON, Regex, Markdown,
-│ │ Clipboard)
+│ │ PURPOSE: Testy silników narzędzi (src/tools/*) —
+│ │ regexEngine.testRegex, markdownRenderer.renderMarkdown,
+│ │ apiClient (apiFetch/apiGet/apiPost/apiRequest) oraz
+│ │ logika UI narzędzi (JSON, Clipboard, Markdown).
 │ │ FUNCTIONS: runToolsTests
-│ │ DEPENDS ON: testUtils.js
+│ │ DEPENDS ON: testUtils.js, path
 │ │ -->
 │ ├── TestRunner_Update.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Update.js
 │ │ PURPOSE: Testy serwisu aktualizacji
@@ -2131,9 +2127,14 @@ root/
 │ ├── TestRunner_Utils.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Utils.js
 │ │ PURPOSE: Testy funkcji z src/utils/ – urlUtils, validators,
 │ │ searchIndex, notesStorage, notificationsManager,
-│ │ networkUtils, fileUtils.
+│ │ networkUtils, fileUtils. Testy modułów utils — logger
+│ │ (eksporty, setDebugModule, logUI/logStore/etc.),
+│ │ fileUtils (readJsonSafe/writeJsonSafe/streaming),
+│ │ persistence, sharpLoader, testrunner
+│ │ (assert/assertThrows), yamlLoader,
+│ │ notificationsManager, translations.
 │ │ FUNCTIONS: runUtilsTests
-│ │ DEPENDS ON: testUtils.js
+│ │ DEPENDS ON: testUtils.js, path
 │ │ -->
 │ ├── TestRunner_Validators.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Validators.js
 │ │ PURPOSE: Testy modułu validators — ensureString, ensureObject,
