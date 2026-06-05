@@ -42,6 +42,10 @@ export default function TaskItem({
 }) {
   const { t } = useContext(TranslationContext);
 
+  // ─── handle() – wrapper akcji z logowaniem i obsługą błędów
+  //   @param {string}   name – nazwa akcji (do logowania)
+  //   @param {Function} fn   – funkcja do wywołania
+  //   @param {...*}     args – argumenty przekazywane do fn
   const handle = (name, fn, ...args) => {
     try {
       logDebug('tasks', `TaskItem: ${name}`, task.id);
@@ -155,3 +159,4 @@ export default function TaskItem({
     </div>
   );
 }
+
