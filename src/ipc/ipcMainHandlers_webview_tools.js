@@ -4,22 +4,26 @@
 // VERSION: 0.0.3
 // PURPOSE: Handlery IPC dla narzędzi WebView: tryb Single App, zrzuty ekranu i monitor zasobów.
 // FUNCTIONS: registerWebViewExtraHandlers, ipc:webview:openSingle, ipc:webview:capture, ipc:webview:getResource
-// DEPENDS ON: electron, path, logger.js, webviewRegistry.js, ipcChannels.js
+// DEPENDS ON: electron, path, url, logger.js, webviewRegistry.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain, BrowserWindow } from 'electron';
-import path from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { logError } from '../utils/logger.js';
 import { getWebViewEntry, getAllWebContents } from '../engine/webviewRegistry.js';
 import { IPC_CHANNELS } from '../constants/ipcChannels.js';
-const PRELOAD_PATH = path.join(__dirname, '../../preload.cjs');
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const PRELOAD_PATH = join(__dirname, '../../preload.cjs');
 
 // ─── registerWebViewExtraHandlers() – Rejestruje dodatkowe handlery IPC dedykowane dla WebView:
 //   Single App Mode (nowe okno), screenshot strony oraz monitor zasobów sprzętowych
 export function registerWebViewExtraHandlers() {
 
   // ─── webview:openSingle – otwiera URL w osobnym oknie (Single App Mode)
+  //   Używany przez preload → window.electronAPI.openSingleWindow()
   ipcMain.handle(IPC_CHANNELS.WEBVIEW.OPEN_SINGLE, async (_, payload) => {
     try {
       if (!payload || typeof payload !== 'object') {
@@ -42,13 +46,9 @@ export function registerWebViewExtraHandlers() {
       return { ok: false, error: err.message };
     }
   });
-      await win.loadURL(payload.url);
-      if (payload.debug) win.webContents.openDevTools();
-      return { ok: true };
-    } catch (err) {
-  });
 
   // ─── webview:capture – wykonuje screenshot widocznego obszaru WebView
+  //   Używany przez preload → window.electronAPI.captureWebView(tabId)
   ipcMain.handle(IPC_CHANNELS.WEBVIEW.CAPTURE, async (_, payload) => {
     try {
       if (!payload || typeof payload !== 'object' || !('tabId' in payload)) {
@@ -69,6 +69,7 @@ export function registerWebViewExtraHandlers() {
   });
 
   // ─── webview:getResource – zwraca dane o zasobach WebView (pamięć, CPU)
+  //   Używany przez preload → window.electronAPI.getWebViewResourceInfo(tabId)
   ipcMain.handle(IPC_CHANNELS.WEBVIEW.GET_RESOURCE, async (_, payload) => {
     try {
       if (!payload || typeof payload !== 'object' || !('tabId' in payload)) {

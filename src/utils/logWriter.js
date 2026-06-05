@@ -48,6 +48,7 @@ export async function initLogWriter() {
 
 // ─── appendTestFailLog() – dopisuje wpis o błędzie testu do pliku przez IPC
 //   Rotacja pliku jest obsługiwana przez handler (ipcMainHandlers_logs.js).
+//   Kanał: logs:append (IPC_CHANNELS.LOGS.APPEND)
 //   @param {string} moduleName – nazwa modułu
 //   @param {string} testName   – nazwa testu
 //   @param {string} details    – szczegóły błędu
@@ -56,7 +57,7 @@ export async function appendTestFailLog(moduleName, testName, details) {
   if (!debugMode || !logsEnabled) return;
 
   try {
-    const result = await window.electronAPI?.invoke?.('append-log-file', {
+    const result = await window.electronAPI?.invoke?.('logs:append', {
       level: 'fail',
       module: moduleName,
       test: testName,
@@ -75,11 +76,12 @@ export async function appendTestFailLog(moduleName, testName, details) {
 }
 
 // ─── getLogsContent() – pobiera zawartość aktualnego pliku logów przez IPC
+//   Kanał: logs:get (IPC_CHANNELS.LOGS.GET)
 //   @returns {Promise<string|null>}
 export async function getLogsContent() {
   if (!debugMode || !logsEnabled) return null;
   try {
-    const result = await window.electronAPI?.invoke?.('get-logs-file');
+    const result = await window.electronAPI?.invoke?.('logs:get');
     if (result?.ok) {
       logDebug("store", "getLogsContent: logs retrieved");
       return result.data;
@@ -94,11 +96,12 @@ export async function getLogsContent() {
 }
 
 // ─── clearLogsFile() – czyści aktualny plik logów przez IPC (archiwa pozostają)
+//   Kanał: logs:clear (IPC_CHANNELS.LOGS.CLEAR)
 //   @returns {Promise<boolean>}
 export async function clearLogsFile() {
   if (!debugMode || !logsEnabled) return false;
   try {
-    const result = await window.electronAPI?.invoke?.('clear-logs-file');
+    const result = await window.electronAPI?.invoke?.('logs:clear');
     if (result?.ok) logInfo("store", "clearLogsFile: logs cleared");
     return result?.ok === true;
   } catch (err) {
