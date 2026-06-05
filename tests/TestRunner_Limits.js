@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy modułu limitów aplikacji (src/config/limits.js) — LIMITS, getLimit.
 // FUNCTIONS: runLimitsTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_files.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlery zapisu plików – tekst i dane binarne przez dialog systemowy.
-// FUNCTIONS: ipc:files:saveText, ipc:files:saveBinary
+// FUNCTIONS: const:IPC_CHANNELS.FILES.SAVE_TEXT, const:IPC_CHANNELS.FILES.SAVE_BINARY
 // DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

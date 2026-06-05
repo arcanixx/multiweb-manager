@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_dialogs.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla natywnych okien dialogowych (open/save)
-// FUNCTIONS: ipc:dialog:openFile, ipc:dialog:saveFile
+// FUNCTIONS: const:IPC_CHANNELS.DIALOGS.OPEN_FILE, const:IPC_CHANNELS.DIALOGS.SAVE_FILE
 // DEPENDS ON: electron, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -11,7 +11,7 @@
 import { ipcMain, dialog } from 'electron';
 import { logError } from '../utils/logger.js';
 import { IPC_CHANNELS } from '../constants/ipcChannels.js';
-ipcMain.handle('dialog:openFile', async (_, payload) => { // legacy alias
+ipcMain.handle(IPC_CHANNELS.DIALOGS.OPEN_FILE, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object') {
       throw new Error('INVALID_PAYLOAD');
@@ -24,7 +24,7 @@ ipcMain.handle('dialog:openFile', async (_, payload) => { // legacy alias
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('dialog:saveFile', async (_, payload) => { // legacy alias
+ipcMain.handle(IPC_CHANNELS.DIALOGS.SAVE_FILE, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object') {
       throw new Error('INVALID_PAYLOAD');

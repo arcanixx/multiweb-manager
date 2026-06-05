@@ -9,7 +9,7 @@
 //          projects:update       – aktualizuje projekt (patch)
 //          projects:archive      – archiwizuje projekt
 //          projects:delete       – usuwa projekt
-// FUNCTIONS: const:IPC_CHANNELS.PROJECTS.GET_ALL, const:IPC_CHANNELS.PROJECTS.CREATE, const:IPC_CHANNELS.PROJECTS.UPDATE, const:IPC_CHANNELS.PROJECTS.DELETE, ipc:projects:getWithTasks, ipc:projects:archive
+// FUNCTIONS: const:IPC_CHANNELS.PROJECTS.GET_ALL, const:IPC_CHANNELS.PROJECTS.GET_WITH_TASKS, const:IPC_CHANNELS.PROJECTS.CREATE, const:IPC_CHANNELS.PROJECTS.UPDATE, const:IPC_CHANNELS.PROJECTS.ARCHIVE, const:IPC_CHANNELS.PROJECTS.DELETE
 // DEPENDS ON: electron, projectsStore.js, tasksStore.js, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -51,7 +51,7 @@ ipcMain.handle(IPC_CHANNELS.PROJECTS.GET_ALL, async () => {
   }
 });
 // Pobiera projekt + jego zadania
-ipcMain.handle("projects:getWithTasks", async (_, projectId) => { // legacy alias - no constant in IPC_CHANNELS
+ipcMain.handle(IPC_CHANNELS.PROJECTS.GET_WITH_TASKS, async (_, projectId) => {
   try {
     if (!projectId) throw new Error("PROJECT_ID_REQUIRED");
     const projects = loadProjects();
@@ -105,7 +105,7 @@ ipcMain.handle(IPC_CHANNELS.PROJECTS.UPDATE, async (_, payload) => {
 });
 
 // Archiwizuje projekt
-ipcMain.handle('projects:archive', async (_, id) => { // legacy alias - no constant in IPC_CHANNELS
+ipcMain.handle(IPC_CHANNELS.PROJECTS.ARCHIVE, async (_, id) => {
   try {
     if (!id) throw new Error("PROJECT_ID_REQUIRED");
     const updated = archiveProject(id);

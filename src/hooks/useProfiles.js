@@ -10,7 +10,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { logDebug, logWarn } from '../utils/loggerRenderer.js';
-import { storageService } from '../stores/StorageService.js';
+import { storageService } from '../utils/StorageService.js';
 import { useAsyncMutation } from './useAsync.js';
 
 // ─── useProfiles() – hook do zarządzania profilami z cache (StorageService) i optimistic updates

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy serwisu aktualizacji (src/engine/updateService.js) — checkForUpdates stub + kształt odpowiedzi.
 // FUNCTIONS: runUpdateTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

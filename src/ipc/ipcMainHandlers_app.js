@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_app.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlery cyklu życia aplikacji – potwierdzenie zamknięcia.
-// FUNCTIONS: ipc:app:confirmQuit
+// FUNCTIONS: const:IPC_CHANNELS.APP.CONFIRM_QUIT
 // DEPENDS ON: electron, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

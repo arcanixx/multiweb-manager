@@ -234,7 +234,7 @@
     "sign_in": "Sign in",
     "sync_now": "Sync now",
     "coming_soon": "Coming soon",
-    "unknown_view": ""
+    "unknown_view": "Unknown view"
   },
   "help": {
     "title": "Help",
@@ -631,5 +631,5 @@
     "finish": "Start using the app!",
     "step_of": "Step {current} of {total}"
   },
-  "_comment": ""
+  "_comment": "FILE: lang.template.json | PATH: src/locales/templates/lang.template.json | VERSION: 0.0.3 | PURPOSE:  | FUNCTIONS: - | DEPENDS ON: - | UWAGA: Nie usuwać komentarzy – opisują flow aplikacji."
 }

@@ -3,14 +3,15 @@
 // PATH: src/ipc/ipcMainHandlers_webview_screenshot.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handler dla screenshot WebView
-// FUNCTIONS: ipc:webview:screenshot
-// DEPENDS ON: electron, logger.js, config.js
+// FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.SCREENSHOT
+// DEPENDS ON: electron, logger.js, config.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain, BrowserWindow } from 'electron';
 import { logError } from '../utils/logger.js';
-import { FEATURES } from '../../config.js';
+import { FEATURES } from '../config.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── getWebContentsById() – Wyszukuje i zwraca obiekt WebContents przypisany do podanego identyfikatora w obrębie wszystkich aktywnych okien Electrona
 function getWebContentsById(id) {
@@ -22,7 +23,7 @@ function getWebContentsById(id) {
     return null;
   }
 }
-ipcMain.handle('webview:screenshot', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.WEBVIEW.SCREENSHOT, async (_, payload) => {
   try {
     // TODO: Add rate limiting for screenshot (e.g., using timestamp map)
     if (!payload || typeof payload !== 'object' || !('id' in payload)) {

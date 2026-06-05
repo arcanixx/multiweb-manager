@@ -3,13 +3,14 @@
 // PATH: src/ipc/ipcMainHandlers_webview_cache.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handler dla czyszczenia cache WebView
-// FUNCTIONS: ipc:webview:clearCache
-// DEPENDS ON: electron, logger.js
+// FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.CLEAR_CACHE
+// DEPENDS ON: electron, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain, BrowserWindow } from 'electron';
 import { logError } from '../utils/logger.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── getWebContentsById() – Wyszukuje i zwraca obiekt WebContents powiązany z danym identyfikatorem liczbowym w obrębie wszystkich otwartych okien aplikacji
 function getWebContentsById(id) {
@@ -21,7 +22,7 @@ function getWebContentsById(id) {
     return null;
   }
 }
-ipcMain.handle('webview:clearCache', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.WEBVIEW.CLEAR_CACHE, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'string') {
       throw new Error('INVALID_PAYLOAD');

@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_appInfo.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlery informacji o aplikacji – wersja, sprawdzanie aktualizacji, info diagnostyczne.
-// FUNCTIONS: ipc:app:getInfo, ipc:app:getVersion, ipc:app:checkUpdates
+// FUNCTIONS: const:IPC_CHANNELS.APP_INFO.GET_INFO, const:IPC_CHANNELS.APP.GET_VERSION, const:IPC_CHANNELS.APP.CHECK_UPDATES
 // DEPENDS ON: electron, logger.js, ipcChannels.js, updateService.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

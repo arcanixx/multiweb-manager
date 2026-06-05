@@ -5,13 +5,14 @@
 // PURPOSE: IPC handler monitorujący HTTP 4xx/5xx z WebView per partycja.
 //          Uzupełnia did-fail-load (błędy sieciowe/DNS) o obsługę błędów HTTP,
 //          których did-fail-load nie wychwytuje (strona się ładuje, ale zwraca błąd).
-// FUNCTIONS: ipc:webview:startHttpMonitor
-// DEPENDS ON: electron, logger.js
+// FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.START_HTTP_MONITOR
+// DEPENDS ON: electron, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain, BrowserWindow, session } from 'electron';
 import { logWarn, logInfo, logError } from '../utils/logger.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // Zbiór partycji aktualnie monitorowanych – zapobiega podwójnej rejestracji
 const monitoredPartitions = new Set();
@@ -45,10 +46,10 @@ function registerPartitionMonitor(partition) {
 
     // Wyślij event do wszystkich okien renderera – renderer sam filtruje po partycji
     BrowserWindow.getAllWindows().forEach((win) => {
-      if (!win.isDestroyed() && win.webContents) {
-        win.webContents.send('webview:http-error', { statusCode, url, partition });
-      }
-    });
+        if (!win.isDestroyed() && win.webContents) {
+          win.webContents.send(IPC_CHANNELS.WEBVIEW.HTTP_ERROR, { statusCode, url, partition });
+        }
+      });
   });
 
   logInfo('ipc', `webview HTTP monitor zarejestrowany dla partycji: ${partition}`);
@@ -57,7 +58,7 @@ function registerPartitionMonitor(partition) {
 // ─── ipc:webview:startHttpMonitor – rejestruje monitor HTTP błędów dla partycji WebView
 //   Wywoływany z renderera przy montowaniu WebViewTab.
 //   Idempotentny – wielokrotne wywołanie dla tej samej partycji jest bezpieczne.
-ipcMain.handle('webview:startHttpMonitor', async (_, partition) => {
+ipcMain.handle(IPC_CHANNELS.WEBVIEW.START_HTTP_MONITOR, async (_, partition) => {
   try {
     if (!partition || typeof partition !== 'string') {
       return { ok: false, error: 'Nieprawidłowa lub brakująca partycja' };

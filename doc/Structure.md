@@ -41,9 +41,10 @@ root/
 │                                                       DEPENDS ON: -
 │                                                       -->
 ├── 📁 doc/
-│   ├── 📄 AI_Development_Standards.md ❗           <!-- VERSION: 0.0.3 PATH: doc/AI_Development_Standards.md
-│   │                                                   PURPOSE: Standardy tworzenia i modyfikacji kodu dla AI –
-│   │                                                            kompaktowy przewodnik
+│   ├── 📄 AI_Development_Standards.md             <!-- VERSION: 0.0.3 PATH: doc/AI_Development_Standards.md
+│   │                                                   PURPOSE: Dokumentacja specyfikacji projektowej - Standardy
+│   │                                                            tworzenia i modyfikacji kodu dla AI – kompaktowy
+│   │                                                            przewodnik
 │   │                                                   FUNCTIONS: Dokumentacja: 12 sekcji głównych
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
@@ -71,7 +72,7 @@ root/
 │   │                                                   FUNCTIONS: Dokumentacja: 15 sekcji głównych
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
-│   ├── 📄 ModulesOverview.md ❗                    <!-- VERSION: 0.0.3 PATH: doc/ModulesOverview.md
+│   ├── 📄 ModulesOverview.md                      <!-- VERSION: 0.0.3 PATH: doc/ModulesOverview.md
 │   │                                                   PURPOSE: Dokumentacja specyfikacji projektowej - Ujednolicona
 │   │                                                            lista modułów + opis przeznaczenia dla AI i devów
 │   │                                                   FUNCTIONS: Dokumentacja: 78 sekcji głównych
@@ -97,10 +98,11 @@ root/
 │   │                                                   FUNCTIONS: -
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
-│   ├── 📄 Structure_light.md ❗                    <!-- VERSION: 0.0.3 PATH: doc/Structure_light.md
-│   │                                                   PURPOSE: Uproszczona struktura projektu - same ścieżki i typy
-│   │                                                            plików, bez metadanych.           Do użycia przez AI
-│   │                                                            bez dostępu do repo (oszczędność tokenów).
+│   ├── 📄 Structure_light.md                      <!-- VERSION: 0.0.3 PATH: doc/Structure_light.md
+│   │                                                   PURPOSE: Dokumentacja specyfikacji projektowej - Uproszczona
+│   │                                                            struktura projektu - same ścieżki i typy plików, bez
+│   │                                                            metadanych.           Do użycia przez AI bez dostępu do
+│   │                                                            repo (oszczędność tokenów).
 │   │                                                   FUNCTIONS: -
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
@@ -134,14 +136,14 @@ root/
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
-│   │   ├── 📜 features.js ❗                       <!-- VERSION: 0.0.3 PATH: src/config/features.js
+│   │   ├── 📜 features.js                         <!-- VERSION: 0.0.3 PATH: src/config/features.js
 │   │   │                                               PURPOSE: Feature flags – włączanie/wyłączanie modułów aplikacji
 │   │   │                                                        (FEATURES) oraz helpery isFeatureEnabled,
 │   │   │                                                        isToolEnabled.
 │   │   │                                               FUNCTIONS: isFeatureEnabled, isToolEnabled
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
-│   │   ├── 📜 limits.js ❗                         <!-- VERSION: 0.0.3 PATH: src/config/limits.js
+│   │   ├── 📜 limits.js                           <!-- VERSION: 0.0.3 PATH: src/config/limits.js
 │   │   │                                               PURPOSE: Limity aplikacji – maksymalne liczby elementów w
 │   │   │                                                        kolekcjach (LIMITS) i helper getLimit.
 │   │   │                                               FUNCTIONS: getLimit
@@ -152,20 +154,28 @@ root/
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
-│   │   ├── 📜 settings.js ❗                       <!-- VERSION: 0.0.3 PATH: src/config/settings.js
+│   │   ├── 📜 settings.js                         <!-- VERSION: 0.0.3 PATH: src/config/settings.js
 │   │   │                                               PURPOSE: Domyślne ustawienia aplikacji (DEFAULT_SETTINGS),
 │   │   │                                                        per-modułowe flagi debugowania (DEBUG_MODULES) i helper
 │   │   │                                                        getDefaultSetting.
 │   │   │                                               FUNCTIONS: getDefaultSetting
 │   │   │                                               DEPENDS ON: app.js
 │   │   │                                               -->
-│   │   └── 📜 toolsRegistry.js ❗                  <!-- VERSION: 0.0.3 PATH: src/config/toolsRegistry.js
+│   │   ├── 📜 settingsRegistry.js                 <!-- VERSION: 0.0.3 PATH: src/config/settingsRegistry.js
+│   │   │                                               PURPOSE: Centralny rejestr widoków ustawień i narzędzi
+│   │   │                                                        systemowych (SettingsContainer). Eliminuje switch-case
+│   │   │                                                        — nowy widok = nowy wpis w rejestrze. Wzorzec
+│   │   │                                                        analogiczny do toolsRegistry.js.
+│   │   │                                               FUNCTIONS: getSettingsComponent
+│   │   │                                               DEPENDS ON: react, config.js, logger.js
+│   │   │                                               -->
+│   │   └── 📜 toolsRegistry.js                    <!-- VERSION: 0.0.3 PATH: src/config/toolsRegistry.js
 │   │                                                   PURPOSE: Centralny rejestr narzędzi (tools) używanych w
 │   │                                                            ToolsContainer. Eliminuje switch-case z kontenera –
 │   │                                                            nowe narzędzie = nowy wpis w rejestrze. Zawiera lazy
 │   │                                                            import, featureFlag, propsy i opis.
 │   │                                                   FUNCTIONS: getToolComponent
-│   │                                                   DEPENDS ON: react, config.js
+│   │                                                   DEPENDS ON: react, config.js, logger.js
 │   │                                                   -->
 │   ├── 📁 constants/
 │   │   ├── 📜 constants.js                        <!-- VERSION: 0.0.3 PATH: src/constants/constants.js
@@ -259,7 +269,7 @@ root/
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   ├── 📁 engine/
-│   │   ├── 📜 adBlocker.js ❗                      <!-- VERSION: 0.0.3 PATH: src/engine/adBlocker.js
+│   │   ├── 📜 adBlocker.js                        <!-- VERSION: 0.0.3 PATH: src/engine/adBlocker.js
 │   │   │                                               PURPOSE: Implementacja blokowania reklam na poziomie sieciowym
 │   │   │                                                        (webRequest) – wspiera ustawienia globalne i
 │   │   │                                                        nadpisywanie per-profil.
@@ -268,7 +278,7 @@ root/
 │   │   │                                                          initAdBlocker
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js, webviewRegistry.js
 │   │   │                                               -->
-│   │   ├── 📜 hotkeysManager.js ❗                 <!-- VERSION: 0.0.3 PATH: src/engine/hotkeysManager.js
+│   │   ├── 📜 hotkeysManager.js                   <!-- VERSION: 0.0.3 PATH: src/engine/hotkeysManager.js
 │   │   │                                               PURPOSE: Zarządzanie globalnymi skrótami klawiszowymi w procesie
 │   │   │                                                        głównym. Obsługuje rejestrację w OS i dispatch zdarzeń
 │   │   │                                                        IPC do renderera.
@@ -277,7 +287,7 @@ root/
 │   │   │                                                          registerHotkeysFromList
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js, electron-store
 │   │   │                                               -->
-│   │   ├── 📜 resourceMonitor.js ❗                <!-- VERSION: 0.0.3 PATH: src/engine/resourceMonitor.js
+│   │   ├── 📜 resourceMonitor.js                  <!-- VERSION: 0.0.3 PATH: src/engine/resourceMonitor.js
 │   │   │                                               PURPOSE: Serwis monitorujący zużycie zasobów systemowych
 │   │   │                                                        (CPU/RAM) przez aplikację i system operacyjny.
 │   │   │                                               FUNCTIONS: getSystemUsage
@@ -291,19 +301,19 @@ root/
 │   │   │                                                          getSleepPlaceholderState
 │   │   │                                               DEPENDS ON: config.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 updateService.js ❗                  <!-- VERSION: 0.0.3 PATH: src/engine/updateService.js
+│   │   ├── 📜 updateService.js                    <!-- VERSION: 0.0.3 PATH: src/engine/updateService.js
 │   │   │                                               PURPOSE: Placeholder sprawdzania aktualizacji (UpdateChecker UI
 │   │   │                                                        → docelowo API).
 │   │   │                                               FUNCTIONS: checkForUpdates
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 webviewRegistry.js ❗                <!-- VERSION: 0.0.3 PATH: src/engine/webviewRegistry.js
+│   │   ├── 📜 webviewRegistry.js                  <!-- VERSION: 0.0.3 PATH: src/engine/webviewRegistry.js
 │   │   │                                               PURPOSE: Rejestracja WebView (mapy tabId ↔ webContentsId)
 │   │   │                                               FUNCTIONS: registerWebView, unregisterWebView, getWebViewEntry,
 │   │   │                                                          getAllWebContents
 │   │   │                                               DEPENDS ON: logger.js, electron
 │   │   │                                               -->
-│   │   └── 📜 webviewScriptInjector.js ❗          <!-- VERSION: 0.0.3 PATH: src/engine/webviewScriptInjector.js
+│   │   └── 📜 webviewScriptInjector.js            <!-- VERSION: 0.0.3 PATH: src/engine/webviewScriptInjector.js
 │   │                                                   PURPOSE: Wstrzykiwanie CSS i skryptów użytkownika (user styles,
 │   │                                                            user scripts) do webview po załadowaniu strony.
 │   │                                                            Uruchamiany przez main process przy zdarzeniu
@@ -315,7 +325,7 @@ root/
 │   │                                                   DEPENDS ON: config.js, logger.js
 │   │                                                   -->
 │   ├── 📁 hooks/
-│   │   ├── 📜 useAppInitialization.js ❗           <!-- VERSION: 0.0.3 PATH: src/hooks/useAppInitialization.js
+│   │   ├── 📜 useAppInitialization.js             <!-- VERSION: 0.0.3 PATH: src/hooks/useAppInitialization.js
 │   │   │                                               PURPOSE: Logika startowa aplikacji (logger, settings, profile,
 │   │   │                                                        hotkeys, theme).
 │   │   │                                               FUNCTIONS: useAppInitialization
@@ -354,14 +364,14 @@ root/
 │   │   │                                               FUNCTIONS: useHistoryLog
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js, useAsync.js
 │   │   │                                               -->
-│   │   ├── 📜 useMainLayout.js ❗                  <!-- VERSION: 0.0.3 PATH: src/hooks/useMainLayout.js
+│   │   ├── 📜 useMainLayout.js                    <!-- VERSION: 0.0.3 PATH: src/hooks/useMainLayout.js
 │   │   │                                               PURPOSE: Hook zarządzający stanem globalnym layoutu aplikacji –
 │   │   │                                                        TaskPanel, modal potwierdzenia oraz klasa CSS body w
 │   │   │                                                        zależności od aktywnego widoku.
 │   │   │                                               FUNCTIONS: useMainLayout
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │                                               -->
-│   │   ├── 📜 useNotepadAutosave.js ❗             <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadAutosave.js
+│   │   ├── 📜 useNotepadAutosave.js               <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadAutosave.js
 │   │   │                                               PURPOSE: Izolowana logika automatycznego zapisu dla notatnika.
 │   │   │                                               FUNCTIONS: useNotepadAutosave
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
@@ -380,12 +390,12 @@ root/
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js,
 │   │   │                                                           notificationsManager.js
 │   │   │                                               -->
-│   │   ├── 📜 useNotepadModals.js ❗               <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadModals.js
+│   │   ├── 📜 useNotepadModals.js                 <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadModals.js
 │   │   │                                               PURPOSE: Zarządzanie stanem modali i powiadomień dla notatnika.
 │   │   │                                               FUNCTIONS: useNotepadModals
-│   │   │                                               DEPENDS ON: react
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
-│   │   ├── 📜 useNotepadTabActions.js ❗           <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadTabActions.js
+│   │   ├── 📜 useNotepadTabActions.js             <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadTabActions.js
 │   │   │                                               PURPOSE: Wrappery dla akcji na zakładkach z logiką walidacji i
 │   │   │                                                        UI.
 │   │   │                                               FUNCTIONS: useNotepadTabActions
@@ -472,7 +482,7 @@ root/
 │   │                                                   DEPENDS ON: react, loggerRenderer.js, translations.js
 │   │                                                   -->
 │   ├── 📁 ipc/
-│   │   ├── 📜 ipcMainHandlers_adBlocker.js ❗      <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_adBlocker.js
+│   │   ├── 📜 ipcMainHandlers_adBlocker.js        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_adBlocker.js
 │   │   │                                               PURPOSE: IPC handlery do zarządzania blokerem reklam – globalnie
 │   │   │                                                        i per profil
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.ADBLOCKER.SET_GLOBAL,
@@ -481,7 +491,7 @@ root/
 │   │   │                                                          const:IPC_CHANNELS.ADBLOCKER.GET_FOR_PROFILE
 │   │   │                                               DEPENDS ON: electron, adBlocker.js, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_aggregatedTasks.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_aggregatedTasks.js
+│   │   ├── 📜 ipcMainHandlers_aggregatedTasks.js  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_aggregatedTasks.js
 │   │   │                                               PURPOSE: IPC handlers dla widoku zbiorczego zadań
 │   │   │                                                        (AggregatedTasks). Łączy zadania z grupami (TaskGroup)
 │   │   │                                                        i profilami.
@@ -491,18 +501,22 @@ root/
 │   │   │                                               DEPENDS ON: electron, ipcChannels.js, tasksStore.js,
 │   │   │                                                           taskGroupsStore.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_app.js ❗            <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_app.js
+│   │   ├── 📜 ipcMainHandlers_app.js              <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_app.js
 │   │   │                                               PURPOSE: IPC handlery cyklu życia aplikacji – potwierdzenie
 │   │   │                                                        zamknięcia.
-│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.APP.CONFIRM_QUIT, ipc:confirm-quit
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.APP.CONFIRM_QUIT
 │   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_appInfo.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_appInfo.js
-│   │   │                                               PURPOSE: IPC handler do pobierania informacji o aplikacji
-│   │   │                                               FUNCTIONS: ipc:app:getInfo
-│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
+│   │   ├── 📜 ipcMainHandlers_appInfo.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_appInfo.js
+│   │   │                                               PURPOSE: IPC handlery informacji o aplikacji – wersja,
+│   │   │                                                        sprawdzanie aktualizacji, info diagnostyczne.
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.APP_INFO.GET_INFO,
+│   │   │                                                          const:IPC_CHANNELS.APP.GET_VERSION,
+│   │   │                                                          const:IPC_CHANNELS.APP.CHECK_UPDATES
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js,
+│   │   │                                                           updateService.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_appLibrary.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_appLibrary.js
+│   │   ├── 📜 ipcMainHandlers_appLibrary.js       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_appLibrary.js
 │   │   │                                               PURPOSE: IPC dla biblioteki aplikacji (App Library) – pobieranie
 │   │   │                                                        kategorii, wyszukiwanie, filtrowanie po kategorii.
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.APP_LIBRARY.GET_ALL,
@@ -511,18 +525,19 @@ root/
 │   │   │                                               DEPENDS ON: electron, appLibraryStore.js, logger.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_cookies.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_cookies.js
+│   │   ├── 📜 ipcMainHandlers_cookies.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_cookies.js
 │   │   │                                               PURPOSE: IPC handler do pobierania cookies (Cookie Grabber)
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.COOKIES.GET_ALL
 │   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_dialogs.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_dialogs.js
+│   │   ├── 📜 ipcMainHandlers_dialogs.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_dialogs.js
 │   │   │                                               PURPOSE: IPC handlers dla natywnych okien dialogowych
 │   │   │                                                        (open/save)
-│   │   │                                               FUNCTIONS: ipc:dialog:openFile, ipc:dialog:saveFile
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.DIALOGS.OPEN_FILE,
+│   │   │                                                          const:IPC_CHANNELS.DIALOGS.SAVE_FILE
 │   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_events.js ❗         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_events.js
+│   │   ├── 📜 ipcMainHandlers_events.js           <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_events.js
 │   │   │                                               PURPOSE: Handlery IPC dla dziennika zdarzeń aplikacji
 │   │   │                                                        (EventLogger). Obsługuje zapis, odczyt i czyszczenie
 │   │   │                                                        zdarzeń.
@@ -533,28 +548,29 @@ root/
 │   │   │                                               DEPENDS ON: electron, fs, path, logger.js,
 │   │   │                                                           ipcMainHandlers_logs.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_fileApi.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_fileApi.js
+│   │   ├── 📜 ipcMainHandlers_fileApi.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_fileApi.js
 │   │   │                                               PURPOSE: IPC handlers dla File Previewer, Mini Postman i
 │   │   │                                                        Clipboard
-│   │   │                                               FUNCTIONS: ipc:tools:filePreview, ipc:tools:apiRequest,
-│   │   │                                                          ipc:tools:clipboard:get
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TOOLS.FILE_PREVIEW,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.API_REQUEST,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.CLIPBOARD_GET
 │   │   │                                               DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_fileSystem.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_fileSystem.js
+│   │   ├── 📜 ipcMainHandlers_fileSystem.js       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_fileSystem.js
 │   │   │                                               PURPOSE: IPC handlers do odczytu i zapisu plików (przez main
 │   │   │                                                        process)
-│   │   │                                               FUNCTIONS: ipc:fs:readFile, ipc:fs:writeFile
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.FS.READ_FILE,
+│   │   │                                                          const:IPC_CHANNELS.FS.WRITE_FILE
 │   │   │                                               DEPENDS ON: electron, fs, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_files.js ❗          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_files.js
+│   │   ├── 📜 ipcMainHandlers_files.js            <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_files.js
 │   │   │                                               PURPOSE: IPC handlery zapisu plików – tekst i dane binarne przez
 │   │   │                                                        dialog systemowy.
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.FILES.SAVE_TEXT,
-│   │   │                                                          const:IPC_CHANNELS.FILES.SAVE_BINARY,
-│   │   │                                                          ipc:save-text-to-file, ipc:save-file
+│   │   │                                                          const:IPC_CHANNELS.FILES.SAVE_BINARY
 │   │   │                                               DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_history.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_history.js
+│   │   ├── 📜 ipcMainHandlers_history.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_history.js
 │   │   │                                               PURPOSE: IPC dla historii odwiedzin/akcji. history:getAll    –
 │   │   │                                                        zwraca pełną historię (max 5000 wpisów) history:add    
 │   │   │                                                          – dodaje nowy wpis i zapisuje history:clear     –
@@ -563,10 +579,10 @@ root/
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.HISTORY.GET_ALL,
 │   │   │                                                          const:IPC_CHANNELS.HISTORY.ADD,
 │   │   │                                                          const:IPC_CHANNELS.HISTORY.CLEAR,
-│   │   │                                                          ipc:history:getRecent
+│   │   │                                                          const:IPC_CHANNELS.HISTORY.GET_RECENT
 │   │   │                                               DEPENDS ON: electron, historyStore.js, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_hotkeys.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_hotkeys.js
+│   │   ├── 📜 ipcMainHandlers_hotkeys.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_hotkeys.js
 │   │   │                                               PURPOSE: IPC handlery do zarządzania skrótami klawiszowymi –
 │   │   │                                                        pobieranie, zapis, rejestracja
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.HOTKEYS.GET_ALL,
@@ -575,27 +591,28 @@ root/
 │   │   │                                               DEPENDS ON: electron, hotkeysManager.js, logger.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_imageSharp.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_imageSharp.js
+│   │   ├── 📜 ipcMainHandlers_imageSharp.js       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_imageSharp.js
 │   │   │                                               PURPOSE: IPC handlery dla operacji na obrazach (resize, convert,
 │   │   │                                                        compress)
-│   │   │                                               FUNCTIONS: ipc:tools:image:resize, ipc:tools:image:convert,
-│   │   │                                                          ipc:tools:image:compress
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TOOLS.IMAGE_RESIZE,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.IMAGE_CONVERT,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.IMAGE_COMPRESS
 │   │   │                                               DEPENDS ON: electron, logger.js, sharpLoader.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_jsonYaml.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_jsonYaml.js
+│   │   ├── 📜 ipcMainHandlers_jsonYaml.js         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_jsonYaml.js
 │   │   │                                               PURPOSE: IPC handlery dla JSON i YAML (formatowanie, konwersja)
-│   │   │                                               FUNCTIONS: ipc:tools:formatJSON, ipc:tools:yamlToJson,
-│   │   │                                                          ipc:tools:jsonToYaml
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TOOLS.FORMAT_JSON,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.YAML_TO_JSON,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.JSON_TO_YAML
 │   │   │                                               DEPENDS ON: electron, logger.js, yamlLoader.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_logs.js ❗           <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_logs.js
+│   │   ├── 📜 ipcMainHandlers_logs.js             <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_logs.js
 │   │   │                                               PURPOSE: Handlery IPC dla logów testów (LogWriter). Obsługuje
 │   │   │                                                        zapis, odczyt i czyszczenie logów testów.
 │   │   │                                               FUNCTIONS: rotateLogs, registerLogsHandlers,
 │   │   │                                                          const:IPC_CHANNELS.LOGS.APPEND,
 │   │   │                                                          const:IPC_CHANNELS.LOGS.GET,
-│   │   │                                                          const:IPC_CHANNELS.LOGS.CLEAR, ipc:append-log-file,
-│   │   │                                                          ipc:get-logs-file, ipc:clear-logs-file
+│   │   │                                                          const:IPC_CHANNELS.LOGS.CLEAR
 │   │   │                                               DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_notepad.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notepad.js
@@ -603,27 +620,28 @@ root/
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: electron, notepadStore.js, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_notifications.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notifications.js
+│   │   ├── 📜 ipcMainHandlers_notifications.js    <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notifications.js
 │   │   │                                               PURPOSE: Handler IPC dla natywnych powiadomień systemowych OS
 │   │   │                                                        (Windows/macOS). Przeniesione do procesu głównego —
 │   │   │                                                        działa nawet gdy okno jest zminimalizowane lub ukryte w
 │   │   │                                                        tray. Implementuje UIUX_REQ-022.
-│   │   │                                               FUNCTIONS: ipc:notifications:showSystem
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.NOTIFICATIONS.SHOW_SYSTEM
 │   │   │                                               DEPENDS ON: electron, path, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_openExternal.js ❗   <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_openExternal.js
+│   │   ├── 📜 ipcMainHandlers_openExternal.js     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_openExternal.js
 │   │   │                                               PURPOSE: IPC handler do otwierania URL w domyślnej przeglądarce
 │   │   │                                                        systemowej
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.SHELL.OPEN_EXTERNAL
 │   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_pathUtils.js ❗      <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_pathUtils.js
+│   │   ├── 📜 ipcMainHandlers_pathUtils.js        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_pathUtils.js
 │   │   │                                               PURPOSE: IPC helpers dla operacji na ścieżkach (path.join,
 │   │   │                                                        path.dirname)
-│   │   │                                               FUNCTIONS: ipc:path:join, ipc:path:dirname
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.PATH.JOIN,
+│   │   │                                                          const:IPC_CHANNELS.PATH.DIRNAME
 │   │   │                                               DEPENDS ON: electron, path, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_profiles.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_profiles.js
+│   │   ├── 📜 ipcMainHandlers_profiles.js         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_profiles.js
 │   │   │                                               PURPOSE: IPC dla profili (Sidebar / Profile Manager / App
 │   │   │                                                        Library) pobieranie profili zapisywanie profili edycja
 │   │   │                                                        profili usuwanie profili ostatnio używane walidacja
@@ -636,7 +654,7 @@ root/
 │   │   │                                               DEPENDS ON: electron, profilesStore.js, logger.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_projects.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_projects.js
+│   │   ├── 📜 ipcMainHandlers_projects.js         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_projects.js
 │   │   │                                               PURPOSE: IPC handlers dla Project Manager – CRUD projektów z
 │   │   │                                                        walidacją i integracją z tasksStore. projects:getAll   
 │   │   │                                                           – pobiera wszystkie projekty projects:getWithTasks –
@@ -646,19 +664,21 @@ root/
 │   │   │                                                        archiwizuje projekt projects:delete       – usuwa
 │   │   │                                                        projekt
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.PROJECTS.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.PROJECTS.GET_WITH_TASKS,
 │   │   │                                                          const:IPC_CHANNELS.PROJECTS.CREATE,
 │   │   │                                                          const:IPC_CHANNELS.PROJECTS.UPDATE,
-│   │   │                                                          const:IPC_CHANNELS.PROJECTS.DELETE,
-│   │   │                                                          ipc:projects:getWithTasks, ipc:projects:archive
+│   │   │                                                          const:IPC_CHANNELS.PROJECTS.ARCHIVE,
+│   │   │                                                          const:IPC_CHANNELS.PROJECTS.DELETE
 │   │   │                                               DEPENDS ON: electron, projectsStore.js, tasksStore.js, logger.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_regexMarkdown.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_regexMarkdown.js
+│   │   ├── 📜 ipcMainHandlers_regexMarkdown.js    <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_regexMarkdown.js
 │   │   │                                               PURPOSE: IPC handlers dla Regex Tester i Markdown Previewer
-│   │   │                                               FUNCTIONS: ipc:tools:regexTest, ipc:tools:markdownRender
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TOOLS.REGEX_TEST,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.MARKDOWN_RENDER
 │   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_search.js ❗         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_search.js
+│   │   ├── 📜 ipcMainHandlers_search.js           <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_search.js
 │   │   │                                               PURPOSE: IPC handler globalnego wyszukiwania (Ctrl+K / sidebar
 │   │   │                                                        global search). search:global – buduje indeks ze
 │   │   │                                                        store'ów i przeszukuje go wg query.
@@ -667,7 +687,7 @@ root/
 │   │   │                                                           tasksStore.js, projectsStore.js, logger.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_settings.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_settings.js
+│   │   ├── 📜 ipcMainHandlers_settings.js         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_settings.js
 │   │   │                                               PURPOSE: IPC handlers dla Settings. settings:get        –
 │   │   │                                                        pobiera aktualne ustawienia settings:update     –
 │   │   │                                                        aktualizuje (merge patch, nie nadpisuje) settings:reset
@@ -684,13 +704,13 @@ root/
 │   │   │                                               DEPENDS ON: electron, fs, logger.js, settingsStore.js, config.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_svgToPng.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_svgToPng.js
+│   │   ├── 📜 ipcMainHandlers_svgToPng.js         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_svgToPng.js
 │   │   │                                               PURPOSE: IPC handler konwersji SVG → PNG przez sharp
-│   │   │                                               FUNCTIONS: ipc:tools:svgToPng
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TOOLS.SVG_TO_PNG
 │   │   │                                               DEPENDS ON: electron, fs, logger.js, sharpLoader.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_taskGroups.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_taskGroups.js
+│   │   ├── 📜 ipcMainHandlers_taskGroups.js       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_taskGroups.js
 │   │   │                                               PURPOSE: IPC handlers dla grup zadań (TaskGroup) — CRUD +
 │   │   │                                                        przypisanie profili. Mapuje profile WebView na wspólne
 │   │   │                                                        panele zadań.
@@ -705,7 +725,7 @@ root/
 │   │   │                                               DEPENDS ON: electron, ipcChannels.js, taskGroupsStore.js,
 │   │   │                                                           logger.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_tasks.js ❗          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_tasks.js
+│   │   ├── 📜 ipcMainHandlers_tasks.js            <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_tasks.js
 │   │   │                                               PURPOSE: IPC handlers dla zadań (TaskPanel) – CRUD z walidacją
 │   │   │                                                        section↔status i mapowaniem na taskGroupId.
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TASKS.GET_ALL,
@@ -716,7 +736,7 @@ root/
 │   │   │                                                          const:IPC_CHANNELS.TASKS.SAVE_SECTIONS
 │   │   │                                               DEPENDS ON: electron, ipcChannels.js, tasksStore.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_terminal.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_terminal.js
+│   │   ├── 📜 ipcMainHandlers_terminal.js         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_terminal.js
 │   │   │                                               PURPOSE: IPC dla Terminala (node-pty + xterm.js) tworzenie sesji
 │   │   │                                                        wysyłanie danych odbieranie danych zamykanie sesji
 │   │   │                                                        restart cleanup
@@ -728,57 +748,69 @@ root/
 │   │   │                                                          const:IPC_CHANNELS.TERMINAL.RESTART
 │   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js, node-pty, os
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_cache.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_cache.js
+│   │   ├── 📜 ipcMainHandlers_webview_cache.js    <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_cache.js
 │   │   │                                               PURPOSE: IPC handler dla czyszczenia cache WebView
-│   │   │                                               FUNCTIONS: ipc:webview:clearCache
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.CLEAR_CACHE
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_controls.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_controls.js
+│   │   ├── 📜 ipcMainHandlers_webview_controls.js <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_controls.js
 │   │   │                                               PURPOSE: IPC handlers dla User Agent, Single App Mode, Resource
 │   │   │                                                        Monitor, Sleep Tabs. Używa ESM import path/url zamiast
 │   │   │                                                        require() (ES module context).
-│   │   │                                               FUNCTIONS: ipc:webview:setUserAgent, ipc:webview:openInWindow,
-│   │   │                                                          ipc:webview:getUsage, ipc:webview:sleep,
-│   │   │                                                          ipc:webview:wake, ipc:webview:scheduleInjection,
-│   │   │                                                          ipc:webview:removeInjection
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.SET_USER_AGENT,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.OPEN_IN_WINDOW,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GET_USAGE,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.SLEEP,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.WAKE,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.SCHEDULE_INJECTION,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.REMOVE_INJECTION
 │   │   │                                               DEPENDS ON: electron, path, url, logger.js, config.js,
-│   │   │                                                           webviewScriptInjector.js
+│   │   │                                                           webviewScriptInjector.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_httpErrors.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_httpErrors.js
+│   │   ├── 📜 ipcMainHandlers_webview_httpErrors.js <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_httpErrors.js
 │   │   │                                               PURPOSE: IPC handler monitorujący HTTP 4xx/5xx z WebView per
 │   │   │                                                        partycja. Uzupełnia did-fail-load (błędy sieciowe/DNS)
 │   │   │                                                        o obsługę błędów HTTP, których did-fail-load nie
 │   │   │                                                        wychwytuje (strona się ładuje, ale zwraca błąd).
-│   │   │                                               FUNCTIONS: ipc:webview:startHttpMonitor
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.START_HTTP_MONITOR
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_nav.js ❗    <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_nav.js
+│   │   ├── 📜 ipcMainHandlers_webview_nav.js      <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_nav.js
 │   │   │                                               PURPOSE: IPC handlers dla nawigacji WebView. webview:navigate
 │   │   │                                                        waliduje URL przez isSafeUrl() przed loadURL() —
 │   │   │                                                        blokuje javascript:, data:, file: itp.
-│   │   │                                               FUNCTIONS: ipc:webview:navigate, ipc:webview:reload,
-│   │   │                                                          ipc:webview:goBack, ipc:webview:goForward,
-│   │   │                                                          ipc:webview:getURL
-│   │   │                                               DEPENDS ON: electron, logger.js, urlUtils.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.NAVIGATE,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.RELOAD,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GO_BACK,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GO_FORWARD,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GET_URL
+│   │   │                                               DEPENDS ON: electron, logger.js, urlUtils.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_screenshot.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_screenshot.js
+│   │   ├── 📜 ipcMainHandlers_webview_registry.js <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_registry.js
+│   │   │                                               PURPOSE: Handlery IPC dla rejestru WebView – mapowanie tabId ↔
+│   │   │                                                        webContentsId. Wymagane przez Screenshot, Resource
+│   │   │                                                        Monitor i AdBlocker.
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.REGISTER,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.UNREGISTER
+│   │   │                                               DEPENDS ON: electron, logger.js, webviewRegistry.js,
+│   │   │                                                           ipcChannels.js
+│   │   │                                               -->
+│   │   ├── 📜 ipcMainHandlers_webview_screenshot.js <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_screenshot.js
 │   │   │                                               PURPOSE: IPC handler dla screenshot WebView
-│   │   │                                               FUNCTIONS: ipc:webview:screenshot
-│   │   │                                               DEPENDS ON: electron, logger.js, config.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.SCREENSHOT
+│   │   │                                               DEPENDS ON: electron, logger.js, config.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_tools.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_tools.js
+│   │   ├── 📜 ipcMainHandlers_webview_tools.js    <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_tools.js
 │   │   │                                               PURPOSE: Handlery IPC dla narzędzi WebView: tryb Single App,
 │   │   │                                                        zrzuty ekranu i monitor zasobów.
 │   │   │                                               FUNCTIONS: registerWebViewExtraHandlers,
 │   │   │                                                          const:IPC_CHANNELS.WEBVIEW.OPEN_SINGLE,
 │   │   │                                                          const:IPC_CHANNELS.WEBVIEW.CAPTURE,
-│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GET_RESOURCE,
-│   │   │                                                          ipc:open-single-window, ipc:capture-webview,
-│   │   │                                                          ipc:get-webview-resource
-│   │   │                                               DEPENDS ON: electron, path, logger.js, webviewRegistry.js,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GET_RESOURCE
+│   │   │                                               DEPENDS ON: electron, path, url, logger.js, webviewRegistry.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   └── 📜 ipcMainHandlers_workspaces.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_workspaces.js
+│   │   └── 📜 ipcMainHandlers_workspaces.js       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_workspaces.js
 │   │                                                   PURPOSE: IPC dla workspace (Sidebar, useWorkspaces).
 │   │                                                   FUNCTIONS: const:IPC_CHANNELS.WORKSPACES.GET_ALL,
 │   │                                                              const:IPC_CHANNELS.WORKSPACES.SAVE,
@@ -787,7 +819,7 @@ root/
 │   │                                                               ipcChannels.js
 │   │                                                   -->
 │   ├── 📁 loaders/
-│   │   ├── 📜 ipcLoader.js ❗                      <!-- VERSION: 0.0.3 PATH: src/loaders/ipcLoader.js
+│   │   ├── 📜 ipcLoader.js                        <!-- VERSION: 0.0.3 PATH: src/loaders/ipcLoader.js
 │   │   │                                               PURPOSE: Dynamicznie ładuje wszystkie handlery IPC z src/ipc/.
 │   │   │                                                        Eliminuje konieczność ręcznego importowania każdego
 │   │   │                                                        pliku w main.js. Pomija: ipcLegacyBridge.js (ładowany
@@ -795,7 +827,7 @@ root/
 │   │   │                                               FUNCTIONS: loadAllIpcHandlers
 │   │   │                                               DEPENDS ON: komponenty z folderu ipc/
 │   │   │                                               -->
-│   │   └── 📜 testsLoader.js ❗                    <!-- VERSION: 0.0.3 PATH: src/loaders/testsLoader.js
+│   │   └── 📜 testsLoader.js                      <!-- VERSION: 0.0.3 PATH: src/loaders/testsLoader.js
 │   │                                                   PURPOSE: Dynamicznie ładuje i uruchamia wszystkie testy z
 │   │                                                            tests/TestRunner_*.js. Eliminuje konieczność ręcznego
 │   │                                                            importowania testów w TestRunner.js. Pomija:
@@ -808,13 +840,12 @@ root/
 │   ├── 📁 locales/
 │   │   ├── 📁 templates/
 │   │   │   ├── 📦 help.template.json              <!-- VERSION: 0.0.3 PATH: src/locales/templates/help.template.json
-│   │   │   │                                           PURPOSE: Help content (EN) – translated from help_pl.json
+│   │   │   │                                           PURPOSE: Help content (EN) – translated from help.pl.json
 │   │   │   │                                           FUNCTIONS: -
 │   │   │   │                                           DEPENDS ON: -
 │   │   │   │                                           -->
 │   │   │   └── 📦 lang.template.json              <!-- VERSION: 0.0.3 PATH: src/locales/templates/lang.template.json
-│   │   │                                               PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
-│   │   │                                                        pomocniczej.
+│   │   │                                               PURPOSE: 
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
@@ -823,12 +854,12 @@ root/
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
-│   │   ├── 📦 help_en.json                        <!-- VERSION: 0.0.3 PATH: src/locales/help_en.json
-│   │   │                                               PURPOSE: Help content (EN) – translated from help_pl.json
+│   │   ├── 📦 help.en.json                        <!-- VERSION: 0.0.3 PATH: src/locales/help.en.json
+│   │   │                                               PURPOSE: Help content (EN) – translated from help.pl.json
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
-│   │   ├── 📦 help_pl.json                        <!-- VERSION: 0.0.3 PATH: src/locales/help_pl.json
+│   │   ├── 📦 help.pl.json                        <!-- VERSION: 0.0.3 PATH: src/locales/help.pl.json
 │   │   │                                               PURPOSE: Treści pomocy (PL)
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
@@ -839,7 +870,7 @@ root/
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   ├── 📁 stores/
-│   │   ├── 📜 accountsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/accountsStore.js
+│   │   ├── 📜 accountsStore.js                    <!-- VERSION: 0.0.3 PATH: src/stores/accountsStore.js
 │   │   │                                               PURPOSE: Zarządzanie kontami użytkownika (Google, GitHub, AI,
 │   │   │                                                        itp.) – obsługa trwałości i operacji CRUD na danych
 │   │   │                                                        kont.
@@ -847,21 +878,21 @@ root/
 │   │   │                                                          deleteAccount
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 appLibraryStore.js ❗                <!-- VERSION: 0.0.3 PATH: src/stores/appLibraryStore.js
+│   │   ├── 📜 appLibraryStore.js                  <!-- VERSION: 0.0.3 PATH: src/stores/appLibraryStore.js
 │   │   │                                               PURPOSE: Statyczna App Library (WebCatalog-style) — udostępnia i
 │   │   │                                                        filtruje aplikacje z prekompilowanej biblioteki.
 │   │   │                                               FUNCTIONS: loadAppLibrary, filterApps, searchAppLibrary,
 │   │   │                                                          getAppById
 │   │   │                                               DEPENDS ON: logger.js, index.js
 │   │   │                                               -->
-│   │   ├── 📜 clipboardStore.js ❗                 <!-- VERSION: 0.0.3 PATH: src/stores/clipboardStore.js
+│   │   ├── 📜 clipboardStore.js                   <!-- VERSION: 0.0.3 PATH: src/stores/clipboardStore.js
 │   │   │                                               PURPOSE: Zarządzanie historią schowka systemowego – dodawanie,
 │   │   │                                                        pobieranie i czyszczenie wpisów tekstowych.
 │   │   │                                               FUNCTIONS: addClipboardEntry, getClipboardHistory,
 │   │   │                                                          clearClipboardHistory
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 historyStore.js ❗                   <!-- VERSION: 0.0.3 PATH: src/stores/historyStore.js
+│   │   ├── 📜 historyStore.js                     <!-- VERSION: 0.0.3 PATH: src/stores/historyStore.js
 │   │   │                                               PURPOSE: Zarządzanie historią akcji użytkownika – odczyt, zapis,
 │   │   │                                                        dodawanie wpisów, czyszczenie i pobieranie ostatnich
 │   │   │                                                        wpisów.
@@ -869,13 +900,13 @@ root/
 │   │   │                                                          clearHistory, getRecentHistory
 │   │   │                                               DEPENDS ON: config.js, persistence.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 notepadStore.js ❗                   <!-- VERSION: 0.0.3 PATH: src/stores/notepadStore.js
+│   │   ├── 📜 notepadStore.js                     <!-- VERSION: 0.0.3 PATH: src/stores/notepadStore.js
 │   │   │                                               PURPOSE: Zarządzanie notatkami użytkownika – ładowanie,
 │   │   │                                                        zapisywanie oraz operacje CRUD na danych notatek.
 │   │   │                                               FUNCTIONS: getAllnotepad, addNote, updateNote, deleteNote
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 profilesStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/profilesStore.js
+│   │   ├── 📜 profilesStore.js                    <!-- VERSION: 0.0.3 PATH: src/stores/profilesStore.js
 │   │   │                                               PURPOSE: Zarządzanie profilami WebView — odczyt z pliku, zapis,
 │   │   │                                                        tworzenie, aktualizacja i usuwanie (loadProfiles,
 │   │   │                                                        saveProfiles, createProfile, updateProfile,
@@ -884,14 +915,14 @@ root/
 │   │   │                                                          updateProfile, deleteProfile
 │   │   │                                               DEPENDS ON: fs, path, url, persistence.js, logger.js, config.js
 │   │   │                                               -->
-│   │   ├── 📜 projectsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/projectsStore.js
+│   │   ├── 📜 projectsStore.js                    <!-- VERSION: 0.0.3 PATH: src/stores/projectsStore.js
 │   │   │                                               PURPOSE: Projekty (ProjectManager, AggregatedTasks) — plik
 │   │   │                                                        projects.json.
 │   │   │                                               FUNCTIONS: loadProjects, saveProjects, createProject,
 │   │   │                                                          updateProject, archiveProject, deleteProject
 │   │   │                                               DEPENDS ON: persistence.js, logger.js, fs
 │   │   │                                               -->
-│   │   ├── 📜 settingsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/settingsStore.js
+│   │   ├── 📜 settingsStore.js                    <!-- VERSION: 0.0.3 PATH: src/stores/settingsStore.js
 │   │   │                                               PURPOSE: Ustawienia użytkownika — merge partial updates, reset
 │   │   │                                                        do domyślnych.
 │   │   │                                               FUNCTIONS: loadSettings, saveSettings, mergeSettings,
@@ -899,7 +930,7 @@ root/
 │   │   │                                               DEPENDS ON: lodash, fs, path, url, config.js, persistence.js,
 │   │   │                                                           logger.js
 │   │   │                                               -->
-│   │   ├── 📜 taskGroupsStore.js ❗                <!-- VERSION: 0.0.3 PATH: src/stores/taskGroupsStore.js
+│   │   ├── 📜 taskGroupsStore.js                  <!-- VERSION: 0.0.3 PATH: src/stores/taskGroupsStore.js
 │   │   │                                               PURPOSE: Zarządzanie grupami zadań (TaskGroup) — mapowanie
 │   │   │                                                        profili WebView na wspólny panel zadań. Każda grupa to
 │   │   │                                                        osobny panel TaskPanel współdzielony przez 1..N
@@ -909,7 +940,7 @@ root/
 │   │   │                                                          ensureDefaultGroup
 │   │   │                                               DEPENDS ON: persistence.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 tasksStore.js ❗                     <!-- VERSION: 0.0.3 PATH: src/stores/tasksStore.js
+│   │   ├── 📜 tasksStore.js                       <!-- VERSION: 0.0.3 PATH: src/stores/tasksStore.js
 │   │   │                                               PURPOSE: Zadania per TaskGroup (TaskPanel, AggregatedTasks).
 │   │   │                                                        Jeden plik JSON per taskGroupId. Zawiera logikę
 │   │   │                                                        mapowania section↔status.
@@ -918,7 +949,7 @@ root/
 │   │   │                                                          loadAllTasksGrouped, loadTasks
 │   │   │                                               DEPENDS ON: fs, persistence.js, logger.js
 │   │   │                                               -->
-│   │   └── 📜 workspacesStore.js ❗                <!-- VERSION: 0.0.3 PATH: src/stores/workspacesStore.js
+│   │   └── 📜 workspacesStore.js                  <!-- VERSION: 0.0.3 PATH: src/stores/workspacesStore.js
 │   │                                                   PURPOSE: Zarządzanie przestrzeniami roboczymi (workspaces)
 │   │                                                            użytkownika – ładowanie, zapisywanie oraz operacje typu
 │   │                                                            upsert.
@@ -927,7 +958,7 @@ root/
 │   │                                                   DEPENDS ON: fs, path, electron, logger.js
 │   │                                                   -->
 │   ├── 📁 tools/
-│   │   ├── 📜 apiClient.js ❗                      <!-- VERSION: 0.0.3 PATH: src/tools/apiClient.js
+│   │   ├── 📜 apiClient.js                        <!-- VERSION: 0.0.3 PATH: src/tools/apiClient.js
 │   │   │                                               PURPOSE: Wrapper HTTP do testowania API – wykonuje żądania z
 │   │   │                                                        obsługą timeout (AbortController) i automatycznym retry
 │   │   │                                                        z exponential backoff (3 próby). apiRequest() zwraca {
@@ -937,20 +968,20 @@ root/
 │   │   │                                               FUNCTIONS: apiFetch, apiGet, apiPost, apiRequest
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 markdownRenderer.js ❗               <!-- VERSION: 0.0.3 PATH: src/tools/markdownRenderer.js
+│   │   ├── 📜 markdownRenderer.js                 <!-- VERSION: 0.0.3 PATH: src/tools/markdownRenderer.js
 │   │   │                                               PURPOSE: Renderowanie markdown do HTML przy użyciu marked -
 │   │   │                                                        renderMarkdown(text) zwraca string HTML
 │   │   │                                               FUNCTIONS: renderMarkdown
 │   │   │                                               DEPENDS ON: marked, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 regexEngine.js ❗                    <!-- VERSION: 0.0.3 PATH: src/tools/regexEngine.js
+│   │   ├── 📜 regexEngine.js                      <!-- VERSION: 0.0.3 PATH: src/tools/regexEngine.js
 │   │   │                                               PURPOSE: Helper do testowania wyrażeń regularnych
 │   │   │                                                        testRegex(pattern, flags, text) zwraca tablicę
 │   │   │                                                        wszystkich dopasowań z podanego tekstu
 │   │   │                                               FUNCTIONS: testRegex
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   └── 📜 svgToPng.js ❗                       <!-- VERSION: 0.0.3 PATH: src/tools/svgToPng.js
+│   │   └── 📜 svgToPng.js                         <!-- VERSION: 0.0.3 PATH: src/tools/svgToPng.js
 │   │                                                   PURPOSE: Konwersja pliku SVG do PNG przy użyciu sharp
 │   │                                                            svgToPng(svgPath, outputPath, width, height) odczytuje
 │   │                                                            SVG z dysku, renderuje do PNG o podanych wymiarach i
@@ -960,7 +991,7 @@ root/
 │   │                                                   -->
 │   ├── 📁 ui/
 │   │   ├── 📁 appLibrary/
-│   │   │   └── ⚛️ AppLibraryBrowser.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/appLibrary/AppLibraryBrowser.jsx
+│   │   │   └── ⚛️ AppLibraryBrowser.jsx          <!-- VERSION: 0.0.3 PATH: src/ui/appLibrary/AppLibraryBrowser.jsx
 │   │   │                                               PURPOSE: Główny widok biblioteki aplikacji (App Library) –
 │   │   │                                                        przeglądanie skatalogowanych usług webowych,
 │   │   │                                                        wyszukiwanie i dodawanie do profili. Komunikacja przez
@@ -982,39 +1013,39 @@ root/
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, icons.js,
 │   │   │   │                                                       HelpSection, ToolCard, Shortcut, FAQ
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ HelpSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/help/HelpSection.jsx
+│   │   │   ├── ⚛️ HelpSection.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/help/HelpSection.jsx
 │   │   │   │                                           PURPOSE: Rozwijana sekcja pomocy (tytuł + treść)
 │   │   │   │                                           FUNCTIONS: HelpSection
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ Shortcut.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/help/Shortcut.jsx
+│   │   │   ├── ⚛️ Shortcut.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/help/Shortcut.jsx
 │   │   │   │                                           PURPOSE: Wiersz skrótu klawiaturowego
 │   │   │   │                                           FUNCTIONS: Shortcut
 │   │   │   │                                           DEPENDS ON: react, translations.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ ToolCard.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/help/ToolCard.jsx
+│   │   │   └── ⚛️ ToolCard.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/help/ToolCard.jsx
 │   │   │                                               PURPOSE: Karta opisu narzędzia (ikona, tytuł, opis)
 │   │   │                                               FUNCTIONS: ToolCard
 │   │   │                                               DEPENDS ON: react, translations.js
 │   │   │                                               -->
 │   │   ├── 📁 history/
-│   │   │   ├── ⚛️ HistoryExport.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryExport.jsx
+│   │   │   ├── ⚛️ HistoryExport.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryExport.jsx
 │   │   │   │                                           PURPOSE: Eksport historii do CSV
 │   │   │   │                                           FUNCTIONS: HistoryExport
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ HistoryFilters.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryFilters.jsx
+│   │   │   ├── ⚛️ HistoryFilters.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryFilters.jsx
 │   │   │   │                                           PURPOSE: Filtry historii (poziom, sortowanie, przycisk
 │   │   │   │                                                    czyszczenia)
 │   │   │   │                                           FUNCTIONS: HistoryFilters
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ HistoryList.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryList.jsx
+│   │   │   ├── ⚛️ HistoryList.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryList.jsx
 │   │   │   │                                           PURPOSE: Lista wpisów historii (tabela)
 │   │   │   │                                           FUNCTIONS: HistoryList
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ HistoryLog.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryLog.jsx
+│   │   │   └── ⚛️ HistoryLog.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryLog.jsx
 │   │   │                                               PURPOSE: Historia przeglądania – lista ostatnio odwiedzonych
 │   │   │                                                        profili, komunikacja przez hook IPC useHistoryLog.
 │   │   │                                               FUNCTIONS: HistoryLog
@@ -1023,7 +1054,7 @@ root/
 │   │   │                                                           HistoryFilters.jsx, HistoryList.jsx
 │   │   │                                               -->
 │   │   ├── 📁 layout/
-│   │   │   └── ⚛️ MainLayout.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/layout/MainLayout.jsx
+│   │   │   └── ⚛️ MainLayout.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/layout/MainLayout.jsx
 │   │   │                                               PURPOSE: Główny szkielet interfejsu użytkownika (Shell) –
 │   │   │                                                        definiuje siatkę aplikacji, koordynuje nawigację
 │   │   │                                                        boczną, obszar roboczy (ContentRenderer) oraz integruje
@@ -1034,7 +1065,7 @@ root/
 │   │   │                                                           ContentRenderer.jsx, ConfirmModal.jsx
 │   │   │                                               -->
 │   │   ├── 📁 modals/
-│   │   │   ├── ⚛️ CategoryModal.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/modals/CategoryModal.jsx
+│   │   │   ├── ⚛️ CategoryModal.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/modals/CategoryModal.jsx
 │   │   │   │                                           PURPOSE: Formularz modalny do zarządzania kategoriami profili –
 │   │   │   │                                                    umożliwia tworzenie nowych i edycję istniejących sekcji
 │   │   │   │                                                    grupujących w Sidebarze.
@@ -1042,19 +1073,19 @@ root/
 │   │   │   │                                           DEPENDS ON: loggerRenderer.js, react, translations.js, icons.js,
 │   │   │   │                                                       ModalPortal
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ConfirmModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/modals/ConfirmModal.jsx
+│   │   │   ├── ⚛️ ConfirmModal.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/modals/ConfirmModal.jsx
 │   │   │   │                                           PURPOSE: Generyczny komponent modalny służący do potwierdzania
 │   │   │   │                                                    akcji krytycznych (np. usuwanie). Zapewnia spójność
 │   │   │   │                                                    wizualną i zastępuje natywną funkcję window.confirm.
 │   │   │   │                                           FUNCTIONS: ConfirmModal
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ Modal.jsx ❗                    <!-- VERSION: 0.0.3 PATH: src/ui/modals/Modal.jsx
+│   │   │   ├── ⚛️ Modal.jsx                      <!-- VERSION: 0.0.3 PATH: src/ui/modals/Modal.jsx
 │   │   │   │                                           PURPOSE: Bazowy komponent modalny dla całej aplikacji
 │   │   │   │                                           FUNCTIONS: Modal
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ProfileModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/modals/ProfileModal.jsx
+│   │   │   ├── ⚛️ ProfileModal.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/modals/ProfileModal.jsx
 │   │   │   │                                           PURPOSE: Zaawansowany formularz modalny do konfiguracji profili
 │   │   │   │                                                    WebView – obsługuje parametry URL, ikony, przypisanie
 │   │   │   │                                                    do kategorii oraz przełączniki adblockera i
@@ -1064,20 +1095,20 @@ root/
 │   │   │   │                                                       urlUtils.js, ModalPortal, notificationsManager.js,
 │   │   │   │                                                       useTaskGroups.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ PromptModal.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/modals/PromptModal.jsx
+│   │   │   └── ⚛️ PromptModal.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/modals/PromptModal.jsx
 │   │   │                                               PURPOSE: Modal z polem input – zastępuje window.prompt()
 │   │   │                                               FUNCTIONS: PromptModal
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📁 notepad/
-│   │   │   ├── ⚛️ ClipboardHistoryModal.jsx ❗    <!-- VERSION: 0.0.3 PATH: src/ui/notepad/ClipboardHistoryModal.jsx
+│   │   │   ├── ⚛️ ClipboardHistoryModal.jsx      <!-- VERSION: 0.0.3 PATH: src/ui/notepad/ClipboardHistoryModal.jsx
 │   │   │   │                                           PURPOSE: Okno modalne prezentujące listę historycznych wpisów ze
 │   │   │   │                                                    schowka systemowego – umożliwia przeglądanie i
 │   │   │   │                                                    odzyskiwanie skopiowanych wcześniej fragmentów tekstu.
 │   │   │   │                                           FUNCTIONS: ClipboardHistoryModal
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ Notepad.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/notepad/Notepad.jsx
+│   │   │   ├── ⚛️ Notepad.jsx                    <!-- VERSION: 0.0.3 PATH: src/ui/notepad/Notepad.jsx
 │   │   │   │                                           PURPOSE: Główny komponent interfejsu notatnika – koordynuje
 │   │   │   │                                                    pracę zakładek, edytora oraz paneli wyszukiwania i
 │   │   │   │                                                    statusu, integrując logikę z hookami useNotepadUI i
@@ -1088,19 +1119,19 @@ root/
 │   │   │   │                                                       NotepadStatusBar, loggerRenderer.js, translations.js,
 │   │   │   │                                                       ConfirmModal
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ NotepadFindReplace.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadFindReplace.jsx
+│   │   │   ├── ⚛️ NotepadFindReplace.jsx         <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadFindReplace.jsx
 │   │   │   │                                           PURPOSE: Panel znajdź/zastąp w notatniku
 │   │   │   │                                           FUNCTIONS: NotepadFindReplace
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ NotepadStatusBar.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadStatusBar.jsx
+│   │   │   ├── ⚛️ NotepadStatusBar.jsx           <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadStatusBar.jsx
 │   │   │   │                                           PURPOSE: Pasek informacyjny u dołu notatnika – wyświetla
 │   │   │   │                                                    metadane aktywnego dokumentu: statystyki znaków/wierszy
 │   │   │   │                                                    oraz czas ostatniego autozapisu.
 │   │   │   │                                           FUNCTIONS: NotepadStatusBar
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ NotepadTabs.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadTabs.jsx
+│   │   │   ├── ⚛️ NotepadTabs.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadTabs.jsx
 │   │   │   │                                           PURPOSE: Komponent zarządzający paskiem kart notatnika –
 │   │   │   │                                                    obsługuje przełączanie dokumentów, ich zamykanie,
 │   │   │   │                                                    zmianę nazwy oraz wizualizację stanu 'dirty'.
@@ -1108,13 +1139,13 @@ root/
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js,
 │   │   │   │                                                       PromptModal.jsx
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ NotepadToolbar.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadToolbar.jsx
+│   │   │   └── ⚛️ NotepadToolbar.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadToolbar.jsx
 │   │   │                                               PURPOSE: Pasek narzędzi notatnika (zapisz, znajdź, word wrap)
 │   │   │                                               FUNCTIONS: NotepadToolbar
 │   │   │                                               DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📁 onboarding/
-│   │   │   ├── ⚛️ Onboarding.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/Onboarding.jsx
+│   │   │   ├── ⚛️ Onboarding.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/Onboarding.jsx
 │   │   │   │                                           PURPOSE: Główny wizard onboardingu – zarządza stanem, nawigacją
 │   │   │   │                                                    i logiką kroków. Importuje moduły kroków z tego samego
 │   │   │   │                                                    folderu.
@@ -1124,38 +1155,38 @@ root/
 │   │   │   │                                                       StepTheme.jsx, StepLanguage.jsx, StepPrivacy.jsx,
 │   │   │   │                                                       StepApps.jsx, StepAccount.jsx
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StepAccount.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepAccount.jsx
+│   │   │   ├── ⚛️ StepAccount.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepAccount.jsx
 │   │   │   │                                           PURPOSE: Krok onboardingu 5/5 – placeholder konta użytkownika
 │   │   │   │                                                    (sync coming soon)
 │   │   │   │                                           FUNCTIONS: StepAccount
 │   │   │   │                                           DEPENDS ON: react, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StepApps.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepApps.jsx
+│   │   │   ├── ⚛️ StepApps.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepApps.jsx
 │   │   │   │                                           PURPOSE: Krok onboardingu 4/5 – szybki start: wybór aplikacji z
 │   │   │   │                                                    App Library per kategoria
 │   │   │   │                                           FUNCTIONS: StepApps
 │   │   │   │                                           DEPENDS ON: react, icons.js, onboardingConfig.js,
 │   │   │   │                                                       app-library.json
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StepIndicator.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepIndicator.jsx
+│   │   │   ├── ⚛️ StepIndicator.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepIndicator.jsx
 │   │   │   │                                           PURPOSE: Wskaźnik postępu onboardingu – animowane dot-y u góry
 │   │   │   │                                                    wizarda
 │   │   │   │                                           FUNCTIONS: StepIndicator
 │   │   │   │                                           DEPENDS ON: react
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StepLanguage.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepLanguage.jsx
+│   │   │   ├── ⚛️ StepLanguage.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepLanguage.jsx
 │   │   │   │                                           PURPOSE: Krok onboardingu 2/5 – wybór języka interfejsu (pl/en)
 │   │   │   │                                                    z zastosowaniem live
 │   │   │   │                                           FUNCTIONS: StepLanguage
 │   │   │   │                                           DEPENDS ON: react, config.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StepPrivacy.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepPrivacy.jsx
+│   │   │   ├── ⚛️ StepPrivacy.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepPrivacy.jsx
 │   │   │   │                                           PURPOSE: Krok onboardingu 3/5 – disclaimer aplikacji + toggles
 │   │   │   │                                                    prywatności (toasty, logi, analityka)
 │   │   │   │                                           FUNCTIONS: StepPrivacy
 │   │   │   │                                           DEPENDS ON: react, onboardingConfig.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StepTheme.jsx ❗                <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepTheme.jsx
+│   │   │   ├── ⚛️ StepTheme.jsx                  <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepTheme.jsx
 │   │   │   │                                           PURPOSE: Krok onboardingu 1/5 – wybór motywu (dark/light/system)
 │   │   │   │                                                    z podglądem live
 │   │   │   │                                           FUNCTIONS: StepTheme
@@ -1168,7 +1199,7 @@ root/
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
 │   │   ├── 📁 profiles/
-│   │   │   └── ⚛️ Profiles.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/profiles/Profiles.jsx
+│   │   │   └── ⚛️ Profiles.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/profiles/Profiles.jsx
 │   │   │                                               PURPOSE: UI zarządzania profilami WebView — wyświetlanie listy
 │   │   │                                                        profili z danych IPC (load, wyświetlanie nazwy, URL,
 │   │   │                                                        obsługa błędów). Używa window.electronAPI.invoke
@@ -1177,12 +1208,12 @@ root/
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📁 projects/
-│   │   │   ├── ⚛️ ProjectList.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/projects/ProjectList.jsx
+│   │   │   ├── ⚛️ ProjectList.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/projects/ProjectList.jsx
 │   │   │   │                                           PURPOSE: Lista projektów z akcjami (zadania, terminal, usuwanie)
 │   │   │   │                                           FUNCTIONS: ProjectList
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ProjectManager.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/projects/ProjectManager.jsx
+│   │   │   ├── ⚛️ ProjectManager.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/projects/ProjectManager.jsx
 │   │   │   │                                           PURPOSE: Zarządzanie projektami – lista, dodawanie, usuwanie,
 │   │   │   │                                                    edycja przez hook IPC useProjects.
 │   │   │   │                                           FUNCTIONS: ProjectManager
@@ -1190,13 +1221,13 @@ root/
 │   │   │   │                                                       loggerRenderer.js, icons.js, ConfirmModal.jsx,
 │   │   │   │                                                       ProjectModal.jsx
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ ProjectModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/projects/ProjectModal.jsx
+│   │   │   └── ⚛️ ProjectModal.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/projects/ProjectModal.jsx
 │   │   │                                               PURPOSE: Modal dodawania nowego projektu (nazwa + ścieżka)
 │   │   │                                               FUNCTIONS: ProjectModal
 │   │   │                                               DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📁 settings/
-│   │   │   ├── ⚛️ AccountSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/AccountSection.jsx
+│   │   │   ├── ⚛️ AccountSection.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/settings/AccountSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja zarządzania profilem użytkownika – obecnie służy
 │   │   │   │                                                    jako placeholder dla nadchodzącej funkcji
 │   │   │   │                                                    synchronizacji danych w chmurze (Cloud Sync) planowanej
@@ -1204,21 +1235,21 @@ root/
 │   │   │   │                                           FUNCTIONS: AccountSection
 │   │   │   │                                           DEPENDS ON: react, translations.js, src, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ DataManagementSection.jsx ❗    <!-- VERSION: 0.0.3 PATH: src/ui/settings/DataManagementSection.jsx
+│   │   │   ├── ⚛️ DataManagementSection.jsx      <!-- VERSION: 0.0.3 PATH: src/ui/settings/DataManagementSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja zarządzania danymi aplikacji – eksport, import i
 │   │   │   │                                                    reset ustawień.
 │   │   │   │                                           FUNCTIONS: DataManagementSection
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js,
 │   │   │   │                                                       ConfirmModal
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ DebugModulesSection.jsx ❗      <!-- VERSION: 0.0.3 PATH: src/ui/settings/DebugModulesSection.jsx
+│   │   │   ├── ⚛️ DebugModulesSection.jsx        <!-- VERSION: 0.0.3 PATH: src/ui/settings/DebugModulesSection.jsx
 │   │   │   │                                           PURPOSE: UI do zarządzania filtrowaniem logów per-moduł.
 │   │   │   │                                                    Widoczna tylko w trybie debugMode.
 │   │   │   │                                           FUNCTIONS: DebugModulesSection
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
 │   │   │   │                                                       icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ GeneralSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/GeneralSection.jsx
+│   │   │   ├── ⚛️ GeneralSection.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/settings/GeneralSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja ustawień ogólnych aplikacji – zarządza wyborem
 │   │   │   │                                                    języka (i18n), motywem graficznym (Light/Dark) oraz
 │   │   │   │                                                    globalnym trybem debugowania (developer mode).
@@ -1226,19 +1257,19 @@ root/
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ HotkeyModal.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeyModal.jsx
+│   │   │   ├── ⚛️ HotkeyModal.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeyModal.jsx
 │   │   │   │                                           PURPOSE: Modal do dodawania i edycji skrótów klawiszowych –
 │   │   │   │                                                    formularz z walidacją.
 │   │   │   │                                           FUNCTIONS: HotkeyModal
 │   │   │   │                                           DEPENDS ON: react, translations.js, Modal
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ HotkeysList.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysList.jsx
+│   │   │   ├── ⚛️ HotkeysList.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysList.jsx
 │   │   │   │                                           PURPOSE: Komponent tabeli wyświetlającej listę skrótów
 │   │   │   │                                                    klawiszowych z akcjami edycji i usuwania.
 │   │   │   │                                           FUNCTIONS: HotkeysList
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ HotkeysManager.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManager.jsx
+│   │   │   ├── ⚛️ HotkeysManager.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManager.jsx
 │   │   │   │                                           PURPOSE: Kontener zarządzania skrótami klawiszowymi – ładuje
 │   │   │   │                                                    dane, orkiestruje logikę CRUD i renderuje
 │   │   │   │                                                    podkomponenty.
@@ -1247,14 +1278,14 @@ root/
 │   │   │   │                                                       HotkeysList, HotkeyModal, ConfirmModal,
 │   │   │   │                                                       notificationsManager.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ LogsSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/LogsSection.jsx
+│   │   │   ├── ⚛️ LogsSection.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/settings/LogsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja zarządzania logami — logi testów (LogWriter) i
 │   │   │   │                                                    dziennik zdarzeń aplikacji (EventLogger, ARCH_REQ-044).
 │   │   │   │                                           FUNCTIONS: LogsSection
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js,
 │   │   │   │                                                       Modal
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ NotificationsSection.jsx ❗     <!-- VERSION: 0.0.3 PATH: src/ui/settings/NotificationsSection.jsx
+│   │   │   ├── ⚛️ NotificationsSection.jsx       <!-- VERSION: 0.0.3 PATH: src/ui/settings/NotificationsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja powiadomień — toggles dla toastów UI
 │   │   │   │                                                    (UIUX_REQ-021), powiadomień systemowych OS
 │   │   │   │                                                    (UIUX_REQ-022) oraz Pushbullet.
@@ -1272,7 +1303,7 @@ root/
 │   │   │   │                                                       LogsSection, AccountSection, loggerRenderer.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TabsSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/TabsSection.jsx
+│   │   │   ├── ⚛️ TabsSection.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/settings/TabsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja konfiguracji zarządzania kartami – pozwala na
 │   │   │   │                                                    ustawienie czasu bezczynności, po którym nieaktywne
 │   │   │   │                                                    WebView są uśpiane w celu oszczędzania zasobów
@@ -1281,7 +1312,7 @@ root/
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ WebViewSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/WebViewSection.jsx
+│   │   │   └── ⚛️ WebViewSection.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/settings/WebViewSection.jsx
 │   │   │                                               PURPOSE: Konfiguracja silnika przeglądarki (WebView) – zarządza
 │   │   │                                                        globalnym blokowaniem reklam, maskowaniem tożsamości
 │   │   │                                                        przeglądarki (User Agent) oraz trybami wyświetlania
@@ -1291,12 +1322,12 @@ root/
 │   │   │                                                           icons
 │   │   │                                               -->
 │   │   ├── 📁 sidebar/
-│   │   │   ├── ⚛️ ContextMenu.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/ContextMenu.jsx
+│   │   │   ├── ⚛️ ContextMenu.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/ContextMenu.jsx
 │   │   │   │                                           PURPOSE: Menu kontekstowe (PPM) dla profilu
 │   │   │   │                                           FUNCTIONS: ContextMenu
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ Sidebar.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/Sidebar.jsx
+│   │   │   ├── ⚛️ Sidebar.jsx                    <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/Sidebar.jsx
 │   │   │   │                                           PURPOSE: Główny panel nawigacyjny aplikacji – orkiestrator,
 │   │   │   │                                                    deleguje logikę do hooków i podkomponentów.
 │   │   │   │                                           FUNCTIONS: Sidebar
@@ -1306,13 +1337,13 @@ root/
 │   │   │   │                                                       SidebarProfileList, SidebarTools, SidebarWorkspaces,
 │   │   │   │                                                       ProfileModal, CategoryModal, ConfirmModal
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SidebarCategory.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarCategory.jsx
+│   │   │   ├── ⚛️ SidebarCategory.jsx            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarCategory.jsx
 │   │   │   │                                           PURPOSE: Nagłówek kategorii profilów (zwijanie/rozwijanie, menu
 │   │   │   │                                                    kontekstowe)
 │   │   │   │                                           FUNCTIONS: SidebarCategory
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SidebarHeader.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarHeader.jsx
+│   │   │   ├── ⚛️ SidebarHeader.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarHeader.jsx
 │   │   │   │                                           PURPOSE: Główny komponent nagłówka paska bocznego (Sidebar) –
 │   │   │   │                                                    udostępnia przyciski akcji do tworzenia nowych profili
 │   │   │   │                                                    i kategorii oraz integruje komponent wyszukiwania
@@ -1321,20 +1352,20 @@ root/
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js,
 │   │   │   │                                                       SidebarSearch
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SidebarProfileItem.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileItem.jsx
+│   │   │   ├── ⚛️ SidebarProfileItem.jsx         <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileItem.jsx
 │   │   │   │                                           PURPOSE: Pojedynczy profil w Sidebarze (ikona, nazwa,
 │   │   │   │                                                    indykatory)
 │   │   │   │                                           FUNCTIONS: SidebarProfileItem
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SidebarProfileList.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileList.jsx
+│   │   │   ├── ⚛️ SidebarProfileList.jsx         <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileList.jsx
 │   │   │   │                                           PURPOSE: Lista profilów w sidebarze – favorites, kategorie,
 │   │   │   │                                                    profil bez kategorii, z obsługą menu kontekstowego.
 │   │   │   │                                           FUNCTIONS: SidebarProfileList
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js,
 │   │   │   │                                                       SidebarCategory, SidebarProfileItem, ContextMenu
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SidebarSearch.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarSearch.jsx
+│   │   │   ├── ⚛️ SidebarSearch.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarSearch.jsx
 │   │   │   │                                           PURPOSE: Komponent paska wyszukiwania zintegrowany z
 │   │   │   │                                                    SidebarHeader – filtrowanie profili i kategorii (tryb
 │   │   │   │                                                    lokalny) oraz globalne wyszukiwanie notatek, zadań i
@@ -1342,13 +1373,13 @@ root/
 │   │   │   │                                           FUNCTIONS: SidebarSearch
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SidebarTools.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarTools.jsx
+│   │   │   ├── ⚛️ SidebarTools.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarTools.jsx
 │   │   │   │                                           PURPOSE: Sekcja narzędzi specjalnych w Sidebarze
 │   │   │   │                                           FUNCTIONS: SidebarTools
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
 │   │   │   │                                                       icons.js, constants.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ SidebarWorkspaces.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarWorkspaces.jsx
+│   │   │   └── ⚛️ SidebarWorkspaces.jsx          <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarWorkspaces.jsx
 │   │   │                                               PURPOSE: Sekcja workspace'ów w Sidebarze
 │   │   │                                               FUNCTIONS: SidebarWorkspaces
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
@@ -1371,13 +1402,13 @@ root/
 │   │   │   │                                           FUNCTIONS: -
 │   │   │   │                                           DEPENDS ON: react
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ModalPortal.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/system/ModalPortal.jsx
+│   │   │   ├── ⚛️ ModalPortal.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/system/ModalPortal.jsx
 │   │   │   │                                           PURPOSE: Modal w portalu (document.body) — ponad natywnym
 │   │   │   │                                                    <webview> w Electronie.
 │   │   │   │                                           FUNCTIONS: ModalPortal
 │   │   │   │                                           DEPENDS ON: react, react-dom
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ OnboardingScreen.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/system/OnboardingScreen.jsx
+│   │   │   ├── ⚛️ OnboardingScreen.jsx           <!-- VERSION: 0.0.3 PATH: src/ui/system/OnboardingScreen.jsx
 │   │   │   │                                           PURPOSE: Re-export komponentu Onboarding z nowej lokalizacji dla
 │   │   │   │                                                    kompatybilności wstecznej
 │   │   │   │                                           FUNCTIONS: default as OnboardingScreen
@@ -1390,7 +1421,7 @@ root/
 │   │   │   │                                           FUNCTIONS: SplashScreen
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ToastContainer.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/system/ToastContainer.jsx
+│   │   │   ├── ⚛️ ToastContainer.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/system/ToastContainer.jsx
 │   │   │   │                                           PURPOSE: Globalny kontener toastów z kolejką FIFO i animowanym
 │   │   │   │                                                    stackiem. Subskrybuje się na CustomEvent 'mwm:toast' z
 │   │   │   │                                                    notificationsManager.js. Zarządza stanem przez
@@ -1399,7 +1430,7 @@ root/
 │   │   │   │                                           FUNCTIONS: ToastContainer
 │   │   │   │                                           DEPENDS ON: react, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ UpdateChecker.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/system/UpdateChecker.jsx
+│   │   │   └── ⚛️ UpdateChecker.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/system/UpdateChecker.jsx
 │   │   │                                               PURPOSE: Komponent sprawdzania aktualizacji. Używa globalnego
 │   │   │                                                        showToast (UIUX_REQ-021) zamiast lokalnego stanu
 │   │   │                                                        inline.
@@ -1408,12 +1439,12 @@ root/
 │   │   │                                                           notificationsManager.js
 │   │   │                                               -->
 │   │   ├── 📁 taskpanel/
-│   │   │   ├── ⚛️ CommentModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/CommentModal.jsx
+│   │   │   ├── ⚛️ CommentModal.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/CommentModal.jsx
 │   │   │   │                                           PURPOSE: Modal podglądu komentarza/kodu do zadania
 │   │   │   │                                           FUNCTIONS: CommentModal
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskDetails.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskDetails.jsx
+│   │   │   ├── ⚛️ TaskDetails.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskDetails.jsx
 │   │   │   │                                           PURPOSE: Widok szczegółowy pojedynczego zadania. Umożliwia
 │   │   │   │                                                    szybką edycję statusu i priorytetu bezpośrednio z
 │   │   │   │                                                    poziomu podglądu oraz synchronizację tych zmian przez
@@ -1422,7 +1453,7 @@ root/
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, constants.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskEditor.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskEditor.jsx
+│   │   │   ├── ⚛️ TaskEditor.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskEditor.jsx
 │   │   │   │                                           PURPOSE: Wyspecjalizowany edytor zadań (inline lub modal)
 │   │   │   │                                                    obsługujący walidację danych wejściowych, komunikację z
 │   │   │   │                                                    tasksStore przez IPC oraz integrację z systemem
@@ -1431,13 +1462,13 @@ root/
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, constants.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskEmptyState.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskEmptyState.jsx
+│   │   │   ├── ⚛️ TaskEmptyState.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskEmptyState.jsx
 │   │   │   │                                           PURPOSE: Komponent wyświetlający stan braku zadań w danej
 │   │   │   │                                                    sekcji.
 │   │   │   │                                           FUNCTIONS: TaskEmptyState
 │   │   │   │                                           DEPENDS ON: react, translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskItem.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskItem.jsx
+│   │   │   ├── ⚛️ TaskItem.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskItem.jsx
 │   │   │   │                                           PURPOSE: Pojedynczy element zadania w panelu. Wyświetla status,
 │   │   │   │                                                    priorytet, nazwę i przyciski akcji. Przyciski ruchu
 │   │   │   │                                                    między sekcjami są kontekstowe (zależą od section i
@@ -1445,7 +1476,7 @@ root/
 │   │   │   │                                           FUNCTIONS: TaskItem
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskList.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskList.jsx
+│   │   │   ├── ⚛️ TaskList.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskList.jsx
 │   │   │   │                                           PURPOSE: Główny komponent listy zadań (Kanban/List view) –
 │   │   │   │                                                    odpowiada za dynamiczne filtrowanie, grupowanie według
 │   │   │   │                                                    statusu (TODO, IN_PROGRESS, BLOCKED, DONE) oraz
@@ -1454,7 +1485,7 @@ root/
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, constants.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskModal.jsx ❗                <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskModal.jsx
+│   │   │   ├── ⚛️ TaskModal.jsx                  <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskModal.jsx
 │   │   │   │                                           PURPOSE: Modal dodawania i edycji zadania. Status wybierany
 │   │   │   │                                                    przez użytkownika – sekcja jest wyznaczana
 │   │   │   │                                                    automatycznie (status→section). Priorytety: A–E. Pola:
@@ -1462,7 +1493,7 @@ root/
 │   │   │   │                                           FUNCTIONS: TaskModal
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskPanel.jsx ❗                <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskPanel.jsx
+│   │   │   ├── ⚛️ TaskPanel.jsx                  <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskPanel.jsx
 │   │   │   │                                           PURPOSE: Główny komponent panelu zadań – zarządza zadaniami per
 │   │   │   │                                                    TaskGroup. Otwierany z kontekstu profilu WebView
 │   │   │   │                                                    (Sidebar). Obsługuje sekcje (active/backlog/done) i
@@ -1486,7 +1517,7 @@ root/
 │   │   │                                               DEPENDS ON: react, translations.js, TaskSection.jsx
 │   │   │                                               -->
 │   │   ├── 📁 tasks/
-│   │   │   ├── ⚛️ AggregatedProjectSection.jsx ❗ <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedProjectSection.jsx
+│   │   │   ├── ⚛️ AggregatedProjectSection.jsx   <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedProjectSection.jsx
 │   │   │   │                                           PURPOSE: Pojedyncza sekcja grupy zadań (TaskGroup) w widoku
 │   │   │   │                                                    zbiorczym. Wyświetla zadania per sekcja z pinem na
 │   │   │   │                                                    górze.
@@ -1494,14 +1525,14 @@ root/
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js,
 │   │   │   │                                                       AggregatedTaskItem.jsx
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ AggregatedTaskItem.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTaskItem.jsx
+│   │   │   ├── ⚛️ AggregatedTaskItem.jsx         <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTaskItem.jsx
 │   │   │   │                                           PURPOSE: Pojedynczy element zadania w widoku zbiorczym.
 │   │   │   │                                                    Wyświetla status (ikona), priorytet (kolor), nazwę,
 │   │   │   │                                                    flagę pinned, komentarz, wersję.
 │   │   │   │                                           FUNCTIONS: AggregatedTaskItem
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ AggregatedTasks.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTasks.jsx
+│   │   │   └── ⚛️ AggregatedTasks.jsx            <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTasks.jsx
 │   │   │                                               PURPOSE: Widok zbiorczy zadań ze wszystkich grup (TaskGroup).
 │   │   │                                                        Filtrowanie po statusie, priorytecie, sekcji.
 │   │   │                                                        Zwijanie/rozwijanie per grupa.
@@ -1519,77 +1550,77 @@ root/
 │   │   │                                                           translations.js, loggerRenderer, icons
 │   │   │                                               -->
 │   │   ├── 📁 tools/
-│   │   │   ├── ⚛️ ClipboardHistory.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/tools/ClipboardHistory.jsx
+│   │   │   ├── ⚛️ ClipboardHistory.jsx           <!-- VERSION: 0.0.3 PATH: src/ui/tools/ClipboardHistory.jsx
 │   │   │   │                                           PURPOSE: Historia schowka z pinowaniem i wyszukiwarką
 │   │   │   │                                           FUNCTIONS: ClipboardHistory
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ CookieGrabber.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/tools/CookieGrabber.jsx
+│   │   │   ├── ⚛️ CookieGrabber.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/tools/CookieGrabber.jsx
 │   │   │   │                                           PURPOSE: Pobieranie cookies z aktywnego WebView – tabela,
 │   │   │   │                                                    kopiowanie, eksport
 │   │   │   │                                           FUNCTIONS: CookieGrabber
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ FilePreviewer.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/tools/FilePreviewer.jsx
+│   │   │   ├── ⚛️ FilePreviewer.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/tools/FilePreviewer.jsx
 │   │   │   │                                           PURPOSE: Podgląd plików (RAW/PREVIEW) – TXT, JSON, HTML, SVG,
 │   │   │   │                                                    Markdown, obrazy
 │   │   │   │                                           FUNCTIONS: FilePreviewer
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons, markdownRenderer
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ImageTools.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/tools/ImageTools.jsx
+│   │   │   ├── ⚛️ ImageTools.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/tools/ImageTools.jsx
 │   │   │   │                                           PURPOSE: Kompresja, resize i konwersja obrazów (drag & drop,
 │   │   │   │                                                    preview)
 │   │   │   │                                           FUNCTIONS: ImageTools
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons, imageUtils
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ JsonFormatter.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/tools/JsonFormatter.jsx
+│   │   │   ├── ⚛️ JsonFormatter.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/tools/JsonFormatter.jsx
 │   │   │   │                                           PURPOSE: Formatowanie i walidacja JSON/YAML/XML
 │   │   │   │                                           FUNCTIONS: JsonFormatter
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ MarkdownPreviewer.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/tools/MarkdownPreviewer.jsx
+│   │   │   ├── ⚛️ MarkdownPreviewer.jsx          <!-- VERSION: 0.0.3 PATH: src/ui/tools/MarkdownPreviewer.jsx
 │   │   │   │                                           PURPOSE: Podgląd Markdown na żywo (split view)
 │   │   │   │                                           FUNCTIONS: MarkdownPreviewer
 │   │   │   │                                           DEPENDS ON: react, config.js, loggerRenderer.js, translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ MiniPostman.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/tools/MiniPostman.jsx
+│   │   │   ├── ⚛️ MiniPostman.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/tools/MiniPostman.jsx
 │   │   │   │                                           PURPOSE: Lekki API tester (GET/POST/PUT/DELETE, nagłówki, body,
 │   │   │   │                                                    odpowiedź)
 │   │   │   │                                           FUNCTIONS: MiniPostman
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons, apiClient
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ RegexTester.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/tools/RegexTester.jsx
+│   │   │   ├── ⚛️ RegexTester.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/tools/RegexTester.jsx
 │   │   │   │                                           PURPOSE: Testowanie wyrażeń regularnych
 │   │   │   │                                           FUNCTIONS: RegexTester
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       regexEngine
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ RemoveBgTool.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/tools/RemoveBgTool.jsx
+│   │   │   ├── ⚛️ RemoveBgTool.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/tools/RemoveBgTool.jsx
 │   │   │   │                                           PURPOSE: Narzędzie do masowego usuwania tła ze zdjęć przez API
 │   │   │   │                                                    remove.bg.
 │   │   │   │                                           FUNCTIONS: RemoveBgTool
 │   │   │   │                                           DEPENDS ON: react, axios, icons, translations.js, loggerRenderer,
 │   │   │   │                                                       config, notificationsManager.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StringCombiner.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/tools/StringCombiner.jsx
+│   │   │   ├── ⚛️ StringCombiner.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/tools/StringCombiner.jsx
 │   │   │   │                                           PURPOSE: Generator kombinacji stringów. Podajesz tekst bazowy,
 │   │   │   │                                                    znak podziału
 │   │   │   │                                           FUNCTIONS: StringCombiner
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, icons, translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SvgToPngConverter.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/tools/SvgToPngConverter.jsx
+│   │   │   ├── ⚛️ SvgToPngConverter.jsx          <!-- VERSION: 0.0.3 PATH: src/ui/tools/SvgToPngConverter.jsx
 │   │   │   │                                           PURPOSE: Konwersja SVG → PNG z wyborem rozdzielczości (drag &
 │   │   │   │                                                    drop, preview)
 │   │   │   │                                           FUNCTIONS: SvgToPngConverter
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons, svgToPng
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ ToolsPanel.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/tools/ToolsPanel.jsx
+│   │   │   └── ⚛️ ToolsPanel.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/tools/ToolsPanel.jsx
 │   │   │                                               PURPOSE: Główny panel narzędziowy aplikacji (Tools Panel) –
 │   │   │                                                        dostarcza interfejs oparty na zakładkach do obsługi
 │   │   │                                                        narzędzi pomocniczych (JSON Formatter, Regex Tester,
@@ -1604,7 +1635,7 @@ root/
 │   │   │                                                           loggerRenderer, Spinner
 │   │   │                                               -->
 │   │   ├── 📁 views/
-│   │   │   ├── ⚛️ ContentRenderer.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/views/ContentRenderer.jsx
+│   │   │   ├── ⚛️ ContentRenderer.jsx            <!-- VERSION: 0.0.3 PATH: src/ui/views/ContentRenderer.jsx
 │   │   │   │                                           PURPOSE: Router widoków — deleguje do WebViewContainer,
 │   │   │   │                                                    ToolsContainer lub SettingsContainer
 │   │   │   │                                           FUNCTIONS: ContentRenderer
@@ -1612,20 +1643,24 @@ root/
 │   │   │   │                                                       WebViewContainer.jsx, ToolsContainer.jsx,
 │   │   │   │                                                       SettingsContainer.jsx
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SettingsContainer.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/views/SettingsContainer.jsx
-│   │   │   │                                           PURPOSE: Kontener renderowania ustawień, pomocy, historii i
-│   │   │   │                                                    zadań zagregowanych
+│   │   │   ├── ⚛️ SettingsContainer.jsx          <!-- VERSION: 0.0.3 PATH: src/ui/views/SettingsContainer.jsx
+│   │   │   │                                           PURPOSE: Kontener renderowania widoków
+│   │   │   │                                                    ustawień/pomocy/historii/zadań. Używa SETTINGS_REGISTRY
+│   │   │   │                                                    zamiast switch-case — nowy widok = wpis w
+│   │   │   │                                                    src/config/settingsRegistry.js, bez modyfikacji
+│   │   │   │                                                    kontenera.
 │   │   │   │                                           FUNCTIONS: SettingsContainer
-│   │   │   │                                           DEPENDS ON: react, config.js, loggerRenderer.js, Spinner.jsx
+│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js,
+│   │   │   │                                                       Spinner.jsx, settingsRegistry.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ Spinner.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/views/Spinner.jsx
+│   │   │   ├── ⚛️ Spinner.jsx                    <!-- VERSION: 0.0.3 PATH: src/ui/views/Spinner.jsx
 │   │   │   │                                           PURPOSE: Współdzielony komponent wizualny wskaźnika ładowania
 │   │   │   │                                                    (loader). Wykorzystywany jako fallback dla React
 │   │   │   │                                                    Suspense oraz podczas asynchronicznych operacji I/O.
 │   │   │   │                                           FUNCTIONS: Spinner
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ToolsContainer.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/views/ToolsContainer.jsx
+│   │   │   ├── ⚛️ ToolsContainer.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/views/ToolsContainer.jsx
 │   │   │   │                                           PURPOSE: Kontener renderowania narzędzi specjalnych. Używa
 │   │   │   │                                                    TOOLS_REGISTRY zamiast switch-case – nowe narzędzie =
 │   │   │   │                                                    wpis w src/config/toolsRegistry.js, bez modyfikacji
@@ -1634,13 +1669,13 @@ root/
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js,
 │   │   │   │                                                       Spinner.jsx, toolsRegistry.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ WebViewContainer.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/views/WebViewContainer.jsx
+│   │   │   └── ⚛️ WebViewContainer.jsx           <!-- VERSION: 0.0.3 PATH: src/ui/views/WebViewContainer.jsx
 │   │   │                                               PURPOSE: Kontener renderowania WebView dla aktywnego profilu
 │   │   │                                               FUNCTIONS: WebViewContainer
 │   │   │                                               DEPENDS ON: react, Spinner.jsx, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📁 webview/
-│   │   │   ├── ⚛️ WebViewTab.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewTab.jsx
+│   │   │   ├── ⚛️ WebViewTab.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewTab.jsx
 │   │   │   │                                           PURPOSE: Zakładka WebView – lifecycle, nawigacja, zoom,
 │   │   │   │                                                    recovery, logowanie błędów
 │   │   │   │                                           FUNCTIONS: WebViewTab
@@ -1648,7 +1683,7 @@ root/
 │   │   │   │                                                       WebViewToolbar.jsx, useWebViewEvents.js,
 │   │   │   │                                                       useWebViewActions.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ WebViewToolbar.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewToolbar.jsx
+│   │   │   └── ⚛️ WebViewToolbar.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewToolbar.jsx
 │   │   │                                               PURPOSE: Pasek narzędzi WebView – przyciski i akcje (Back,
 │   │   │                                                        Forward, Reload, Zoom, itp.)
 │   │   │                                               FUNCTIONS: WebViewToolbar
@@ -1735,14 +1770,14 @@ root/
 │   │   │                                               FUNCTIONS: pingUrl
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 notepadStorage.js ❗                 <!-- VERSION: 0.0.3 PATH: src/utils/notepadStorage.js
+│   │   ├── 📜 notepadStorage.js                   <!-- VERSION: 0.0.3 PATH: src/utils/notepadStorage.js
 │   │   │                                               PURPOSE: Pomocnicze funkcje zapisu i odczytu notatek oraz
 │   │   │                                                        fabryka zakładek
 │   │   │                                               FUNCTIONS: createNewTab, loadnotepadFromStorage,
 │   │   │                                                          savenotepadToStorage
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 notificationsManager.js ❗           <!-- VERSION: 0.0.3 PATH: src/utils/notificationsManager.js
+│   │   ├── 📜 notificationsManager.js             <!-- VERSION: 0.0.3 PATH: src/utils/notificationsManager.js
 │   │   │                                               PURPOSE: Fasada globalnego systemu powiadomień — dispatchuje
 │   │   │                                                        toasty UI przez CustomEvent do ToastContainer oraz
 │   │   │                                                        wywołuje systemowe powiadomienia OS przez IPC. Nie
@@ -1750,7 +1785,7 @@ root/
 │   │   │                                               FUNCTIONS: showToast, showSystemNotification
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 persistence.js ❗                    <!-- VERSION: 0.0.3 PATH: src/utils/persistence.js
+│   │   ├── 📜 persistence.js                      <!-- VERSION: 0.0.3 PATH: src/utils/persistence.js
 │   │   │                                               PURPOSE: Wspólne operacje I/O dla plików JSON – odczyt, zapis i
 │   │   │                                                        zarządzanie ścieżkami w katalogu userData Electrona.
 │   │   │                                               FUNCTIONS: getUserDataPath, readJsonFile, writeJsonFile
@@ -1764,7 +1799,7 @@ root/
 │   │   │                                               FUNCTIONS: buildSearchIndex, searchAll
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 sharpLoader.js ❗                    <!-- VERSION: 0.0.3 PATH: src/utils/sharpLoader.js
+│   │   ├── 📜 sharpLoader.js                      <!-- VERSION: 0.0.3 PATH: src/utils/sharpLoader.js
 │   │   │                                               PURPOSE: Leniwe ładowanie modułu sharp (przetwarzanie obrazów) z
 │   │   │                                                        obsługą braku zależności. Używane przez
 │   │   │                                                        ipcMainHandlers_imageSharp.js w main process.
@@ -1799,7 +1834,7 @@ root/
 │   │   │                                                          validatePassword, validatePhone
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   └── 📜 yamlLoader.js ❗                     <!-- VERSION: 0.0.3 PATH: src/utils/yamlLoader.js
+│   │   └── 📜 yamlLoader.js                       <!-- VERSION: 0.0.3 PATH: src/utils/yamlLoader.js
 │   │                                                   PURPOSE: Leniwe ładowanie modułu js-yaml
 │   │                                                            (parsowanie/serializacja YAML) z obsługą braku
 │   │                                                            zależności. Używane przez ipcMainHandlers_jsonYaml.js w
@@ -1807,7 +1842,7 @@ root/
 │   │                                                   FUNCTIONS: loadYaml
 │   │                                                   DEPENDS ON: komponenty z folderu yaml/
 │   │                                                   -->
-│   ├── ⚛️ App.jsx ❗                              <!-- VERSION: 0.0.3 PATH: src/App.jsx
+│   ├── ⚛️ App.jsx                                <!-- VERSION: 0.0.3 PATH: src/App.jsx
 │   │                                                   PURPOSE: Główny komponent root aplikacji React – zarządza
 │   │                                                            przełączaniem widoków (Splash/Onboarding/Layout).
 │   │                                                   FUNCTIONS: App
@@ -1844,7 +1879,8 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Assets.js                    <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Assets.js
-│   │                                                   PURPOSE: Testy spójności plików w folderze assets/
+│   │                                                   PURPOSE: Testy spójności plików w folderze assets/ — obecność,
+│   │                                                            rozszerzenia, rozmiar.
 │   │                                                   FUNCTIONS: runAssetsTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
@@ -1855,8 +1891,9 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_CSS.js                       <!-- VERSION: 0.0.3 PATH: tests/TestRunner_CSS.js
-│   │                                                   PURPOSE: Testy spójności plików CSS (importy, kolejność,
-│   │                                                            istniejące pliki)
+│   │                                                   PURPOSE: Testy spójności plików CSS — src/ui/index.css importuje
+│   │                                                            layout.css + styles/theme.css + styles/components.css,
+│   │                                                            brak kołowych zależności.
 │   │                                                   FUNCTIONS: runCssTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
@@ -1867,12 +1904,15 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Config.js                    <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Config.js
-│   │                                                   PURPOSE: Testy pliku konfiguracyjnego config.js
+│   │                                                   PURPOSE: Testy modułów konfiguracyjnych z src/config/* —
+│   │                                                            features, limits, settings, app, paths, endpoints oraz
+│   │                                                            re-eksportu przez src/config.js.
 │   │                                                   FUNCTIONS: runConfigTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Doc.js                       <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Doc.js
-│   │                                                   PURPOSE: Testy spójności dokumentacji w folderze doc/
+│   │                                                   PURPOSE: Testy spójności dokumentacji w folderze doc/ — obecność
+│   │                                                            plików, nagłówki MD, README.
 │   │                                                   FUNCTIONS: runDocTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
@@ -1890,15 +1930,19 @@ root/
 │   │                                                   FUNCTIONS: runEventLoggerTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_History.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_History.js
-│   │                                                   PURPOSE: Testy integralności logów aktywności użytkownika.
-│   │                                                            Sprawdza walidację poziomów logowania, mechanizmy
-│   │                                                            filtrowania zdarzeń oraz poprawność przycinania
-│   │                                                            historii do zdefiniowanych limitów (FIFO).
-│   │                                                   FUNCTIONS: runHistoryTests
-│   │                                                   DEPENDS ON: testUtils.js
+│   ├── 📜 TestRunner_Features.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Features.js
+│   │                                                   PURPOSE: Testy modułu feature flags (src/config/features.js) —
+│   │                                                            isFeatureEnabled, isToolEnabled, spójność FEATURES.
+│   │                                                   FUNCTIONS: runFeaturesTests
+│   │                                                   DEPENDS ON: testUtils.js, path
 │   │                                                   -->
-│   ├── 📜 TestRunner_Hooks.js ❗                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Hooks.js
+│   ├── 📜 TestRunner_History.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_History.js
+│   │                                                   PURPOSE: Testy historii aktywności — historyStore CRUD,
+│   │                                                            walidacja struktury wpisów, filtrowanie, limit FIFO.
+│   │                                                   FUNCTIONS: runHistoryTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
+│   ├── 📜 TestRunner_Hooks.js                     <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Hooks.js
 │   │                                                   PURPOSE: Testy hooków React – weryfikacja eksportów, obsługi
 │   │                                                            błędów i struktury zwracanych danych przez mock
 │   │                                                            electronAPI.
@@ -1918,6 +1962,26 @@ root/
 │   │                                                   FUNCTIONS: runIconsTests
 │   │                                                   DEPENDS ON: testUtils.js, icons.js
 │   │                                                   -->
+│   ├── 📜 TestRunner_IpcChannels.js               <!-- VERSION: 0.0.3 PATH: tests/TestRunner_IpcChannels.js
+│   │                                                   PURPOSE: Testy rejestru kanałów IPC
+│   │                                                            (src/constants/ipcChannels.js) — kompletność grup, brak
+│   │                                                            duplikatów wartości, format string 'group:action'.
+│   │                                                   FUNCTIONS: runIpcChannelsTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
+│   ├── 📜 TestRunner_Limits.js                    <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Limits.js
+│   │                                                   PURPOSE: Testy modułu limitów aplikacji (src/config/limits.js) —
+│   │                                                            LIMITS, getLimit.
+│   │                                                   FUNCTIONS: runLimitsTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
+│   ├── 📜 TestRunner_Loaders.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Loaders.js
+│   │                                                   PURPOSE: Testy loaderów dynamicznych — ipcLoader
+│   │                                                            (loadAllIpcHandlers) i testsLoader (loadAndRunAllTests)
+│   │                                                            — eksporty, kształt odpowiedzi, wykrywanie plików.
+│   │                                                   FUNCTIONS: runLoadersTests
+│   │                                                   DEPENDS ON: testUtils.js, path, fs
+│   │                                                   -->
 │   ├── 📜 TestRunner_Locales.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Locales.js
 │   │                                                   PURPOSE: Testy integralności plików locales (dynamicznie z
 │   │                                                            LANGUAGES z config.js)
@@ -1931,18 +1995,17 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js, logWriter.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_MainEngine.js                <!-- VERSION: 0.0.3 PATH: tests/TestRunner_MainEngine.js
-│   │                                                   PURPOSE: Testy modułów wyciągniętych z main.js (webviewRegistry,
-│   │                                                            adBlocker, hotkeysManager)
+│   │                                                   PURPOSE: Testy modułów silnika głównego: webviewRegistry,
+│   │                                                            resourceMonitor, webviewScriptInjector, hotkeysManager.
 │   │                                                   FUNCTIONS: runMainEngineTests
-│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   DEPENDS ON: testUtils.js, path
 │   │                                                   -->
 │   ├── 📜 TestRunner_Notepad.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Notepad.js
-│   │                                                   PURPOSE: Zestaw testów dla modułu notatnika. Weryfikuje
-│   │                                                            integralność danych kart, poprawność mechanizmu
-│   │                                                            autozapisu (dirty checking) oraz logikę przełączania
-│   │                                                            kontekstu między dokumentami.
+│   │                                                   PURPOSE: Testy modułu notatnika — notepadStorage (createNewTab,
+│   │                                                            load/save), notepadStore (CRUD), dirty-checking i
+│   │                                                            logika zakładek.
 │   │                                                   FUNCTIONS: runNotepadTests
-│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   DEPENDS ON: testUtils.js, path
 │   │                                                   -->
 │   ├── 📜 TestRunner_Notifications.js             <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Notifications.js
 │   │                                                   PURPOSE: Testy jednostkowe globalnego systemu toastów —
@@ -1957,33 +2020,42 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js, react-dom
 │   │                                                   -->
 │   ├── 📜 TestRunner_Profiles.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Profiles.js
-│   │                                                   PURPOSE: Zestaw testów jednostkowych i integracyjnych dla
-│   │                                                            zarządzania profilami WebView. Weryfikuje strukturę
-│   │                                                            danych, poprawność kategorii oraz mechanizmy sortowania
-│   │                                                            chronologicznego.
+│   │                                                   PURPOSE: Testy zarządzania profilami WebView — struktura danych,
+│   │                                                            profilesStore CRUD, sortowanie, kategorie,
+│   │                                                            defaultProfiles.json.
 │   │                                                   FUNCTIONS: runProfilesTests
-│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   DEPENDS ON: testUtils.js, path, fs
 │   │                                                   -->
 │   ├── 📜 TestRunner_Projects.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Projects.js
-│   │                                                   PURPOSE: Zestaw testów dla modułu projektów. Weryfikuje
-│   │                                                            mechanizmy archiwizacji, strukturę obiektów
-│   │                                                            projektowych oraz poprawność agregacji liczby zadań
-│   │                                                            przypisanych do konkretnych projektów.
+│   │                                                   PURPOSE: Testy modułu projektów — struktura, projectsStore CRUD,
+│   │                                                            archiwizacja, agregacja zadań.
 │   │                                                   FUNCTIONS: runProjectsTests
-│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   DEPENDS ON: testUtils.js, path
 │   │                                                   -->
 │   ├── 📜 TestRunner_Reexport.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Reexport.js
 │   │                                                   PURPOSE: Testy poprawności re-eksportów (config.js, icons.js)
 │   │                                                   FUNCTIONS: runReexportTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
+│   ├── 📜 TestRunner_Registries.js                <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Registries.js
+│   │                                                   PURPOSE: Testy rejestrów komponentów (settingsRegistry,
+│   │                                                            toolsRegistry) — eksporty, kompletność wpisów, flagi
+│   │                                                            featureFlag, getSettingsComponent/getToolComponent.
+│   │                                                   FUNCTIONS: runRegistriesTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
+│   ├── 📜 TestRunner_SearchIndex.js               <!-- VERSION: 0.0.3 PATH: tests/TestRunner_SearchIndex.js
+│   │                                                   PURPOSE: Testy modułu globalnego wyszukiwania
+│   │                                                            (src/utils/searchIndex.js) — buildSearchIndex,
+│   │                                                            searchAll, filtrowanie i edge cases.
+│   │                                                   FUNCTIONS: runSearchIndexTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
 │   ├── 📜 TestRunner_Settings.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Settings.js
-│   │                                                   PURPOSE: Zestaw testów dla silnika ustawień. Weryfikuje
-│   │                                                            bezpieczeństwo głębokiego łączenia (merge)
-│   │                                                            konfiguracji, stabilność przełączania motywów oraz
-│   │                                                            poprawność schematu danych przy imporcie/eksporcie.
+│   │                                                   PURPOSE: Testy silnika ustawień — merge logika,
+│   │                                                            getDefaultSetting, DEBUG_MODULES, settingsStore CRUD.
 │   │                                                   FUNCTIONS: runSettingsTests
-│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   DEPENDS ON: testUtils.js, path
 │   │                                                   -->
 │   ├── 📜 TestRunner_SleepTabs.js                 <!-- VERSION: 0.0.3 PATH: tests/TestRunner_SleepTabs.js
 │   │                                                   PURPOSE: Testy jednostkowe dla Sleep Tabs – sleepTabsManager
@@ -2004,14 +2076,23 @@ root/
 │   │                                                   FUNCTIONS: runStoreTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_Tasks.js ❗                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Tasks.js
+│   ├── 📜 TestRunner_Stores.js                    <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Stores.js
+│   │                                                   PURPOSE: Testy wszystkich stores (main process) — eksporty CRUD,
+│   │                                                            logika domenowa: workspacesStore, accountsStore,
+│   │                                                            clipboardStore, taskGroupsStore, appLibraryStore,
+│   │                                                            tasksStore (VALID_STATUSES, STATUS_TO_SECTION,
+│   │                                                            resolveSection, normalizeTask).
+│   │                                                   FUNCTIONS: runStoresTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
+│   ├── 📜 TestRunner_Tasks.js                     <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Tasks.js
 │   │                                                   PURPOSE: Testy logiki domenowej systemu zadań: model danych,
 │   │                                                            reguły section↔status, normalizeTask, tasksStore CRUD.
 │   │                                                            Testy izolowane – nie wymagają Electron ani IPC.
 │   │                                                   FUNCTIONS: runTasksTests
 │   │                                                   DEPENDS ON: testUtils.js, tasksStore.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_TasksPanel.js ❗              <!-- VERSION: 0.0.3 PATH: tests/TestRunner_TasksPanel.js
+│   ├── 📜 TestRunner_TasksPanel.js                <!-- VERSION: 0.0.3 PATH: tests/TestRunner_TasksPanel.js
 │   │                                                   PURPOSE: Testy integracyjne komponentów UI TaskPanel
 │   │                                                            (src/ui/taskpanel) i AggregatedTasks (src/ui/tasks).
 │   │                                                            Weryfikuje eksporty komponentów, stałe, IPC API dla
@@ -2031,6 +2112,20 @@ root/
 │   │                                                   FUNCTIONS: runToolsTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
+│   ├── 📜 TestRunner_Update.js                    <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Update.js
+│   │                                                   PURPOSE: Testy serwisu aktualizacji
+│   │                                                            (src/engine/updateService.js) — checkForUpdates stub +
+│   │                                                            kształt odpowiedzi.
+│   │                                                   FUNCTIONS: runUpdateTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
+│   ├── 📜 TestRunner_UrlUtils.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_UrlUtils.js
+│   │                                                   PURPOSE: Testy modułu urlUtils (normalizeWebUrl, isValidWebUrl,
+│   │                                                            isSafeUrl) — walidacja URL, blokowanie niebezpiecznych
+│   │                                                            schematów, edge cases.
+│   │                                                   FUNCTIONS: runUrlUtilsTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
 │   ├── 📜 TestRunner_UseAsync.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_UseAsync.js
 │   │                                                   PURPOSE: Testy hooka useAsync i useAsyncMutation – poprawność
 │   │                                                            stanów loading/error/data, obsługa błędów IPC,
@@ -2044,6 +2139,14 @@ root/
 │   │                                                            networkUtils, fileUtils.
 │   │                                                   FUNCTIONS: runUtilsTests
 │   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   -->
+│   ├── 📜 TestRunner_Validators.js                <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Validators.js
+│   │                                                   PURPOSE: Testy modułu validators — ensureString, ensureObject,
+│   │                                                            validateUrl, validateEmail, validateLength,
+│   │                                                            validateNoSpecialChars, validatePassword,
+│   │                                                            validatePhone.
+│   │                                                   FUNCTIONS: runValidatorsTests
+│   │                                                   DEPENDS ON: testUtils.js, path
 │   │                                                   -->
 │   ├── 📜 TestRunner_WebView.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_WebView.js
 │   │                                                   PURPOSE: Testy jednostkowe dla WebView (Single App, Screenshot,
@@ -2062,7 +2165,7 @@ root/
 │                                                       FUNCTIONS: -
 │                                                       DEPENDS ON: config.js
 │                                                       -->
-├── 📜 main.js ❗                                   <!-- VERSION: 0.0.3 PATH: main.js
+├── 📜 main.js                                     <!-- VERSION: 0.0.3 PATH: main.js
 │                                                       PURPOSE: Główna logika procesu głównego Electron – koordynacja,
 │                                                                okno, bezpieczeństwo
 │                                                       FUNCTIONS: createWindow, runStartupTestsIfEnabled,
@@ -2077,7 +2180,7 @@ root/
 │                                                       FUNCTIONS: -
 │                                                       DEPENDS ON: -
 │                                                       -->
-├── 📜 preload.cjs ❗                               <!-- VERSION: 0.0.3 PATH: preload.cjs
+├── 📜 preload.cjs                                 <!-- VERSION: 0.0.3 PATH: preload.cjs
 │                                                       PURPOSE: Bridge IPC – eksponuje bezpieczne API dla renderera
 │                                                                (contextBridge). Definiuje metody komunikacji i
 │                                                                handlery zdarzeń z mechanizmem cleanup.
@@ -2123,9 +2226,10 @@ root/
 │                                                       DEPENDS ON: -
 │                                                       -->
 ├── 📁 doc/
-│   ├── 📄 AI_Development_Standards.md ❗           <!-- VERSION: 0.0.3 PATH: doc/AI_Development_Standards.md
-│   │                                                   PURPOSE: Standardy tworzenia i modyfikacji kodu dla AI –
-│   │                                                            kompaktowy przewodnik
+│   ├── 📄 AI_Development_Standards.md             <!-- VERSION: 0.0.3 PATH: doc/AI_Development_Standards.md
+│   │                                                   PURPOSE: Dokumentacja specyfikacji projektowej - Standardy
+│   │                                                            tworzenia i modyfikacji kodu dla AI – kompaktowy
+│   │                                                            przewodnik
 │   │                                                   FUNCTIONS: Dokumentacja: 12 sekcji głównych
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
@@ -2153,7 +2257,7 @@ root/
 │   │                                                   FUNCTIONS: Dokumentacja: 15 sekcji głównych
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
-│   ├── 📄 ModulesOverview.md ❗                    <!-- VERSION: 0.0.3 PATH: doc/ModulesOverview.md
+│   ├── 📄 ModulesOverview.md                      <!-- VERSION: 0.0.3 PATH: doc/ModulesOverview.md
 │   │                                                   PURPOSE: Dokumentacja specyfikacji projektowej - Ujednolicona
 │   │                                                            lista modułów + opis przeznaczenia dla AI i devów
 │   │                                                   FUNCTIONS: Dokumentacja: 78 sekcji głównych
@@ -2179,10 +2283,11 @@ root/
 │   │                                                   FUNCTIONS: -
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
-│   ├── 📄 Structure_light.md ❗                    <!-- VERSION: 0.0.3 PATH: doc/Structure_light.md
-│   │                                                   PURPOSE: Uproszczona struktura projektu - same ścieżki i typy
-│   │                                                            plików, bez metadanych.           Do użycia przez AI
-│   │                                                            bez dostępu do repo (oszczędność tokenów).
+│   ├── 📄 Structure_light.md                      <!-- VERSION: 0.0.3 PATH: doc/Structure_light.md
+│   │                                                   PURPOSE: Dokumentacja specyfikacji projektowej - Uproszczona
+│   │                                                            struktura projektu - same ścieżki i typy plików, bez
+│   │                                                            metadanych.           Do użycia przez AI bez dostępu do
+│   │                                                            repo (oszczędność tokenów).
 │   │                                                   FUNCTIONS: -
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
@@ -2216,14 +2321,14 @@ root/
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
-│   │   ├── 📜 features.js ❗                       <!-- VERSION: 0.0.3 PATH: src/config/features.js
+│   │   ├── 📜 features.js                         <!-- VERSION: 0.0.3 PATH: src/config/features.js
 │   │   │                                               PURPOSE: Feature flags – włączanie/wyłączanie modułów aplikacji
 │   │   │                                                        (FEATURES) oraz helpery isFeatureEnabled,
 │   │   │                                                        isToolEnabled.
 │   │   │                                               FUNCTIONS: isFeatureEnabled, isToolEnabled
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
-│   │   ├── 📜 limits.js ❗                         <!-- VERSION: 0.0.3 PATH: src/config/limits.js
+│   │   ├── 📜 limits.js                           <!-- VERSION: 0.0.3 PATH: src/config/limits.js
 │   │   │                                               PURPOSE: Limity aplikacji – maksymalne liczby elementów w
 │   │   │                                                        kolekcjach (LIMITS) i helper getLimit.
 │   │   │                                               FUNCTIONS: getLimit
@@ -2234,20 +2339,28 @@ root/
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
-│   │   ├── 📜 settings.js ❗                       <!-- VERSION: 0.0.3 PATH: src/config/settings.js
+│   │   ├── 📜 settings.js                         <!-- VERSION: 0.0.3 PATH: src/config/settings.js
 │   │   │                                               PURPOSE: Domyślne ustawienia aplikacji (DEFAULT_SETTINGS),
 │   │   │                                                        per-modułowe flagi debugowania (DEBUG_MODULES) i helper
 │   │   │                                                        getDefaultSetting.
 │   │   │                                               FUNCTIONS: getDefaultSetting
 │   │   │                                               DEPENDS ON: app.js
 │   │   │                                               -->
-│   │   └── 📜 toolsRegistry.js ❗                  <!-- VERSION: 0.0.3 PATH: src/config/toolsRegistry.js
+│   │   ├── 📜 settingsRegistry.js                 <!-- VERSION: 0.0.3 PATH: src/config/settingsRegistry.js
+│   │   │                                               PURPOSE: Centralny rejestr widoków ustawień i narzędzi
+│   │   │                                                        systemowych (SettingsContainer). Eliminuje switch-case
+│   │   │                                                        — nowy widok = nowy wpis w rejestrze. Wzorzec
+│   │   │                                                        analogiczny do toolsRegistry.js.
+│   │   │                                               FUNCTIONS: getSettingsComponent
+│   │   │                                               DEPENDS ON: react, config.js, logger.js
+│   │   │                                               -->
+│   │   └── 📜 toolsRegistry.js                    <!-- VERSION: 0.0.3 PATH: src/config/toolsRegistry.js
 │   │                                                   PURPOSE: Centralny rejestr narzędzi (tools) używanych w
 │   │                                                            ToolsContainer. Eliminuje switch-case z kontenera –
 │   │                                                            nowe narzędzie = nowy wpis w rejestrze. Zawiera lazy
 │   │                                                            import, featureFlag, propsy i opis.
 │   │                                                   FUNCTIONS: getToolComponent
-│   │                                                   DEPENDS ON: react, config.js
+│   │                                                   DEPENDS ON: react, config.js, logger.js
 │   │                                                   -->
 │   ├── 📁 constants/
 │   │   ├── 📜 constants.js                        <!-- VERSION: 0.0.3 PATH: src/constants/constants.js
@@ -2341,7 +2454,7 @@ root/
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   ├── 📁 engine/
-│   │   ├── 📜 adBlocker.js ❗                      <!-- VERSION: 0.0.3 PATH: src/engine/adBlocker.js
+│   │   ├── 📜 adBlocker.js                        <!-- VERSION: 0.0.3 PATH: src/engine/adBlocker.js
 │   │   │                                               PURPOSE: Implementacja blokowania reklam na poziomie sieciowym
 │   │   │                                                        (webRequest) – wspiera ustawienia globalne i
 │   │   │                                                        nadpisywanie per-profil.
@@ -2350,7 +2463,7 @@ root/
 │   │   │                                                          initAdBlocker
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js, webviewRegistry.js
 │   │   │                                               -->
-│   │   ├── 📜 hotkeysManager.js ❗                 <!-- VERSION: 0.0.3 PATH: src/engine/hotkeysManager.js
+│   │   ├── 📜 hotkeysManager.js                   <!-- VERSION: 0.0.3 PATH: src/engine/hotkeysManager.js
 │   │   │                                               PURPOSE: Zarządzanie globalnymi skrótami klawiszowymi w procesie
 │   │   │                                                        głównym. Obsługuje rejestrację w OS i dispatch zdarzeń
 │   │   │                                                        IPC do renderera.
@@ -2359,7 +2472,7 @@ root/
 │   │   │                                                          registerHotkeysFromList
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js, electron-store
 │   │   │                                               -->
-│   │   ├── 📜 resourceMonitor.js ❗                <!-- VERSION: 0.0.3 PATH: src/engine/resourceMonitor.js
+│   │   ├── 📜 resourceMonitor.js                  <!-- VERSION: 0.0.3 PATH: src/engine/resourceMonitor.js
 │   │   │                                               PURPOSE: Serwis monitorujący zużycie zasobów systemowych
 │   │   │                                                        (CPU/RAM) przez aplikację i system operacyjny.
 │   │   │                                               FUNCTIONS: getSystemUsage
@@ -2373,19 +2486,19 @@ root/
 │   │   │                                                          getSleepPlaceholderState
 │   │   │                                               DEPENDS ON: config.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 updateService.js ❗                  <!-- VERSION: 0.0.3 PATH: src/engine/updateService.js
+│   │   ├── 📜 updateService.js                    <!-- VERSION: 0.0.3 PATH: src/engine/updateService.js
 │   │   │                                               PURPOSE: Placeholder sprawdzania aktualizacji (UpdateChecker UI
 │   │   │                                                        → docelowo API).
 │   │   │                                               FUNCTIONS: checkForUpdates
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 webviewRegistry.js ❗                <!-- VERSION: 0.0.3 PATH: src/engine/webviewRegistry.js
+│   │   ├── 📜 webviewRegistry.js                  <!-- VERSION: 0.0.3 PATH: src/engine/webviewRegistry.js
 │   │   │                                               PURPOSE: Rejestracja WebView (mapy tabId ↔ webContentsId)
 │   │   │                                               FUNCTIONS: registerWebView, unregisterWebView, getWebViewEntry,
 │   │   │                                                          getAllWebContents
 │   │   │                                               DEPENDS ON: logger.js, electron
 │   │   │                                               -->
-│   │   └── 📜 webviewScriptInjector.js ❗          <!-- VERSION: 0.0.3 PATH: src/engine/webviewScriptInjector.js
+│   │   └── 📜 webviewScriptInjector.js            <!-- VERSION: 0.0.3 PATH: src/engine/webviewScriptInjector.js
 │   │                                                   PURPOSE: Wstrzykiwanie CSS i skryptów użytkownika (user styles,
 │   │                                                            user scripts) do webview po załadowaniu strony.
 │   │                                                            Uruchamiany przez main process przy zdarzeniu
@@ -2397,7 +2510,7 @@ root/
 │   │                                                   DEPENDS ON: config.js, logger.js
 │   │                                                   -->
 │   ├── 📁 hooks/
-│   │   ├── 📜 useAppInitialization.js ❗           <!-- VERSION: 0.0.3 PATH: src/hooks/useAppInitialization.js
+│   │   ├── 📜 useAppInitialization.js             <!-- VERSION: 0.0.3 PATH: src/hooks/useAppInitialization.js
 │   │   │                                               PURPOSE: Logika startowa aplikacji (logger, settings, profile,
 │   │   │                                                        hotkeys, theme).
 │   │   │                                               FUNCTIONS: useAppInitialization
@@ -2436,14 +2549,14 @@ root/
 │   │   │                                               FUNCTIONS: useHistoryLog
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js, useAsync.js
 │   │   │                                               -->
-│   │   ├── 📜 useMainLayout.js ❗                  <!-- VERSION: 0.0.3 PATH: src/hooks/useMainLayout.js
+│   │   ├── 📜 useMainLayout.js                    <!-- VERSION: 0.0.3 PATH: src/hooks/useMainLayout.js
 │   │   │                                               PURPOSE: Hook zarządzający stanem globalnym layoutu aplikacji –
 │   │   │                                                        TaskPanel, modal potwierdzenia oraz klasa CSS body w
 │   │   │                                                        zależności od aktywnego widoku.
 │   │   │                                               FUNCTIONS: useMainLayout
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │                                               -->
-│   │   ├── 📜 useNotepadAutosave.js ❗             <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadAutosave.js
+│   │   ├── 📜 useNotepadAutosave.js               <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadAutosave.js
 │   │   │                                               PURPOSE: Izolowana logika automatycznego zapisu dla notatnika.
 │   │   │                                               FUNCTIONS: useNotepadAutosave
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
@@ -2462,12 +2575,12 @@ root/
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js,
 │   │   │                                                           notificationsManager.js
 │   │   │                                               -->
-│   │   ├── 📜 useNotepadModals.js ❗               <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadModals.js
+│   │   ├── 📜 useNotepadModals.js                 <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadModals.js
 │   │   │                                               PURPOSE: Zarządzanie stanem modali i powiadomień dla notatnika.
 │   │   │                                               FUNCTIONS: useNotepadModals
-│   │   │                                               DEPENDS ON: react
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
-│   │   ├── 📜 useNotepadTabActions.js ❗           <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadTabActions.js
+│   │   ├── 📜 useNotepadTabActions.js             <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadTabActions.js
 │   │   │                                               PURPOSE: Wrappery dla akcji na zakładkach z logiką walidacji i
 │   │   │                                                        UI.
 │   │   │                                               FUNCTIONS: useNotepadTabActions
@@ -2554,7 +2667,7 @@ root/
 │   │                                                   DEPENDS ON: react, loggerRenderer.js, translations.js
 │   │                                                   -->
 │   ├── 📁 ipc/
-│   │   ├── 📜 ipcMainHandlers_adBlocker.js ❗      <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_adBlocker.js
+│   │   ├── 📜 ipcMainHandlers_adBlocker.js        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_adBlocker.js
 │   │   │                                               PURPOSE: IPC handlery do zarządzania blokerem reklam – globalnie
 │   │   │                                                        i per profil
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.ADBLOCKER.SET_GLOBAL,
@@ -2563,7 +2676,7 @@ root/
 │   │   │                                                          const:IPC_CHANNELS.ADBLOCKER.GET_FOR_PROFILE
 │   │   │                                               DEPENDS ON: electron, adBlocker.js, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_aggregatedTasks.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_aggregatedTasks.js
+│   │   ├── 📜 ipcMainHandlers_aggregatedTasks.js  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_aggregatedTasks.js
 │   │   │                                               PURPOSE: IPC handlers dla widoku zbiorczego zadań
 │   │   │                                                        (AggregatedTasks). Łączy zadania z grupami (TaskGroup)
 │   │   │                                                        i profilami.
@@ -2573,18 +2686,22 @@ root/
 │   │   │                                               DEPENDS ON: electron, ipcChannels.js, tasksStore.js,
 │   │   │                                                           taskGroupsStore.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_app.js ❗            <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_app.js
+│   │   ├── 📜 ipcMainHandlers_app.js              <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_app.js
 │   │   │                                               PURPOSE: IPC handlery cyklu życia aplikacji – potwierdzenie
 │   │   │                                                        zamknięcia.
-│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.APP.CONFIRM_QUIT, ipc:confirm-quit
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.APP.CONFIRM_QUIT
 │   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_appInfo.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_appInfo.js
-│   │   │                                               PURPOSE: IPC handler do pobierania informacji o aplikacji
-│   │   │                                               FUNCTIONS: ipc:app:getInfo
-│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
+│   │   ├── 📜 ipcMainHandlers_appInfo.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_appInfo.js
+│   │   │                                               PURPOSE: IPC handlery informacji o aplikacji – wersja,
+│   │   │                                                        sprawdzanie aktualizacji, info diagnostyczne.
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.APP_INFO.GET_INFO,
+│   │   │                                                          const:IPC_CHANNELS.APP.GET_VERSION,
+│   │   │                                                          const:IPC_CHANNELS.APP.CHECK_UPDATES
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js,
+│   │   │                                                           updateService.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_appLibrary.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_appLibrary.js
+│   │   ├── 📜 ipcMainHandlers_appLibrary.js       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_appLibrary.js
 │   │   │                                               PURPOSE: IPC dla biblioteki aplikacji (App Library) – pobieranie
 │   │   │                                                        kategorii, wyszukiwanie, filtrowanie po kategorii.
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.APP_LIBRARY.GET_ALL,
@@ -2593,18 +2710,19 @@ root/
 │   │   │                                               DEPENDS ON: electron, appLibraryStore.js, logger.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_cookies.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_cookies.js
+│   │   ├── 📜 ipcMainHandlers_cookies.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_cookies.js
 │   │   │                                               PURPOSE: IPC handler do pobierania cookies (Cookie Grabber)
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.COOKIES.GET_ALL
 │   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_dialogs.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_dialogs.js
+│   │   ├── 📜 ipcMainHandlers_dialogs.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_dialogs.js
 │   │   │                                               PURPOSE: IPC handlers dla natywnych okien dialogowych
 │   │   │                                                        (open/save)
-│   │   │                                               FUNCTIONS: ipc:dialog:openFile, ipc:dialog:saveFile
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.DIALOGS.OPEN_FILE,
+│   │   │                                                          const:IPC_CHANNELS.DIALOGS.SAVE_FILE
 │   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_events.js ❗         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_events.js
+│   │   ├── 📜 ipcMainHandlers_events.js           <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_events.js
 │   │   │                                               PURPOSE: Handlery IPC dla dziennika zdarzeń aplikacji
 │   │   │                                                        (EventLogger). Obsługuje zapis, odczyt i czyszczenie
 │   │   │                                                        zdarzeń.
@@ -2615,28 +2733,29 @@ root/
 │   │   │                                               DEPENDS ON: electron, fs, path, logger.js,
 │   │   │                                                           ipcMainHandlers_logs.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_fileApi.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_fileApi.js
+│   │   ├── 📜 ipcMainHandlers_fileApi.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_fileApi.js
 │   │   │                                               PURPOSE: IPC handlers dla File Previewer, Mini Postman i
 │   │   │                                                        Clipboard
-│   │   │                                               FUNCTIONS: ipc:tools:filePreview, ipc:tools:apiRequest,
-│   │   │                                                          ipc:tools:clipboard:get
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TOOLS.FILE_PREVIEW,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.API_REQUEST,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.CLIPBOARD_GET
 │   │   │                                               DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_fileSystem.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_fileSystem.js
+│   │   ├── 📜 ipcMainHandlers_fileSystem.js       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_fileSystem.js
 │   │   │                                               PURPOSE: IPC handlers do odczytu i zapisu plików (przez main
 │   │   │                                                        process)
-│   │   │                                               FUNCTIONS: ipc:fs:readFile, ipc:fs:writeFile
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.FS.READ_FILE,
+│   │   │                                                          const:IPC_CHANNELS.FS.WRITE_FILE
 │   │   │                                               DEPENDS ON: electron, fs, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_files.js ❗          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_files.js
+│   │   ├── 📜 ipcMainHandlers_files.js            <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_files.js
 │   │   │                                               PURPOSE: IPC handlery zapisu plików – tekst i dane binarne przez
 │   │   │                                                        dialog systemowy.
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.FILES.SAVE_TEXT,
-│   │   │                                                          const:IPC_CHANNELS.FILES.SAVE_BINARY,
-│   │   │                                                          ipc:save-text-to-file, ipc:save-file
+│   │   │                                                          const:IPC_CHANNELS.FILES.SAVE_BINARY
 │   │   │                                               DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_history.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_history.js
+│   │   ├── 📜 ipcMainHandlers_history.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_history.js
 │   │   │                                               PURPOSE: IPC dla historii odwiedzin/akcji. history:getAll    –
 │   │   │                                                        zwraca pełną historię (max 5000 wpisów) history:add    
 │   │   │                                                          – dodaje nowy wpis i zapisuje history:clear     –
@@ -2645,10 +2764,10 @@ root/
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.HISTORY.GET_ALL,
 │   │   │                                                          const:IPC_CHANNELS.HISTORY.ADD,
 │   │   │                                                          const:IPC_CHANNELS.HISTORY.CLEAR,
-│   │   │                                                          ipc:history:getRecent
+│   │   │                                                          const:IPC_CHANNELS.HISTORY.GET_RECENT
 │   │   │                                               DEPENDS ON: electron, historyStore.js, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_hotkeys.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_hotkeys.js
+│   │   ├── 📜 ipcMainHandlers_hotkeys.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_hotkeys.js
 │   │   │                                               PURPOSE: IPC handlery do zarządzania skrótami klawiszowymi –
 │   │   │                                                        pobieranie, zapis, rejestracja
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.HOTKEYS.GET_ALL,
@@ -2657,27 +2776,28 @@ root/
 │   │   │                                               DEPENDS ON: electron, hotkeysManager.js, logger.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_imageSharp.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_imageSharp.js
+│   │   ├── 📜 ipcMainHandlers_imageSharp.js       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_imageSharp.js
 │   │   │                                               PURPOSE: IPC handlery dla operacji na obrazach (resize, convert,
 │   │   │                                                        compress)
-│   │   │                                               FUNCTIONS: ipc:tools:image:resize, ipc:tools:image:convert,
-│   │   │                                                          ipc:tools:image:compress
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TOOLS.IMAGE_RESIZE,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.IMAGE_CONVERT,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.IMAGE_COMPRESS
 │   │   │                                               DEPENDS ON: electron, logger.js, sharpLoader.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_jsonYaml.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_jsonYaml.js
+│   │   ├── 📜 ipcMainHandlers_jsonYaml.js         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_jsonYaml.js
 │   │   │                                               PURPOSE: IPC handlery dla JSON i YAML (formatowanie, konwersja)
-│   │   │                                               FUNCTIONS: ipc:tools:formatJSON, ipc:tools:yamlToJson,
-│   │   │                                                          ipc:tools:jsonToYaml
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TOOLS.FORMAT_JSON,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.YAML_TO_JSON,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.JSON_TO_YAML
 │   │   │                                               DEPENDS ON: electron, logger.js, yamlLoader.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_logs.js ❗           <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_logs.js
+│   │   ├── 📜 ipcMainHandlers_logs.js             <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_logs.js
 │   │   │                                               PURPOSE: Handlery IPC dla logów testów (LogWriter). Obsługuje
 │   │   │                                                        zapis, odczyt i czyszczenie logów testów.
 │   │   │                                               FUNCTIONS: rotateLogs, registerLogsHandlers,
 │   │   │                                                          const:IPC_CHANNELS.LOGS.APPEND,
 │   │   │                                                          const:IPC_CHANNELS.LOGS.GET,
-│   │   │                                                          const:IPC_CHANNELS.LOGS.CLEAR, ipc:append-log-file,
-│   │   │                                                          ipc:get-logs-file, ipc:clear-logs-file
+│   │   │                                                          const:IPC_CHANNELS.LOGS.CLEAR
 │   │   │                                               DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_notepad.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notepad.js
@@ -2685,27 +2805,28 @@ root/
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: electron, notepadStore.js, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_notifications.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notifications.js
+│   │   ├── 📜 ipcMainHandlers_notifications.js    <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notifications.js
 │   │   │                                               PURPOSE: Handler IPC dla natywnych powiadomień systemowych OS
 │   │   │                                                        (Windows/macOS). Przeniesione do procesu głównego —
 │   │   │                                                        działa nawet gdy okno jest zminimalizowane lub ukryte w
 │   │   │                                                        tray. Implementuje UIUX_REQ-022.
-│   │   │                                               FUNCTIONS: ipc:notifications:showSystem
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.NOTIFICATIONS.SHOW_SYSTEM
 │   │   │                                               DEPENDS ON: electron, path, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_openExternal.js ❗   <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_openExternal.js
+│   │   ├── 📜 ipcMainHandlers_openExternal.js     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_openExternal.js
 │   │   │                                               PURPOSE: IPC handler do otwierania URL w domyślnej przeglądarce
 │   │   │                                                        systemowej
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.SHELL.OPEN_EXTERNAL
 │   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_pathUtils.js ❗      <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_pathUtils.js
+│   │   ├── 📜 ipcMainHandlers_pathUtils.js        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_pathUtils.js
 │   │   │                                               PURPOSE: IPC helpers dla operacji na ścieżkach (path.join,
 │   │   │                                                        path.dirname)
-│   │   │                                               FUNCTIONS: ipc:path:join, ipc:path:dirname
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.PATH.JOIN,
+│   │   │                                                          const:IPC_CHANNELS.PATH.DIRNAME
 │   │   │                                               DEPENDS ON: electron, path, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_profiles.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_profiles.js
+│   │   ├── 📜 ipcMainHandlers_profiles.js         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_profiles.js
 │   │   │                                               PURPOSE: IPC dla profili (Sidebar / Profile Manager / App
 │   │   │                                                        Library) pobieranie profili zapisywanie profili edycja
 │   │   │                                                        profili usuwanie profili ostatnio używane walidacja
@@ -2718,7 +2839,7 @@ root/
 │   │   │                                               DEPENDS ON: electron, profilesStore.js, logger.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_projects.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_projects.js
+│   │   ├── 📜 ipcMainHandlers_projects.js         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_projects.js
 │   │   │                                               PURPOSE: IPC handlers dla Project Manager – CRUD projektów z
 │   │   │                                                        walidacją i integracją z tasksStore. projects:getAll   
 │   │   │                                                           – pobiera wszystkie projekty projects:getWithTasks –
@@ -2728,19 +2849,21 @@ root/
 │   │   │                                                        archiwizuje projekt projects:delete       – usuwa
 │   │   │                                                        projekt
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.PROJECTS.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.PROJECTS.GET_WITH_TASKS,
 │   │   │                                                          const:IPC_CHANNELS.PROJECTS.CREATE,
 │   │   │                                                          const:IPC_CHANNELS.PROJECTS.UPDATE,
-│   │   │                                                          const:IPC_CHANNELS.PROJECTS.DELETE,
-│   │   │                                                          ipc:projects:getWithTasks, ipc:projects:archive
+│   │   │                                                          const:IPC_CHANNELS.PROJECTS.ARCHIVE,
+│   │   │                                                          const:IPC_CHANNELS.PROJECTS.DELETE
 │   │   │                                               DEPENDS ON: electron, projectsStore.js, tasksStore.js, logger.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_regexMarkdown.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_regexMarkdown.js
+│   │   ├── 📜 ipcMainHandlers_regexMarkdown.js    <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_regexMarkdown.js
 │   │   │                                               PURPOSE: IPC handlers dla Regex Tester i Markdown Previewer
-│   │   │                                               FUNCTIONS: ipc:tools:regexTest, ipc:tools:markdownRender
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TOOLS.REGEX_TEST,
+│   │   │                                                          const:IPC_CHANNELS.TOOLS.MARKDOWN_RENDER
 │   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_search.js ❗         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_search.js
+│   │   ├── 📜 ipcMainHandlers_search.js           <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_search.js
 │   │   │                                               PURPOSE: IPC handler globalnego wyszukiwania (Ctrl+K / sidebar
 │   │   │                                                        global search). search:global – buduje indeks ze
 │   │   │                                                        store'ów i przeszukuje go wg query.
@@ -2749,7 +2872,7 @@ root/
 │   │   │                                                           tasksStore.js, projectsStore.js, logger.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_settings.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_settings.js
+│   │   ├── 📜 ipcMainHandlers_settings.js         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_settings.js
 │   │   │                                               PURPOSE: IPC handlers dla Settings. settings:get        –
 │   │   │                                                        pobiera aktualne ustawienia settings:update     –
 │   │   │                                                        aktualizuje (merge patch, nie nadpisuje) settings:reset
@@ -2766,13 +2889,13 @@ root/
 │   │   │                                               DEPENDS ON: electron, fs, logger.js, settingsStore.js, config.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_svgToPng.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_svgToPng.js
+│   │   ├── 📜 ipcMainHandlers_svgToPng.js         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_svgToPng.js
 │   │   │                                               PURPOSE: IPC handler konwersji SVG → PNG przez sharp
-│   │   │                                               FUNCTIONS: ipc:tools:svgToPng
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TOOLS.SVG_TO_PNG
 │   │   │                                               DEPENDS ON: electron, fs, logger.js, sharpLoader.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_taskGroups.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_taskGroups.js
+│   │   ├── 📜 ipcMainHandlers_taskGroups.js       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_taskGroups.js
 │   │   │                                               PURPOSE: IPC handlers dla grup zadań (TaskGroup) — CRUD +
 │   │   │                                                        przypisanie profili. Mapuje profile WebView na wspólne
 │   │   │                                                        panele zadań.
@@ -2787,7 +2910,7 @@ root/
 │   │   │                                               DEPENDS ON: electron, ipcChannels.js, taskGroupsStore.js,
 │   │   │                                                           logger.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_tasks.js ❗          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_tasks.js
+│   │   ├── 📜 ipcMainHandlers_tasks.js            <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_tasks.js
 │   │   │                                               PURPOSE: IPC handlers dla zadań (TaskPanel) – CRUD z walidacją
 │   │   │                                                        section↔status i mapowaniem na taskGroupId.
 │   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TASKS.GET_ALL,
@@ -2798,7 +2921,7 @@ root/
 │   │   │                                                          const:IPC_CHANNELS.TASKS.SAVE_SECTIONS
 │   │   │                                               DEPENDS ON: electron, ipcChannels.js, tasksStore.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_terminal.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_terminal.js
+│   │   ├── 📜 ipcMainHandlers_terminal.js         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_terminal.js
 │   │   │                                               PURPOSE: IPC dla Terminala (node-pty + xterm.js) tworzenie sesji
 │   │   │                                                        wysyłanie danych odbieranie danych zamykanie sesji
 │   │   │                                                        restart cleanup
@@ -2810,57 +2933,69 @@ root/
 │   │   │                                                          const:IPC_CHANNELS.TERMINAL.RESTART
 │   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js, node-pty, os
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_cache.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_cache.js
+│   │   ├── 📜 ipcMainHandlers_webview_cache.js    <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_cache.js
 │   │   │                                               PURPOSE: IPC handler dla czyszczenia cache WebView
-│   │   │                                               FUNCTIONS: ipc:webview:clearCache
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.CLEAR_CACHE
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_controls.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_controls.js
+│   │   ├── 📜 ipcMainHandlers_webview_controls.js <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_controls.js
 │   │   │                                               PURPOSE: IPC handlers dla User Agent, Single App Mode, Resource
 │   │   │                                                        Monitor, Sleep Tabs. Używa ESM import path/url zamiast
 │   │   │                                                        require() (ES module context).
-│   │   │                                               FUNCTIONS: ipc:webview:setUserAgent, ipc:webview:openInWindow,
-│   │   │                                                          ipc:webview:getUsage, ipc:webview:sleep,
-│   │   │                                                          ipc:webview:wake, ipc:webview:scheduleInjection,
-│   │   │                                                          ipc:webview:removeInjection
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.SET_USER_AGENT,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.OPEN_IN_WINDOW,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GET_USAGE,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.SLEEP,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.WAKE,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.SCHEDULE_INJECTION,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.REMOVE_INJECTION
 │   │   │                                               DEPENDS ON: electron, path, url, logger.js, config.js,
-│   │   │                                                           webviewScriptInjector.js
+│   │   │                                                           webviewScriptInjector.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_httpErrors.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_httpErrors.js
+│   │   ├── 📜 ipcMainHandlers_webview_httpErrors.js <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_httpErrors.js
 │   │   │                                               PURPOSE: IPC handler monitorujący HTTP 4xx/5xx z WebView per
 │   │   │                                                        partycja. Uzupełnia did-fail-load (błędy sieciowe/DNS)
 │   │   │                                                        o obsługę błędów HTTP, których did-fail-load nie
 │   │   │                                                        wychwytuje (strona się ładuje, ale zwraca błąd).
-│   │   │                                               FUNCTIONS: ipc:webview:startHttpMonitor
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.START_HTTP_MONITOR
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_nav.js ❗    <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_nav.js
+│   │   ├── 📜 ipcMainHandlers_webview_nav.js      <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_nav.js
 │   │   │                                               PURPOSE: IPC handlers dla nawigacji WebView. webview:navigate
 │   │   │                                                        waliduje URL przez isSafeUrl() przed loadURL() —
 │   │   │                                                        blokuje javascript:, data:, file: itp.
-│   │   │                                               FUNCTIONS: ipc:webview:navigate, ipc:webview:reload,
-│   │   │                                                          ipc:webview:goBack, ipc:webview:goForward,
-│   │   │                                                          ipc:webview:getURL
-│   │   │                                               DEPENDS ON: electron, logger.js, urlUtils.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.NAVIGATE,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.RELOAD,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GO_BACK,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GO_FORWARD,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GET_URL
+│   │   │                                               DEPENDS ON: electron, logger.js, urlUtils.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_screenshot.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_screenshot.js
+│   │   ├── 📜 ipcMainHandlers_webview_registry.js <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_registry.js
+│   │   │                                               PURPOSE: Handlery IPC dla rejestru WebView – mapowanie tabId ↔
+│   │   │                                                        webContentsId. Wymagane przez Screenshot, Resource
+│   │   │                                                        Monitor i AdBlocker.
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.REGISTER,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.UNREGISTER
+│   │   │                                               DEPENDS ON: electron, logger.js, webviewRegistry.js,
+│   │   │                                                           ipcChannels.js
+│   │   │                                               -->
+│   │   ├── 📜 ipcMainHandlers_webview_screenshot.js <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_screenshot.js
 │   │   │                                               PURPOSE: IPC handler dla screenshot WebView
-│   │   │                                               FUNCTIONS: ipc:webview:screenshot
-│   │   │                                               DEPENDS ON: electron, logger.js, config.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.SCREENSHOT
+│   │   │                                               DEPENDS ON: electron, logger.js, config.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_tools.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_tools.js
+│   │   ├── 📜 ipcMainHandlers_webview_tools.js    <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_tools.js
 │   │   │                                               PURPOSE: Handlery IPC dla narzędzi WebView: tryb Single App,
 │   │   │                                                        zrzuty ekranu i monitor zasobów.
 │   │   │                                               FUNCTIONS: registerWebViewExtraHandlers,
 │   │   │                                                          const:IPC_CHANNELS.WEBVIEW.OPEN_SINGLE,
 │   │   │                                                          const:IPC_CHANNELS.WEBVIEW.CAPTURE,
-│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GET_RESOURCE,
-│   │   │                                                          ipc:open-single-window, ipc:capture-webview,
-│   │   │                                                          ipc:get-webview-resource
-│   │   │                                               DEPENDS ON: electron, path, logger.js, webviewRegistry.js,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GET_RESOURCE
+│   │   │                                               DEPENDS ON: electron, path, url, logger.js, webviewRegistry.js,
 │   │   │                                                           ipcChannels.js
 │   │   │                                               -->
-│   │   └── 📜 ipcMainHandlers_workspaces.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_workspaces.js
+│   │   └── 📜 ipcMainHandlers_workspaces.js       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_workspaces.js
 │   │                                                   PURPOSE: IPC dla workspace (Sidebar, useWorkspaces).
 │   │                                                   FUNCTIONS: const:IPC_CHANNELS.WORKSPACES.GET_ALL,
 │   │                                                              const:IPC_CHANNELS.WORKSPACES.SAVE,
@@ -2869,7 +3004,7 @@ root/
 │   │                                                               ipcChannels.js
 │   │                                                   -->
 │   ├── 📁 loaders/
-│   │   ├── 📜 ipcLoader.js ❗                      <!-- VERSION: 0.0.3 PATH: src/loaders/ipcLoader.js
+│   │   ├── 📜 ipcLoader.js                        <!-- VERSION: 0.0.3 PATH: src/loaders/ipcLoader.js
 │   │   │                                               PURPOSE: Dynamicznie ładuje wszystkie handlery IPC z src/ipc/.
 │   │   │                                                        Eliminuje konieczność ręcznego importowania każdego
 │   │   │                                                        pliku w main.js. Pomija: ipcLegacyBridge.js (ładowany
@@ -2877,7 +3012,7 @@ root/
 │   │   │                                               FUNCTIONS: loadAllIpcHandlers
 │   │   │                                               DEPENDS ON: komponenty z folderu ipc/
 │   │   │                                               -->
-│   │   └── 📜 testsLoader.js ❗                    <!-- VERSION: 0.0.3 PATH: src/loaders/testsLoader.js
+│   │   └── 📜 testsLoader.js                      <!-- VERSION: 0.0.3 PATH: src/loaders/testsLoader.js
 │   │                                                   PURPOSE: Dynamicznie ładuje i uruchamia wszystkie testy z
 │   │                                                            tests/TestRunner_*.js. Eliminuje konieczność ręcznego
 │   │                                                            importowania testów w TestRunner.js. Pomija:
@@ -2890,13 +3025,12 @@ root/
 │   ├── 📁 locales/
 │   │   ├── 📁 templates/
 │   │   │   ├── 📦 help.template.json              <!-- VERSION: 0.0.3 PATH: src/locales/templates/help.template.json
-│   │   │   │                                           PURPOSE: Help content (EN) – translated from help_pl.json
+│   │   │   │                                           PURPOSE: Help content (EN) – translated from help.pl.json
 │   │   │   │                                           FUNCTIONS: -
 │   │   │   │                                           DEPENDS ON: -
 │   │   │   │                                           -->
 │   │   │   └── 📦 lang.template.json              <!-- VERSION: 0.0.3 PATH: src/locales/templates/lang.template.json
-│   │   │                                               PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
-│   │   │                                                        pomocniczej.
+│   │   │                                               PURPOSE: 
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
@@ -2905,12 +3039,12 @@ root/
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
-│   │   ├── 📦 help_en.json                        <!-- VERSION: 0.0.3 PATH: src/locales/help_en.json
-│   │   │                                               PURPOSE: Help content (EN) – translated from help_pl.json
+│   │   ├── 📦 help.en.json                        <!-- VERSION: 0.0.3 PATH: src/locales/help.en.json
+│   │   │                                               PURPOSE: Help content (EN) – translated from help.pl.json
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
-│   │   ├── 📦 help_pl.json                        <!-- VERSION: 0.0.3 PATH: src/locales/help_pl.json
+│   │   ├── 📦 help.pl.json                        <!-- VERSION: 0.0.3 PATH: src/locales/help.pl.json
 │   │   │                                               PURPOSE: Treści pomocy (PL)
 │   │   │                                               FUNCTIONS: -
 │   │   │                                               DEPENDS ON: -
@@ -2921,7 +3055,7 @@ root/
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   ├── 📁 stores/
-│   │   ├── 📜 accountsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/accountsStore.js
+│   │   ├── 📜 accountsStore.js                    <!-- VERSION: 0.0.3 PATH: src/stores/accountsStore.js
 │   │   │                                               PURPOSE: Zarządzanie kontami użytkownika (Google, GitHub, AI,
 │   │   │                                                        itp.) – obsługa trwałości i operacji CRUD na danych
 │   │   │                                                        kont.
@@ -2929,21 +3063,21 @@ root/
 │   │   │                                                          deleteAccount
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 appLibraryStore.js ❗                <!-- VERSION: 0.0.3 PATH: src/stores/appLibraryStore.js
+│   │   ├── 📜 appLibraryStore.js                  <!-- VERSION: 0.0.3 PATH: src/stores/appLibraryStore.js
 │   │   │                                               PURPOSE: Statyczna App Library (WebCatalog-style) — udostępnia i
 │   │   │                                                        filtruje aplikacje z prekompilowanej biblioteki.
 │   │   │                                               FUNCTIONS: loadAppLibrary, filterApps, searchAppLibrary,
 │   │   │                                                          getAppById
 │   │   │                                               DEPENDS ON: logger.js, index.js
 │   │   │                                               -->
-│   │   ├── 📜 clipboardStore.js ❗                 <!-- VERSION: 0.0.3 PATH: src/stores/clipboardStore.js
+│   │   ├── 📜 clipboardStore.js                   <!-- VERSION: 0.0.3 PATH: src/stores/clipboardStore.js
 │   │   │                                               PURPOSE: Zarządzanie historią schowka systemowego – dodawanie,
 │   │   │                                                        pobieranie i czyszczenie wpisów tekstowych.
 │   │   │                                               FUNCTIONS: addClipboardEntry, getClipboardHistory,
 │   │   │                                                          clearClipboardHistory
 │   │   │                                               DEPENDS ON: electron, config.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 historyStore.js ❗                   <!-- VERSION: 0.0.3 PATH: src/stores/historyStore.js
+│   │   ├── 📜 historyStore.js                     <!-- VERSION: 0.0.3 PATH: src/stores/historyStore.js
 │   │   │                                               PURPOSE: Zarządzanie historią akcji użytkownika – odczyt, zapis,
 │   │   │                                                        dodawanie wpisów, czyszczenie i pobieranie ostatnich
 │   │   │                                                        wpisów.
@@ -2951,13 +3085,13 @@ root/
 │   │   │                                                          clearHistory, getRecentHistory
 │   │   │                                               DEPENDS ON: config.js, persistence.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 notepadStore.js ❗                   <!-- VERSION: 0.0.3 PATH: src/stores/notepadStore.js
+│   │   ├── 📜 notepadStore.js                     <!-- VERSION: 0.0.3 PATH: src/stores/notepadStore.js
 │   │   │                                               PURPOSE: Zarządzanie notatkami użytkownika – ładowanie,
 │   │   │                                                        zapisywanie oraz operacje CRUD na danych notatek.
 │   │   │                                               FUNCTIONS: getAllnotepad, addNote, updateNote, deleteNote
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 profilesStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/profilesStore.js
+│   │   ├── 📜 profilesStore.js                    <!-- VERSION: 0.0.3 PATH: src/stores/profilesStore.js
 │   │   │                                               PURPOSE: Zarządzanie profilami WebView — odczyt z pliku, zapis,
 │   │   │                                                        tworzenie, aktualizacja i usuwanie (loadProfiles,
 │   │   │                                                        saveProfiles, createProfile, updateProfile,
@@ -2966,14 +3100,14 @@ root/
 │   │   │                                                          updateProfile, deleteProfile
 │   │   │                                               DEPENDS ON: fs, path, url, persistence.js, logger.js, config.js
 │   │   │                                               -->
-│   │   ├── 📜 projectsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/projectsStore.js
+│   │   ├── 📜 projectsStore.js                    <!-- VERSION: 0.0.3 PATH: src/stores/projectsStore.js
 │   │   │                                               PURPOSE: Projekty (ProjectManager, AggregatedTasks) — plik
 │   │   │                                                        projects.json.
 │   │   │                                               FUNCTIONS: loadProjects, saveProjects, createProject,
 │   │   │                                                          updateProject, archiveProject, deleteProject
 │   │   │                                               DEPENDS ON: persistence.js, logger.js, fs
 │   │   │                                               -->
-│   │   ├── 📜 settingsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/settingsStore.js
+│   │   ├── 📜 settingsStore.js                    <!-- VERSION: 0.0.3 PATH: src/stores/settingsStore.js
 │   │   │                                               PURPOSE: Ustawienia użytkownika — merge partial updates, reset
 │   │   │                                                        do domyślnych.
 │   │   │                                               FUNCTIONS: loadSettings, saveSettings, mergeSettings,
@@ -2981,7 +3115,7 @@ root/
 │   │   │                                               DEPENDS ON: lodash, fs, path, url, config.js, persistence.js,
 │   │   │                                                           logger.js
 │   │   │                                               -->
-│   │   ├── 📜 taskGroupsStore.js ❗                <!-- VERSION: 0.0.3 PATH: src/stores/taskGroupsStore.js
+│   │   ├── 📜 taskGroupsStore.js                  <!-- VERSION: 0.0.3 PATH: src/stores/taskGroupsStore.js
 │   │   │                                               PURPOSE: Zarządzanie grupami zadań (TaskGroup) — mapowanie
 │   │   │                                                        profili WebView na wspólny panel zadań. Każda grupa to
 │   │   │                                                        osobny panel TaskPanel współdzielony przez 1..N
@@ -2991,7 +3125,7 @@ root/
 │   │   │                                                          ensureDefaultGroup
 │   │   │                                               DEPENDS ON: persistence.js, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 tasksStore.js ❗                     <!-- VERSION: 0.0.3 PATH: src/stores/tasksStore.js
+│   │   ├── 📜 tasksStore.js                       <!-- VERSION: 0.0.3 PATH: src/stores/tasksStore.js
 │   │   │                                               PURPOSE: Zadania per TaskGroup (TaskPanel, AggregatedTasks).
 │   │   │                                                        Jeden plik JSON per taskGroupId. Zawiera logikę
 │   │   │                                                        mapowania section↔status.
@@ -3000,7 +3134,7 @@ root/
 │   │   │                                                          loadAllTasksGrouped, loadTasks
 │   │   │                                               DEPENDS ON: fs, persistence.js, logger.js
 │   │   │                                               -->
-│   │   └── 📜 workspacesStore.js ❗                <!-- VERSION: 0.0.3 PATH: src/stores/workspacesStore.js
+│   │   └── 📜 workspacesStore.js                  <!-- VERSION: 0.0.3 PATH: src/stores/workspacesStore.js
 │   │                                                   PURPOSE: Zarządzanie przestrzeniami roboczymi (workspaces)
 │   │                                                            użytkownika – ładowanie, zapisywanie oraz operacje typu
 │   │                                                            upsert.
@@ -3009,7 +3143,7 @@ root/
 │   │                                                   DEPENDS ON: fs, path, electron, logger.js
 │   │                                                   -->
 │   ├── 📁 tools/
-│   │   ├── 📜 apiClient.js ❗                      <!-- VERSION: 0.0.3 PATH: src/tools/apiClient.js
+│   │   ├── 📜 apiClient.js                        <!-- VERSION: 0.0.3 PATH: src/tools/apiClient.js
 │   │   │                                               PURPOSE: Wrapper HTTP do testowania API – wykonuje żądania z
 │   │   │                                                        obsługą timeout (AbortController) i automatycznym retry
 │   │   │                                                        z exponential backoff (3 próby). apiRequest() zwraca {
@@ -3019,20 +3153,20 @@ root/
 │   │   │                                               FUNCTIONS: apiFetch, apiGet, apiPost, apiRequest
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 markdownRenderer.js ❗               <!-- VERSION: 0.0.3 PATH: src/tools/markdownRenderer.js
+│   │   ├── 📜 markdownRenderer.js                 <!-- VERSION: 0.0.3 PATH: src/tools/markdownRenderer.js
 │   │   │                                               PURPOSE: Renderowanie markdown do HTML przy użyciu marked -
 │   │   │                                                        renderMarkdown(text) zwraca string HTML
 │   │   │                                               FUNCTIONS: renderMarkdown
 │   │   │                                               DEPENDS ON: marked, logger.js
 │   │   │                                               -->
-│   │   ├── 📜 regexEngine.js ❗                    <!-- VERSION: 0.0.3 PATH: src/tools/regexEngine.js
+│   │   ├── 📜 regexEngine.js                      <!-- VERSION: 0.0.3 PATH: src/tools/regexEngine.js
 │   │   │                                               PURPOSE: Helper do testowania wyrażeń regularnych
 │   │   │                                                        testRegex(pattern, flags, text) zwraca tablicę
 │   │   │                                                        wszystkich dopasowań z podanego tekstu
 │   │   │                                               FUNCTIONS: testRegex
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   └── 📜 svgToPng.js ❗                       <!-- VERSION: 0.0.3 PATH: src/tools/svgToPng.js
+│   │   └── 📜 svgToPng.js                         <!-- VERSION: 0.0.3 PATH: src/tools/svgToPng.js
 │   │                                                   PURPOSE: Konwersja pliku SVG do PNG przy użyciu sharp
 │   │                                                            svgToPng(svgPath, outputPath, width, height) odczytuje
 │   │                                                            SVG z dysku, renderuje do PNG o podanych wymiarach i
@@ -3042,7 +3176,7 @@ root/
 │   │                                                   -->
 │   ├── 📁 ui/
 │   │   ├── 📁 appLibrary/
-│   │   │   └── ⚛️ AppLibraryBrowser.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/appLibrary/AppLibraryBrowser.jsx
+│   │   │   └── ⚛️ AppLibraryBrowser.jsx          <!-- VERSION: 0.0.3 PATH: src/ui/appLibrary/AppLibraryBrowser.jsx
 │   │   │                                               PURPOSE: Główny widok biblioteki aplikacji (App Library) –
 │   │   │                                                        przeglądanie skatalogowanych usług webowych,
 │   │   │                                                        wyszukiwanie i dodawanie do profili. Komunikacja przez
@@ -3064,39 +3198,39 @@ root/
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, icons.js,
 │   │   │   │                                                       HelpSection, ToolCard, Shortcut, FAQ
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ HelpSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/help/HelpSection.jsx
+│   │   │   ├── ⚛️ HelpSection.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/help/HelpSection.jsx
 │   │   │   │                                           PURPOSE: Rozwijana sekcja pomocy (tytuł + treść)
 │   │   │   │                                           FUNCTIONS: HelpSection
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ Shortcut.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/help/Shortcut.jsx
+│   │   │   ├── ⚛️ Shortcut.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/help/Shortcut.jsx
 │   │   │   │                                           PURPOSE: Wiersz skrótu klawiaturowego
 │   │   │   │                                           FUNCTIONS: Shortcut
 │   │   │   │                                           DEPENDS ON: react, translations.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ ToolCard.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/help/ToolCard.jsx
+│   │   │   └── ⚛️ ToolCard.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/help/ToolCard.jsx
 │   │   │                                               PURPOSE: Karta opisu narzędzia (ikona, tytuł, opis)
 │   │   │                                               FUNCTIONS: ToolCard
 │   │   │                                               DEPENDS ON: react, translations.js
 │   │   │                                               -->
 │   │   ├── 📁 history/
-│   │   │   ├── ⚛️ HistoryExport.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryExport.jsx
+│   │   │   ├── ⚛️ HistoryExport.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryExport.jsx
 │   │   │   │                                           PURPOSE: Eksport historii do CSV
 │   │   │   │                                           FUNCTIONS: HistoryExport
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ HistoryFilters.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryFilters.jsx
+│   │   │   ├── ⚛️ HistoryFilters.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryFilters.jsx
 │   │   │   │                                           PURPOSE: Filtry historii (poziom, sortowanie, przycisk
 │   │   │   │                                                    czyszczenia)
 │   │   │   │                                           FUNCTIONS: HistoryFilters
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ HistoryList.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryList.jsx
+│   │   │   ├── ⚛️ HistoryList.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryList.jsx
 │   │   │   │                                           PURPOSE: Lista wpisów historii (tabela)
 │   │   │   │                                           FUNCTIONS: HistoryList
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ HistoryLog.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryLog.jsx
+│   │   │   └── ⚛️ HistoryLog.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/history/HistoryLog.jsx
 │   │   │                                               PURPOSE: Historia przeglądania – lista ostatnio odwiedzonych
 │   │   │                                                        profili, komunikacja przez hook IPC useHistoryLog.
 │   │   │                                               FUNCTIONS: HistoryLog
@@ -3105,7 +3239,7 @@ root/
 │   │   │                                                           HistoryFilters.jsx, HistoryList.jsx
 │   │   │                                               -->
 │   │   ├── 📁 layout/
-│   │   │   └── ⚛️ MainLayout.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/layout/MainLayout.jsx
+│   │   │   └── ⚛️ MainLayout.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/layout/MainLayout.jsx
 │   │   │                                               PURPOSE: Główny szkielet interfejsu użytkownika (Shell) –
 │   │   │                                                        definiuje siatkę aplikacji, koordynuje nawigację
 │   │   │                                                        boczną, obszar roboczy (ContentRenderer) oraz integruje
@@ -3116,7 +3250,7 @@ root/
 │   │   │                                                           ContentRenderer.jsx, ConfirmModal.jsx
 │   │   │                                               -->
 │   │   ├── 📁 modals/
-│   │   │   ├── ⚛️ CategoryModal.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/modals/CategoryModal.jsx
+│   │   │   ├── ⚛️ CategoryModal.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/modals/CategoryModal.jsx
 │   │   │   │                                           PURPOSE: Formularz modalny do zarządzania kategoriami profili –
 │   │   │   │                                                    umożliwia tworzenie nowych i edycję istniejących sekcji
 │   │   │   │                                                    grupujących w Sidebarze.
@@ -3124,19 +3258,19 @@ root/
 │   │   │   │                                           DEPENDS ON: loggerRenderer.js, react, translations.js, icons.js,
 │   │   │   │                                                       ModalPortal
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ConfirmModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/modals/ConfirmModal.jsx
+│   │   │   ├── ⚛️ ConfirmModal.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/modals/ConfirmModal.jsx
 │   │   │   │                                           PURPOSE: Generyczny komponent modalny służący do potwierdzania
 │   │   │   │                                                    akcji krytycznych (np. usuwanie). Zapewnia spójność
 │   │   │   │                                                    wizualną i zastępuje natywną funkcję window.confirm.
 │   │   │   │                                           FUNCTIONS: ConfirmModal
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ Modal.jsx ❗                    <!-- VERSION: 0.0.3 PATH: src/ui/modals/Modal.jsx
+│   │   │   ├── ⚛️ Modal.jsx                      <!-- VERSION: 0.0.3 PATH: src/ui/modals/Modal.jsx
 │   │   │   │                                           PURPOSE: Bazowy komponent modalny dla całej aplikacji
 │   │   │   │                                           FUNCTIONS: Modal
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ProfileModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/modals/ProfileModal.jsx
+│   │   │   ├── ⚛️ ProfileModal.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/modals/ProfileModal.jsx
 │   │   │   │                                           PURPOSE: Zaawansowany formularz modalny do konfiguracji profili
 │   │   │   │                                                    WebView – obsługuje parametry URL, ikony, przypisanie
 │   │   │   │                                                    do kategorii oraz przełączniki adblockera i
@@ -3146,20 +3280,20 @@ root/
 │   │   │   │                                                       urlUtils.js, ModalPortal, notificationsManager.js,
 │   │   │   │                                                       useTaskGroups.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ PromptModal.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/modals/PromptModal.jsx
+│   │   │   └── ⚛️ PromptModal.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/modals/PromptModal.jsx
 │   │   │                                               PURPOSE: Modal z polem input – zastępuje window.prompt()
 │   │   │                                               FUNCTIONS: PromptModal
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📁 notepad/
-│   │   │   ├── ⚛️ ClipboardHistoryModal.jsx ❗    <!-- VERSION: 0.0.3 PATH: src/ui/notepad/ClipboardHistoryModal.jsx
+│   │   │   ├── ⚛️ ClipboardHistoryModal.jsx      <!-- VERSION: 0.0.3 PATH: src/ui/notepad/ClipboardHistoryModal.jsx
 │   │   │   │                                           PURPOSE: Okno modalne prezentujące listę historycznych wpisów ze
 │   │   │   │                                                    schowka systemowego – umożliwia przeglądanie i
 │   │   │   │                                                    odzyskiwanie skopiowanych wcześniej fragmentów tekstu.
 │   │   │   │                                           FUNCTIONS: ClipboardHistoryModal
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ Notepad.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/notepad/Notepad.jsx
+│   │   │   ├── ⚛️ Notepad.jsx                    <!-- VERSION: 0.0.3 PATH: src/ui/notepad/Notepad.jsx
 │   │   │   │                                           PURPOSE: Główny komponent interfejsu notatnika – koordynuje
 │   │   │   │                                                    pracę zakładek, edytora oraz paneli wyszukiwania i
 │   │   │   │                                                    statusu, integrując logikę z hookami useNotepadUI i
@@ -3170,19 +3304,19 @@ root/
 │   │   │   │                                                       NotepadStatusBar, loggerRenderer.js, translations.js,
 │   │   │   │                                                       ConfirmModal
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ NotepadFindReplace.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadFindReplace.jsx
+│   │   │   ├── ⚛️ NotepadFindReplace.jsx         <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadFindReplace.jsx
 │   │   │   │                                           PURPOSE: Panel znajdź/zastąp w notatniku
 │   │   │   │                                           FUNCTIONS: NotepadFindReplace
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ NotepadStatusBar.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadStatusBar.jsx
+│   │   │   ├── ⚛️ NotepadStatusBar.jsx           <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadStatusBar.jsx
 │   │   │   │                                           PURPOSE: Pasek informacyjny u dołu notatnika – wyświetla
 │   │   │   │                                                    metadane aktywnego dokumentu: statystyki znaków/wierszy
 │   │   │   │                                                    oraz czas ostatniego autozapisu.
 │   │   │   │                                           FUNCTIONS: NotepadStatusBar
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ NotepadTabs.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadTabs.jsx
+│   │   │   ├── ⚛️ NotepadTabs.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadTabs.jsx
 │   │   │   │                                           PURPOSE: Komponent zarządzający paskiem kart notatnika –
 │   │   │   │                                                    obsługuje przełączanie dokumentów, ich zamykanie,
 │   │   │   │                                                    zmianę nazwy oraz wizualizację stanu 'dirty'.
@@ -3190,13 +3324,13 @@ root/
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js,
 │   │   │   │                                                       PromptModal.jsx
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ NotepadToolbar.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadToolbar.jsx
+│   │   │   └── ⚛️ NotepadToolbar.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadToolbar.jsx
 │   │   │                                               PURPOSE: Pasek narzędzi notatnika (zapisz, znajdź, word wrap)
 │   │   │                                               FUNCTIONS: NotepadToolbar
 │   │   │                                               DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📁 onboarding/
-│   │   │   ├── ⚛️ Onboarding.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/Onboarding.jsx
+│   │   │   ├── ⚛️ Onboarding.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/Onboarding.jsx
 │   │   │   │                                           PURPOSE: Główny wizard onboardingu – zarządza stanem, nawigacją
 │   │   │   │                                                    i logiką kroków. Importuje moduły kroków z tego samego
 │   │   │   │                                                    folderu.
@@ -3206,38 +3340,38 @@ root/
 │   │   │   │                                                       StepTheme.jsx, StepLanguage.jsx, StepPrivacy.jsx,
 │   │   │   │                                                       StepApps.jsx, StepAccount.jsx
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StepAccount.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepAccount.jsx
+│   │   │   ├── ⚛️ StepAccount.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepAccount.jsx
 │   │   │   │                                           PURPOSE: Krok onboardingu 5/5 – placeholder konta użytkownika
 │   │   │   │                                                    (sync coming soon)
 │   │   │   │                                           FUNCTIONS: StepAccount
 │   │   │   │                                           DEPENDS ON: react, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StepApps.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepApps.jsx
+│   │   │   ├── ⚛️ StepApps.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepApps.jsx
 │   │   │   │                                           PURPOSE: Krok onboardingu 4/5 – szybki start: wybór aplikacji z
 │   │   │   │                                                    App Library per kategoria
 │   │   │   │                                           FUNCTIONS: StepApps
 │   │   │   │                                           DEPENDS ON: react, icons.js, onboardingConfig.js,
 │   │   │   │                                                       app-library.json
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StepIndicator.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepIndicator.jsx
+│   │   │   ├── ⚛️ StepIndicator.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepIndicator.jsx
 │   │   │   │                                           PURPOSE: Wskaźnik postępu onboardingu – animowane dot-y u góry
 │   │   │   │                                                    wizarda
 │   │   │   │                                           FUNCTIONS: StepIndicator
 │   │   │   │                                           DEPENDS ON: react
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StepLanguage.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepLanguage.jsx
+│   │   │   ├── ⚛️ StepLanguage.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepLanguage.jsx
 │   │   │   │                                           PURPOSE: Krok onboardingu 2/5 – wybór języka interfejsu (pl/en)
 │   │   │   │                                                    z zastosowaniem live
 │   │   │   │                                           FUNCTIONS: StepLanguage
 │   │   │   │                                           DEPENDS ON: react, config.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StepPrivacy.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepPrivacy.jsx
+│   │   │   ├── ⚛️ StepPrivacy.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepPrivacy.jsx
 │   │   │   │                                           PURPOSE: Krok onboardingu 3/5 – disclaimer aplikacji + toggles
 │   │   │   │                                                    prywatności (toasty, logi, analityka)
 │   │   │   │                                           FUNCTIONS: StepPrivacy
 │   │   │   │                                           DEPENDS ON: react, onboardingConfig.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StepTheme.jsx ❗                <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepTheme.jsx
+│   │   │   ├── ⚛️ StepTheme.jsx                  <!-- VERSION: 0.0.3 PATH: src/ui/onboarding/StepTheme.jsx
 │   │   │   │                                           PURPOSE: Krok onboardingu 1/5 – wybór motywu (dark/light/system)
 │   │   │   │                                                    z podglądem live
 │   │   │   │                                           FUNCTIONS: StepTheme
@@ -3250,7 +3384,7 @@ root/
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
 │   │   ├── 📁 profiles/
-│   │   │   └── ⚛️ Profiles.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/profiles/Profiles.jsx
+│   │   │   └── ⚛️ Profiles.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/profiles/Profiles.jsx
 │   │   │                                               PURPOSE: UI zarządzania profilami WebView — wyświetlanie listy
 │   │   │                                                        profili z danych IPC (load, wyświetlanie nazwy, URL,
 │   │   │                                                        obsługa błędów). Używa window.electronAPI.invoke
@@ -3259,12 +3393,12 @@ root/
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📁 projects/
-│   │   │   ├── ⚛️ ProjectList.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/projects/ProjectList.jsx
+│   │   │   ├── ⚛️ ProjectList.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/projects/ProjectList.jsx
 │   │   │   │                                           PURPOSE: Lista projektów z akcjami (zadania, terminal, usuwanie)
 │   │   │   │                                           FUNCTIONS: ProjectList
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ProjectManager.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/projects/ProjectManager.jsx
+│   │   │   ├── ⚛️ ProjectManager.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/projects/ProjectManager.jsx
 │   │   │   │                                           PURPOSE: Zarządzanie projektami – lista, dodawanie, usuwanie,
 │   │   │   │                                                    edycja przez hook IPC useProjects.
 │   │   │   │                                           FUNCTIONS: ProjectManager
@@ -3272,13 +3406,13 @@ root/
 │   │   │   │                                                       loggerRenderer.js, icons.js, ConfirmModal.jsx,
 │   │   │   │                                                       ProjectModal.jsx
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ ProjectModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/projects/ProjectModal.jsx
+│   │   │   └── ⚛️ ProjectModal.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/projects/ProjectModal.jsx
 │   │   │                                               PURPOSE: Modal dodawania nowego projektu (nazwa + ścieżka)
 │   │   │                                               FUNCTIONS: ProjectModal
 │   │   │                                               DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📁 settings/
-│   │   │   ├── ⚛️ AccountSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/AccountSection.jsx
+│   │   │   ├── ⚛️ AccountSection.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/settings/AccountSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja zarządzania profilem użytkownika – obecnie służy
 │   │   │   │                                                    jako placeholder dla nadchodzącej funkcji
 │   │   │   │                                                    synchronizacji danych w chmurze (Cloud Sync) planowanej
@@ -3286,21 +3420,21 @@ root/
 │   │   │   │                                           FUNCTIONS: AccountSection
 │   │   │   │                                           DEPENDS ON: react, translations.js, src, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ DataManagementSection.jsx ❗    <!-- VERSION: 0.0.3 PATH: src/ui/settings/DataManagementSection.jsx
+│   │   │   ├── ⚛️ DataManagementSection.jsx      <!-- VERSION: 0.0.3 PATH: src/ui/settings/DataManagementSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja zarządzania danymi aplikacji – eksport, import i
 │   │   │   │                                                    reset ustawień.
 │   │   │   │                                           FUNCTIONS: DataManagementSection
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js,
 │   │   │   │                                                       ConfirmModal
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ DebugModulesSection.jsx ❗      <!-- VERSION: 0.0.3 PATH: src/ui/settings/DebugModulesSection.jsx
+│   │   │   ├── ⚛️ DebugModulesSection.jsx        <!-- VERSION: 0.0.3 PATH: src/ui/settings/DebugModulesSection.jsx
 │   │   │   │                                           PURPOSE: UI do zarządzania filtrowaniem logów per-moduł.
 │   │   │   │                                                    Widoczna tylko w trybie debugMode.
 │   │   │   │                                           FUNCTIONS: DebugModulesSection
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
 │   │   │   │                                                       icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ GeneralSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/GeneralSection.jsx
+│   │   │   ├── ⚛️ GeneralSection.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/settings/GeneralSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja ustawień ogólnych aplikacji – zarządza wyborem
 │   │   │   │                                                    języka (i18n), motywem graficznym (Light/Dark) oraz
 │   │   │   │                                                    globalnym trybem debugowania (developer mode).
@@ -3308,19 +3442,19 @@ root/
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ HotkeyModal.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeyModal.jsx
+│   │   │   ├── ⚛️ HotkeyModal.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeyModal.jsx
 │   │   │   │                                           PURPOSE: Modal do dodawania i edycji skrótów klawiszowych –
 │   │   │   │                                                    formularz z walidacją.
 │   │   │   │                                           FUNCTIONS: HotkeyModal
 │   │   │   │                                           DEPENDS ON: react, translations.js, Modal
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ HotkeysList.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysList.jsx
+│   │   │   ├── ⚛️ HotkeysList.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysList.jsx
 │   │   │   │                                           PURPOSE: Komponent tabeli wyświetlającej listę skrótów
 │   │   │   │                                                    klawiszowych z akcjami edycji i usuwania.
 │   │   │   │                                           FUNCTIONS: HotkeysList
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ HotkeysManager.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManager.jsx
+│   │   │   ├── ⚛️ HotkeysManager.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManager.jsx
 │   │   │   │                                           PURPOSE: Kontener zarządzania skrótami klawiszowymi – ładuje
 │   │   │   │                                                    dane, orkiestruje logikę CRUD i renderuje
 │   │   │   │                                                    podkomponenty.
@@ -3329,14 +3463,14 @@ root/
 │   │   │   │                                                       HotkeysList, HotkeyModal, ConfirmModal,
 │   │   │   │                                                       notificationsManager.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ LogsSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/LogsSection.jsx
+│   │   │   ├── ⚛️ LogsSection.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/settings/LogsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja zarządzania logami — logi testów (LogWriter) i
 │   │   │   │                                                    dziennik zdarzeń aplikacji (EventLogger, ARCH_REQ-044).
 │   │   │   │                                           FUNCTIONS: LogsSection
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js,
 │   │   │   │                                                       Modal
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ NotificationsSection.jsx ❗     <!-- VERSION: 0.0.3 PATH: src/ui/settings/NotificationsSection.jsx
+│   │   │   ├── ⚛️ NotificationsSection.jsx       <!-- VERSION: 0.0.3 PATH: src/ui/settings/NotificationsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja powiadomień — toggles dla toastów UI
 │   │   │   │                                                    (UIUX_REQ-021), powiadomień systemowych OS
 │   │   │   │                                                    (UIUX_REQ-022) oraz Pushbullet.
@@ -3354,7 +3488,7 @@ root/
 │   │   │   │                                                       LogsSection, AccountSection, loggerRenderer.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TabsSection.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/settings/TabsSection.jsx
+│   │   │   ├── ⚛️ TabsSection.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/settings/TabsSection.jsx
 │   │   │   │                                           PURPOSE: Sekcja konfiguracji zarządzania kartami – pozwala na
 │   │   │   │                                                    ustawienie czasu bezczynności, po którym nieaktywne
 │   │   │   │                                                    WebView są uśpiane w celu oszczędzania zasobów
@@ -3363,7 +3497,7 @@ root/
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ WebViewSection.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/settings/WebViewSection.jsx
+│   │   │   └── ⚛️ WebViewSection.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/settings/WebViewSection.jsx
 │   │   │                                               PURPOSE: Konfiguracja silnika przeglądarki (WebView) – zarządza
 │   │   │                                                        globalnym blokowaniem reklam, maskowaniem tożsamości
 │   │   │                                                        przeglądarki (User Agent) oraz trybami wyświetlania
@@ -3373,12 +3507,12 @@ root/
 │   │   │                                                           icons
 │   │   │                                               -->
 │   │   ├── 📁 sidebar/
-│   │   │   ├── ⚛️ ContextMenu.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/ContextMenu.jsx
+│   │   │   ├── ⚛️ ContextMenu.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/ContextMenu.jsx
 │   │   │   │                                           PURPOSE: Menu kontekstowe (PPM) dla profilu
 │   │   │   │                                           FUNCTIONS: ContextMenu
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ Sidebar.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/Sidebar.jsx
+│   │   │   ├── ⚛️ Sidebar.jsx                    <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/Sidebar.jsx
 │   │   │   │                                           PURPOSE: Główny panel nawigacyjny aplikacji – orkiestrator,
 │   │   │   │                                                    deleguje logikę do hooków i podkomponentów.
 │   │   │   │                                           FUNCTIONS: Sidebar
@@ -3388,13 +3522,13 @@ root/
 │   │   │   │                                                       SidebarProfileList, SidebarTools, SidebarWorkspaces,
 │   │   │   │                                                       ProfileModal, CategoryModal, ConfirmModal
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SidebarCategory.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarCategory.jsx
+│   │   │   ├── ⚛️ SidebarCategory.jsx            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarCategory.jsx
 │   │   │   │                                           PURPOSE: Nagłówek kategorii profilów (zwijanie/rozwijanie, menu
 │   │   │   │                                                    kontekstowe)
 │   │   │   │                                           FUNCTIONS: SidebarCategory
 │   │   │   │                                           DEPENDS ON: react, translations.js, loggerRenderer.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SidebarHeader.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarHeader.jsx
+│   │   │   ├── ⚛️ SidebarHeader.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarHeader.jsx
 │   │   │   │                                           PURPOSE: Główny komponent nagłówka paska bocznego (Sidebar) –
 │   │   │   │                                                    udostępnia przyciski akcji do tworzenia nowych profili
 │   │   │   │                                                    i kategorii oraz integruje komponent wyszukiwania
@@ -3403,20 +3537,20 @@ root/
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js,
 │   │   │   │                                                       SidebarSearch
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SidebarProfileItem.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileItem.jsx
+│   │   │   ├── ⚛️ SidebarProfileItem.jsx         <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileItem.jsx
 │   │   │   │                                           PURPOSE: Pojedynczy profil w Sidebarze (ikona, nazwa,
 │   │   │   │                                                    indykatory)
 │   │   │   │                                           FUNCTIONS: SidebarProfileItem
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SidebarProfileList.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileList.jsx
+│   │   │   ├── ⚛️ SidebarProfileList.jsx         <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarProfileList.jsx
 │   │   │   │                                           PURPOSE: Lista profilów w sidebarze – favorites, kategorie,
 │   │   │   │                                                    profil bez kategorii, z obsługą menu kontekstowego.
 │   │   │   │                                           FUNCTIONS: SidebarProfileList
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js,
 │   │   │   │                                                       SidebarCategory, SidebarProfileItem, ContextMenu
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SidebarSearch.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarSearch.jsx
+│   │   │   ├── ⚛️ SidebarSearch.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarSearch.jsx
 │   │   │   │                                           PURPOSE: Komponent paska wyszukiwania zintegrowany z
 │   │   │   │                                                    SidebarHeader – filtrowanie profili i kategorii (tryb
 │   │   │   │                                                    lokalny) oraz globalne wyszukiwanie notatek, zadań i
@@ -3424,13 +3558,13 @@ root/
 │   │   │   │                                           FUNCTIONS: SidebarSearch
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SidebarTools.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarTools.jsx
+│   │   │   ├── ⚛️ SidebarTools.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarTools.jsx
 │   │   │   │                                           PURPOSE: Sekcja narzędzi specjalnych w Sidebarze
 │   │   │   │                                           FUNCTIONS: SidebarTools
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
 │   │   │   │                                                       icons.js, constants.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ SidebarWorkspaces.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarWorkspaces.jsx
+│   │   │   └── ⚛️ SidebarWorkspaces.jsx          <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarWorkspaces.jsx
 │   │   │                                               PURPOSE: Sekcja workspace'ów w Sidebarze
 │   │   │                                               FUNCTIONS: SidebarWorkspaces
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
@@ -3453,13 +3587,13 @@ root/
 │   │   │   │                                           FUNCTIONS: -
 │   │   │   │                                           DEPENDS ON: react
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ModalPortal.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/system/ModalPortal.jsx
+│   │   │   ├── ⚛️ ModalPortal.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/system/ModalPortal.jsx
 │   │   │   │                                           PURPOSE: Modal w portalu (document.body) — ponad natywnym
 │   │   │   │                                                    <webview> w Electronie.
 │   │   │   │                                           FUNCTIONS: ModalPortal
 │   │   │   │                                           DEPENDS ON: react, react-dom
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ OnboardingScreen.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/system/OnboardingScreen.jsx
+│   │   │   ├── ⚛️ OnboardingScreen.jsx           <!-- VERSION: 0.0.3 PATH: src/ui/system/OnboardingScreen.jsx
 │   │   │   │                                           PURPOSE: Re-export komponentu Onboarding z nowej lokalizacji dla
 │   │   │   │                                                    kompatybilności wstecznej
 │   │   │   │                                           FUNCTIONS: default as OnboardingScreen
@@ -3472,7 +3606,7 @@ root/
 │   │   │   │                                           FUNCTIONS: SplashScreen
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ToastContainer.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/system/ToastContainer.jsx
+│   │   │   ├── ⚛️ ToastContainer.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/system/ToastContainer.jsx
 │   │   │   │                                           PURPOSE: Globalny kontener toastów z kolejką FIFO i animowanym
 │   │   │   │                                                    stackiem. Subskrybuje się na CustomEvent 'mwm:toast' z
 │   │   │   │                                                    notificationsManager.js. Zarządza stanem przez
@@ -3481,7 +3615,7 @@ root/
 │   │   │   │                                           FUNCTIONS: ToastContainer
 │   │   │   │                                           DEPENDS ON: react, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ UpdateChecker.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/system/UpdateChecker.jsx
+│   │   │   └── ⚛️ UpdateChecker.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/system/UpdateChecker.jsx
 │   │   │                                               PURPOSE: Komponent sprawdzania aktualizacji. Używa globalnego
 │   │   │                                                        showToast (UIUX_REQ-021) zamiast lokalnego stanu
 │   │   │                                                        inline.
@@ -3490,12 +3624,12 @@ root/
 │   │   │                                                           notificationsManager.js
 │   │   │                                               -->
 │   │   ├── 📁 taskpanel/
-│   │   │   ├── ⚛️ CommentModal.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/CommentModal.jsx
+│   │   │   ├── ⚛️ CommentModal.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/CommentModal.jsx
 │   │   │   │                                           PURPOSE: Modal podglądu komentarza/kodu do zadania
 │   │   │   │                                           FUNCTIONS: CommentModal
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskDetails.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskDetails.jsx
+│   │   │   ├── ⚛️ TaskDetails.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskDetails.jsx
 │   │   │   │                                           PURPOSE: Widok szczegółowy pojedynczego zadania. Umożliwia
 │   │   │   │                                                    szybką edycję statusu i priorytetu bezpośrednio z
 │   │   │   │                                                    poziomu podglądu oraz synchronizację tych zmian przez
@@ -3504,7 +3638,7 @@ root/
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, constants.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskEditor.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskEditor.jsx
+│   │   │   ├── ⚛️ TaskEditor.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskEditor.jsx
 │   │   │   │                                           PURPOSE: Wyspecjalizowany edytor zadań (inline lub modal)
 │   │   │   │                                                    obsługujący walidację danych wejściowych, komunikację z
 │   │   │   │                                                    tasksStore przez IPC oraz integrację z systemem
@@ -3513,13 +3647,13 @@ root/
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, constants.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskEmptyState.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskEmptyState.jsx
+│   │   │   ├── ⚛️ TaskEmptyState.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskEmptyState.jsx
 │   │   │   │                                           PURPOSE: Komponent wyświetlający stan braku zadań w danej
 │   │   │   │                                                    sekcji.
 │   │   │   │                                           FUNCTIONS: TaskEmptyState
 │   │   │   │                                           DEPENDS ON: react, translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskItem.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskItem.jsx
+│   │   │   ├── ⚛️ TaskItem.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskItem.jsx
 │   │   │   │                                           PURPOSE: Pojedynczy element zadania w panelu. Wyświetla status,
 │   │   │   │                                                    priorytet, nazwę i przyciski akcji. Przyciski ruchu
 │   │   │   │                                                    między sekcjami są kontekstowe (zależą od section i
@@ -3527,7 +3661,7 @@ root/
 │   │   │   │                                           FUNCTIONS: TaskItem
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskList.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskList.jsx
+│   │   │   ├── ⚛️ TaskList.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskList.jsx
 │   │   │   │                                           PURPOSE: Główny komponent listy zadań (Kanban/List view) –
 │   │   │   │                                                    odpowiada za dynamiczne filtrowanie, grupowanie według
 │   │   │   │                                                    statusu (TODO, IN_PROGRESS, BLOCKED, DONE) oraz
@@ -3536,7 +3670,7 @@ root/
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, constants.js,
 │   │   │   │                                                       translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskModal.jsx ❗                <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskModal.jsx
+│   │   │   ├── ⚛️ TaskModal.jsx                  <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskModal.jsx
 │   │   │   │                                           PURPOSE: Modal dodawania i edycji zadania. Status wybierany
 │   │   │   │                                                    przez użytkownika – sekcja jest wyznaczana
 │   │   │   │                                                    automatycznie (status→section). Priorytety: A–E. Pola:
@@ -3544,7 +3678,7 @@ root/
 │   │   │   │                                           FUNCTIONS: TaskModal
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ TaskPanel.jsx ❗                <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskPanel.jsx
+│   │   │   ├── ⚛️ TaskPanel.jsx                  <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskPanel.jsx
 │   │   │   │                                           PURPOSE: Główny komponent panelu zadań – zarządza zadaniami per
 │   │   │   │                                                    TaskGroup. Otwierany z kontekstu profilu WebView
 │   │   │   │                                                    (Sidebar). Obsługuje sekcje (active/backlog/done) i
@@ -3568,7 +3702,7 @@ root/
 │   │   │                                               DEPENDS ON: react, translations.js, TaskSection.jsx
 │   │   │                                               -->
 │   │   ├── 📁 tasks/
-│   │   │   ├── ⚛️ AggregatedProjectSection.jsx ❗ <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedProjectSection.jsx
+│   │   │   ├── ⚛️ AggregatedProjectSection.jsx   <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedProjectSection.jsx
 │   │   │   │                                           PURPOSE: Pojedyncza sekcja grupy zadań (TaskGroup) w widoku
 │   │   │   │                                                    zbiorczym. Wyświetla zadania per sekcja z pinem na
 │   │   │   │                                                    górze.
@@ -3576,14 +3710,14 @@ root/
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js,
 │   │   │   │                                                       AggregatedTaskItem.jsx
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ AggregatedTaskItem.jsx ❗       <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTaskItem.jsx
+│   │   │   ├── ⚛️ AggregatedTaskItem.jsx         <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTaskItem.jsx
 │   │   │   │                                           PURPOSE: Pojedynczy element zadania w widoku zbiorczym.
 │   │   │   │                                                    Wyświetla status (ikona), priorytet (kolor), nazwę,
 │   │   │   │                                                    flagę pinned, komentarz, wersję.
 │   │   │   │                                           FUNCTIONS: AggregatedTaskItem
 │   │   │   │                                           DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ AggregatedTasks.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTasks.jsx
+│   │   │   └── ⚛️ AggregatedTasks.jsx            <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTasks.jsx
 │   │   │                                               PURPOSE: Widok zbiorczy zadań ze wszystkich grup (TaskGroup).
 │   │   │                                                        Filtrowanie po statusie, priorytecie, sekcji.
 │   │   │                                                        Zwijanie/rozwijanie per grupa.
@@ -3601,77 +3735,77 @@ root/
 │   │   │                                                           translations.js, loggerRenderer, icons
 │   │   │                                               -->
 │   │   ├── 📁 tools/
-│   │   │   ├── ⚛️ ClipboardHistory.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/tools/ClipboardHistory.jsx
+│   │   │   ├── ⚛️ ClipboardHistory.jsx           <!-- VERSION: 0.0.3 PATH: src/ui/tools/ClipboardHistory.jsx
 │   │   │   │                                           PURPOSE: Historia schowka z pinowaniem i wyszukiwarką
 │   │   │   │                                           FUNCTIONS: ClipboardHistory
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ CookieGrabber.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/tools/CookieGrabber.jsx
+│   │   │   ├── ⚛️ CookieGrabber.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/tools/CookieGrabber.jsx
 │   │   │   │                                           PURPOSE: Pobieranie cookies z aktywnego WebView – tabela,
 │   │   │   │                                                    kopiowanie, eksport
 │   │   │   │                                           FUNCTIONS: CookieGrabber
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ FilePreviewer.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/tools/FilePreviewer.jsx
+│   │   │   ├── ⚛️ FilePreviewer.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/tools/FilePreviewer.jsx
 │   │   │   │                                           PURPOSE: Podgląd plików (RAW/PREVIEW) – TXT, JSON, HTML, SVG,
 │   │   │   │                                                    Markdown, obrazy
 │   │   │   │                                           FUNCTIONS: FilePreviewer
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons, markdownRenderer
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ImageTools.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/tools/ImageTools.jsx
+│   │   │   ├── ⚛️ ImageTools.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/tools/ImageTools.jsx
 │   │   │   │                                           PURPOSE: Kompresja, resize i konwersja obrazów (drag & drop,
 │   │   │   │                                                    preview)
 │   │   │   │                                           FUNCTIONS: ImageTools
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons, imageUtils
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ JsonFormatter.jsx ❗            <!-- VERSION: 0.0.3 PATH: src/ui/tools/JsonFormatter.jsx
+│   │   │   ├── ⚛️ JsonFormatter.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/tools/JsonFormatter.jsx
 │   │   │   │                                           PURPOSE: Formatowanie i walidacja JSON/YAML/XML
 │   │   │   │                                           FUNCTIONS: JsonFormatter
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ MarkdownPreviewer.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/tools/MarkdownPreviewer.jsx
+│   │   │   ├── ⚛️ MarkdownPreviewer.jsx          <!-- VERSION: 0.0.3 PATH: src/ui/tools/MarkdownPreviewer.jsx
 │   │   │   │                                           PURPOSE: Podgląd Markdown na żywo (split view)
 │   │   │   │                                           FUNCTIONS: MarkdownPreviewer
 │   │   │   │                                           DEPENDS ON: react, config.js, loggerRenderer.js, translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ MiniPostman.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/tools/MiniPostman.jsx
+│   │   │   ├── ⚛️ MiniPostman.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/tools/MiniPostman.jsx
 │   │   │   │                                           PURPOSE: Lekki API tester (GET/POST/PUT/DELETE, nagłówki, body,
 │   │   │   │                                                    odpowiedź)
 │   │   │   │                                           FUNCTIONS: MiniPostman
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons, apiClient
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ RegexTester.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/tools/RegexTester.jsx
+│   │   │   ├── ⚛️ RegexTester.jsx                <!-- VERSION: 0.0.3 PATH: src/ui/tools/RegexTester.jsx
 │   │   │   │                                           PURPOSE: Testowanie wyrażeń regularnych
 │   │   │   │                                           FUNCTIONS: RegexTester
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       regexEngine
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ RemoveBgTool.jsx ❗             <!-- VERSION: 0.0.3 PATH: src/ui/tools/RemoveBgTool.jsx
+│   │   │   ├── ⚛️ RemoveBgTool.jsx               <!-- VERSION: 0.0.3 PATH: src/ui/tools/RemoveBgTool.jsx
 │   │   │   │                                           PURPOSE: Narzędzie do masowego usuwania tła ze zdjęć przez API
 │   │   │   │                                                    remove.bg.
 │   │   │   │                                           FUNCTIONS: RemoveBgTool
 │   │   │   │                                           DEPENDS ON: react, axios, icons, translations.js, loggerRenderer,
 │   │   │   │                                                       config, notificationsManager.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ StringCombiner.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/tools/StringCombiner.jsx
+│   │   │   ├── ⚛️ StringCombiner.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/tools/StringCombiner.jsx
 │   │   │   │                                           PURPOSE: Generator kombinacji stringów. Podajesz tekst bazowy,
 │   │   │   │                                                    znak podziału
 │   │   │   │                                           FUNCTIONS: StringCombiner
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, icons, translations.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SvgToPngConverter.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/tools/SvgToPngConverter.jsx
+│   │   │   ├── ⚛️ SvgToPngConverter.jsx          <!-- VERSION: 0.0.3 PATH: src/ui/tools/SvgToPngConverter.jsx
 │   │   │   │                                           PURPOSE: Konwersja SVG → PNG z wyborem rozdzielczości (drag &
 │   │   │   │                                                    drop, preview)
 │   │   │   │                                           FUNCTIONS: SvgToPngConverter
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer,
 │   │   │   │                                                       icons, svgToPng
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ ToolsPanel.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/tools/ToolsPanel.jsx
+│   │   │   └── ⚛️ ToolsPanel.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/tools/ToolsPanel.jsx
 │   │   │                                               PURPOSE: Główny panel narzędziowy aplikacji (Tools Panel) –
 │   │   │                                                        dostarcza interfejs oparty na zakładkach do obsługi
 │   │   │                                                        narzędzi pomocniczych (JSON Formatter, Regex Tester,
@@ -3686,7 +3820,7 @@ root/
 │   │   │                                                           loggerRenderer, Spinner
 │   │   │                                               -->
 │   │   ├── 📁 views/
-│   │   │   ├── ⚛️ ContentRenderer.jsx ❗          <!-- VERSION: 0.0.3 PATH: src/ui/views/ContentRenderer.jsx
+│   │   │   ├── ⚛️ ContentRenderer.jsx            <!-- VERSION: 0.0.3 PATH: src/ui/views/ContentRenderer.jsx
 │   │   │   │                                           PURPOSE: Router widoków — deleguje do WebViewContainer,
 │   │   │   │                                                    ToolsContainer lub SettingsContainer
 │   │   │   │                                           FUNCTIONS: ContentRenderer
@@ -3694,20 +3828,24 @@ root/
 │   │   │   │                                                       WebViewContainer.jsx, ToolsContainer.jsx,
 │   │   │   │                                                       SettingsContainer.jsx
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ SettingsContainer.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/views/SettingsContainer.jsx
-│   │   │   │                                           PURPOSE: Kontener renderowania ustawień, pomocy, historii i
-│   │   │   │                                                    zadań zagregowanych
+│   │   │   ├── ⚛️ SettingsContainer.jsx          <!-- VERSION: 0.0.3 PATH: src/ui/views/SettingsContainer.jsx
+│   │   │   │                                           PURPOSE: Kontener renderowania widoków
+│   │   │   │                                                    ustawień/pomocy/historii/zadań. Używa SETTINGS_REGISTRY
+│   │   │   │                                                    zamiast switch-case — nowy widok = wpis w
+│   │   │   │                                                    src/config/settingsRegistry.js, bez modyfikacji
+│   │   │   │                                                    kontenera.
 │   │   │   │                                           FUNCTIONS: SettingsContainer
-│   │   │   │                                           DEPENDS ON: react, config.js, loggerRenderer.js, Spinner.jsx
+│   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js,
+│   │   │   │                                                       Spinner.jsx, settingsRegistry.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ Spinner.jsx ❗                  <!-- VERSION: 0.0.3 PATH: src/ui/views/Spinner.jsx
+│   │   │   ├── ⚛️ Spinner.jsx                    <!-- VERSION: 0.0.3 PATH: src/ui/views/Spinner.jsx
 │   │   │   │                                           PURPOSE: Współdzielony komponent wizualny wskaźnika ładowania
 │   │   │   │                                                    (loader). Wykorzystywany jako fallback dla React
 │   │   │   │                                                    Suspense oraz podczas asynchronicznych operacji I/O.
 │   │   │   │                                           FUNCTIONS: Spinner
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js
 │   │   │   │                                           -->
-│   │   │   ├── ⚛️ ToolsContainer.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/views/ToolsContainer.jsx
+│   │   │   ├── ⚛️ ToolsContainer.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/views/ToolsContainer.jsx
 │   │   │   │                                           PURPOSE: Kontener renderowania narzędzi specjalnych. Używa
 │   │   │   │                                                    TOOLS_REGISTRY zamiast switch-case – nowe narzędzie =
 │   │   │   │                                                    wpis w src/config/toolsRegistry.js, bez modyfikacji
@@ -3716,13 +3854,13 @@ root/
 │   │   │   │                                           DEPENDS ON: react, loggerRenderer.js, translations.js,
 │   │   │   │                                                       Spinner.jsx, toolsRegistry.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ WebViewContainer.jsx ❗         <!-- VERSION: 0.0.3 PATH: src/ui/views/WebViewContainer.jsx
+│   │   │   └── ⚛️ WebViewContainer.jsx           <!-- VERSION: 0.0.3 PATH: src/ui/views/WebViewContainer.jsx
 │   │   │                                               PURPOSE: Kontener renderowania WebView dla aktywnego profilu
 │   │   │                                               FUNCTIONS: WebViewContainer
 │   │   │                                               DEPENDS ON: react, Spinner.jsx, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📁 webview/
-│   │   │   ├── ⚛️ WebViewTab.jsx ❗               <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewTab.jsx
+│   │   │   ├── ⚛️ WebViewTab.jsx                 <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewTab.jsx
 │   │   │   │                                           PURPOSE: Zakładka WebView – lifecycle, nawigacja, zoom,
 │   │   │   │                                                    recovery, logowanie błędów
 │   │   │   │                                           FUNCTIONS: WebViewTab
@@ -3730,7 +3868,7 @@ root/
 │   │   │   │                                                       WebViewToolbar.jsx, useWebViewEvents.js,
 │   │   │   │                                                       useWebViewActions.js
 │   │   │   │                                           -->
-│   │   │   └── ⚛️ WebViewToolbar.jsx ❗           <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewToolbar.jsx
+│   │   │   └── ⚛️ WebViewToolbar.jsx             <!-- VERSION: 0.0.3 PATH: src/ui/webview/WebViewToolbar.jsx
 │   │   │                                               PURPOSE: Pasek narzędzi WebView – przyciski i akcje (Back,
 │   │   │                                                        Forward, Reload, Zoom, itp.)
 │   │   │                                               FUNCTIONS: WebViewToolbar
@@ -3817,14 +3955,14 @@ root/
 │   │   │                                               FUNCTIONS: pingUrl
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 notepadStorage.js ❗                 <!-- VERSION: 0.0.3 PATH: src/utils/notepadStorage.js
+│   │   ├── 📜 notepadStorage.js                   <!-- VERSION: 0.0.3 PATH: src/utils/notepadStorage.js
 │   │   │                                               PURPOSE: Pomocnicze funkcje zapisu i odczytu notatek oraz
 │   │   │                                                        fabryka zakładek
 │   │   │                                               FUNCTIONS: createNewTab, loadnotepadFromStorage,
 │   │   │                                                          savenotepadToStorage
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 notificationsManager.js ❗           <!-- VERSION: 0.0.3 PATH: src/utils/notificationsManager.js
+│   │   ├── 📜 notificationsManager.js             <!-- VERSION: 0.0.3 PATH: src/utils/notificationsManager.js
 │   │   │                                               PURPOSE: Fasada globalnego systemu powiadomień — dispatchuje
 │   │   │                                                        toasty UI przez CustomEvent do ToastContainer oraz
 │   │   │                                                        wywołuje systemowe powiadomienia OS przez IPC. Nie
@@ -3832,7 +3970,7 @@ root/
 │   │   │                                               FUNCTIONS: showToast, showSystemNotification
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 persistence.js ❗                    <!-- VERSION: 0.0.3 PATH: src/utils/persistence.js
+│   │   ├── 📜 persistence.js                      <!-- VERSION: 0.0.3 PATH: src/utils/persistence.js
 │   │   │                                               PURPOSE: Wspólne operacje I/O dla plików JSON – odczyt, zapis i
 │   │   │                                                        zarządzanie ścieżkami w katalogu userData Electrona.
 │   │   │                                               FUNCTIONS: getUserDataPath, readJsonFile, writeJsonFile
@@ -3846,7 +3984,7 @@ root/
 │   │   │                                               FUNCTIONS: buildSearchIndex, searchAll
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   ├── 📜 sharpLoader.js ❗                    <!-- VERSION: 0.0.3 PATH: src/utils/sharpLoader.js
+│   │   ├── 📜 sharpLoader.js                      <!-- VERSION: 0.0.3 PATH: src/utils/sharpLoader.js
 │   │   │                                               PURPOSE: Leniwe ładowanie modułu sharp (przetwarzanie obrazów) z
 │   │   │                                                        obsługą braku zależności. Używane przez
 │   │   │                                                        ipcMainHandlers_imageSharp.js w main process.
@@ -3881,7 +4019,7 @@ root/
 │   │   │                                                          validatePassword, validatePhone
 │   │   │                                               DEPENDS ON: logger.js
 │   │   │                                               -->
-│   │   └── 📜 yamlLoader.js ❗                     <!-- VERSION: 0.0.3 PATH: src/utils/yamlLoader.js
+│   │   └── 📜 yamlLoader.js                       <!-- VERSION: 0.0.3 PATH: src/utils/yamlLoader.js
 │   │                                                   PURPOSE: Leniwe ładowanie modułu js-yaml
 │   │                                                            (parsowanie/serializacja YAML) z obsługą braku
 │   │                                                            zależności. Używane przez ipcMainHandlers_jsonYaml.js w
@@ -3889,7 +4027,7 @@ root/
 │   │                                                   FUNCTIONS: loadYaml
 │   │                                                   DEPENDS ON: komponenty z folderu yaml/
 │   │                                                   -->
-│   ├── ⚛️ App.jsx ❗                              <!-- VERSION: 0.0.3 PATH: src/App.jsx
+│   ├── ⚛️ App.jsx                                <!-- VERSION: 0.0.3 PATH: src/App.jsx
 │   │                                                   PURPOSE: Główny komponent root aplikacji React – zarządza
 │   │                                                            przełączaniem widoków (Splash/Onboarding/Layout).
 │   │                                                   FUNCTIONS: App
@@ -3926,7 +4064,8 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Assets.js                    <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Assets.js
-│   │                                                   PURPOSE: Testy spójności plików w folderze assets/
+│   │                                                   PURPOSE: Testy spójności plików w folderze assets/ — obecność,
+│   │                                                            rozszerzenia, rozmiar.
 │   │                                                   FUNCTIONS: runAssetsTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
@@ -3937,8 +4076,9 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_CSS.js                       <!-- VERSION: 0.0.3 PATH: tests/TestRunner_CSS.js
-│   │                                                   PURPOSE: Testy spójności plików CSS (importy, kolejność,
-│   │                                                            istniejące pliki)
+│   │                                                   PURPOSE: Testy spójności plików CSS — src/ui/index.css importuje
+│   │                                                            layout.css + styles/theme.css + styles/components.css,
+│   │                                                            brak kołowych zależności.
 │   │                                                   FUNCTIONS: runCssTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
@@ -3949,12 +4089,15 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Config.js                    <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Config.js
-│   │                                                   PURPOSE: Testy pliku konfiguracyjnego config.js
+│   │                                                   PURPOSE: Testy modułów konfiguracyjnych z src/config/* —
+│   │                                                            features, limits, settings, app, paths, endpoints oraz
+│   │                                                            re-eksportu przez src/config.js.
 │   │                                                   FUNCTIONS: runConfigTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_Doc.js                       <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Doc.js
-│   │                                                   PURPOSE: Testy spójności dokumentacji w folderze doc/
+│   │                                                   PURPOSE: Testy spójności dokumentacji w folderze doc/ — obecność
+│   │                                                            plików, nagłówki MD, README.
 │   │                                                   FUNCTIONS: runDocTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
@@ -3972,15 +4115,19 @@ root/
 │   │                                                   FUNCTIONS: runEventLoggerTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_History.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_History.js
-│   │                                                   PURPOSE: Testy integralności logów aktywności użytkownika.
-│   │                                                            Sprawdza walidację poziomów logowania, mechanizmy
-│   │                                                            filtrowania zdarzeń oraz poprawność przycinania
-│   │                                                            historii do zdefiniowanych limitów (FIFO).
-│   │                                                   FUNCTIONS: runHistoryTests
-│   │                                                   DEPENDS ON: testUtils.js
+│   ├── 📜 TestRunner_Features.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Features.js
+│   │                                                   PURPOSE: Testy modułu feature flags (src/config/features.js) —
+│   │                                                            isFeatureEnabled, isToolEnabled, spójność FEATURES.
+│   │                                                   FUNCTIONS: runFeaturesTests
+│   │                                                   DEPENDS ON: testUtils.js, path
 │   │                                                   -->
-│   ├── 📜 TestRunner_Hooks.js ❗                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Hooks.js
+│   ├── 📜 TestRunner_History.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_History.js
+│   │                                                   PURPOSE: Testy historii aktywności — historyStore CRUD,
+│   │                                                            walidacja struktury wpisów, filtrowanie, limit FIFO.
+│   │                                                   FUNCTIONS: runHistoryTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
+│   ├── 📜 TestRunner_Hooks.js                     <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Hooks.js
 │   │                                                   PURPOSE: Testy hooków React – weryfikacja eksportów, obsługi
 │   │                                                            błędów i struktury zwracanych danych przez mock
 │   │                                                            electronAPI.
@@ -4000,6 +4147,26 @@ root/
 │   │                                                   FUNCTIONS: runIconsTests
 │   │                                                   DEPENDS ON: testUtils.js, icons.js
 │   │                                                   -->
+│   ├── 📜 TestRunner_IpcChannels.js               <!-- VERSION: 0.0.3 PATH: tests/TestRunner_IpcChannels.js
+│   │                                                   PURPOSE: Testy rejestru kanałów IPC
+│   │                                                            (src/constants/ipcChannels.js) — kompletność grup, brak
+│   │                                                            duplikatów wartości, format string 'group:action'.
+│   │                                                   FUNCTIONS: runIpcChannelsTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
+│   ├── 📜 TestRunner_Limits.js                    <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Limits.js
+│   │                                                   PURPOSE: Testy modułu limitów aplikacji (src/config/limits.js) —
+│   │                                                            LIMITS, getLimit.
+│   │                                                   FUNCTIONS: runLimitsTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
+│   ├── 📜 TestRunner_Loaders.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Loaders.js
+│   │                                                   PURPOSE: Testy loaderów dynamicznych — ipcLoader
+│   │                                                            (loadAllIpcHandlers) i testsLoader (loadAndRunAllTests)
+│   │                                                            — eksporty, kształt odpowiedzi, wykrywanie plików.
+│   │                                                   FUNCTIONS: runLoadersTests
+│   │                                                   DEPENDS ON: testUtils.js, path, fs
+│   │                                                   -->
 │   ├── 📜 TestRunner_Locales.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Locales.js
 │   │                                                   PURPOSE: Testy integralności plików locales (dynamicznie z
 │   │                                                            LANGUAGES z config.js)
@@ -4013,18 +4180,17 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js, logWriter.js
 │   │                                                   -->
 │   ├── 📜 TestRunner_MainEngine.js                <!-- VERSION: 0.0.3 PATH: tests/TestRunner_MainEngine.js
-│   │                                                   PURPOSE: Testy modułów wyciągniętych z main.js (webviewRegistry,
-│   │                                                            adBlocker, hotkeysManager)
+│   │                                                   PURPOSE: Testy modułów silnika głównego: webviewRegistry,
+│   │                                                            resourceMonitor, webviewScriptInjector, hotkeysManager.
 │   │                                                   FUNCTIONS: runMainEngineTests
-│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   DEPENDS ON: testUtils.js, path
 │   │                                                   -->
 │   ├── 📜 TestRunner_Notepad.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Notepad.js
-│   │                                                   PURPOSE: Zestaw testów dla modułu notatnika. Weryfikuje
-│   │                                                            integralność danych kart, poprawność mechanizmu
-│   │                                                            autozapisu (dirty checking) oraz logikę przełączania
-│   │                                                            kontekstu między dokumentami.
+│   │                                                   PURPOSE: Testy modułu notatnika — notepadStorage (createNewTab,
+│   │                                                            load/save), notepadStore (CRUD), dirty-checking i
+│   │                                                            logika zakładek.
 │   │                                                   FUNCTIONS: runNotepadTests
-│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   DEPENDS ON: testUtils.js, path
 │   │                                                   -->
 │   ├── 📜 TestRunner_Notifications.js             <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Notifications.js
 │   │                                                   PURPOSE: Testy jednostkowe globalnego systemu toastów —
@@ -4039,33 +4205,42 @@ root/
 │   │                                                   DEPENDS ON: testUtils.js, react-dom
 │   │                                                   -->
 │   ├── 📜 TestRunner_Profiles.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Profiles.js
-│   │                                                   PURPOSE: Zestaw testów jednostkowych i integracyjnych dla
-│   │                                                            zarządzania profilami WebView. Weryfikuje strukturę
-│   │                                                            danych, poprawność kategorii oraz mechanizmy sortowania
-│   │                                                            chronologicznego.
+│   │                                                   PURPOSE: Testy zarządzania profilami WebView — struktura danych,
+│   │                                                            profilesStore CRUD, sortowanie, kategorie,
+│   │                                                            defaultProfiles.json.
 │   │                                                   FUNCTIONS: runProfilesTests
-│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   DEPENDS ON: testUtils.js, path, fs
 │   │                                                   -->
 │   ├── 📜 TestRunner_Projects.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Projects.js
-│   │                                                   PURPOSE: Zestaw testów dla modułu projektów. Weryfikuje
-│   │                                                            mechanizmy archiwizacji, strukturę obiektów
-│   │                                                            projektowych oraz poprawność agregacji liczby zadań
-│   │                                                            przypisanych do konkretnych projektów.
+│   │                                                   PURPOSE: Testy modułu projektów — struktura, projectsStore CRUD,
+│   │                                                            archiwizacja, agregacja zadań.
 │   │                                                   FUNCTIONS: runProjectsTests
-│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   DEPENDS ON: testUtils.js, path
 │   │                                                   -->
 │   ├── 📜 TestRunner_Reexport.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Reexport.js
 │   │                                                   PURPOSE: Testy poprawności re-eksportów (config.js, icons.js)
 │   │                                                   FUNCTIONS: runReexportTests
 │   │                                                   DEPENDS ON: fs, path, testUtils.js
 │   │                                                   -->
+│   ├── 📜 TestRunner_Registries.js                <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Registries.js
+│   │                                                   PURPOSE: Testy rejestrów komponentów (settingsRegistry,
+│   │                                                            toolsRegistry) — eksporty, kompletność wpisów, flagi
+│   │                                                            featureFlag, getSettingsComponent/getToolComponent.
+│   │                                                   FUNCTIONS: runRegistriesTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
+│   ├── 📜 TestRunner_SearchIndex.js               <!-- VERSION: 0.0.3 PATH: tests/TestRunner_SearchIndex.js
+│   │                                                   PURPOSE: Testy modułu globalnego wyszukiwania
+│   │                                                            (src/utils/searchIndex.js) — buildSearchIndex,
+│   │                                                            searchAll, filtrowanie i edge cases.
+│   │                                                   FUNCTIONS: runSearchIndexTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
 │   ├── 📜 TestRunner_Settings.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Settings.js
-│   │                                                   PURPOSE: Zestaw testów dla silnika ustawień. Weryfikuje
-│   │                                                            bezpieczeństwo głębokiego łączenia (merge)
-│   │                                                            konfiguracji, stabilność przełączania motywów oraz
-│   │                                                            poprawność schematu danych przy imporcie/eksporcie.
+│   │                                                   PURPOSE: Testy silnika ustawień — merge logika,
+│   │                                                            getDefaultSetting, DEBUG_MODULES, settingsStore CRUD.
 │   │                                                   FUNCTIONS: runSettingsTests
-│   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   DEPENDS ON: testUtils.js, path
 │   │                                                   -->
 │   ├── 📜 TestRunner_SleepTabs.js                 <!-- VERSION: 0.0.3 PATH: tests/TestRunner_SleepTabs.js
 │   │                                                   PURPOSE: Testy jednostkowe dla Sleep Tabs – sleepTabsManager
@@ -4086,14 +4261,23 @@ root/
 │   │                                                   FUNCTIONS: runStoreTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_Tasks.js ❗                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Tasks.js
+│   ├── 📜 TestRunner_Stores.js                    <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Stores.js
+│   │                                                   PURPOSE: Testy wszystkich stores (main process) — eksporty CRUD,
+│   │                                                            logika domenowa: workspacesStore, accountsStore,
+│   │                                                            clipboardStore, taskGroupsStore, appLibraryStore,
+│   │                                                            tasksStore (VALID_STATUSES, STATUS_TO_SECTION,
+│   │                                                            resolveSection, normalizeTask).
+│   │                                                   FUNCTIONS: runStoresTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
+│   ├── 📜 TestRunner_Tasks.js                     <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Tasks.js
 │   │                                                   PURPOSE: Testy logiki domenowej systemu zadań: model danych,
 │   │                                                            reguły section↔status, normalizeTask, tasksStore CRUD.
 │   │                                                            Testy izolowane – nie wymagają Electron ani IPC.
 │   │                                                   FUNCTIONS: runTasksTests
 │   │                                                   DEPENDS ON: testUtils.js, tasksStore.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_TasksPanel.js ❗              <!-- VERSION: 0.0.3 PATH: tests/TestRunner_TasksPanel.js
+│   ├── 📜 TestRunner_TasksPanel.js                <!-- VERSION: 0.0.3 PATH: tests/TestRunner_TasksPanel.js
 │   │                                                   PURPOSE: Testy integracyjne komponentów UI TaskPanel
 │   │                                                            (src/ui/taskpanel) i AggregatedTasks (src/ui/tasks).
 │   │                                                            Weryfikuje eksporty komponentów, stałe, IPC API dla
@@ -4113,6 +4297,20 @@ root/
 │   │                                                   FUNCTIONS: runToolsTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
+│   ├── 📜 TestRunner_Update.js                    <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Update.js
+│   │                                                   PURPOSE: Testy serwisu aktualizacji
+│   │                                                            (src/engine/updateService.js) — checkForUpdates stub +
+│   │                                                            kształt odpowiedzi.
+│   │                                                   FUNCTIONS: runUpdateTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
+│   ├── 📜 TestRunner_UrlUtils.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_UrlUtils.js
+│   │                                                   PURPOSE: Testy modułu urlUtils (normalizeWebUrl, isValidWebUrl,
+│   │                                                            isSafeUrl) — walidacja URL, blokowanie niebezpiecznych
+│   │                                                            schematów, edge cases.
+│   │                                                   FUNCTIONS: runUrlUtilsTests
+│   │                                                   DEPENDS ON: testUtils.js, path
+│   │                                                   -->
 │   ├── 📜 TestRunner_UseAsync.js                  <!-- VERSION: 0.0.3 PATH: tests/TestRunner_UseAsync.js
 │   │                                                   PURPOSE: Testy hooka useAsync i useAsyncMutation – poprawność
 │   │                                                            stanów loading/error/data, obsługa błędów IPC,
@@ -4126,6 +4324,14 @@ root/
 │   │                                                            networkUtils, fileUtils.
 │   │                                                   FUNCTIONS: runUtilsTests
 │   │                                                   DEPENDS ON: testUtils.js
+│   │                                                   -->
+│   ├── 📜 TestRunner_Validators.js                <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Validators.js
+│   │                                                   PURPOSE: Testy modułu validators — ensureString, ensureObject,
+│   │                                                            validateUrl, validateEmail, validateLength,
+│   │                                                            validateNoSpecialChars, validatePassword,
+│   │                                                            validatePhone.
+│   │                                                   FUNCTIONS: runValidatorsTests
+│   │                                                   DEPENDS ON: testUtils.js, path
 │   │                                                   -->
 │   ├── 📜 TestRunner_WebView.js                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_WebView.js
 │   │                                                   PURPOSE: Testy jednostkowe dla WebView (Single App, Screenshot,
@@ -4144,7 +4350,7 @@ root/
 │                                                       FUNCTIONS: -
 │                                                       DEPENDS ON: config.js
 │                                                       -->
-├── 📜 main.js ❗                                   <!-- VERSION: 0.0.3 PATH: main.js
+├── 📜 main.js                                     <!-- VERSION: 0.0.3 PATH: main.js
 │                                                       PURPOSE: Główna logika procesu głównego Electron – koordynacja,
 │                                                                okno, bezpieczeństwo
 │                                                       FUNCTIONS: createWindow, runStartupTestsIfEnabled,
@@ -4159,7 +4365,7 @@ root/
 │                                                       FUNCTIONS: -
 │                                                       DEPENDS ON: -
 │                                                       -->
-├── 📜 preload.cjs ❗                               <!-- VERSION: 0.0.3 PATH: preload.cjs
+├── 📜 preload.cjs                                 <!-- VERSION: 0.0.3 PATH: preload.cjs
 │                                                       PURPOSE: Bridge IPC – eksponuje bezpieczne API dla renderera
 │                                                                (contextBridge). Definiuje metody komunikacji i
 │                                                                handlery zdarzeń z mechanizmem cleanup.

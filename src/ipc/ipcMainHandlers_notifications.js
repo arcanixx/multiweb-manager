@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_notifications.js
 // VERSION: 0.0.3
 // PURPOSE: Handler IPC dla natywnych powiadomień systemowych OS (Windows/macOS). Przeniesione do procesu głównego — działa nawet gdy okno jest zminimalizowane lub ukryte w tray. Implementuje UIUX_REQ-022.
-// FUNCTIONS: ipc:notifications:showSystem
+// FUNCTIONS: const:IPC_CHANNELS.NOTIFICATIONS.SHOW_SYSTEM
 // DEPENDS ON: electron, path, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -29,7 +29,7 @@ function getAppIcon() {
 //   @param {string} payload.title  – tytuł powiadomienia (wymagany)
 //   @param {string} payload.body   – treść powiadomienia
 //   @returns {{ ok: boolean, error?: string }}
-ipcMain.handle('notifications:showSystem', async (_event, payload) => { // legacy alias - no constant in IPC_CHANNELS yet
+ipcMain.handle(IPC_CHANNELS.NOTIFICATIONS.SHOW_SYSTEM, async (_event, payload) => {
   try {
     if (!payload || typeof payload !== 'object') {
       return { ok: false, error: 'INVALID_PAYLOAD' };

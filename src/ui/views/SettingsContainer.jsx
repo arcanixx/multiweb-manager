@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Kontener renderowania widoków ustawień/pomocy/historii/zadań. Używa SETTINGS_REGISTRY zamiast switch-case — nowy widok = wpis w src/config/settingsRegistry.js, bez modyfikacji kontenera.
 // FUNCTIONS: SettingsContainer
-// DEPENDS ON: react, loggerRenderer.js, Spinner.jsx, settingsRegistry.js, translations.js
+// DEPENDS ON: react, loggerRenderer.js, translations.js, Spinner.jsx, settingsRegistry.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_regexMarkdown.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla Regex Tester i Markdown Previewer
-// FUNCTIONS: ipc:tools:regexTest, ipc:tools:markdownRender
+// FUNCTIONS: const:IPC_CHANNELS.TOOLS.REGEX_TEST, const:IPC_CHANNELS.TOOLS.MARKDOWN_RENDER
 // DEPENDS ON: electron, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -11,7 +11,7 @@
 import { ipcMain } from 'electron';
 import { logError } from '../utils/logger.js';
 import { IPC_CHANNELS } from '../constants/ipcChannels.js';
-ipcMain.handle('tools:regexTest', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.TOOLS.REGEX_TEST, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' ||
         !('pattern' in payload) || !('flags' in payload) ||
@@ -26,7 +26,7 @@ ipcMain.handle('tools:regexTest', async (_, payload) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('tools:markdownRender', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
+ipcMain.handle(IPC_CHANNELS.TOOLS.MARKDOWN_RENDER, async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
   try {
     if (!payload || typeof payload !== 'string') {
       throw new Error('INVALID_PAYLOAD');

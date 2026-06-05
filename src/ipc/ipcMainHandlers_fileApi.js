@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_fileApi.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla File Previewer, Mini Postman i Clipboard
-// FUNCTIONS: ipc:tools:filePreview, ipc:tools:apiRequest, ipc:tools:clipboard:get
+// FUNCTIONS: const:IPC_CHANNELS.TOOLS.FILE_PREVIEW, const:IPC_CHANNELS.TOOLS.API_REQUEST, const:IPC_CHANNELS.TOOLS.CLIPBOARD_GET
 // DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -13,7 +13,7 @@ import fs from 'fs';
 import path from 'path';
 import { logError } from '../utils/logger.js';
 import { IPC_CHANNELS } from '../constants/ipcChannels.js';
-ipcMain.handle('tools:filePreview', async (_, payload) => { // legacy alias
+ipcMain.handle(IPC_CHANNELS.TOOLS.FILE_PREVIEW, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'string') {
       throw new Error('INVALID_PAYLOAD');
@@ -28,7 +28,7 @@ ipcMain.handle('tools:filePreview', async (_, payload) => { // legacy alias
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('tools:apiRequest', async (_, payload) => { // legacy alias
+ipcMain.handle(IPC_CHANNELS.TOOLS.API_REQUEST, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' ||
         !('url' in payload) || !('method' in payload) ||
@@ -55,7 +55,7 @@ ipcMain.handle('tools:apiRequest', async (_, payload) => { // legacy alias
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('tools:clipboard:get', async () => { // legacy alias
+ipcMain.handle(IPC_CHANNELS.TOOLS.CLIPBOARD_GET, async () => {
   try {
     const text = clipboard.readText();
     const img = clipboard.readImage();

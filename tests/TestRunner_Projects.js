@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy modułu projektów — struktura, projectsStore CRUD, archiwizacja, agregacja zadań.
 // FUNCTIONS: runProjectsTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

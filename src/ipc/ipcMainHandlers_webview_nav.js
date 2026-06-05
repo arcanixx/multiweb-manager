@@ -3,14 +3,15 @@
 // PATH: src/ipc/ipcMainHandlers_webview_nav.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla nawigacji WebView. webview:navigate waliduje URL przez isSafeUrl() przed loadURL() — blokuje javascript:, data:, file: itp.
-// FUNCTIONS: ipc:webview:navigate, ipc:webview:reload, ipc:webview:goBack, ipc:webview:goForward, ipc:webview:getURL
-// DEPENDS ON: electron, logger.js, urlUtils.js
+// FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.NAVIGATE, const:IPC_CHANNELS.WEBVIEW.RELOAD, const:IPC_CHANNELS.WEBVIEW.GO_BACK, const:IPC_CHANNELS.WEBVIEW.GO_FORWARD, const:IPC_CHANNELS.WEBVIEW.GET_URL
+// DEPENDS ON: electron, logger.js, urlUtils.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain, BrowserWindow } from 'electron';
 import { logError } from '../utils/logger.js';
 import { isSafeUrl } from '../utils/urlUtils.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── getWebContentsById() – Wyszukuje i zwraca obiekt WebContents o określonym identyfikatorze z listy wszystkich aktywnych okien Electrona
 function getWebContentsById(id) {
@@ -22,7 +23,7 @@ function getWebContentsById(id) {
     return null;
   }
 }
-ipcMain.handle('webview:navigate', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.WEBVIEW.NAVIGATE, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || !('id' in payload) || !('url' in payload)) {
       throw new Error('INVALID_PAYLOAD');
@@ -40,7 +41,7 @@ ipcMain.handle('webview:navigate', async (_, payload) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('webview:reload', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.WEBVIEW.RELOAD, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || !('id' in payload)) {
       throw new Error('INVALID_PAYLOAD');
@@ -55,7 +56,7 @@ ipcMain.handle('webview:reload', async (_, payload) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle('webview:goBack', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.WEBVIEW.GO_BACK, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || !('id' in payload)) {
       throw new Error('INVALID_PAYLOAD');
@@ -71,7 +72,7 @@ ipcMain.handle('webview:goBack', async (_, payload) => {
   }
 });
 
-ipcMain.handle('webview:goForward', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.WEBVIEW.GO_FORWARD, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || !('id' in payload)) {
       throw new Error('INVALID_PAYLOAD');
@@ -87,7 +88,7 @@ ipcMain.handle('webview:goForward', async (_, payload) => {
   }
 });
 
-ipcMain.handle('webview:getURL', async (_, payload) => {
+ipcMain.handle(IPC_CHANNELS.WEBVIEW.GET_URL, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || !('id' in payload)) {
       throw new Error('INVALID_PAYLOAD');

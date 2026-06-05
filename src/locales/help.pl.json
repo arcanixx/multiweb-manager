@@ -1,5 +1,5 @@
 {
-  "_comment": "FILE: help_pl.json | PATH: src/locales/help_pl.json | VERSION: 0.0.3 | PURPOSE: Treści pomocy (PL) | FUNCTIONS: - | DEPENDS ON: - | UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.",
+  "_comment": "FILE: help.pl.json | PATH: src/locales/help.pl.json | VERSION: 0.0.3 | PURPOSE: Treści pomocy (PL) | FUNCTIONS: - | DEPENDS ON: - | UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.",
   "version": "0.0.3",
   "sections": [
     {

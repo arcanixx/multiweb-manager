@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_jsonYaml.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlery dla JSON i YAML (formatowanie, konwersja)
-// FUNCTIONS: ipc:tools:formatJSON, ipc:tools:yamlToJson, ipc:tools:jsonToYaml
+// FUNCTIONS: const:IPC_CHANNELS.TOOLS.FORMAT_JSON, const:IPC_CHANNELS.TOOLS.YAML_TO_JSON, const:IPC_CHANNELS.TOOLS.JSON_TO_YAML
 // DEPENDS ON: electron, logger.js, yamlLoader.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -15,7 +15,7 @@ import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // ─── ipc:tools:formatJSON – formatuje tekst JSON z wcięciami
 //   Oczekuje: { text: string }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:formatJSON', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
+ipcMain.handle(IPC_CHANNELS.TOOLS.FORMAT_JSON, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || !('text' in payload)) {
       throw new Error('INVALID_PAYLOAD');
@@ -32,7 +32,7 @@ ipcMain.handle('tools:formatJSON', async (_, payload) => { // legacy alias - no 
 // ─── ipc:tools:yamlToJson – konwertuje YAML na sformatowany JSON
 //   Oczekuje: { text: string }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:yamlToJson', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
+ipcMain.handle(IPC_CHANNELS.TOOLS.YAML_TO_JSON, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || !('text' in payload)) {
       throw new Error('INVALID_PAYLOAD');
@@ -51,7 +51,7 @@ ipcMain.handle('tools:yamlToJson', async (_, payload) => { // legacy alias - no 
 // ─── ipc:tools:jsonToYaml – konwertuje JSON na YAML
 //   Oczekuje: { text: string }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:jsonToYaml', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
+ipcMain.handle(IPC_CHANNELS.TOOLS.JSON_TO_YAML, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || !('text' in payload)) {
       throw new Error('INVALID_PAYLOAD');

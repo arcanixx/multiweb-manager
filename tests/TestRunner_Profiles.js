@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy zarządzania profilami WebView — struktura danych, profilesStore CRUD, sortowanie, kategorie, defaultProfiles.json.
 // FUNCTIONS: runProfilesTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path, fs
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

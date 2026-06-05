@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_webview_registry.js
 // VERSION: 0.0.3
 // PURPOSE: Handlery IPC dla rejestru WebView – mapowanie tabId ↔ webContentsId. Wymagane przez Screenshot, Resource Monitor i AdBlocker.
-// FUNCTIONS: ipc:webview:register, ipc:webview:unregister
+// FUNCTIONS: const:IPC_CHANNELS.WEBVIEW.REGISTER, const:IPC_CHANNELS.WEBVIEW.UNREGISTER
 // DEPENDS ON: electron, logger.js, webviewRegistry.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

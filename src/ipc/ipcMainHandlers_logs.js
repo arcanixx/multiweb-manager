@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_logs.js
 // VERSION: 0.0.3
 // PURPOSE: Handlery IPC dla logów testów (LogWriter). Obsługuje zapis, odczyt i czyszczenie logów testów.
-// FUNCTIONS: rotateLogs, registerLogsHandlers, const:IPC_CHANNELS.LOGS.APPEND, const:IPC_CHANNELS.LOGS.GET, const:IPC_CHANNELS.LOGS.CLEAR, ipc:append-log-file, ipc:get-logs-file, ipc:clear-logs-file
+// FUNCTIONS: rotateLogs, registerLogsHandlers, const:IPC_CHANNELS.LOGS.APPEND, const:IPC_CHANNELS.LOGS.GET, const:IPC_CHANNELS.LOGS.CLEAR
 // DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

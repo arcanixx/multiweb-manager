@@ -31,7 +31,7 @@ Każdy projekt powinien zaczynać się od następującej struktury:
 │   ├── ui/         # komponenty React (modułowo: sidebar, taskpanel, notepad, tools, settings, ...)
 │   ├── utils/      # funkcje pomocnicze (logger, translations, icons, fileUtils, imageUtils, ...)
 │   ├── data/       # statyczne dane (app-library.json, defaultProfiles.json, defaultSettings.json, icons.js)
-│   ├── locales/    # tłumaczenia (pl.json, en.json, help_pl.json, help_en.json, templates/)
+│   ├── locales/    # tłumaczenia (pl.json, en.json, help.pl.json, help.en.json, templates/)
 │   ├── hooks/      # hooki (useSettings, useTasks, useNotepad, useProjects, ...)
 │   ├── ipc/        # handlery IPC (ipcMainHandlers_.js)
 │   ├── loaders/    # dynamiczne loadery (testsLoader.js, ipcLoader.js)

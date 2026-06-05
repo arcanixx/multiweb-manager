@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_svgToPng.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handler konwersji SVG → PNG przez sharp
-// FUNCTIONS: ipc:tools:svgToPng
+// FUNCTIONS: const:IPC_CHANNELS.TOOLS.SVG_TO_PNG
 // DEPENDS ON: electron, fs, logger.js, sharpLoader.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -16,7 +16,7 @@ import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // ─── ipc:tools:svgToPng – konwertuje plik SVG na PNG o podanych wymiarach
 //   Oczekuje: { svgPath, outputPath, width, height }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:svgToPng', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
+ipcMain.handle(IPC_CHANNELS.TOOLS.SVG_TO_PNG, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' || !('svgPath' in payload) || !('outputPath' in payload) || !('width' in payload) || !('height' in payload)) {
       throw new Error('INVALID_PAYLOAD');

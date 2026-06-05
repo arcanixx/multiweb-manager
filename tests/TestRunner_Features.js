@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy modułu feature flags (src/config/features.js) — isFeatureEnabled, isToolEnabled, spójność FEATURES.
 // FUNCTIONS: runFeaturesTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

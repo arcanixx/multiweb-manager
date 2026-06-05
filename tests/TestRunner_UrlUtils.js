@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy modułu urlUtils (normalizeWebUrl, isValidWebUrl, isSafeUrl) — walidacja URL, blokowanie niebezpiecznych schematów, edge cases.
 // FUNCTIONS: runUrlUtilsTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

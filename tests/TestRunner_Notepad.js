@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy modułu notatnika — notepadStorage (createNewTab, load/save), notepadStore (CRUD), dirty-checking i logika zakładek.
 // FUNCTIONS: runNotepadTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

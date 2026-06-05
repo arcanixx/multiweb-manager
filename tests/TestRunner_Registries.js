@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy rejestrów komponentów (settingsRegistry, toolsRegistry) — eksporty, kompletność wpisów, flagi featureFlag, getSettingsComponent/getToolComponent.
 // FUNCTIONS: runRegistriesTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

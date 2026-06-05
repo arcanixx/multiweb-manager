@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy silnika ustawień — merge logika, getDefaultSetting, DEBUG_MODULES, settingsStore CRUD.
 // FUNCTIONS: runSettingsTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

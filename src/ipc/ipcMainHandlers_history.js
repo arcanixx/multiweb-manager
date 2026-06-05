@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_history.js
 // VERSION: 0.0.3
 // PURPOSE: IPC dla historii odwiedzin/akcji. history:getAll    – zwraca pełną historię (max 5000 wpisów) history:add       – dodaje nowy wpis i zapisuje history:clear     – czyści historię history:getRecent – zwraca ostatnie 100 wpisów
-// FUNCTIONS: const:IPC_CHANNELS.HISTORY.GET_ALL, const:IPC_CHANNELS.HISTORY.ADD, const:IPC_CHANNELS.HISTORY.CLEAR, ipc:history:getRecent
+// FUNCTIONS: const:IPC_CHANNELS.HISTORY.GET_ALL, const:IPC_CHANNELS.HISTORY.ADD, const:IPC_CHANNELS.HISTORY.CLEAR, const:IPC_CHANNELS.HISTORY.GET_RECENT
 // DEPENDS ON: electron, historyStore.js, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -61,7 +61,7 @@ ipcMain.handle(IPC_CHANNELS.HISTORY.CLEAR, async () => {
 // ----------------------------------------------------------------
 // history:getRecent – zwraca ostatnie 100 wpisów (quick access)
 // ----------------------------------------------------------------
-ipcMain.handle("history:getRecent", async () => { // legacy alias
+ipcMain.handle(IPC_CHANNELS.HISTORY.GET_RECENT, async () => {
   try {
     const recent = getRecentHistory(100);
     return { ok: true, data: recent };

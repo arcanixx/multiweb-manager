@@ -2,7 +2,7 @@
  FILE: AI_Development_Standards.md
  PATH: doc/AI_Development_Standards.md
  VERSION: 0.0.3
- PURPOSE: Standardy tworzenia i modyfikacji kodu dla AI – kompaktowy przewodnik
+ PURPOSE: Dokumentacja specyfikacji projektowej - Standardy tworzenia i modyfikacji kodu dla AI – kompaktowy przewodnik
  FUNCTIONS: Dokumentacja: 12 sekcji głównych
  DEPENDS ON: -
  UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -93,7 +93,7 @@ const { t } = useContext(TranslationContext);
 ```
 
 - Nowy klucz → dodaj jednocześnie w `pl.json` **i** `en.json` (i template)
-- Pliki locales: `src/locales/pl.json`, `en.json`, `help_pl.json`, `help_en.json`
+- Pliki locales: `src/locales/pl.json`, `en.json`, `help.pl.json`, `help.en.json`
 - Ikony w locales: `` `${ICONS.CAMERA} ${t('action')}` `` (backticki)
 
 ---

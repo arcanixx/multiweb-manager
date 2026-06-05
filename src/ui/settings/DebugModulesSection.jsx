@@ -72,6 +72,9 @@ export default function DebugModulesSection() {
     ...(settings.debugModules || {})
   };
 
+  // ─── handleToggle() – przełącza stan debugowania dla konkretnego modułu
+  //   @param {string} moduleName – nazwa modułu
+  //   @param {boolean} enabled – nowy stan (włączony/wyłączony)
   const handleToggle = async (moduleName, enabled) => {
     try {
       setSettings((prev) => ({

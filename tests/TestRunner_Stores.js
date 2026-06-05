@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy wszystkich stores (main process) — eksporty CRUD, logika domenowa: workspacesStore, accountsStore, clipboardStore, taskGroupsStore, appLibraryStore, tasksStore (VALID_STATUSES, STATUS_TO_SECTION, resolveSection, normalizeTask).
 // FUNCTIONS: runStoresTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

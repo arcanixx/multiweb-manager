@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy modułu globalnego wyszukiwania (src/utils/searchIndex.js) — buildSearchIndex, searchAll, filtrowanie i edge cases.
 // FUNCTIONS: runSearchIndexTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

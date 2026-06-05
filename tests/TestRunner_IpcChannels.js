@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy rejestru kanałów IPC (src/constants/ipcChannels.js) — kompletność grup, brak duplikatów wartości, format string 'group:action'.
 // FUNCTIONS: runIpcChannelsTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

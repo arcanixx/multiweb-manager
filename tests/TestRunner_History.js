@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy historii aktywności — historyStore CRUD, walidacja struktury wpisów, filtrowanie, limit FIFO.
 // FUNCTIONS: runHistoryTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

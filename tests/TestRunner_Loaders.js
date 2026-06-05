@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy loaderów dynamicznych — ipcLoader (loadAllIpcHandlers) i testsLoader (loadAndRunAllTests) — eksporty, kształt odpowiedzi, wykrywanie plików.
 // FUNCTIONS: runLoadersTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, path, fs
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

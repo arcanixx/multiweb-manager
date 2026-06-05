@@ -3,7 +3,7 @@
 // PATH: src/ipc/ipcMainHandlers_imageSharp.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlery dla operacji na obrazach (resize, convert, compress)
-// FUNCTIONS: ipc:tools:image:resize, ipc:tools:image:convert, ipc:tools:image:compress
+// FUNCTIONS: const:IPC_CHANNELS.TOOLS.IMAGE_RESIZE, const:IPC_CHANNELS.TOOLS.IMAGE_CONVERT, const:IPC_CHANNELS.TOOLS.IMAGE_COMPRESS
 // DEPENDS ON: electron, logger.js, sharpLoader.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -15,7 +15,7 @@ import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // ─── ipc:tools:image:resize – zmienia rozmiar obrazu
 //   Oczekuje: { inputPath, width, height, outputPath }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:image:resize', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
+ipcMain.handle(IPC_CHANNELS.TOOLS.IMAGE_RESIZE, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' ||
         !('inputPath' in payload) || !('width' in payload) ||
@@ -35,7 +35,7 @@ ipcMain.handle('tools:image:resize', async (_, payload) => { // legacy alias - n
 // ─── ipc:tools:image:convert – konwertuje obraz do wskazanego formatu
 //   Oczekuje: { inputPath, format, outputPath }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:image:convert', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
+ipcMain.handle(IPC_CHANNELS.TOOLS.IMAGE_CONVERT, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' ||
         !('inputPath' in payload) || !('format' in payload) ||
@@ -55,7 +55,7 @@ ipcMain.handle('tools:image:convert', async (_, payload) => { // legacy alias - 
 // ─── ipc:tools:image:compress – kompresuje obraz JPEG do podanej jakości
 //   Oczekuje: { inputPath, quality, outputPath }
 //   Zwraca: { ok: boolean, data?: string, error?: string }
-ipcMain.handle('tools:image:compress', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
+ipcMain.handle(IPC_CHANNELS.TOOLS.IMAGE_COMPRESS, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'object' ||
         !('inputPath' in payload) || !('quality' in payload) ||
