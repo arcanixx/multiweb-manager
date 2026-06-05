@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_workspaces.js
 // VERSION: 0.0.3
 // PURPOSE: IPC dla workspace (Sidebar, useWorkspaces).
-// FUNCTIONS: ipc:workspaces:getAll, ipc:workspaces:save, ipc:workspaces:delete
-// DEPENDS ON: electron, workspacesStore.js, logger.js
+// FUNCTIONS: const:IPC_CHANNELS.WORKSPACES.GET_ALL, const:IPC_CHANNELS.WORKSPACES.SAVE, const:IPC_CHANNELS.WORKSPACES.DELETE
+// DEPENDS ON: electron, workspacesStore.js, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

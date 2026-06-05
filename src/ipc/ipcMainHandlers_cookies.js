@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_cookies.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handler do pobierania cookies (Cookie Grabber)
-// FUNCTIONS: ipc:tools:getCookies
-// DEPENDS ON: electron, logger.js
+// FUNCTIONS: const:IPC_CHANNELS.COOKIES.GET_ALL
+// DEPENDS ON: electron, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

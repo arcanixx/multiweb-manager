@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC handler do pobierania informacji o aplikacji
 // FUNCTIONS: ipc:app:getInfo
-// DEPENDS ON: electron, logger.js
+// DEPENDS ON: electron, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

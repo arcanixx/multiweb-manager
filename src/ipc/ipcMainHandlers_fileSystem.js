@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers do odczytu i zapisu plików (przez main process)
 // FUNCTIONS: ipc:fs:readFile, ipc:fs:writeFile
-// DEPENDS ON: electron, fs, logger.js
+// DEPENDS ON: electron, fs, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

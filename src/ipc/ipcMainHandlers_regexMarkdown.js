@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla Regex Tester i Markdown Previewer
 // FUNCTIONS: ipc:tools:regexTest, ipc:tools:markdownRender
-// DEPENDS ON: electron, logger.js
+// DEPENDS ON: electron, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -13,8 +13,8 @@ import { logError } from '../utils/logger.js';
 import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 ipcMain.handle('tools:regexTest', async (_, payload) => {
   try {
-    if (!payload || typeof payload !== 'object' || 
-        !('pattern' in payload) || !('flags' in payload) || 
+    if (!payload || typeof payload !== 'object' ||
+        !('pattern' in payload) || !('flags' in payload) ||
         !('text' in payload)) {
       throw new Error('INVALID_PAYLOAD');
     }

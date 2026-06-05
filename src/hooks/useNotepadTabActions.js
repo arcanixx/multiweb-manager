@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: useNotepadTabActions.js
-// PATH: src/hooks/notepad/useNotepadTabActions.js
+// PATH: src/hooks/useNotepadTabActions.js
 // VERSION: 0.0.3
 // PURPOSE: Wrappery dla akcji na zakładkach z logiką walidacji i UI.
 // FUNCTIONS: useNotepadTabActions

@@ -9,8 +9,8 @@
 //          projects:update       – aktualizuje projekt (patch)
 //          projects:archive      – archiwizuje projekt
 //          projects:delete       – usuwa projekt
-// FUNCTIONS: ipc:projects:getAll, ipc:projects:getWithTasks, ipc:projects:create, ipc:projects:update, ipc:projects:archive, ipc:projects:delete
-// DEPENDS ON: electron, projectsStore.js, tasksStore.js, logger.js
+// FUNCTIONS: const:IPC_CHANNELS.PROJECTS.GET_ALL, const:IPC_CHANNELS.PROJECTS.CREATE, const:IPC_CHANNELS.PROJECTS.UPDATE, const:IPC_CHANNELS.PROJECTS.DELETE, ipc:projects:getWithTasks, ipc:projects:archive
+// DEPENDS ON: electron, projectsStore.js, tasksStore.js, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

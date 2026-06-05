@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_events.js
 // VERSION: 0.0.3
 // PURPOSE: Handlery IPC dla dziennika zdarzeń aplikacji (EventLogger). Obsługuje zapis, odczyt i czyszczenie zdarzeń.
-// FUNCTIONS: registerEventLogsHandlers, ipc:events:append, ipc:events:getFile, ipc:events:clear
-// DEPENDS ON: electron, fs, path, logger.js
+// FUNCTIONS: registerEventLogsHandlers, const:IPC_CHANNELS.EVENTS.APPEND, const:IPC_CHANNELS.EVENTS.GET_FILE, const:IPC_CHANNELS.EVENTS.CLEAR
+// DEPENDS ON: electron, fs, path, logger.js, ipcMainHandlers_logs.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

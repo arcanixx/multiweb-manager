@@ -6,7 +6,6 @@
 // FUNCTIONS: useAsync
 // DEPENDS ON: react, loggerRenderer.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
-// UWAGA: Ta stała celowo nie jest przenoszona do constants.js – dotyczy wyłącznie logiki tego hooka.
 // =============================================================================
 
 import { useState, useCallback, useEffect, useRef } from 'react';

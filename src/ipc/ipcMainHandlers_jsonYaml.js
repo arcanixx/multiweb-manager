@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC handlery dla JSON i YAML (formatowanie, konwersja)
 // FUNCTIONS: ipc:tools:formatJSON, ipc:tools:yamlToJson, ipc:tools:jsonToYaml
-// DEPENDS ON: electron, logger.js, yamlLoader.js
+// DEPENDS ON: electron, logger.js, yamlLoader.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

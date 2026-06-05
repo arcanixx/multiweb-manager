@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC handler konwersji SVG → PNG przez sharp
 // FUNCTIONS: ipc:tools:svgToPng
-// DEPENDS ON: electron, fs, logger.js, sharpLoader.js
+// DEPENDS ON: electron, fs, logger.js, sharpLoader.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

@@ -4,7 +4,8 @@
 // VERSION: 0.0.3
 // PURPOSE: Logika startowa aplikacji (logger, settings, profile, hotkeys, theme).
 // FUNCTIONS: useAppInitialization
-// DEPENDS ON: react, config.js, loggerRenderer.js, urlUtils.js, notificationsManager.js
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer.js, urlUtils.js, notificationsManager.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { useState, useEffect, useContext } from 'react';

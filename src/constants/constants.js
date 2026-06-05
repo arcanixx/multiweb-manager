@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: constants.js
-// PATH: src/constants.js
+// PATH: src/constants/constants.js
 // VERSION: 0.0.3
 // PURPOSE: Application-wide constants and enums (tasks, app categories, etc.)
 // FUNCTIONS: -

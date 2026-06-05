@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_hotkeys.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlery do zarządzania skrótami klawiszowymi – pobieranie, zapis, rejestracja
-// FUNCTIONS: ipc:hotkeys:getAll, ipc:hotkeys:save, ipc:hotkeys:register
-// DEPENDS ON: electron, hotkeysManager.js, logger.js
+// FUNCTIONS: const:IPC_CHANNELS.HOTKEYS.GET_ALL, const:IPC_CHANNELS.HOTKEYS.SAVE, const:IPC_CHANNELS.HOTKEYS.REGISTER
+// DEPENDS ON: electron, hotkeysManager.js, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

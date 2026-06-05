@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC helpers dla operacji na ścieżkach (path.join, path.dirname)
 // FUNCTIONS: ipc:path:join, ipc:path:dirname
-// DEPENDS ON: electron, path, logger.js
+// DEPENDS ON: electron, path, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

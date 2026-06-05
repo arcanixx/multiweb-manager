@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla natywnych okien dialogowych (open/save)
 // FUNCTIONS: ipc:dialog:openFile, ipc:dialog:saveFile
-// DEPENDS ON: electron, logger.js
+// DEPENDS ON: electron, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

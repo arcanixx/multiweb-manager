@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_openExternal.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handler do otwierania URL w domyślnej przeglądarce systemowej
-// FUNCTIONS: ipc:shell:openExternal
-// DEPENDS ON: electron, logger.js
+// FUNCTIONS: const:IPC_CHANNELS.SHELL.OPEN_EXTERNAL
+// DEPENDS ON: electron, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

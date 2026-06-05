@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_adBlocker.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlery do zarządzania blokerem reklam – globalnie i per profil
-// FUNCTIONS: ipc:adblocker:setGlobal, ipc:adblocker:getGlobal, ipc:adblocker:setForProfile, ipc:adblocker:getForProfile
-// DEPENDS ON: electron, adBlocker.js, logger.js
+// FUNCTIONS: const:IPC_CHANNELS.ADBLOCKER.SET_GLOBAL, const:IPC_CHANNELS.ADBLOCKER.GET_GLOBAL, const:IPC_CHANNELS.ADBLOCKER.SET_FOR_PROFILE, const:IPC_CHANNELS.ADBLOCKER.GET_FOR_PROFILE
+// DEPENDS ON: electron, adBlocker.js, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -42,7 +42,7 @@ ipcMain.handle(IPC_CHANNELS.ADBLOCKER.GET_GLOBAL, () => {
 // -----------------------------------------------------------------------------
 ipcMain.handle(IPC_CHANNELS.ADBLOCKER.SET_FOR_PROFILE, (_, payload) => {
   try {
-    if (!payload || typeof payload !== 'object' || 
+    if (!payload || typeof payload !== 'object' ||
         !('profileId' in payload) || !('enabled' in payload)) {
       throw new Error('INVALID_PAYLOAD');
     }

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla File Previewer, Mini Postman i Clipboard
 // FUNCTIONS: ipc:tools:filePreview, ipc:tools:apiRequest, ipc:tools:clipboard:get
-// DEPENDS ON: electron, fs, path, logger.js
+// DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -30,8 +30,8 @@ ipcMain.handle('tools:filePreview', async (_, payload) => { // legacy alias
 });
 ipcMain.handle('tools:apiRequest', async (_, payload) => { // legacy alias
   try {
-    if (!payload || typeof payload !== 'object' || 
-        !('url' in payload) || !('method' in payload) || 
+    if (!payload || typeof payload !== 'object' ||
+        !('url' in payload) || !('method' in payload) ||
         !('headers' in payload) || !('body' in payload)) {
       throw new Error('INVALID_PAYLOAD');
     }

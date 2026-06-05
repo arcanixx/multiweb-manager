@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_settings.js
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla Settings. settings:get        – pobiera aktualne ustawienia settings:update     – aktualizuje (merge patch, nie nadpisuje) settings:reset      – reset do DEFAULT_SETTINGS settings:export     – eksport do pliku JSON settings:import     – import z pliku JSON (merge) settings:getDefaults – zwraca DEFAULT_SETTINGS z config.js
-// FUNCTIONS: ipc:settings:get, ipc:settings:update, ipc:settings:reset, ipc:settings:export, ipc:settings:import, ipc:settings:getDefaults
-// DEPENDS ON: electron, fs, logger.js, settingsStore.js, config.js
+// FUNCTIONS: const:IPC_CHANNELS.SETTINGS.GET, const:IPC_CHANNELS.SETTINGS.UPDATE, const:IPC_CHANNELS.SETTINGS.RESET, const:IPC_CHANNELS.SETTINGS.EXPORT, const:IPC_CHANNELS.SETTINGS.IMPORT, const:IPC_CHANNELS.SETTINGS.GET_DEFAULTS
+// DEPENDS ON: electron, fs, logger.js, settingsStore.js, config.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

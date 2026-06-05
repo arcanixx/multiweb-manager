@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_notepad.js
 // VERSION: 0.0.3
 // PURPOSE: IPC dla notatek (Notepad, hooks useNotepad).
-// FUNCTIONS: ipc:notepad:getAll, ipc:notepad:add, ipc:notepad:update, ipc:notepad:delete
-// DEPENDS ON: electron, notepadStore.js, logger.js
+// FUNCTIONS: -
+// DEPENDS ON: electron, notepadStore.js, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

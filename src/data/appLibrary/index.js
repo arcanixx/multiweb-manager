@@ -3,7 +3,7 @@
 // PATH: src/data/appLibrary/index.js
 // VERSION: 0.0.3
 // PURPOSE: Agregator biblioteki aplikacji – łączy kategorie JSON w jeden obiekt.
-// FUNCTIONS: APP_LIBRARY
+// FUNCTIONS: -
 // DEPENDS ON: icons.js, appLibrary.AI.json, appLibrary.DEV.json, appLibrary.PRODUCTIVITY.json, appLibrary.COMMUNICATION.json, appLibrary.SOCIAL.json, appLibrary.DESIGN.json, appLibrary.CLOUD.json, appLibrary.ENTERTAINMENT.json
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -30,8 +30,8 @@ export const APP_LIBRARY = {
     { id: 'entertainment', name: 'appLibrary.cat_entertainment', icon: ICONS.CAT_ENTERTAINMENT }
   ],
   apps: [
-    ...aiApps, 
-    ...devApps, 
+    ...aiApps,
+    ...devApps,
     ...productivityApps,
     ...communicationApps,
     ...socialApps,

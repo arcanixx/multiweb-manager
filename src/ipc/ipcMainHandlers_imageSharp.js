@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC handlery dla operacji na obrazach (resize, convert, compress)
 // FUNCTIONS: ipc:tools:image:resize, ipc:tools:image:convert, ipc:tools:image:compress
-// DEPENDS ON: electron, logger.js, sharpLoader.js
+// DEPENDS ON: electron, logger.js, sharpLoader.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -17,8 +17,8 @@ import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 //   Zwraca: { ok: boolean, data?: string, error?: string }
 ipcMain.handle('tools:image:resize', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
   try {
-    if (!payload || typeof payload !== 'object' || 
-        !('inputPath' in payload) || !('width' in payload) || 
+    if (!payload || typeof payload !== 'object' ||
+        !('inputPath' in payload) || !('width' in payload) ||
         !('height' in payload) || !('outputPath' in payload)) {
       throw new Error('INVALID_PAYLOAD');
     }
@@ -37,8 +37,8 @@ ipcMain.handle('tools:image:resize', async (_, payload) => { // legacy alias - n
 //   Zwraca: { ok: boolean, data?: string, error?: string }
 ipcMain.handle('tools:image:convert', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
   try {
-    if (!payload || typeof payload !== 'object' || 
-        !('inputPath' in payload) || !('format' in payload) || 
+    if (!payload || typeof payload !== 'object' ||
+        !('inputPath' in payload) || !('format' in payload) ||
         !('outputPath' in payload)) {
       throw new Error('INVALID_PAYLOAD');
     }
@@ -57,8 +57,8 @@ ipcMain.handle('tools:image:convert', async (_, payload) => { // legacy alias - 
 //   Zwraca: { ok: boolean, data?: string, error?: string }
 ipcMain.handle('tools:image:compress', async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
   try {
-    if (!payload || typeof payload !== 'object' || 
-        !('inputPath' in payload) || !('quality' in payload) || 
+    if (!payload || typeof payload !== 'object' ||
+        !('inputPath' in payload) || !('quality' in payload) ||
         !('outputPath' in payload)) {
       throw new Error('INVALID_PAYLOAD');
     }

@@ -65,7 +65,7 @@ root/
 │   │                                                   FUNCTIONS: Dokumentacja: 19 sekcji głównych
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
-│   ├── 📄 Global_Project_Starter_Guide.md ❗       <!-- VERSION: 0.0.3 PATH: doc/Global_Project_Starter_Guide.md
+│   ├── 📄 Global_Project_Starter_Guide.md         <!-- VERSION: 0.0.3 PATH: doc/Global_Project_Starter_Guide.md
 │   │                                                   PURPOSE: Dokumentacja specyfikacji projektowej - Globalny
 │   │                                                            przewodnik inicjalizacji projektów (AI First)
 │   │                                                   FUNCTIONS: Dokumentacja: 15 sekcji głównych
@@ -168,7 +168,13 @@ root/
 │   │                                                   DEPENDS ON: react, config.js
 │   │                                                   -->
 │   ├── 📁 constants/
-│   │   └── 📜 ipcChannels.js ❗                    <!-- VERSION: 0.0.3 PATH: src/constants/ipcChannels.js
+│   │   ├── 📜 constants.js                        <!-- VERSION: 0.0.3 PATH: src/constants/constants.js
+│   │   │                                               PURPOSE: Application-wide constants and enums (tasks, app
+│   │   │                                                        categories, etc.)
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: -
+│   │   │                                               -->
+│   │   └── 📜 ipcChannels.js                      <!-- VERSION: 0.0.3 PATH: src/constants/ipcChannels.js
 │   │                                                   PURPOSE: Centralny rejestr nazw kanałów IPC – single source of
 │   │                                                            truth. Eliminuje string literals rozrzucone po
 │   │                                                            handlerach, hookach i preloadzie. Używać wszędzie
@@ -177,10 +183,64 @@ root/
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   ├── 📁 data/
-│   │   ├── 📦 app-library.json                    <!-- VERSION: 0.0.3 PATH: src/data/app-library.json
-│   │   │                                               PURPOSE: Plik danych / tłumaczeń
+│   │   ├── 📁 appLibrary/
+│   │   │   ├── 📦 appLibrary.AI.json              <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.AI.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.CLOUD.json           <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.CLOUD.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.COMMUNICATION.json   <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.COMMUNICATION.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.DESIGN.json          <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.DESIGN.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.DEV.json             <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.DEV.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.ENTERTAINMENT.json   <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.ENTERTAINMENT.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.PRODUCTIVITY.json    <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.PRODUCTIVITY.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.SOCIAL.json          <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.SOCIAL.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   └── 📜 index.js                        <!-- VERSION: 0.0.3 PATH: src/data/appLibrary/index.js
+│   │   │                                               PURPOSE: Agregator biblioteki aplikacji – łączy kategorie JSON w
+│   │   │                                                        jeden obiekt.
 │   │   │                                               FUNCTIONS: -
-│   │   │                                               DEPENDS ON: -
+│   │   │                                               DEPENDS ON: icons.js, appLibrary.AI.json, appLibrary.DEV.json,
+│   │   │                                                           appLibrary.PRODUCTIVITY.json,
+│   │   │                                                           appLibrary.COMMUNICATION.json,
+│   │   │                                                           appLibrary.SOCIAL.json, appLibrary.DESIGN.json,
+│   │   │                                                           appLibrary.CLOUD.json, appLibrary.ENTERTAINMENT.json
 │   │   │                                               -->
 │   │   ├── 📦 defaultProfiles.json                <!-- VERSION: 0.0.3 PATH: src/data/defaultProfiles.json
 │   │   │                                               PURPOSE: Domyślne profile użytkownika (template)
@@ -255,18 +315,30 @@ root/
 │   │                                                   DEPENDS ON: config.js, logger.js
 │   │                                                   -->
 │   ├── 📁 hooks/
+│   │   ├── 📜 useAppInitialization.js ❗           <!-- VERSION: 0.0.3 PATH: src/hooks/useAppInitialization.js
+│   │   │                                               PURPOSE: Logika startowa aplikacji (logger, settings, profile,
+│   │   │                                                        hotkeys, theme).
+│   │   │                                               FUNCTIONS: useAppInitialization
+│   │   │                                               DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
+│   │   │                                                           urlUtils.js, notificationsManager.js
+│   │   │                                               -->
 │   │   ├── 📜 useAppLibrary.js                    <!-- VERSION: 0.0.3 PATH: src/hooks/useAppLibrary.js
 │   │   │                                               PURPOSE: Hook React do pobierania i wyszukiwania w bibliotece
 │   │   │                                                        aplikacji (App Library) przez IPC.
 │   │   │                                               FUNCTIONS: useAppLibrary
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js, translations.js
+│   │   │                                               -->
+│   │   ├── 📜 useAsync.js                         <!-- VERSION: 0.0.3 PATH: src/hooks/useAsync.js
+│   │   │                                               PURPOSE: Generyczny hook do obsługi operacji asynchronicznych
+│   │   │                                                        (ładowanie danych). Eliminuje duplikację wzorca load()
+│   │   │                                                        w hookach danych.
+│   │   │                                               FUNCTIONS: useAsync
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
-│   │   ├── 📜 useAsync.js ❗                       <!-- VERSION: 0.0.3 PATH: src/hooks/useAsync.js
-│   │   │                                               PURPOSE: Generyczny hook do obsługi operacji asynchronicznych
-│   │   │                                                        (load/error/loading) oraz mutacji z optimistic updates
-│   │   │                                                        i rollbackiem. Eliminuje duplikację wzorca load() w
-│   │   │                                                        hookach danych.
-│   │   │                                               FUNCTIONS: useAsync, useAsyncMutation
+│   │   ├── 📜 useAsyncMutation.js                 <!-- VERSION: 0.0.3 PATH: src/hooks/useAsyncMutation.js
+│   │   │                                               PURPOSE: Hook do operacji mutacji z optimistic updates i
+│   │   │                                                        rollbackiem.
+│   │   │                                               FUNCTIONS: useAsyncMutation
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useCategories.js                    <!-- VERSION: 0.0.3 PATH: src/hooks/useCategories.js
@@ -289,6 +361,11 @@ root/
 │   │   │                                               FUNCTIONS: useMainLayout
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │                                               -->
+│   │   ├── 📜 useNotepadAutosave.js ❗             <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadAutosave.js
+│   │   │                                               PURPOSE: Izolowana logika automatycznego zapisu dla notatnika.
+│   │   │                                               FUNCTIONS: useNotepadAutosave
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 useNotepadContent.js                <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadContent.js
 │   │   │                                               PURPOSE: Hook React do zarządzania treścią notatnika – stan
 │   │   │                                                        edycji, zapis ręczny, zapis do pliku, skróty
@@ -303,19 +380,31 @@ root/
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js,
 │   │   │                                                           notificationsManager.js
 │   │   │                                               -->
+│   │   ├── 📜 useNotepadModals.js ❗               <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadModals.js
+│   │   │                                               PURPOSE: Zarządzanie stanem modali i powiadomień dla notatnika.
+│   │   │                                               FUNCTIONS: useNotepadModals
+│   │   │                                               DEPENDS ON: react
+│   │   │                                               -->
+│   │   ├── 📜 useNotepadTabActions.js ❗           <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadTabActions.js
+│   │   │                                               PURPOSE: Wrappery dla akcji na zakładkach z logiką walidacji i
+│   │   │                                                        UI.
+│   │   │                                               FUNCTIONS: useNotepadTabActions
+│   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 useNotepadTabs.js                   <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadTabs.js
 │   │   │                                               PURPOSE: Hook React do zarządzania zakładkami notatnika –
 │   │   │                                                        tworzenie, przełączanie, zamykanie, zmiana nazw.
 │   │   │                                               FUNCTIONS: useNotepadTabs
 │   │   │                                               DEPENDS ON: react, notepadStorage.js, loggerRenderer.js
 │   │   │                                               -->
-│   │   ├── 📜 useNotepadUI.js ❗                   <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadUI.js
-│   │   │                                               PURPOSE: Orkiestrator hooków notatnika – łączy zarządzanie
-│   │   │                                                        zakładkami i treścią, obsługuje autosave i toast.
+│   │   ├── 📜 useNotepadUI.js                     <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadUI.js
+│   │   │                                               PURPOSE: Orkiestrator hooków notatnika – koordynuje zakładki,
+│   │   │                                                        treść, modale i akcje użytkownika.
 │   │   │                                               FUNCTIONS: useNotepadUI
 │   │   │                                               DEPENDS ON: react, translations.js, useNotepadTabs.js,
-│   │   │                                                           useNotepadContent.js, loggerRenderer.js,
-│   │   │                                                           notificationsManager.js
+│   │   │                                                           useNotepadContent.js, useNotepadAutosave.js,
+│   │   │                                                           useNotepadModals.js, useNotepadTabActions.js,
+│   │   │                                                           loggerRenderer.js, notificationsManager.js
 │   │   │                                               -->
 │   │   ├── 📜 useProfiles.js                      <!-- VERSION: 0.0.3 PATH: src/hooks/useProfiles.js
 │   │   │                                               PURPOSE: Hook React do zarządzania profilami WebView – CRUD,
@@ -386,10 +475,11 @@ root/
 │   │   ├── 📜 ipcMainHandlers_adBlocker.js ❗      <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_adBlocker.js
 │   │   │                                               PURPOSE: IPC handlery do zarządzania blokerem reklam – globalnie
 │   │   │                                                        i per profil
-│   │   │                                               FUNCTIONS: ipc:adblocker:setGlobal, ipc:adblocker:getGlobal,
-│   │   │                                                          ipc:adblocker:setForProfile,
-│   │   │                                                          ipc:adblocker:getForProfile
-│   │   │                                               DEPENDS ON: electron, adBlocker.js, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.ADBLOCKER.SET_GLOBAL,
+│   │   │                                                          const:IPC_CHANNELS.ADBLOCKER.GET_GLOBAL,
+│   │   │                                                          const:IPC_CHANNELS.ADBLOCKER.SET_FOR_PROFILE,
+│   │   │                                                          const:IPC_CHANNELS.ADBLOCKER.GET_FOR_PROFILE
+│   │   │                                               DEPENDS ON: electron, adBlocker.js, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_aggregatedTasks.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_aggregatedTasks.js
 │   │   │                                               PURPOSE: IPC handlers dla widoku zbiorczego zadań
@@ -404,51 +494,65 @@ root/
 │   │   ├── 📜 ipcMainHandlers_app.js ❗            <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_app.js
 │   │   │                                               PURPOSE: IPC handlery cyklu życia aplikacji – potwierdzenie
 │   │   │                                                        zamknięcia.
-│   │   │                                               FUNCTIONS: ipc:app:confirmQuit, ipc:confirm-quit
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.APP.CONFIRM_QUIT, ipc:confirm-quit
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_appInfo.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_appInfo.js
 │   │   │                                               PURPOSE: IPC handler do pobierania informacji o aplikacji
 │   │   │                                               FUNCTIONS: ipc:app:getInfo
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_appLibrary.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_appLibrary.js
 │   │   │                                               PURPOSE: IPC dla biblioteki aplikacji (App Library) – pobieranie
 │   │   │                                                        kategorii, wyszukiwanie, filtrowanie po kategorii.
-│   │   │                                               FUNCTIONS: ipc:appLibrary:getAll, ipc:appLibrary:search,
-│   │   │                                                          ipc:appLibrary:getByCategory
-│   │   │                                               DEPENDS ON: electron, appLibraryStore.js, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.APP_LIBRARY.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.APP_LIBRARY.SEARCH,
+│   │   │                                                          const:IPC_CHANNELS.APP_LIBRARY.GET_BY_CATEGORY
+│   │   │                                               DEPENDS ON: electron, appLibraryStore.js, logger.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_cookies.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_cookies.js
 │   │   │                                               PURPOSE: IPC handler do pobierania cookies (Cookie Grabber)
-│   │   │                                               FUNCTIONS: ipc:tools:getCookies
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.COOKIES.GET_ALL
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_dialogs.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_dialogs.js
 │   │   │                                               PURPOSE: IPC handlers dla natywnych okien dialogowych
 │   │   │                                                        (open/save)
 │   │   │                                               FUNCTIONS: ipc:dialog:openFile, ipc:dialog:saveFile
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
+│   │   │                                               -->
+│   │   ├── 📜 ipcMainHandlers_events.js ❗         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_events.js
+│   │   │                                               PURPOSE: Handlery IPC dla dziennika zdarzeń aplikacji
+│   │   │                                                        (EventLogger). Obsługuje zapis, odczyt i czyszczenie
+│   │   │                                                        zdarzeń.
+│   │   │                                               FUNCTIONS: registerEventLogsHandlers,
+│   │   │                                                          const:IPC_CHANNELS.EVENTS.APPEND,
+│   │   │                                                          const:IPC_CHANNELS.EVENTS.GET_FILE,
+│   │   │                                                          const:IPC_CHANNELS.EVENTS.CLEAR
+│   │   │                                               DEPENDS ON: electron, fs, path, logger.js,
+│   │   │                                                           ipcMainHandlers_logs.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_fileApi.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_fileApi.js
 │   │   │                                               PURPOSE: IPC handlers dla File Previewer, Mini Postman i
 │   │   │                                                        Clipboard
 │   │   │                                               FUNCTIONS: ipc:tools:filePreview, ipc:tools:apiRequest,
 │   │   │                                                          ipc:tools:clipboard:get
-│   │   │                                               DEPENDS ON: electron, fs, path, logger.js
+│   │   │                                               DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_fileSystem.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_fileSystem.js
 │   │   │                                               PURPOSE: IPC handlers do odczytu i zapisu plików (przez main
 │   │   │                                                        process)
 │   │   │                                               FUNCTIONS: ipc:fs:readFile, ipc:fs:writeFile
-│   │   │                                               DEPENDS ON: electron, fs, logger.js
+│   │   │                                               DEPENDS ON: electron, fs, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_files.js ❗          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_files.js
 │   │   │                                               PURPOSE: IPC handlery zapisu plików – tekst i dane binarne przez
 │   │   │                                                        dialog systemowy.
-│   │   │                                               FUNCTIONS: ipc:files:saveText, ipc:save-text-to-file,
-│   │   │                                                          ipc:files:saveBinary, ipc:save-file
-│   │   │                                               DEPENDS ON: electron, fs, path, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.FILES.SAVE_TEXT,
+│   │   │                                                          const:IPC_CHANNELS.FILES.SAVE_BINARY,
+│   │   │                                                          ipc:save-text-to-file, ipc:save-file
+│   │   │                                               DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_history.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_history.js
 │   │   │                                               PURPOSE: IPC dla historii odwiedzin/akcji. history:getAll    –
@@ -456,46 +560,48 @@ root/
 │   │   │                                                          – dodaje nowy wpis i zapisuje history:clear     –
 │   │   │                                                        czyści historię history:getRecent – zwraca ostatnie 100
 │   │   │                                                        wpisów
-│   │   │                                               FUNCTIONS: ipc:history:getAll, ipc:history:add,
-│   │   │                                                          ipc:history:clear, ipc:history:getRecent
-│   │   │                                               DEPENDS ON: electron, historyStore.js, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.HISTORY.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.HISTORY.ADD,
+│   │   │                                                          const:IPC_CHANNELS.HISTORY.CLEAR,
+│   │   │                                                          ipc:history:getRecent
+│   │   │                                               DEPENDS ON: electron, historyStore.js, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_hotkeys.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_hotkeys.js
 │   │   │                                               PURPOSE: IPC handlery do zarządzania skrótami klawiszowymi –
 │   │   │                                                        pobieranie, zapis, rejestracja
-│   │   │                                               FUNCTIONS: ipc:hotkeys:getAll, ipc:hotkeys:save,
-│   │   │                                                          ipc:hotkeys:register
-│   │   │                                               DEPENDS ON: electron, hotkeysManager.js, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.HOTKEYS.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.HOTKEYS.SAVE,
+│   │   │                                                          const:IPC_CHANNELS.HOTKEYS.REGISTER
+│   │   │                                               DEPENDS ON: electron, hotkeysManager.js, logger.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_imageSharp.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_imageSharp.js
 │   │   │                                               PURPOSE: IPC handlery dla operacji na obrazach (resize, convert,
 │   │   │                                                        compress)
 │   │   │                                               FUNCTIONS: ipc:tools:image:resize, ipc:tools:image:convert,
 │   │   │                                                          ipc:tools:image:compress
-│   │   │                                               DEPENDS ON: electron, logger.js, sharpLoader.js
+│   │   │                                               DEPENDS ON: electron, logger.js, sharpLoader.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_jsonYaml.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_jsonYaml.js
 │   │   │                                               PURPOSE: IPC handlery dla JSON i YAML (formatowanie, konwersja)
 │   │   │                                               FUNCTIONS: ipc:tools:formatJSON, ipc:tools:yamlToJson,
 │   │   │                                                          ipc:tools:jsonToYaml
-│   │   │                                               DEPENDS ON: electron, logger.js, yamlLoader.js
+│   │   │                                               DEPENDS ON: electron, logger.js, yamlLoader.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_logs.js ❗           <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_logs.js
-│   │   │                                               PURPOSE: Handlery IPC dla logów testów (LogWriter) i dziennika
-│   │   │                                                        zdarzeń (EventLogger). append-log-file – błędy testów;
-│   │   │                                                        events:append – zdarzenia aplikacji (ARCH_REQ-044).
-│   │   │                                               FUNCTIONS: registerLogsHandlers, ipc:append-log-file,
-│   │   │                                                          ipc:get-logs-file, ipc:clear-logs-file,
-│   │   │                                                          ipc:logs:getFile, ipc:logs:append, ipc:logs:get,
-│   │   │                                                          ipc:logs:clear, ipc:events:append, ipc:events:getFile,
-│   │   │                                                          ipc:events:clear
-│   │   │                                               DEPENDS ON: electron, fs, path, logger.js
+│   │   │                                               PURPOSE: Handlery IPC dla logów testów (LogWriter). Obsługuje
+│   │   │                                                        zapis, odczyt i czyszczenie logów testów.
+│   │   │                                               FUNCTIONS: rotateLogs, registerLogsHandlers,
+│   │   │                                                          const:IPC_CHANNELS.LOGS.APPEND,
+│   │   │                                                          const:IPC_CHANNELS.LOGS.GET,
+│   │   │                                                          const:IPC_CHANNELS.LOGS.CLEAR, ipc:append-log-file,
+│   │   │                                                          ipc:get-logs-file, ipc:clear-logs-file
+│   │   │                                               DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_notepad.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notepad.js
+│   │   ├── 📜 ipcMainHandlers_notepad.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notepad.js
 │   │   │                                               PURPOSE: IPC dla notatek (Notepad, hooks useNotepad).
-│   │   │                                               FUNCTIONS: ipc:notepad:getAll, ipc:notepad:add,
-│   │   │                                                          ipc:notepad:update, ipc:notepad:delete
-│   │   │                                               DEPENDS ON: electron, notepadStore.js, logger.js
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: electron, notepadStore.js, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_notifications.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notifications.js
 │   │   │                                               PURPOSE: Handler IPC dla natywnych powiadomień systemowych OS
@@ -503,29 +609,32 @@ root/
 │   │   │                                                        działa nawet gdy okno jest zminimalizowane lub ukryte w
 │   │   │                                                        tray. Implementuje UIUX_REQ-022.
 │   │   │                                               FUNCTIONS: ipc:notifications:showSystem
-│   │   │                                               DEPENDS ON: electron, path, logger.js
+│   │   │                                               DEPENDS ON: electron, path, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_openExternal.js ❗   <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_openExternal.js
 │   │   │                                               PURPOSE: IPC handler do otwierania URL w domyślnej przeglądarce
 │   │   │                                                        systemowej
-│   │   │                                               FUNCTIONS: ipc:shell:openExternal
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.SHELL.OPEN_EXTERNAL
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_pathUtils.js ❗      <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_pathUtils.js
 │   │   │                                               PURPOSE: IPC helpers dla operacji na ścieżkach (path.join,
 │   │   │                                                        path.dirname)
 │   │   │                                               FUNCTIONS: ipc:path:join, ipc:path:dirname
-│   │   │                                               DEPENDS ON: electron, path, logger.js
+│   │   │                                               DEPENDS ON: electron, path, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_profiles.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_profiles.js
 │   │   │                                               PURPOSE: IPC dla profili (Sidebar / Profile Manager / App
 │   │   │                                                        Library) pobieranie profili zapisywanie profili edycja
 │   │   │                                                        profili usuwanie profili ostatnio używane walidacja
 │   │   │                                                        danych
-│   │   │                                               FUNCTIONS: ipc:profiles:getAll, ipc:profiles:create,
-│   │   │                                                          ipc:profiles:update, ipc:profiles:delete,
-│   │   │                                                          ipc:profiles:touch
-│   │   │                                               DEPENDS ON: electron, profilesStore.js, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.PROFILES.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.PROFILES.CREATE,
+│   │   │                                                          const:IPC_CHANNELS.PROFILES.UPDATE,
+│   │   │                                                          const:IPC_CHANNELS.PROFILES.DELETE,
+│   │   │                                                          const:IPC_CHANNELS.PROFILES.TOUCH
+│   │   │                                               DEPENDS ON: electron, profilesStore.js, logger.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_projects.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_projects.js
 │   │   │                                               PURPOSE: IPC handlers dla Project Manager – CRUD projektów z
@@ -536,23 +645,27 @@ root/
 │   │   │                                                        aktualizuje projekt (patch) projects:archive      –
 │   │   │                                                        archiwizuje projekt projects:delete       – usuwa
 │   │   │                                                        projekt
-│   │   │                                               FUNCTIONS: ipc:projects:getAll, ipc:projects:getWithTasks,
-│   │   │                                                          ipc:projects:create, ipc:projects:update,
-│   │   │                                                          ipc:projects:archive, ipc:projects:delete
-│   │   │                                               DEPENDS ON: electron, projectsStore.js, tasksStore.js, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.PROJECTS.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.PROJECTS.CREATE,
+│   │   │                                                          const:IPC_CHANNELS.PROJECTS.UPDATE,
+│   │   │                                                          const:IPC_CHANNELS.PROJECTS.DELETE,
+│   │   │                                                          ipc:projects:getWithTasks, ipc:projects:archive
+│   │   │                                               DEPENDS ON: electron, projectsStore.js, tasksStore.js, logger.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_regexMarkdown.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_regexMarkdown.js
 │   │   │                                               PURPOSE: IPC handlers dla Regex Tester i Markdown Previewer
 │   │   │                                               FUNCTIONS: ipc:tools:regexTest, ipc:tools:markdownRender
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_search.js ❗         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_search.js
 │   │   │                                               PURPOSE: IPC handler globalnego wyszukiwania (Ctrl+K / sidebar
 │   │   │                                                        global search). search:global – buduje indeks ze
 │   │   │                                                        store'ów i przeszukuje go wg query.
-│   │   │                                               FUNCTIONS: ipc:search:global
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.SEARCH.GLOBAL
 │   │   │                                               DEPENDS ON: electron, searchIndex.js, notepadStore.js,
-│   │   │                                                           tasksStore.js, projectsStore.js, logger.js
+│   │   │                                                           tasksStore.js, projectsStore.js, logger.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_settings.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_settings.js
 │   │   │                                               PURPOSE: IPC handlers dla Settings. settings:get        –
@@ -562,15 +675,20 @@ root/
 │   │   │                                                        eksport do pliku JSON settings:import     – import z
 │   │   │                                                        pliku JSON (merge) settings:getDefaults – zwraca
 │   │   │                                                        DEFAULT_SETTINGS z config.js
-│   │   │                                               FUNCTIONS: ipc:settings:get, ipc:settings:update,
-│   │   │                                                          ipc:settings:reset, ipc:settings:export,
-│   │   │                                                          ipc:settings:import, ipc:settings:getDefaults
-│   │   │                                               DEPENDS ON: electron, fs, logger.js, settingsStore.js, config.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.SETTINGS.GET,
+│   │   │                                                          const:IPC_CHANNELS.SETTINGS.UPDATE,
+│   │   │                                                          const:IPC_CHANNELS.SETTINGS.RESET,
+│   │   │                                                          const:IPC_CHANNELS.SETTINGS.EXPORT,
+│   │   │                                                          const:IPC_CHANNELS.SETTINGS.IMPORT,
+│   │   │                                                          const:IPC_CHANNELS.SETTINGS.GET_DEFAULTS
+│   │   │                                               DEPENDS ON: electron, fs, logger.js, settingsStore.js, config.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_svgToPng.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_svgToPng.js
 │   │   │                                               PURPOSE: IPC handler konwersji SVG → PNG przez sharp
 │   │   │                                               FUNCTIONS: ipc:tools:svgToPng
-│   │   │                                               DEPENDS ON: electron, fs, logger.js, sharpLoader.js
+│   │   │                                               DEPENDS ON: electron, fs, logger.js, sharpLoader.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_taskGroups.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_taskGroups.js
 │   │   │                                               PURPOSE: IPC handlers dla grup zadań (TaskGroup) — CRUD +
@@ -602,10 +720,13 @@ root/
 │   │   │                                               PURPOSE: IPC dla Terminala (node-pty + xterm.js) tworzenie sesji
 │   │   │                                                        wysyłanie danych odbieranie danych zamykanie sesji
 │   │   │                                                        restart cleanup
-│   │   │                                               FUNCTIONS: ipc:terminal:create, ipc:terminal:write,
-│   │   │                                                          ipc:terminal:resize, ipc:terminal:getBuffer,
-│   │   │                                                          ipc:terminal:kill, ipc:terminal:restart
-│   │   │                                               DEPENDS ON: electron, logger.js, node-pty, os
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TERMINAL.CREATE,
+│   │   │                                                          const:IPC_CHANNELS.TERMINAL.WRITE,
+│   │   │                                                          const:IPC_CHANNELS.TERMINAL.RESIZE,
+│   │   │                                                          const:IPC_CHANNELS.TERMINAL.GET_BUFFER,
+│   │   │                                                          const:IPC_CHANNELS.TERMINAL.KILL,
+│   │   │                                                          const:IPC_CHANNELS.TERMINAL.RESTART
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js, node-pty, os
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_webview_cache.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_cache.js
 │   │   │                                               PURPOSE: IPC handler dla czyszczenia cache WebView
@@ -622,15 +743,6 @@ root/
 │   │   │                                                          ipc:webview:removeInjection
 │   │   │                                               DEPENDS ON: electron, path, url, logger.js, config.js,
 │   │   │                                                           webviewScriptInjector.js
-│   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_extra.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_extra.js
-│   │   │                                               PURPOSE: Dodatkowe handlery IPC dla WebView – tryb Single App,
-│   │   │                                                        screenshot, monitor zasobów.
-│   │   │                                               FUNCTIONS: registerWebViewExtraHandlers, ipc:webview:openSingle,
-│   │   │                                                          ipc:open-single-window, ipc:webview:capture,
-│   │   │                                                          ipc:capture-webview, ipc:webview:getResource,
-│   │   │                                                          ipc:get-webview-resource
-│   │   │                                               DEPENDS ON: electron, path, logger.js, webviewRegistry.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_webview_httpErrors.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_httpErrors.js
 │   │   │                                               PURPOSE: IPC handler monitorujący HTTP 4xx/5xx z WebView per
@@ -654,11 +766,25 @@ root/
 │   │   │                                               FUNCTIONS: ipc:webview:screenshot
 │   │   │                                               DEPENDS ON: electron, logger.js, config.js
 │   │   │                                               -->
+│   │   ├── 📜 ipcMainHandlers_webview_tools.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_tools.js
+│   │   │                                               PURPOSE: Handlery IPC dla narzędzi WebView: tryb Single App,
+│   │   │                                                        zrzuty ekranu i monitor zasobów.
+│   │   │                                               FUNCTIONS: registerWebViewExtraHandlers,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.OPEN_SINGLE,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.CAPTURE,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GET_RESOURCE,
+│   │   │                                                          ipc:open-single-window, ipc:capture-webview,
+│   │   │                                                          ipc:get-webview-resource
+│   │   │                                               DEPENDS ON: electron, path, logger.js, webviewRegistry.js,
+│   │   │                                                           ipcChannels.js
+│   │   │                                               -->
 │   │   └── 📜 ipcMainHandlers_workspaces.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_workspaces.js
 │   │                                                   PURPOSE: IPC dla workspace (Sidebar, useWorkspaces).
-│   │                                                   FUNCTIONS: ipc:workspaces:getAll, ipc:workspaces:save,
-│   │                                                              ipc:workspaces:delete
-│   │                                                   DEPENDS ON: electron, workspacesStore.js, logger.js
+│   │                                                   FUNCTIONS: const:IPC_CHANNELS.WORKSPACES.GET_ALL,
+│   │                                                              const:IPC_CHANNELS.WORKSPACES.SAVE,
+│   │                                                              const:IPC_CHANNELS.WORKSPACES.DELETE
+│   │                                                   DEPENDS ON: electron, workspacesStore.js, logger.js,
+│   │                                                               ipcChannels.js
 │   │                                                   -->
 │   ├── 📁 loaders/
 │   │   ├── 📜 ipcLoader.js ❗                      <!-- VERSION: 0.0.3 PATH: src/loaders/ipcLoader.js
@@ -713,15 +839,6 @@ root/
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   ├── 📁 stores/
-│   │   ├── 📜 StorageService.js ❗                 <!-- VERSION: 0.0.3 PATH: src/stores/StorageService.js
-│   │   │                                               PURPOSE: Centralna warstwa dostępu do danych w procesie
-│   │   │                                                        renderera – cache per klucz z TTL, pattern observer
-│   │   │                                                        (subscribe/notify), ujednolicone invoke do IPC,
-│   │   │                                                        deduplicacja równoległych żądań. Używana przez hooki
-│   │   │                                                        danych (useProfiles, useSettings i inne).
-│   │   │                                               FUNCTIONS: -
-│   │   │                                               DEPENDS ON: loggerRenderer.js
-│   │   │                                               -->
 │   │   ├── 📜 accountsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/accountsStore.js
 │   │   │                                               PURPOSE: Zarządzanie kontami użytkownika (Google, GitHub, AI,
 │   │   │                                                        itp.) – obsługa trwałości i operacji CRUD na danych
@@ -731,13 +848,11 @@ root/
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 appLibraryStore.js ❗                <!-- VERSION: 0.0.3 PATH: src/stores/appLibraryStore.js
-│   │   │                                               PURPOSE: Statyczna App Library (WebCatalog-style) — odczyt,
-│   │   │                                                        cache'owanie i filtrowanie aplikacji z pliku JSON
-│   │   │                                                        (loadAppLibrary, filterApps, searchAppLibrary,
-│   │   │                                                        getAppById).
+│   │   │                                               PURPOSE: Statyczna App Library (WebCatalog-style) — udostępnia i
+│   │   │                                                        filtruje aplikacje z prekompilowanej biblioteki.
 │   │   │                                               FUNCTIONS: loadAppLibrary, filterApps, searchAppLibrary,
 │   │   │                                                          getAppById
-│   │   │                                               DEPENDS ON: fs, path, url, logger.js
+│   │   │                                               DEPENDS ON: logger.js, index.js
 │   │   │                                               -->
 │   │   ├── 📜 clipboardStore.js ❗                 <!-- VERSION: 0.0.3 PATH: src/stores/clipboardStore.js
 │   │   │                                               PURPOSE: Zarządzanie historią schowka systemowego – dodawanie,
@@ -1231,7 +1346,7 @@ root/
 │   │   │   │                                           PURPOSE: Sekcja narzędzi specjalnych w Sidebarze
 │   │   │   │                                           FUNCTIONS: SidebarTools
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
-│   │   │   │                                                       icons.js
+│   │   │   │                                                       icons.js, constants.js
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ SidebarWorkspaces.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarWorkspaces.jsx
 │   │   │                                               PURPOSE: Sekcja workspace'ów w Sidebarze
@@ -1239,7 +1354,7 @@ root/
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │                                               -->
 │   │   ├── 📁 styles/
-│   │   │   ├── 🎨 components.css ❗                <!-- VERSION: 0.0.3 PATH: src/ui/styles/components.css
+│   │   │   ├── 🎨 components.css                  <!-- VERSION: 0.0.3 PATH: src/ui/styles/components.css
 │   │   │   │                                           PURPOSE: Zbiór stylów CSS aplikacji
 │   │   │   │                                           FUNCTIONS: -
 │   │   │   │                                           DEPENDS ON: -
@@ -1250,6 +1365,12 @@ root/
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
 │   │   ├── 📁 system/
+│   │   │   ├── ⚛️ ErrorBoundary.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/system/ErrorBoundary.jsx
+│   │   │   │                                           PURPOSE: Przechwytuje błędy React w drzewie komponentów,
+│   │   │   │                                                    zapobiegając awarii całej aplikacji.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: react
+│   │   │   │                                           -->
 │   │   │   ├── ⚛️ ModalPortal.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/system/ModalPortal.jsx
 │   │   │   │                                           PURPOSE: Modal w portalu (document.body) — ponad natywnym
 │   │   │   │                                                    <webview> w Electronie.
@@ -1389,7 +1510,7 @@ root/
 │   │   │                                                           AggregatedProjectSection.jsx
 │   │   │                                               -->
 │   │   ├── 📁 terminal/
-│   │   │   └── ⚛️ Terminal.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/terminal/Terminal.jsx
+│   │   │   └── ⚛️ Terminal.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/terminal/Terminal.jsx
 │   │   │                                               PURPOSE: Terminal z xterm.js + node-pty (historia komend, ANSI
 │   │   │                                                        colors). Używa nowego multi-session API
 │   │   │                                                        (terminal:create/write/resize/kill z terminalId).
@@ -1545,6 +1666,15 @@ root/
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   ├── 📁 utils/
+│   │   ├── 📜 StorageService.js                   <!-- VERSION: 0.0.3 PATH: src/utils/StorageService.js
+│   │   │                                               PURPOSE: Centralna warstwa dostępu do danych w procesie
+│   │   │                                                        renderera – cache per klucz z TTL, pattern observer
+│   │   │                                                        (subscribe/notify), ujednolicone invoke do IPC,
+│   │   │                                                        deduplicacja równoległych żądań. Używana przez hooki
+│   │   │                                                        danych (useProfiles, useSettings i inne).
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 eventLogger.js                      <!-- VERSION: 0.0.3 PATH: src/utils/eventLogger.js
 │   │   │                                               PURPOSE: Dziennik zdarzeń aplikacji — zapisuje akcje użytkownika
 │   │   │                                                        i systemu do userData/logs/events.log w formacie
@@ -1580,7 +1710,7 @@ root/
 │   │   │                                                          clearLogsFile
 │   │   │                                               DEPENDS ON: loggerRenderer.js, config.js
 │   │   │                                               -->
-│   │   ├── 📜 logger.js ❗                         <!-- VERSION: 0.0.3 PATH: src/utils/logger.js
+│   │   ├── 📜 logger.js                           <!-- VERSION: 0.0.3 PATH: src/utils/logger.js
 │   │   │                                               PURPOSE: Główna logika logowania z filtrowaniem per-modułowym.
 │   │   │                                                        Obsługuje proces Main i Renderer.
 │   │   │                                               FUNCTIONS: initLogger, setDebugMode, setDebugModule, isDebugMode,
@@ -1678,15 +1808,13 @@ root/
 │   │                                                   DEPENDS ON: komponenty z folderu yaml/
 │   │                                                   -->
 │   ├── ⚛️ App.jsx ❗                              <!-- VERSION: 0.0.3 PATH: src/App.jsx
-│   │                                                   PURPOSE: Główny komponent root aplikacji React – inicjalizuje
-│   │                                                            system logowania, ładuje ustawienia użytkownika,
-│   │                                                            zarządza motywem graficznym (dark/light) oraz obsługuje
-│   │                                                            globalne skróty klawiszowe i stan sieci.
+│   │                                                   PURPOSE: Główny komponent root aplikacji React – zarządza
+│   │                                                            przełączaniem widoków (Splash/Onboarding/Layout).
 │   │                                                   FUNCTIONS: App
-│   │                                                   DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
-│   │                                                               urlUtils.js, MainLayout.jsx, Spinner.jsx,
-│   │                                                               SplashScreen.jsx, OnboardingScreen.jsx,
-│   │                                                               ToastContainer.jsx, notificationsManager.js
+│   │                                                   DEPENDS ON: react, translations.js, useAppInitialization.js,
+│   │                                                               MainLayout.jsx, Spinner.jsx, SplashScreen.jsx,
+│   │                                                               OnboardingScreen.jsx, ToastContainer.jsx,
+│   │                                                               ErrorBoundary.jsx
 │   │                                                   -->
 │   ├── 📜 config.js                               <!-- VERSION: 0.0.3 PATH: src/config.js
 │   │                                                   PURPOSE: Re-eksport centralnej konfiguracji aplikacji z
@@ -1696,12 +1824,6 @@ root/
 │   │                                                   FUNCTIONS: -
 │   │                                                   DEPENDS ON: app.js, features.js, limits.js, paths.js,
 │   │                                                               settings.js, endpoints.js
-│   │                                                   -->
-│   ├── 📜 constants.js                            <!-- VERSION: 0.0.3 PATH: src/constants.js
-│   │                                                   PURPOSE: Application-wide constants and enums (tasks, app
-│   │                                                            categories, etc.)
-│   │                                                   FUNCTIONS: -
-│   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   └── ⚛️ index.jsx                              <!-- VERSION: 0.0.3 PATH: src/index.jsx
 │                                                       PURPOSE: Punkt wejścia aplikacji React. Montuje <App /> w #root,
@@ -1783,7 +1905,7 @@ root/
 │   │                                                   FUNCTIONS: runHooksTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_IPC.js ❗                     <!-- VERSION: 0.0.3 PATH: tests/TestRunner_IPC.js
+│   ├── 📜 TestRunner_IPC.js                       <!-- VERSION: 0.0.3 PATH: tests/TestRunner_IPC.js
 │   │                                                   PURPOSE: Testy dostępności wszystkich kanałów IPC przez
 │   │                                                            window.electronAPI – profiles, settings, history,
 │   │                                                            workspaces, tasks, terminal, notes, hotkeys, adBlocker,
@@ -1916,7 +2038,7 @@ root/
 │   │                                                   FUNCTIONS: runUseAsyncTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_Utils.js ❗                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Utils.js
+│   ├── 📜 TestRunner_Utils.js                     <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Utils.js
 │   │                                                   PURPOSE: Testy funkcji z src/utils/ – urlUtils, validators,
 │   │                                                            searchIndex, notesStorage, notificationsManager,
 │   │                                                            networkUtils, fileUtils.
@@ -2025,7 +2147,7 @@ root/
 │   │                                                   FUNCTIONS: Dokumentacja: 19 sekcji głównych
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
-│   ├── 📄 Global_Project_Starter_Guide.md ❗       <!-- VERSION: 0.0.3 PATH: doc/Global_Project_Starter_Guide.md
+│   ├── 📄 Global_Project_Starter_Guide.md         <!-- VERSION: 0.0.3 PATH: doc/Global_Project_Starter_Guide.md
 │   │                                                   PURPOSE: Dokumentacja specyfikacji projektowej - Globalny
 │   │                                                            przewodnik inicjalizacji projektów (AI First)
 │   │                                                   FUNCTIONS: Dokumentacja: 15 sekcji głównych
@@ -2128,7 +2250,13 @@ root/
 │   │                                                   DEPENDS ON: react, config.js
 │   │                                                   -->
 │   ├── 📁 constants/
-│   │   └── 📜 ipcChannels.js ❗                    <!-- VERSION: 0.0.3 PATH: src/constants/ipcChannels.js
+│   │   ├── 📜 constants.js                        <!-- VERSION: 0.0.3 PATH: src/constants/constants.js
+│   │   │                                               PURPOSE: Application-wide constants and enums (tasks, app
+│   │   │                                                        categories, etc.)
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: -
+│   │   │                                               -->
+│   │   └── 📜 ipcChannels.js                      <!-- VERSION: 0.0.3 PATH: src/constants/ipcChannels.js
 │   │                                                   PURPOSE: Centralny rejestr nazw kanałów IPC – single source of
 │   │                                                            truth. Eliminuje string literals rozrzucone po
 │   │                                                            handlerach, hookach i preloadzie. Używać wszędzie
@@ -2137,10 +2265,64 @@ root/
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   ├── 📁 data/
-│   │   ├── 📦 app-library.json                    <!-- VERSION: 0.0.3 PATH: src/data/app-library.json
-│   │   │                                               PURPOSE: Plik danych / tłumaczeń
+│   │   ├── 📁 appLibrary/
+│   │   │   ├── 📦 appLibrary.AI.json              <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.AI.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.CLOUD.json           <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.CLOUD.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.COMMUNICATION.json   <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.COMMUNICATION.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.DESIGN.json          <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.DESIGN.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.DEV.json             <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.DEV.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.ENTERTAINMENT.json   <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.ENTERTAINMENT.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.PRODUCTIVITY.json    <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.PRODUCTIVITY.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   ├── 📦 appLibrary.SOCIAL.json          <!-- VERSION: - PATH: src/data/appLibrary/appLibrary.SOCIAL.json
+│   │   │   │                                           PURPOSE: Plik zasobów, konfiguracji npm lub dokumentacji
+│   │   │   │                                                    pomocniczej.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: -
+│   │   │   │                                           -->
+│   │   │   └── 📜 index.js                        <!-- VERSION: 0.0.3 PATH: src/data/appLibrary/index.js
+│   │   │                                               PURPOSE: Agregator biblioteki aplikacji – łączy kategorie JSON w
+│   │   │                                                        jeden obiekt.
 │   │   │                                               FUNCTIONS: -
-│   │   │                                               DEPENDS ON: -
+│   │   │                                               DEPENDS ON: icons.js, appLibrary.AI.json, appLibrary.DEV.json,
+│   │   │                                                           appLibrary.PRODUCTIVITY.json,
+│   │   │                                                           appLibrary.COMMUNICATION.json,
+│   │   │                                                           appLibrary.SOCIAL.json, appLibrary.DESIGN.json,
+│   │   │                                                           appLibrary.CLOUD.json, appLibrary.ENTERTAINMENT.json
 │   │   │                                               -->
 │   │   ├── 📦 defaultProfiles.json                <!-- VERSION: 0.0.3 PATH: src/data/defaultProfiles.json
 │   │   │                                               PURPOSE: Domyślne profile użytkownika (template)
@@ -2215,18 +2397,30 @@ root/
 │   │                                                   DEPENDS ON: config.js, logger.js
 │   │                                                   -->
 │   ├── 📁 hooks/
+│   │   ├── 📜 useAppInitialization.js ❗           <!-- VERSION: 0.0.3 PATH: src/hooks/useAppInitialization.js
+│   │   │                                               PURPOSE: Logika startowa aplikacji (logger, settings, profile,
+│   │   │                                                        hotkeys, theme).
+│   │   │                                               FUNCTIONS: useAppInitialization
+│   │   │                                               DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
+│   │   │                                                           urlUtils.js, notificationsManager.js
+│   │   │                                               -->
 │   │   ├── 📜 useAppLibrary.js                    <!-- VERSION: 0.0.3 PATH: src/hooks/useAppLibrary.js
 │   │   │                                               PURPOSE: Hook React do pobierania i wyszukiwania w bibliotece
 │   │   │                                                        aplikacji (App Library) przez IPC.
 │   │   │                                               FUNCTIONS: useAppLibrary
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js, translations.js
+│   │   │                                               -->
+│   │   ├── 📜 useAsync.js                         <!-- VERSION: 0.0.3 PATH: src/hooks/useAsync.js
+│   │   │                                               PURPOSE: Generyczny hook do obsługi operacji asynchronicznych
+│   │   │                                                        (ładowanie danych). Eliminuje duplikację wzorca load()
+│   │   │                                                        w hookach danych.
+│   │   │                                               FUNCTIONS: useAsync
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
-│   │   ├── 📜 useAsync.js ❗                       <!-- VERSION: 0.0.3 PATH: src/hooks/useAsync.js
-│   │   │                                               PURPOSE: Generyczny hook do obsługi operacji asynchronicznych
-│   │   │                                                        (load/error/loading) oraz mutacji z optimistic updates
-│   │   │                                                        i rollbackiem. Eliminuje duplikację wzorca load() w
-│   │   │                                                        hookach danych.
-│   │   │                                               FUNCTIONS: useAsync, useAsyncMutation
+│   │   ├── 📜 useAsyncMutation.js                 <!-- VERSION: 0.0.3 PATH: src/hooks/useAsyncMutation.js
+│   │   │                                               PURPOSE: Hook do operacji mutacji z optimistic updates i
+│   │   │                                                        rollbackiem.
+│   │   │                                               FUNCTIONS: useAsyncMutation
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js
 │   │   │                                               -->
 │   │   ├── 📜 useCategories.js                    <!-- VERSION: 0.0.3 PATH: src/hooks/useCategories.js
@@ -2249,6 +2443,11 @@ root/
 │   │   │                                               FUNCTIONS: useMainLayout
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
 │   │   │                                               -->
+│   │   ├── 📜 useNotepadAutosave.js ❗             <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadAutosave.js
+│   │   │                                               PURPOSE: Izolowana logika automatycznego zapisu dla notatnika.
+│   │   │                                               FUNCTIONS: useNotepadAutosave
+│   │   │                                               DEPENDS ON: react, loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 useNotepadContent.js                <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadContent.js
 │   │   │                                               PURPOSE: Hook React do zarządzania treścią notatnika – stan
 │   │   │                                                        edycji, zapis ręczny, zapis do pliku, skróty
@@ -2263,19 +2462,31 @@ root/
 │   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js,
 │   │   │                                                           notificationsManager.js
 │   │   │                                               -->
+│   │   ├── 📜 useNotepadModals.js ❗               <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadModals.js
+│   │   │                                               PURPOSE: Zarządzanie stanem modali i powiadomień dla notatnika.
+│   │   │                                               FUNCTIONS: useNotepadModals
+│   │   │                                               DEPENDS ON: react
+│   │   │                                               -->
+│   │   ├── 📜 useNotepadTabActions.js ❗           <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadTabActions.js
+│   │   │                                               PURPOSE: Wrappery dla akcji na zakładkach z logiką walidacji i
+│   │   │                                                        UI.
+│   │   │                                               FUNCTIONS: useNotepadTabActions
+│   │   │                                               DEPENDS ON: react, translations.js, loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 useNotepadTabs.js                   <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadTabs.js
 │   │   │                                               PURPOSE: Hook React do zarządzania zakładkami notatnika –
 │   │   │                                                        tworzenie, przełączanie, zamykanie, zmiana nazw.
 │   │   │                                               FUNCTIONS: useNotepadTabs
 │   │   │                                               DEPENDS ON: react, notepadStorage.js, loggerRenderer.js
 │   │   │                                               -->
-│   │   ├── 📜 useNotepadUI.js ❗                   <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadUI.js
-│   │   │                                               PURPOSE: Orkiestrator hooków notatnika – łączy zarządzanie
-│   │   │                                                        zakładkami i treścią, obsługuje autosave i toast.
+│   │   ├── 📜 useNotepadUI.js                     <!-- VERSION: 0.0.3 PATH: src/hooks/useNotepadUI.js
+│   │   │                                               PURPOSE: Orkiestrator hooków notatnika – koordynuje zakładki,
+│   │   │                                                        treść, modale i akcje użytkownika.
 │   │   │                                               FUNCTIONS: useNotepadUI
 │   │   │                                               DEPENDS ON: react, translations.js, useNotepadTabs.js,
-│   │   │                                                           useNotepadContent.js, loggerRenderer.js,
-│   │   │                                                           notificationsManager.js
+│   │   │                                                           useNotepadContent.js, useNotepadAutosave.js,
+│   │   │                                                           useNotepadModals.js, useNotepadTabActions.js,
+│   │   │                                                           loggerRenderer.js, notificationsManager.js
 │   │   │                                               -->
 │   │   ├── 📜 useProfiles.js                      <!-- VERSION: 0.0.3 PATH: src/hooks/useProfiles.js
 │   │   │                                               PURPOSE: Hook React do zarządzania profilami WebView – CRUD,
@@ -2346,10 +2557,11 @@ root/
 │   │   ├── 📜 ipcMainHandlers_adBlocker.js ❗      <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_adBlocker.js
 │   │   │                                               PURPOSE: IPC handlery do zarządzania blokerem reklam – globalnie
 │   │   │                                                        i per profil
-│   │   │                                               FUNCTIONS: ipc:adblocker:setGlobal, ipc:adblocker:getGlobal,
-│   │   │                                                          ipc:adblocker:setForProfile,
-│   │   │                                                          ipc:adblocker:getForProfile
-│   │   │                                               DEPENDS ON: electron, adBlocker.js, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.ADBLOCKER.SET_GLOBAL,
+│   │   │                                                          const:IPC_CHANNELS.ADBLOCKER.GET_GLOBAL,
+│   │   │                                                          const:IPC_CHANNELS.ADBLOCKER.SET_FOR_PROFILE,
+│   │   │                                                          const:IPC_CHANNELS.ADBLOCKER.GET_FOR_PROFILE
+│   │   │                                               DEPENDS ON: electron, adBlocker.js, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_aggregatedTasks.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_aggregatedTasks.js
 │   │   │                                               PURPOSE: IPC handlers dla widoku zbiorczego zadań
@@ -2364,51 +2576,65 @@ root/
 │   │   ├── 📜 ipcMainHandlers_app.js ❗            <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_app.js
 │   │   │                                               PURPOSE: IPC handlery cyklu życia aplikacji – potwierdzenie
 │   │   │                                                        zamknięcia.
-│   │   │                                               FUNCTIONS: ipc:app:confirmQuit, ipc:confirm-quit
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.APP.CONFIRM_QUIT, ipc:confirm-quit
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_appInfo.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_appInfo.js
 │   │   │                                               PURPOSE: IPC handler do pobierania informacji o aplikacji
 │   │   │                                               FUNCTIONS: ipc:app:getInfo
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_appLibrary.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_appLibrary.js
 │   │   │                                               PURPOSE: IPC dla biblioteki aplikacji (App Library) – pobieranie
 │   │   │                                                        kategorii, wyszukiwanie, filtrowanie po kategorii.
-│   │   │                                               FUNCTIONS: ipc:appLibrary:getAll, ipc:appLibrary:search,
-│   │   │                                                          ipc:appLibrary:getByCategory
-│   │   │                                               DEPENDS ON: electron, appLibraryStore.js, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.APP_LIBRARY.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.APP_LIBRARY.SEARCH,
+│   │   │                                                          const:IPC_CHANNELS.APP_LIBRARY.GET_BY_CATEGORY
+│   │   │                                               DEPENDS ON: electron, appLibraryStore.js, logger.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_cookies.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_cookies.js
 │   │   │                                               PURPOSE: IPC handler do pobierania cookies (Cookie Grabber)
-│   │   │                                               FUNCTIONS: ipc:tools:getCookies
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.COOKIES.GET_ALL
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_dialogs.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_dialogs.js
 │   │   │                                               PURPOSE: IPC handlers dla natywnych okien dialogowych
 │   │   │                                                        (open/save)
 │   │   │                                               FUNCTIONS: ipc:dialog:openFile, ipc:dialog:saveFile
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
+│   │   │                                               -->
+│   │   ├── 📜 ipcMainHandlers_events.js ❗         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_events.js
+│   │   │                                               PURPOSE: Handlery IPC dla dziennika zdarzeń aplikacji
+│   │   │                                                        (EventLogger). Obsługuje zapis, odczyt i czyszczenie
+│   │   │                                                        zdarzeń.
+│   │   │                                               FUNCTIONS: registerEventLogsHandlers,
+│   │   │                                                          const:IPC_CHANNELS.EVENTS.APPEND,
+│   │   │                                                          const:IPC_CHANNELS.EVENTS.GET_FILE,
+│   │   │                                                          const:IPC_CHANNELS.EVENTS.CLEAR
+│   │   │                                               DEPENDS ON: electron, fs, path, logger.js,
+│   │   │                                                           ipcMainHandlers_logs.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_fileApi.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_fileApi.js
 │   │   │                                               PURPOSE: IPC handlers dla File Previewer, Mini Postman i
 │   │   │                                                        Clipboard
 │   │   │                                               FUNCTIONS: ipc:tools:filePreview, ipc:tools:apiRequest,
 │   │   │                                                          ipc:tools:clipboard:get
-│   │   │                                               DEPENDS ON: electron, fs, path, logger.js
+│   │   │                                               DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_fileSystem.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_fileSystem.js
 │   │   │                                               PURPOSE: IPC handlers do odczytu i zapisu plików (przez main
 │   │   │                                                        process)
 │   │   │                                               FUNCTIONS: ipc:fs:readFile, ipc:fs:writeFile
-│   │   │                                               DEPENDS ON: electron, fs, logger.js
+│   │   │                                               DEPENDS ON: electron, fs, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_files.js ❗          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_files.js
 │   │   │                                               PURPOSE: IPC handlery zapisu plików – tekst i dane binarne przez
 │   │   │                                                        dialog systemowy.
-│   │   │                                               FUNCTIONS: ipc:files:saveText, ipc:save-text-to-file,
-│   │   │                                                          ipc:files:saveBinary, ipc:save-file
-│   │   │                                               DEPENDS ON: electron, fs, path, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.FILES.SAVE_TEXT,
+│   │   │                                                          const:IPC_CHANNELS.FILES.SAVE_BINARY,
+│   │   │                                                          ipc:save-text-to-file, ipc:save-file
+│   │   │                                               DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_history.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_history.js
 │   │   │                                               PURPOSE: IPC dla historii odwiedzin/akcji. history:getAll    –
@@ -2416,46 +2642,48 @@ root/
 │   │   │                                                          – dodaje nowy wpis i zapisuje history:clear     –
 │   │   │                                                        czyści historię history:getRecent – zwraca ostatnie 100
 │   │   │                                                        wpisów
-│   │   │                                               FUNCTIONS: ipc:history:getAll, ipc:history:add,
-│   │   │                                                          ipc:history:clear, ipc:history:getRecent
-│   │   │                                               DEPENDS ON: electron, historyStore.js, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.HISTORY.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.HISTORY.ADD,
+│   │   │                                                          const:IPC_CHANNELS.HISTORY.CLEAR,
+│   │   │                                                          ipc:history:getRecent
+│   │   │                                               DEPENDS ON: electron, historyStore.js, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_hotkeys.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_hotkeys.js
 │   │   │                                               PURPOSE: IPC handlery do zarządzania skrótami klawiszowymi –
 │   │   │                                                        pobieranie, zapis, rejestracja
-│   │   │                                               FUNCTIONS: ipc:hotkeys:getAll, ipc:hotkeys:save,
-│   │   │                                                          ipc:hotkeys:register
-│   │   │                                               DEPENDS ON: electron, hotkeysManager.js, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.HOTKEYS.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.HOTKEYS.SAVE,
+│   │   │                                                          const:IPC_CHANNELS.HOTKEYS.REGISTER
+│   │   │                                               DEPENDS ON: electron, hotkeysManager.js, logger.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_imageSharp.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_imageSharp.js
 │   │   │                                               PURPOSE: IPC handlery dla operacji na obrazach (resize, convert,
 │   │   │                                                        compress)
 │   │   │                                               FUNCTIONS: ipc:tools:image:resize, ipc:tools:image:convert,
 │   │   │                                                          ipc:tools:image:compress
-│   │   │                                               DEPENDS ON: electron, logger.js, sharpLoader.js
+│   │   │                                               DEPENDS ON: electron, logger.js, sharpLoader.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_jsonYaml.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_jsonYaml.js
 │   │   │                                               PURPOSE: IPC handlery dla JSON i YAML (formatowanie, konwersja)
 │   │   │                                               FUNCTIONS: ipc:tools:formatJSON, ipc:tools:yamlToJson,
 │   │   │                                                          ipc:tools:jsonToYaml
-│   │   │                                               DEPENDS ON: electron, logger.js, yamlLoader.js
+│   │   │                                               DEPENDS ON: electron, logger.js, yamlLoader.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_logs.js ❗           <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_logs.js
-│   │   │                                               PURPOSE: Handlery IPC dla logów testów (LogWriter) i dziennika
-│   │   │                                                        zdarzeń (EventLogger). append-log-file – błędy testów;
-│   │   │                                                        events:append – zdarzenia aplikacji (ARCH_REQ-044).
-│   │   │                                               FUNCTIONS: registerLogsHandlers, ipc:append-log-file,
-│   │   │                                                          ipc:get-logs-file, ipc:clear-logs-file,
-│   │   │                                                          ipc:logs:getFile, ipc:logs:append, ipc:logs:get,
-│   │   │                                                          ipc:logs:clear, ipc:events:append, ipc:events:getFile,
-│   │   │                                                          ipc:events:clear
-│   │   │                                               DEPENDS ON: electron, fs, path, logger.js
+│   │   │                                               PURPOSE: Handlery IPC dla logów testów (LogWriter). Obsługuje
+│   │   │                                                        zapis, odczyt i czyszczenie logów testów.
+│   │   │                                               FUNCTIONS: rotateLogs, registerLogsHandlers,
+│   │   │                                                          const:IPC_CHANNELS.LOGS.APPEND,
+│   │   │                                                          const:IPC_CHANNELS.LOGS.GET,
+│   │   │                                                          const:IPC_CHANNELS.LOGS.CLEAR, ipc:append-log-file,
+│   │   │                                                          ipc:get-logs-file, ipc:clear-logs-file
+│   │   │                                               DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 │   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_notepad.js ❗        <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notepad.js
+│   │   ├── 📜 ipcMainHandlers_notepad.js          <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notepad.js
 │   │   │                                               PURPOSE: IPC dla notatek (Notepad, hooks useNotepad).
-│   │   │                                               FUNCTIONS: ipc:notepad:getAll, ipc:notepad:add,
-│   │   │                                                          ipc:notepad:update, ipc:notepad:delete
-│   │   │                                               DEPENDS ON: electron, notepadStore.js, logger.js
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: electron, notepadStore.js, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_notifications.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_notifications.js
 │   │   │                                               PURPOSE: Handler IPC dla natywnych powiadomień systemowych OS
@@ -2463,29 +2691,32 @@ root/
 │   │   │                                                        działa nawet gdy okno jest zminimalizowane lub ukryte w
 │   │   │                                                        tray. Implementuje UIUX_REQ-022.
 │   │   │                                               FUNCTIONS: ipc:notifications:showSystem
-│   │   │                                               DEPENDS ON: electron, path, logger.js
+│   │   │                                               DEPENDS ON: electron, path, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_openExternal.js ❗   <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_openExternal.js
 │   │   │                                               PURPOSE: IPC handler do otwierania URL w domyślnej przeglądarce
 │   │   │                                                        systemowej
-│   │   │                                               FUNCTIONS: ipc:shell:openExternal
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.SHELL.OPEN_EXTERNAL
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_pathUtils.js ❗      <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_pathUtils.js
 │   │   │                                               PURPOSE: IPC helpers dla operacji na ścieżkach (path.join,
 │   │   │                                                        path.dirname)
 │   │   │                                               FUNCTIONS: ipc:path:join, ipc:path:dirname
-│   │   │                                               DEPENDS ON: electron, path, logger.js
+│   │   │                                               DEPENDS ON: electron, path, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_profiles.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_profiles.js
 │   │   │                                               PURPOSE: IPC dla profili (Sidebar / Profile Manager / App
 │   │   │                                                        Library) pobieranie profili zapisywanie profili edycja
 │   │   │                                                        profili usuwanie profili ostatnio używane walidacja
 │   │   │                                                        danych
-│   │   │                                               FUNCTIONS: ipc:profiles:getAll, ipc:profiles:create,
-│   │   │                                                          ipc:profiles:update, ipc:profiles:delete,
-│   │   │                                                          ipc:profiles:touch
-│   │   │                                               DEPENDS ON: electron, profilesStore.js, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.PROFILES.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.PROFILES.CREATE,
+│   │   │                                                          const:IPC_CHANNELS.PROFILES.UPDATE,
+│   │   │                                                          const:IPC_CHANNELS.PROFILES.DELETE,
+│   │   │                                                          const:IPC_CHANNELS.PROFILES.TOUCH
+│   │   │                                               DEPENDS ON: electron, profilesStore.js, logger.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_projects.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_projects.js
 │   │   │                                               PURPOSE: IPC handlers dla Project Manager – CRUD projektów z
@@ -2496,23 +2727,27 @@ root/
 │   │   │                                                        aktualizuje projekt (patch) projects:archive      –
 │   │   │                                                        archiwizuje projekt projects:delete       – usuwa
 │   │   │                                                        projekt
-│   │   │                                               FUNCTIONS: ipc:projects:getAll, ipc:projects:getWithTasks,
-│   │   │                                                          ipc:projects:create, ipc:projects:update,
-│   │   │                                                          ipc:projects:archive, ipc:projects:delete
-│   │   │                                               DEPENDS ON: electron, projectsStore.js, tasksStore.js, logger.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.PROJECTS.GET_ALL,
+│   │   │                                                          const:IPC_CHANNELS.PROJECTS.CREATE,
+│   │   │                                                          const:IPC_CHANNELS.PROJECTS.UPDATE,
+│   │   │                                                          const:IPC_CHANNELS.PROJECTS.DELETE,
+│   │   │                                                          ipc:projects:getWithTasks, ipc:projects:archive
+│   │   │                                               DEPENDS ON: electron, projectsStore.js, tasksStore.js, logger.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_regexMarkdown.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_regexMarkdown.js
 │   │   │                                               PURPOSE: IPC handlers dla Regex Tester i Markdown Previewer
 │   │   │                                               FUNCTIONS: ipc:tools:regexTest, ipc:tools:markdownRender
-│   │   │                                               DEPENDS ON: electron, logger.js
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_search.js ❗         <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_search.js
 │   │   │                                               PURPOSE: IPC handler globalnego wyszukiwania (Ctrl+K / sidebar
 │   │   │                                                        global search). search:global – buduje indeks ze
 │   │   │                                                        store'ów i przeszukuje go wg query.
-│   │   │                                               FUNCTIONS: ipc:search:global
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.SEARCH.GLOBAL
 │   │   │                                               DEPENDS ON: electron, searchIndex.js, notepadStore.js,
-│   │   │                                                           tasksStore.js, projectsStore.js, logger.js
+│   │   │                                                           tasksStore.js, projectsStore.js, logger.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_settings.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_settings.js
 │   │   │                                               PURPOSE: IPC handlers dla Settings. settings:get        –
@@ -2522,15 +2757,20 @@ root/
 │   │   │                                                        eksport do pliku JSON settings:import     – import z
 │   │   │                                                        pliku JSON (merge) settings:getDefaults – zwraca
 │   │   │                                                        DEFAULT_SETTINGS z config.js
-│   │   │                                               FUNCTIONS: ipc:settings:get, ipc:settings:update,
-│   │   │                                                          ipc:settings:reset, ipc:settings:export,
-│   │   │                                                          ipc:settings:import, ipc:settings:getDefaults
-│   │   │                                               DEPENDS ON: electron, fs, logger.js, settingsStore.js, config.js
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.SETTINGS.GET,
+│   │   │                                                          const:IPC_CHANNELS.SETTINGS.UPDATE,
+│   │   │                                                          const:IPC_CHANNELS.SETTINGS.RESET,
+│   │   │                                                          const:IPC_CHANNELS.SETTINGS.EXPORT,
+│   │   │                                                          const:IPC_CHANNELS.SETTINGS.IMPORT,
+│   │   │                                                          const:IPC_CHANNELS.SETTINGS.GET_DEFAULTS
+│   │   │                                               DEPENDS ON: electron, fs, logger.js, settingsStore.js, config.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_svgToPng.js ❗       <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_svgToPng.js
 │   │   │                                               PURPOSE: IPC handler konwersji SVG → PNG przez sharp
 │   │   │                                               FUNCTIONS: ipc:tools:svgToPng
-│   │   │                                               DEPENDS ON: electron, fs, logger.js, sharpLoader.js
+│   │   │                                               DEPENDS ON: electron, fs, logger.js, sharpLoader.js,
+│   │   │                                                           ipcChannels.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_taskGroups.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_taskGroups.js
 │   │   │                                               PURPOSE: IPC handlers dla grup zadań (TaskGroup) — CRUD +
@@ -2562,10 +2802,13 @@ root/
 │   │   │                                               PURPOSE: IPC dla Terminala (node-pty + xterm.js) tworzenie sesji
 │   │   │                                                        wysyłanie danych odbieranie danych zamykanie sesji
 │   │   │                                                        restart cleanup
-│   │   │                                               FUNCTIONS: ipc:terminal:create, ipc:terminal:write,
-│   │   │                                                          ipc:terminal:resize, ipc:terminal:getBuffer,
-│   │   │                                                          ipc:terminal:kill, ipc:terminal:restart
-│   │   │                                               DEPENDS ON: electron, logger.js, node-pty, os
+│   │   │                                               FUNCTIONS: const:IPC_CHANNELS.TERMINAL.CREATE,
+│   │   │                                                          const:IPC_CHANNELS.TERMINAL.WRITE,
+│   │   │                                                          const:IPC_CHANNELS.TERMINAL.RESIZE,
+│   │   │                                                          const:IPC_CHANNELS.TERMINAL.GET_BUFFER,
+│   │   │                                                          const:IPC_CHANNELS.TERMINAL.KILL,
+│   │   │                                                          const:IPC_CHANNELS.TERMINAL.RESTART
+│   │   │                                               DEPENDS ON: electron, logger.js, ipcChannels.js, node-pty, os
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_webview_cache.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_cache.js
 │   │   │                                               PURPOSE: IPC handler dla czyszczenia cache WebView
@@ -2582,15 +2825,6 @@ root/
 │   │   │                                                          ipc:webview:removeInjection
 │   │   │                                               DEPENDS ON: electron, path, url, logger.js, config.js,
 │   │   │                                                           webviewScriptInjector.js
-│   │   │                                               -->
-│   │   ├── 📜 ipcMainHandlers_webview_extra.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_extra.js
-│   │   │                                               PURPOSE: Dodatkowe handlery IPC dla WebView – tryb Single App,
-│   │   │                                                        screenshot, monitor zasobów.
-│   │   │                                               FUNCTIONS: registerWebViewExtraHandlers, ipc:webview:openSingle,
-│   │   │                                                          ipc:open-single-window, ipc:webview:capture,
-│   │   │                                                          ipc:capture-webview, ipc:webview:getResource,
-│   │   │                                                          ipc:get-webview-resource
-│   │   │                                               DEPENDS ON: electron, path, logger.js, webviewRegistry.js
 │   │   │                                               -->
 │   │   ├── 📜 ipcMainHandlers_webview_httpErrors.js ❗ <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_httpErrors.js
 │   │   │                                               PURPOSE: IPC handler monitorujący HTTP 4xx/5xx z WebView per
@@ -2614,11 +2848,25 @@ root/
 │   │   │                                               FUNCTIONS: ipc:webview:screenshot
 │   │   │                                               DEPENDS ON: electron, logger.js, config.js
 │   │   │                                               -->
+│   │   ├── 📜 ipcMainHandlers_webview_tools.js ❗  <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_webview_tools.js
+│   │   │                                               PURPOSE: Handlery IPC dla narzędzi WebView: tryb Single App,
+│   │   │                                                        zrzuty ekranu i monitor zasobów.
+│   │   │                                               FUNCTIONS: registerWebViewExtraHandlers,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.OPEN_SINGLE,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.CAPTURE,
+│   │   │                                                          const:IPC_CHANNELS.WEBVIEW.GET_RESOURCE,
+│   │   │                                                          ipc:open-single-window, ipc:capture-webview,
+│   │   │                                                          ipc:get-webview-resource
+│   │   │                                               DEPENDS ON: electron, path, logger.js, webviewRegistry.js,
+│   │   │                                                           ipcChannels.js
+│   │   │                                               -->
 │   │   └── 📜 ipcMainHandlers_workspaces.js ❗     <!-- VERSION: 0.0.3 PATH: src/ipc/ipcMainHandlers_workspaces.js
 │   │                                                   PURPOSE: IPC dla workspace (Sidebar, useWorkspaces).
-│   │                                                   FUNCTIONS: ipc:workspaces:getAll, ipc:workspaces:save,
-│   │                                                              ipc:workspaces:delete
-│   │                                                   DEPENDS ON: electron, workspacesStore.js, logger.js
+│   │                                                   FUNCTIONS: const:IPC_CHANNELS.WORKSPACES.GET_ALL,
+│   │                                                              const:IPC_CHANNELS.WORKSPACES.SAVE,
+│   │                                                              const:IPC_CHANNELS.WORKSPACES.DELETE
+│   │                                                   DEPENDS ON: electron, workspacesStore.js, logger.js,
+│   │                                                               ipcChannels.js
 │   │                                                   -->
 │   ├── 📁 loaders/
 │   │   ├── 📜 ipcLoader.js ❗                      <!-- VERSION: 0.0.3 PATH: src/loaders/ipcLoader.js
@@ -2673,15 +2921,6 @@ root/
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   ├── 📁 stores/
-│   │   ├── 📜 StorageService.js ❗                 <!-- VERSION: 0.0.3 PATH: src/stores/StorageService.js
-│   │   │                                               PURPOSE: Centralna warstwa dostępu do danych w procesie
-│   │   │                                                        renderera – cache per klucz z TTL, pattern observer
-│   │   │                                                        (subscribe/notify), ujednolicone invoke do IPC,
-│   │   │                                                        deduplicacja równoległych żądań. Używana przez hooki
-│   │   │                                                        danych (useProfiles, useSettings i inne).
-│   │   │                                               FUNCTIONS: -
-│   │   │                                               DEPENDS ON: loggerRenderer.js
-│   │   │                                               -->
 │   │   ├── 📜 accountsStore.js ❗                  <!-- VERSION: 0.0.3 PATH: src/stores/accountsStore.js
 │   │   │                                               PURPOSE: Zarządzanie kontami użytkownika (Google, GitHub, AI,
 │   │   │                                                        itp.) – obsługa trwałości i operacji CRUD na danych
@@ -2691,13 +2930,11 @@ root/
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 appLibraryStore.js ❗                <!-- VERSION: 0.0.3 PATH: src/stores/appLibraryStore.js
-│   │   │                                               PURPOSE: Statyczna App Library (WebCatalog-style) — odczyt,
-│   │   │                                                        cache'owanie i filtrowanie aplikacji z pliku JSON
-│   │   │                                                        (loadAppLibrary, filterApps, searchAppLibrary,
-│   │   │                                                        getAppById).
+│   │   │                                               PURPOSE: Statyczna App Library (WebCatalog-style) — udostępnia i
+│   │   │                                                        filtruje aplikacje z prekompilowanej biblioteki.
 │   │   │                                               FUNCTIONS: loadAppLibrary, filterApps, searchAppLibrary,
 │   │   │                                                          getAppById
-│   │   │                                               DEPENDS ON: fs, path, url, logger.js
+│   │   │                                               DEPENDS ON: logger.js, index.js
 │   │   │                                               -->
 │   │   ├── 📜 clipboardStore.js ❗                 <!-- VERSION: 0.0.3 PATH: src/stores/clipboardStore.js
 │   │   │                                               PURPOSE: Zarządzanie historią schowka systemowego – dodawanie,
@@ -3191,7 +3428,7 @@ root/
 │   │   │   │                                           PURPOSE: Sekcja narzędzi specjalnych w Sidebarze
 │   │   │   │                                           FUNCTIONS: SidebarTools
 │   │   │   │                                           DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
-│   │   │   │                                                       icons.js
+│   │   │   │                                                       icons.js, constants.js
 │   │   │   │                                           -->
 │   │   │   └── ⚛️ SidebarWorkspaces.jsx ❗        <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/SidebarWorkspaces.jsx
 │   │   │                                               PURPOSE: Sekcja workspace'ów w Sidebarze
@@ -3199,7 +3436,7 @@ root/
 │   │   │                                               DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │   │   │                                               -->
 │   │   ├── 📁 styles/
-│   │   │   ├── 🎨 components.css ❗                <!-- VERSION: 0.0.3 PATH: src/ui/styles/components.css
+│   │   │   ├── 🎨 components.css                  <!-- VERSION: 0.0.3 PATH: src/ui/styles/components.css
 │   │   │   │                                           PURPOSE: Zbiór stylów CSS aplikacji
 │   │   │   │                                           FUNCTIONS: -
 │   │   │   │                                           DEPENDS ON: -
@@ -3210,6 +3447,12 @@ root/
 │   │   │                                               DEPENDS ON: -
 │   │   │                                               -->
 │   │   ├── 📁 system/
+│   │   │   ├── ⚛️ ErrorBoundary.jsx              <!-- VERSION: 0.0.3 PATH: src/ui/system/ErrorBoundary.jsx
+│   │   │   │                                           PURPOSE: Przechwytuje błędy React w drzewie komponentów,
+│   │   │   │                                                    zapobiegając awarii całej aplikacji.
+│   │   │   │                                           FUNCTIONS: -
+│   │   │   │                                           DEPENDS ON: react
+│   │   │   │                                           -->
 │   │   │   ├── ⚛️ ModalPortal.jsx ❗              <!-- VERSION: 0.0.3 PATH: src/ui/system/ModalPortal.jsx
 │   │   │   │                                           PURPOSE: Modal w portalu (document.body) — ponad natywnym
 │   │   │   │                                                    <webview> w Electronie.
@@ -3349,7 +3592,7 @@ root/
 │   │   │                                                           AggregatedProjectSection.jsx
 │   │   │                                               -->
 │   │   ├── 📁 terminal/
-│   │   │   └── ⚛️ Terminal.jsx ❗                 <!-- VERSION: 0.0.3 PATH: src/ui/terminal/Terminal.jsx
+│   │   │   └── ⚛️ Terminal.jsx                   <!-- VERSION: 0.0.3 PATH: src/ui/terminal/Terminal.jsx
 │   │   │                                               PURPOSE: Terminal z xterm.js + node-pty (historia komend, ANSI
 │   │   │                                                        colors). Używa nowego multi-session API
 │   │   │                                                        (terminal:create/write/resize/kill z terminalId).
@@ -3505,6 +3748,15 @@ root/
 │   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   ├── 📁 utils/
+│   │   ├── 📜 StorageService.js                   <!-- VERSION: 0.0.3 PATH: src/utils/StorageService.js
+│   │   │                                               PURPOSE: Centralna warstwa dostępu do danych w procesie
+│   │   │                                                        renderera – cache per klucz z TTL, pattern observer
+│   │   │                                                        (subscribe/notify), ujednolicone invoke do IPC,
+│   │   │                                                        deduplicacja równoległych żądań. Używana przez hooki
+│   │   │                                                        danych (useProfiles, useSettings i inne).
+│   │   │                                               FUNCTIONS: -
+│   │   │                                               DEPENDS ON: loggerRenderer.js
+│   │   │                                               -->
 │   │   ├── 📜 eventLogger.js                      <!-- VERSION: 0.0.3 PATH: src/utils/eventLogger.js
 │   │   │                                               PURPOSE: Dziennik zdarzeń aplikacji — zapisuje akcje użytkownika
 │   │   │                                                        i systemu do userData/logs/events.log w formacie
@@ -3540,7 +3792,7 @@ root/
 │   │   │                                                          clearLogsFile
 │   │   │                                               DEPENDS ON: loggerRenderer.js, config.js
 │   │   │                                               -->
-│   │   ├── 📜 logger.js ❗                         <!-- VERSION: 0.0.3 PATH: src/utils/logger.js
+│   │   ├── 📜 logger.js                           <!-- VERSION: 0.0.3 PATH: src/utils/logger.js
 │   │   │                                               PURPOSE: Główna logika logowania z filtrowaniem per-modułowym.
 │   │   │                                                        Obsługuje proces Main i Renderer.
 │   │   │                                               FUNCTIONS: initLogger, setDebugMode, setDebugModule, isDebugMode,
@@ -3638,15 +3890,13 @@ root/
 │   │                                                   DEPENDS ON: komponenty z folderu yaml/
 │   │                                                   -->
 │   ├── ⚛️ App.jsx ❗                              <!-- VERSION: 0.0.3 PATH: src/App.jsx
-│   │                                                   PURPOSE: Główny komponent root aplikacji React – inicjalizuje
-│   │                                                            system logowania, ładuje ustawienia użytkownika,
-│   │                                                            zarządza motywem graficznym (dark/light) oraz obsługuje
-│   │                                                            globalne skróty klawiszowe i stan sieci.
+│   │                                                   PURPOSE: Główny komponent root aplikacji React – zarządza
+│   │                                                            przełączaniem widoków (Splash/Onboarding/Layout).
 │   │                                                   FUNCTIONS: App
-│   │                                                   DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
-│   │                                                               urlUtils.js, MainLayout.jsx, Spinner.jsx,
-│   │                                                               SplashScreen.jsx, OnboardingScreen.jsx,
-│   │                                                               ToastContainer.jsx, notificationsManager.js
+│   │                                                   DEPENDS ON: react, translations.js, useAppInitialization.js,
+│   │                                                               MainLayout.jsx, Spinner.jsx, SplashScreen.jsx,
+│   │                                                               OnboardingScreen.jsx, ToastContainer.jsx,
+│   │                                                               ErrorBoundary.jsx
 │   │                                                   -->
 │   ├── 📜 config.js                               <!-- VERSION: 0.0.3 PATH: src/config.js
 │   │                                                   PURPOSE: Re-eksport centralnej konfiguracji aplikacji z
@@ -3656,12 +3906,6 @@ root/
 │   │                                                   FUNCTIONS: -
 │   │                                                   DEPENDS ON: app.js, features.js, limits.js, paths.js,
 │   │                                                               settings.js, endpoints.js
-│   │                                                   -->
-│   ├── 📜 constants.js                            <!-- VERSION: 0.0.3 PATH: src/constants.js
-│   │                                                   PURPOSE: Application-wide constants and enums (tasks, app
-│   │                                                            categories, etc.)
-│   │                                                   FUNCTIONS: -
-│   │                                                   DEPENDS ON: -
 │   │                                                   -->
 │   └── ⚛️ index.jsx                              <!-- VERSION: 0.0.3 PATH: src/index.jsx
 │                                                       PURPOSE: Punkt wejścia aplikacji React. Montuje <App /> w #root,
@@ -3743,7 +3987,7 @@ root/
 │   │                                                   FUNCTIONS: runHooksTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_IPC.js ❗                     <!-- VERSION: 0.0.3 PATH: tests/TestRunner_IPC.js
+│   ├── 📜 TestRunner_IPC.js                       <!-- VERSION: 0.0.3 PATH: tests/TestRunner_IPC.js
 │   │                                                   PURPOSE: Testy dostępności wszystkich kanałów IPC przez
 │   │                                                            window.electronAPI – profiles, settings, history,
 │   │                                                            workspaces, tasks, terminal, notes, hotkeys, adBlocker,
@@ -3876,7 +4120,7 @@ root/
 │   │                                                   FUNCTIONS: runUseAsyncTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   ├── 📜 TestRunner_Utils.js ❗                   <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Utils.js
+│   ├── 📜 TestRunner_Utils.js                     <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Utils.js
 │   │                                                   PURPOSE: Testy funkcji z src/utils/ – urlUtils, validators,
 │   │                                                            searchIndex, notesStorage, notificationsManager,
 │   │                                                            networkUtils, fileUtils.

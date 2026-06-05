@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_profiles.js
 // VERSION: 0.0.3
 // PURPOSE: IPC dla profili (Sidebar / Profile Manager / App Library) pobieranie profili zapisywanie profili edycja profili usuwanie profili ostatnio używane walidacja danych
-// FUNCTIONS: ipc:profiles:getAll, ipc:profiles:create, ipc:profiles:update, ipc:profiles:delete, ipc:profiles:touch
-// DEPENDS ON: electron, profilesStore.js, logger.js
+// FUNCTIONS: const:IPC_CHANNELS.PROFILES.GET_ALL, const:IPC_CHANNELS.PROFILES.CREATE, const:IPC_CHANNELS.PROFILES.UPDATE, const:IPC_CHANNELS.PROFILES.DELETE, const:IPC_CHANNELS.PROFILES.TOUCH
+// DEPENDS ON: electron, profilesStore.js, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

@@ -1,10 +1,10 @@
 // =============================================================================
 // FILE: App.jsx
 // PATH: src/App.jsx
-// VERSION: 0.0.4
+// VERSION: 0.0.3
 // PURPOSE: Główny komponent root aplikacji React – zarządza przełączaniem widoków (Splash/Onboarding/Layout).
 // FUNCTIONS: App
-// DEPENDS ON: react, translations.js, MainLayout.jsx, Spinner.jsx, SplashScreen.jsx, OnboardingScreen.jsx, ToastContainer.jsx, useAppInitialization.js, ErrorBoundary.jsx
+// DEPENDS ON: react, translations.js, useAppInitialization.js, MainLayout.jsx, Spinner.jsx, SplashScreen.jsx, OnboardingScreen.jsx, ToastContainer.jsx, ErrorBoundary.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

@@ -3,8 +3,9 @@
 // PATH: src/ui/system/ErrorBoundary.jsx
 // VERSION: 0.0.3
 // PURPOSE: Przechwytuje błędy React w drzewie komponentów, zapobiegając awarii całej aplikacji.
-// FUNCTIONS: AppErrorBoundary
+// FUNCTIONS: -
 // DEPENDS ON: react
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React from 'react';

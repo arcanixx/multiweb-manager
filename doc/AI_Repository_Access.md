@@ -48,9 +48,19 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   ├── 📜 [settings.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/config/settings.js)
 │   │   └── 📜 [toolsRegistry.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/config/toolsRegistry.js)
 │   ├── 📁 📁 constants/
+│   │   ├── 📜 [constants.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/constants/constants.js)
 │   │   └── 📜 [ipcChannels.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/constants/ipcChannels.js)
 │   ├── 📁 📁 data/
-│   │   ├── 📦 [app-library.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/data/app-library.json)
+│   │   ├── 📁 📁 appLibrary/
+│   │   │   ├── 📦 [appLibrary.AI.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/data/appLibrary/appLibrary.AI.json)
+│   │   │   ├── 📦 [appLibrary.CLOUD.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/data/appLibrary/appLibrary.CLOUD.json)
+│   │   │   ├── 📦 [appLibrary.COMMUNICATION.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/data/appLibrary/appLibrary.COMMUNICATION.json)
+│   │   │   ├── 📦 [appLibrary.DESIGN.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/data/appLibrary/appLibrary.DESIGN.json)
+│   │   │   ├── 📦 [appLibrary.DEV.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/data/appLibrary/appLibrary.DEV.json)
+│   │   │   ├── 📦 [appLibrary.ENTERTAINMENT.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/data/appLibrary/appLibrary.ENTERTAINMENT.json)
+│   │   │   ├── 📦 [appLibrary.PRODUCTIVITY.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/data/appLibrary/appLibrary.PRODUCTIVITY.json)
+│   │   │   ├── 📦 [appLibrary.SOCIAL.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/data/appLibrary/appLibrary.SOCIAL.json)
+│   │   │   └── 📜 [index.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/data/appLibrary/index.js)
 │   │   ├── 📦 [defaultProfiles.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/data/defaultProfiles.json)
 │   │   ├── 📦 [defaultSettings.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/data/defaultSettings.json)
 │   │   └── 📜 [icons.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/data/icons.js)
@@ -63,13 +73,18 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   ├── 📜 [webviewRegistry.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/webviewRegistry.js)
 │   │   └── 📜 [webviewScriptInjector.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/webviewScriptInjector.js)
 │   ├── 📁 📁 hooks/
+│   │   ├── 📜 [useAppInitialization.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useAppInitialization.js)
 │   │   ├── 📜 [useAppLibrary.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useAppLibrary.js)
 │   │   ├── 📜 [useAsync.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useAsync.js)
+│   │   ├── 📜 [useAsyncMutation.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useAsyncMutation.js)
 │   │   ├── 📜 [useCategories.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useCategories.js)
 │   │   ├── 📜 [useHistoryLog.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useHistoryLog.js)
 │   │   ├── 📜 [useMainLayout.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useMainLayout.js)
+│   │   ├── 📜 [useNotepadAutosave.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useNotepadAutosave.js)
 │   │   ├── 📜 [useNotepadContent.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useNotepadContent.js)
 │   │   ├── 📜 [useNotepadFindReplace.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useNotepadFindReplace.js)
+│   │   ├── 📜 [useNotepadModals.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useNotepadModals.js)
+│   │   ├── 📜 [useNotepadTabActions.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useNotepadTabActions.js)
 │   │   ├── 📜 [useNotepadTabs.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useNotepadTabs.js)
 │   │   ├── 📜 [useNotepadUI.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useNotepadUI.js)
 │   │   ├── 📜 [useProfiles.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useProfiles.js)
@@ -90,6 +105,7 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   ├── 📜 [ipcMainHandlers_appLibrary.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_appLibrary.js)
 │   │   ├── 📜 [ipcMainHandlers_cookies.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_cookies.js)
 │   │   ├── 📜 [ipcMainHandlers_dialogs.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_dialogs.js)
+│   │   ├── 📜 [ipcMainHandlers_events.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_events.js)
 │   │   ├── 📜 [ipcMainHandlers_fileApi.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_fileApi.js)
 │   │   ├── 📜 [ipcMainHandlers_fileSystem.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_fileSystem.js)
 │   │   ├── 📜 [ipcMainHandlers_files.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_files.js)
@@ -113,10 +129,10 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   ├── 📜 [ipcMainHandlers_terminal.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_terminal.js)
 │   │   ├── 📜 [ipcMainHandlers_webview_cache.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_webview_cache.js)
 │   │   ├── 📜 [ipcMainHandlers_webview_controls.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_webview_controls.js)
-│   │   ├── 📜 [ipcMainHandlers_webview_extra.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_webview_extra.js)
 │   │   ├── 📜 [ipcMainHandlers_webview_httpErrors.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_webview_httpErrors.js)
 │   │   ├── 📜 [ipcMainHandlers_webview_nav.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_webview_nav.js)
 │   │   ├── 📜 [ipcMainHandlers_webview_screenshot.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_webview_screenshot.js)
+│   │   ├── 📜 [ipcMainHandlers_webview_tools.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_webview_tools.js)
 │   │   └── 📜 [ipcMainHandlers_workspaces.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ipc/ipcMainHandlers_workspaces.js)
 │   ├── 📁 📁 loaders/
 │   │   ├── 📜 [ipcLoader.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/loaders/ipcLoader.js)
@@ -132,7 +148,6 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   ├── 📦 [help_pl.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/locales/help_pl.json)
 │   │   └── 📦 [pl.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/locales/pl.json)
 │   ├── 📁 📁 stores/
-│   │   ├── 📜 [StorageService.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/StorageService.js)
 │   │   ├── 📜 [accountsStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/accountsStore.js)
 │   │   ├── 📜 [appLibraryStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/appLibraryStore.js)
 │   │   ├── 📜 [clipboardStore.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/stores/clipboardStore.js)
@@ -220,6 +235,7 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   │   ├── 🎨 [components.css](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/styles/components.css)
 │   │   │   └── 🎨 [theme.css](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/styles/theme.css)
 │   │   ├── 📁 📁 system/
+│   │   │   ├── ⚛️ [ErrorBoundary.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/system/ErrorBoundary.jsx)
 │   │   │   ├── ⚛️ [ModalPortal.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/system/ModalPortal.jsx)
 │   │   │   ├── ⚛️ [OnboardingScreen.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/system/OnboardingScreen.jsx)
 │   │   │   ├── ⚛️ [SplashScreen.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/system/SplashScreen.jsx)
@@ -267,6 +283,7 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   ├── 🎨 [index.css](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/index.css)
 │   │   └── 🎨 [layout.css](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/layout.css)
 │   ├── 📁 📁 utils/
+│   │   ├── 📜 [StorageService.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/StorageService.js)
 │   │   ├── 📜 [eventLogger.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/eventLogger.js)
 │   │   ├── 📜 [fileUtils.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/fileUtils.js)
 │   │   ├── 📜 [icons.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/utils/icons.js)
@@ -289,7 +306,6 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   📁 DEPENDS ON: komponenty z folderu yaml/
 │   ├── ⚛️ [App.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/App.jsx)
 │   ├── 📜 [config.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/config.js)
-│   ├── 📜 [constants.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/constants.js)
 │   └── ⚛️ [index.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/index.jsx)
 ├── 📁 📁 tests/
 │   ├── 📜 [TestRunner.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner.js)

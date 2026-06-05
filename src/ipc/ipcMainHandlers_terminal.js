@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_terminal.js
 // VERSION: 0.0.3
 // PURPOSE: IPC dla Terminala (node-pty + xterm.js) tworzenie sesji wysyłanie danych odbieranie danych zamykanie sesji restart cleanup
-// FUNCTIONS: ipc:terminal:create, ipc:terminal:write, ipc:terminal:resize, ipc:terminal:getBuffer, ipc:terminal:kill, ipc:terminal:restart
-// DEPENDS ON: electron, logger.js, node-pty, os
+// FUNCTIONS: const:IPC_CHANNELS.TERMINAL.CREATE, const:IPC_CHANNELS.TERMINAL.WRITE, const:IPC_CHANNELS.TERMINAL.RESIZE, const:IPC_CHANNELS.TERMINAL.GET_BUFFER, const:IPC_CHANNELS.TERMINAL.KILL, const:IPC_CHANNELS.TERMINAL.RESTART
+// DEPENDS ON: electron, logger.js, ipcChannels.js, node-pty, os
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

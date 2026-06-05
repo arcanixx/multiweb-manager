@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Handler IPC dla natywnych powiadomień systemowych OS (Windows/macOS). Przeniesione do procesu głównego — działa nawet gdy okno jest zminimalizowane lub ukryte w tray. Implementuje UIUX_REQ-022.
 // FUNCTIONS: ipc:notifications:showSystem
-// DEPENDS ON: electron, path, logger.js
+// DEPENDS ON: electron, path, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

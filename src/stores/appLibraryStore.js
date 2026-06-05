@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Statyczna App Library (WebCatalog-style) — udostępnia i filtruje aplikacje z prekompilowanej biblioteki.
 // FUNCTIONS: loadAppLibrary, filterApps, searchAppLibrary, getAppById
-// DEPENDS ON: logger.js, appLibrary
+// DEPENDS ON: logger.js, index.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -25,7 +25,7 @@ export function filterApps(query) {
   try {
     const q = String(query || "").toLowerCase().trim();
     if (!q) return [];
-  
+
     return APP_LIBRARY.apps.filter(
       (app) =>
         app.name?.toLowerCase().includes(q) ||

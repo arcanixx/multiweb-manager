@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: StorageService.js
-// PATH: src/stores/StorageService.js
+// PATH: src/utils/StorageService.js
 // VERSION: 0.0.3
 // PURPOSE: Centralna warstwa dostępu do danych w procesie renderera – cache per klucz z TTL, pattern observer (subscribe/notify), ujednolicone invoke do IPC, deduplicacja równoległych żądań. Używana przez hooki danych (useProfiles, useSettings i inne).
 // FUNCTIONS: -

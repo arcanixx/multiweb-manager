@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_appLibrary.js
 // VERSION: 0.0.3
 // PURPOSE: IPC dla biblioteki aplikacji (App Library) – pobieranie kategorii, wyszukiwanie, filtrowanie po kategorii.
-// FUNCTIONS: ipc:appLibrary:getAll, ipc:appLibrary:search, ipc:appLibrary:getByCategory
-// DEPENDS ON: electron, appLibraryStore.js, logger.js
+// FUNCTIONS: const:IPC_CHANNELS.APP_LIBRARY.GET_ALL, const:IPC_CHANNELS.APP_LIBRARY.SEARCH, const:IPC_CHANNELS.APP_LIBRARY.GET_BY_CATEGORY
+// DEPENDS ON: electron, appLibraryStore.js, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

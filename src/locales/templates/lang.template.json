@@ -502,7 +502,15 @@
     "searchResults": "Search results",
     "add": "Add",
     "noResults": "No apps found",
-    "loading": "Loading library..."
+    "loading": "Loading library...",
+    "cat_ai": "Artificial Intelligence",
+    "cat_dev": "Development Tools",
+    "cat_productivity": "Productivity",
+    "cat_communication": "Communication",
+    "cat_social": "Social Media",
+    "cat_design": "Design & Graphics",
+    "cat_cloud": "Cloud & Storage",
+    "cat_entertainment": "Entertainment"
   },
   "tools": {
     "removebg": "Remove.bg",

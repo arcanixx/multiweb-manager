@@ -3,8 +3,8 @@
 // PATH: src/ipc/ipcMainHandlers_logs.js
 // VERSION: 0.0.3
 // PURPOSE: Handlery IPC dla logów testów (LogWriter). Obsługuje zapis, odczyt i czyszczenie logów testów.
-// FUNCTIONS: registerLogsHandlers, rotateLogs
-// DEPENDS ON: electron, fs, path, logger.js
+// FUNCTIONS: rotateLogs, registerLogsHandlers, const:IPC_CHANNELS.LOGS.APPEND, const:IPC_CHANNELS.LOGS.GET, const:IPC_CHANNELS.LOGS.CLEAR, ipc:append-log-file, ipc:get-logs-file, ipc:clear-logs-file
+// DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -89,7 +89,7 @@ async function appendLogFileLogic(payload) {
 export function registerLogsHandlers() {
   // ─── logs:append – nowa nazwa (Sprint 2)
   ipcMain.handle(IPC_CHANNELS.LOGS.APPEND, async (_, payload) => appendLogFileLogic(payload));
-  
+
   // Alias legacy – kompatybilność z kodem nieużywającym jeszcze stałych
   ipcMain.handle('append-log-file', async (_, payload) => appendLogFileLogic(payload));
 
@@ -104,7 +104,7 @@ export function registerLogsHandlers() {
       return { ok: false, error: err.message };
     }
   });
-  
+
   ipcMain.handle('get-logs-file', async () => {
     const logFile = getLogFile();
     return fs.existsSync(logFile) ? { ok: true, data: fs.readFileSync(logFile, 'utf8') } : { ok: true, data: '' };

@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React do pobierania i wyszukiwania w bibliotece aplikacji (App Library) przez IPC.
 // FUNCTIONS: useAppLibrary
-// DEPENDS ON: react, loggerRenderer.js
+// DEPENDS ON: react, loggerRenderer.js, translations.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
