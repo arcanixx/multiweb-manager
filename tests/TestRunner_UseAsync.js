@@ -10,6 +10,7 @@
 
 import { runTests } from './testUtils.js';
 
+
 // ─── Pomocnicze factory dla mocków IPC
 const makeOk  = (data) => async () => ({ ok: true, data });
 const makeFail = (msg)  => async () => ({ ok: false, error: msg });

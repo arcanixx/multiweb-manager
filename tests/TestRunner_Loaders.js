@@ -9,10 +9,11 @@
 // =============================================================================
 
 import { runTests } from './testUtils.js';
+
 import { join } from 'path';
 import { readdirSync } from 'fs';
-
 const ROOT = process.cwd();
+
 
 const tests = [
   // ── ipcLoader ─────────────────────────────────────────────────────────────

@@ -3,12 +3,21 @@
 // PATH: tests/testUtils.js
 // VERSION: 0.0.3
 // PURPOSE: Wspólne funkcje dla wszystkich testów (runner, logowanie)
-// FUNCTIONS: runTests
-// DEPENDS ON: icons.js
+// FUNCTIONS: safeImport, runTests
+// DEPENDS ON: icons.js, url, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ICONS } from '../src/utils/icons.js';
+import { pathToFileURL } from 'url';
+import { join } from 'path';
+
+export function safeImport(relativePath) {
+  const absolutePath = join(process.cwd(), relativePath);
+  const url = pathToFileURL(absolutePath).href;
+  return import(url);
+}
+
 export async function runTests(moduleName, testFunctions) {
   console.log(`\n${ICONS.TEST} Running ${moduleName} Tests...`);
   let passed = 0;

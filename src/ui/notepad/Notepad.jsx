@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Główny komponent notatnika – czysty orkiestrator. Koordynuje zakładki, edytor, wyszukiwanie i statusbar przez useNotepadUI i useNotepadHandlers.
 // FUNCTIONS: Notepad
-// DEPENDS ON: react, useNotepadUI.js, useNotepadFindReplace.js, useNotepadHandlers.js, NotepadTabs, NotepadToolbar, NotepadFindReplace, NotepadStatusBar, loggerRenderer.js, translations.js, ConfirmModal
+// DEPENDS ON: react, useNotepadUI.js, useNotepadFindReplace.js, useNotepadHandlers.js, NotepadTabs, NotepadToolbar, NotepadFindReplace, NotepadStatusBar, translations.js, ConfirmModal
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

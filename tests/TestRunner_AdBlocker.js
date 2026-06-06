@@ -9,6 +9,7 @@
 // =============================================================================
 
 import { runTests } from './testUtils.js';
+
 const tests = [
   // ─── Test: AdBlocker URL detection works ─────────────────
   // Weryfikuje, czy funkcja isAdUrl poprawnie identyfikuje adresy URL jako reklamowe lub nie.

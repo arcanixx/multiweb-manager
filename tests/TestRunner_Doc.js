@@ -4,13 +4,13 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy spójności dokumentacji w folderze doc/ — obecność plików, nagłówki MD, README.
 // FUNCTIONS: runDocTests
-// DEPENDS ON: fs, path, testUtils.js
+// DEPENDS ON: fs, testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { readdirSync, readFileSync, existsSync } from 'fs';
-import { join } from 'path';
 import { runTests } from './testUtils.js';
+import { join } from 'path';
 
 const DOC_DIR = join(process.cwd(), 'doc');
 

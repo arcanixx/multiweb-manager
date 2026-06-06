@@ -4,11 +4,13 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy komponentu Onboarding – sprawdza eksport i podstawowe renderowanie
 // FUNCTIONS: runOnboardingTests
-// DEPENDS ON: testUtils.js, react-dom
+// DEPENDS ON: testUtils.js, path, react, react-dom
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { runTests } from './testUtils.js';
+import { join } from 'path';
+import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 const tests = [

@@ -9,6 +9,7 @@
 // =============================================================================
 
 import { runTests } from './testUtils.js';
+
 const tests = [
   // Cartesian product
   {

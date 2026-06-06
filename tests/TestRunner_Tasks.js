@@ -9,12 +9,16 @@
 // =============================================================================
 
 import { runTests } from './testUtils.js';
+
 import {
   normalizeTask,
   resolveSection,
   STATUS_TO_SECTION,
   VALID_STATUSES,
 } from '../src/stores/tasksStore.js';
+
+
+
 
 // ─── Fabryka zadania testowego
 const makeTask = (overrides = {}) => ({

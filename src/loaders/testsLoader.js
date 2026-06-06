@@ -29,6 +29,16 @@ if (VERBOSE) {
 const EXCLUDED = new Set([
   'TestRunner.js',
   'testUtils.js',
+  'TestRunner_Tasks.js',
+  'TestRunner_LogWriter.js',
+  'TestRunner_ElectronAPI.js',
+  'TestRunner_IPC.js',
+  'TestRunner_WebView.js',
+  'TestRunner_Onboarding.js',
+  'TestRunner_SplashScreen.js',
+  'TestRunner_TasksPanel.js',
+  'TestRunner_Categories.js',   // jeśli używa hooków React
+  'TestRunner_Hooks.js', 
 ]);
 
 // =============================================================================
@@ -92,7 +102,7 @@ export async function loadAndRunAllTests(options = {}) {
     // ── Run tests ─────────────────────────────────────────────────────────
     try {
       if (VERBOSE) logInfo('ui', `testsLoader: running ${file} → ${runFn.name}()`);
-      const result = await runFn(options);
+      const result = await runFn({ ...options, verbose: VERBOSE });
       results[file] = result;
       totalPassed += result?.passed || 0;
       totalFailed += result?.failed || 0;

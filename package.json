@@ -3,6 +3,7 @@
   "version": "0.0.3",
   "description": "MultiWeb Manager – zarządzaj wieloma kontami i narzędziami w jednej aplikacji",
   "main": "main.js",
+  "type": "module",
   "scripts": {
     "start": "electron .",
     "dev": "concurrently \"npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",

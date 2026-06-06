@@ -101,6 +101,12 @@ root/
 │ │ FUNCTIONS: -
 │ │ DEPENDS ON: -
 │ │ -->
+│ ├── TestCases_Suggestion.md ❗ <!-- VERSION: 0.0.3 PATH: doc/TestCases_Suggestion.md
+│ │ PURPOSE: Sugestie testów dla niepokrytych plików – gotowe bloki
+│ │ do wklejenia.
+│ │ FUNCTIONS: -
+│ │ DEPENDS ON: build_structure.py
+│ │ -->
 │ └── pending_updates_for_Definition_Mockups_UI_UX.md <!-- VERSION: 0.0.3 PATH: doc/pending_updates_for_Definition_Mockups_UI_UX.md
 │ PURPOSE: Dokumentacja specyfikacji projektowej - Kolejka
 │ oczekujących zmian UI/UX do scalenia z
@@ -320,6 +326,33 @@ root/
 │ │ DEPENDS ON: config.js, logger.js
 │ │ -->
 │ ├── hooks/
+│ │ ├── notepad/
+│ │ │ └── useNotepadHandlers.js <!-- VERSION: 0.0.3 PATH: src/hooks/notepad/useNotepadHandlers.js
+│ │ │ PURPOSE: Hook lokalnych handlerów UI Notepad – zarządza stanem i
+│ │ │ callbackami dla word wrap, panelu find/replace oraz
+│ │ │ potwierdzenia zamknięcia zakładki. Oddziela stan UI od
+│ │ │ JSX orkiestratora Notepad.
+│ │ │ FUNCTIONS: useNotepadHandlers
+│ │ │ DEPENDS ON: react, loggerRenderer.js
+│ │ │ -->
+│ │ ├── sidebar/
+│ │ │ └── useSidebarHandlers.js <!-- VERSION: 0.0.3 PATH: src/hooks/sidebar/useSidebarHandlers.js
+│ │ │ PURPOSE: Hook orkiestrator logiki handlerów Sidebaru – zarządza
+│ │ │ stanem modali (profil, kategoria, potwierdzenie
+│ │ │ usunięcia) oraz obsługuje akcje CRUD profili, kategorii
+│ │ │ i wyników globalnego wyszukiwania.
+│ │ │ FUNCTIONS: useSidebarHandlers
+│ │ │ DEPENDS ON: react, loggerRenderer.js
+│ │ │ -->
+│ │ ├── taskpanel/
+│ │ │ └── useTaskPanelHandlers.js <!-- VERSION: 0.0.3 PATH: src/hooks/taskpanel/useTaskPanelHandlers.js
+│ │ │ PURPOSE: Hook logiki TaskPanel – CRUD zadań, zmiany
+│ │ │ sekcji/statusu, stan modali (TaskModal, ConfirmModal,
+│ │ │ CommentModal). Oddziela handlery od JSX orkiestratora
+│ │ │ TaskPanel.
+│ │ │ FUNCTIONS: useTaskPanelHandlers
+│ │ │ DEPENDS ON: react, loggerRenderer.js
+│ │ │ -->
 │ │ ├── useAppInitialization.js <!-- VERSION: 0.0.3 PATH: src/hooks/useAppInitialization.js
 │ │ │ PURPOSE: Logika startowa aplikacji (logger, settings, profile,
 │ │ │ hotkeys, theme).
@@ -833,17 +866,6 @@ root/
 │ │ DEPENDS ON: komponenty z folderu tests/
 │ │ -->
 │ ├── locales/
-│ │ ├── templates/
-│ │ │ ├── help.template.json <!-- VERSION: 0.0.3 PATH: src/locales/templates/help.template.json
-│ │ │ │ PURPOSE: Help content (EN) – translated from help.pl.json
-│ │ │ │ FUNCTIONS: -
-│ │ │ │ DEPENDS ON: -
-│ │ │ │ -->
-│ │ │ └── lang.template.json <!-- VERSION: 0.0.3 PATH: src/locales/templates/lang.template.json
-│ │ │ PURPOSE: 
-│ │ │ FUNCTIONS: -
-│ │ │ DEPENDS ON: -
-│ │ │ -->
 │ │ ├── en.json <!-- VERSION: 0.0.3 PATH: src/locales/en.json
 │ │ │ PURPOSE: English translations
 │ │ │ FUNCTIONS: -
@@ -995,6 +1017,15 @@ root/
 │ │ │ DEPENDS ON: react, config.js, useAppLibrary.js, translations.js,
 │ │ │ loggerRenderer.js, icons.js
 │ │ │ -->
+│ │ ├── common/
+│ │ │ └── ContextMenu.jsx ❗ <!-- VERSION: 0.0.3 PATH: src/ui/common/ContextMenu.jsx
+│ │ │ PURPOSE: Reużywalny komponent menu kontekstowego (PPM) – używany
+│ │ │ przez Sidebar, Notepad, TaskPanel i inne moduły.
+│ │ │ Renderuje listę akcji z obsługą separatorów, ikon i
+│ │ │ trybu danger.
+│ │ │ FUNCTIONS: ContextMenu
+│ │ │ DEPENDS ON: react, loggerRenderer.js
+│ │ │ -->
 │ │ ├── help/
 │ │ │ ├── FAQ.jsx <!-- VERSION: 0.0.3 PATH: src/ui/help/FAQ.jsx
 │ │ │ │ PURPOSE: Pojedynczy wpis FAQ (pytanie + odpowiedź)
@@ -1103,16 +1134,15 @@ root/
 │ │ │ │ FUNCTIONS: ClipboardHistoryModal
 │ │ │ │ DEPENDS ON: react, translations.js, loggerRenderer.js
 │ │ │ │ -->
-│ │ │ ├── Notepad.jsx <!-- VERSION: 0.0.3 PATH: src/ui/notepad/Notepad.jsx
-│ │ │ │ PURPOSE: Główny komponent interfejsu notatnika – koordynuje
-│ │ │ │ pracę zakładek, edytora oraz paneli wyszukiwania i
-│ │ │ │ statusu, integrując logikę z hookami useNotepadUI i
-│ │ │ │ useNotepadFindReplace.
+│ │ │ ├── Notepad.jsx ❗ <!-- VERSION: 0.0.3 PATH: src/ui/notepad/Notepad.jsx
+│ │ │ │ PURPOSE: Główny komponent notatnika – czysty orkiestrator.
+│ │ │ │ Koordynuje zakładki, edytor, wyszukiwanie i statusbar
+│ │ │ │ przez useNotepadUI i useNotepadHandlers.
 │ │ │ │ FUNCTIONS: Notepad
 │ │ │ │ DEPENDS ON: react, useNotepadUI.js, useNotepadFindReplace.js,
-│ │ │ │ NotepadTabs, NotepadToolbar, NotepadFindReplace,
-│ │ │ │ NotepadStatusBar, loggerRenderer.js, translations.js,
-│ │ │ │ ConfirmModal
+│ │ │ │ useNotepadHandlers.js, NotepadTabs, NotepadToolbar,
+│ │ │ │ NotepadFindReplace, NotepadStatusBar,
+│ │ │ │ translations.js, ConfirmModal
 │ │ │ │ -->
 │ │ │ ├── NotepadFindReplace.jsx <!-- VERSION: 0.0.3 PATH: src/ui/notepad/NotepadFindReplace.jsx
 │ │ │ │ PURPOSE: Panel znajdź/zastąp w notatniku
@@ -1317,18 +1347,15 @@ root/
 │ │ │ icons
 │ │ │ -->
 │ │ ├── sidebar/
-│ │ │ ├── ContextMenu.jsx <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/ContextMenu.jsx
-│ │ │ │ PURPOSE: Menu kontekstowe (PPM) dla profilu
-│ │ │ │ FUNCTIONS: ContextMenu
-│ │ │ │ DEPENDS ON: react, loggerRenderer.js, translations.js
-│ │ │ │ -->
-│ │ │ ├── Sidebar.jsx <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/Sidebar.jsx
-│ │ │ │ PURPOSE: Główny panel nawigacyjny aplikacji – orkiestrator,
-│ │ │ │ deleguje logikę do hooków i podkomponentów.
+│ │ │ ├── Sidebar.jsx ❗ <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/Sidebar.jsx
+│ │ │ │ PURPOSE: Główny panel nawigacyjny aplikacji – czysty
+│ │ │ │ orkiestrator. Kompozycja podkomponentów i delegacja
+│ │ │ │ logiki do useSidebarHandlers.
 │ │ │ │ FUNCTIONS: Sidebar
 │ │ │ │ DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js,
 │ │ │ │ config.js, useProfiles.js, useCategories.js,
-│ │ │ │ useSidebarSearch.js, useWorkspaces.js, SidebarHeader,
+│ │ │ │ useSidebarSearch.js, useWorkspaces.js,
+│ │ │ │ useSidebarHandlers.js, SidebarHeader,
 │ │ │ │ SidebarProfileList, SidebarTools, SidebarWorkspaces,
 │ │ │ │ ProfileModal, CategoryModal, ConfirmModal
 │ │ │ │ -->
@@ -1489,15 +1516,14 @@ root/
 │ │ │ │ DEPENDS ON: react, loggerRenderer.js, translations.js, icons.js
 │ │ │ │ -->
 │ │ │ ├── TaskPanel.jsx <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskPanel.jsx
-│ │ │ │ PURPOSE: Główny komponent panelu zadań – zarządza zadaniami per
-│ │ │ │ TaskGroup. Otwierany z kontekstu profilu WebView
-│ │ │ │ (Sidebar). Obsługuje sekcje (active/backlog/done) i
-│ │ │ │ statusy zadań (todo/in_progress/blocked/done/cancelled)
-│ │ │ │ z automatycznym mapowaniem section↔status.
+│ │ │ │ PURPOSE: Główny komponent panelu zadań – czysty orkiestrator.
+│ │ │ │ Zarządza sekcjami zadań (active/backlog/done) i
+│ │ │ │ deleguje logikę do useTaskPanelHandlers.
 │ │ │ │ FUNCTIONS: TaskPanel
-│ │ │ │ DEPENDS ON: react, useTasks.js, translations.js,
-│ │ │ │ loggerRenderer.js, icons.js, ConfirmModal.jsx,
-│ │ │ │ TaskModal.jsx, CommentModal.jsx, TaskSectionList.jsx
+│ │ │ │ DEPENDS ON: react, useTasks.js, useTaskPanelHandlers.js,
+│ │ │ │ translations.js, loggerRenderer.js, icons.js,
+│ │ │ │ ConfirmModal.jsx, TaskModal.jsx, CommentModal.jsx,
+│ │ │ │ TaskSectionList.jsx
 │ │ │ │ -->
 │ │ │ ├── TaskSection.jsx <!-- VERSION: 0.0.3 PATH: src/ui/taskpanel/TaskSection.jsx
 │ │ │ │ PURPOSE: Pojedyncza sekcja zadań (aktywne, backlog, done)
@@ -1865,7 +1891,8 @@ root/
 │ │ PURPOSE: Orchestrator testów – uruchamia wszystkie
 │ │ TestRunner_*.js
 │ │ FUNCTIONS: runAllTests
-│ │ DEPENDS ON: logger.js, icons.js, logWriter.js, testsLoader.js
+│ │ DEPENDS ON: url, logger.js, icons.js, logWriter.js,
+│ │ testsLoader.js
 │ │ -->
 │ ├── TestRunner_AdBlocker.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_AdBlocker.js
 │ │ PURPOSE: Testy jednostkowe dla AdBlockera (globalny + per
@@ -1877,7 +1904,7 @@ root/
 │ │ PURPOSE: Testy spójności plików w folderze assets/ — obecność,
 │ │ rozszerzenia, rozmiar.
 │ │ FUNCTIONS: runAssetsTests
-│ │ DEPENDS ON: fs, path, testUtils.js
+│ │ DEPENDS ON: fs, testUtils.js, path
 │ │ -->
 │ ├── TestRunner_BusinessLogic.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_BusinessLogic.js
 │ │ PURPOSE: Testy czystych funkcji biznesowych (cartesian,
@@ -1890,7 +1917,7 @@ root/
 │ │ layout.css + styles/theme.css + styles/components.css,
 │ │ brak kołowych zależności.
 │ │ FUNCTIONS: runCssTests
-│ │ DEPENDS ON: fs, path, testUtils.js
+│ │ DEPENDS ON: fs, testUtils.js, path
 │ │ -->
 │ ├── TestRunner_Categories.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Categories.js
 │ │ PURPOSE: Testy hooka useCategories – CRUD kategorii, stan
@@ -1903,13 +1930,13 @@ root/
 │ │ features, limits, settings, app, paths, endpoints oraz
 │ │ re-eksportu przez src/config.js.
 │ │ FUNCTIONS: runConfigTests
-│ │ DEPENDS ON: fs, path, testUtils.js
+│ │ DEPENDS ON: fs, testUtils.js, path
 │ │ -->
 │ ├── TestRunner_Doc.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Doc.js
 │ │ PURPOSE: Testy spójności dokumentacji w folderze doc/ — obecność
 │ │ plików, nagłówki MD, README.
 │ │ FUNCTIONS: runDocTests
-│ │ DEPENDS ON: fs, path, testUtils.js
+│ │ DEPENDS ON: fs, testUtils.js, path
 │ │ -->
 │ ├── TestRunner_ElectronAPI.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_ElectronAPI.js
 │ │ PURPOSE: Testy dostępności i poprawności metod
@@ -1929,7 +1956,7 @@ root/
 │ │ PURPOSE: Testy modułu feature flags (src/config/features.js) —
 │ │ isFeatureEnabled, isToolEnabled, spójność FEATURES.
 │ │ FUNCTIONS: runFeaturesTests
-│ │ DEPENDS ON: testUtils.js, path
+│ │ DEPENDS ON: path, testUtils.js
 │ │ -->
 │ ├── TestRunner_History.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_History.js
 │ │ PURPOSE: Testy historii aktywności — historyStore CRUD,
@@ -1955,12 +1982,14 @@ root/
 │ ├── TestRunner_Icons.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Icons.js
 │ │ PURPOSE: Testy integralności ikon (ICONS, SIDEBAR_ICON_MAP)
 │ │ FUNCTIONS: runIconsTests
-│ │ DEPENDS ON: testUtils.js, icons.js
+│ │ DEPENDS ON: testUtils.js, icons.js, constants.js
 │ │ -->
 │ ├── TestRunner_IpcChannels.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_IpcChannels.js
 │ │ PURPOSE: Testy rejestru kanałów IPC
-│ │ (src/constants/ipcChannels.js) — kompletność grup, brak
-│ │ duplikatów wartości, format string 'group:action'.
+│ │ (src/constants/ipcChannels.js) — kompletność wszystkich
+│ │ grup, obecność każdej stałej, brak duplikatów wartości,
+│ │ format string 'group:action', rozróżnienie kanałów
+│ │ invoke vs event.
 │ │ FUNCTIONS: runIpcChannelsTests
 │ │ DEPENDS ON: testUtils.js, path
 │ │ -->
@@ -2012,7 +2041,7 @@ root/
 │ │ PURPOSE: Testy komponentu Onboarding – sprawdza eksport i
 │ │ podstawowe renderowanie
 │ │ FUNCTIONS: runOnboardingTests
-│ │ DEPENDS ON: testUtils.js, react-dom
+│ │ DEPENDS ON: testUtils.js, path, react, react-dom
 │ │ -->
 │ ├── TestRunner_Profiles.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Profiles.js
 │ │ PURPOSE: Testy zarządzania profilami WebView — struktura danych,
@@ -2030,7 +2059,7 @@ root/
 │ ├── TestRunner_Reexport.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Reexport.js
 │ │ PURPOSE: Testy poprawności re-eksportów (config.js, icons.js)
 │ │ FUNCTIONS: runReexportTests
-│ │ DEPENDS ON: fs, path, testUtils.js
+│ │ DEPENDS ON: fs, testUtils.js, path
 │ │ -->
 │ ├── TestRunner_Registries.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Registries.js
 │ │ PURPOSE: Testy rejestrów komponentów (settingsRegistry,
@@ -2063,7 +2092,7 @@ root/
 │ │ PURPOSE: Testy komponentu SplashScreen – sprawdza eksport i
 │ │ podstawowe renderowanie
 │ │ FUNCTIONS: runSplashScreenTests
-│ │ DEPENDS ON: react, testUtils.js, react-dom
+│ │ DEPENDS ON: react, react-dom, testUtils.js
 │ │ -->
 │ ├── TestRunner_Stores.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Stores.js
 │ │ PURPOSE: Testy wszystkich stores (main process) — eksporty CRUD,
@@ -2072,7 +2101,7 @@ root/
 │ │ tasksStore (VALID_STATUSES, STATUS_TO_SECTION,
 │ │ resolveSection, normalizeTask).
 │ │ FUNCTIONS: runStoresTests
-│ │ DEPENDS ON: testUtils.js, path
+│ │ DEPENDS ON: testUtils.js
 │ │ -->
 │ ├── TestRunner_Tasks.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Tasks.js
 │ │ PURPOSE: Testy logiki domenowej systemu zadań: model danych,
@@ -2125,14 +2154,13 @@ root/
 │ │ DEPENDS ON: testUtils.js
 │ │ -->
 │ ├── TestRunner_Utils.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Utils.js
-│ │ PURPOSE: Testy funkcji z src/utils/ – urlUtils, validators,
-│ │ searchIndex, notesStorage, notificationsManager,
-│ │ networkUtils, fileUtils. Testy modułów utils — logger
-│ │ (eksporty, setDebugModule, logUI/logStore/etc.),
-│ │ fileUtils (readJsonSafe/writeJsonSafe/streaming),
-│ │ persistence, sharpLoader, testrunner
-│ │ (assert/assertThrows), yamlLoader,
-│ │ notificationsManager, translations.
+│ │ PURPOSE: Testy modułów utils bez osobnych plików testowych:
+│ │ logger, testrunner, fileUtils, persistence,
+│ │ sharpLoader, yamlLoader, translations, networkUtils,
+│ │ imageUtils, notepadStorage. Moduły urlUtils,
+│ │ validators, searchIndex, notificationsManager mają
+│ │ własne dedykowane pliki TestRunner_*.js i nie są tutaj
+│ │ duplikowane.
 │ │ FUNCTIONS: runUtilsTests
 │ │ DEPENDS ON: testUtils.js, path
 │ │ -->
@@ -2150,11 +2178,11 @@ root/
 │ │ FUNCTIONS: runWebViewTests
 │ │ DEPENDS ON: testUtils.js
 │ │ -->
-│ └── testUtils.js <!-- VERSION: 0.0.3 PATH: tests/testUtils.js
+│ └── testUtils.js ❗ <!-- VERSION: 0.0.3 PATH: tests/testUtils.js
 │ PURPOSE: Wspólne funkcje dla wszystkich testów (runner,
 │ logowanie)
-│ FUNCTIONS: runTests
-│ DEPENDS ON: icons.js
+│ FUNCTIONS: safeImport, runTests
+│ DEPENDS ON: icons.js, url, path
 │ -->
 ├── config.js <!-- VERSION: 0.0.3 PATH: config.js
 │ PURPOSE: Re-eksport konfiguracji z src/config.js.

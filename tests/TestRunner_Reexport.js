@@ -4,19 +4,21 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy poprawności re-eksportów (config.js, icons.js)
 // FUNCTIONS: runReexportTests
-// DEPENDS ON: fs, path, testUtils.js
+// DEPENDS ON: fs, testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { existsSync, readFileSync } from "fs";
-import { join } from "path";
 import { runTests } from "./testUtils.js";
-const ROOT_CONFIG = join(process.cwd(), "config.js");
-const SRC_CONFIG = join(process.cwd(), "src", "config.js");
-const UTILS_ICONS = join(process.cwd(), "src", "utils", "icons.js");
-const DATA_ICONS = join(process.cwd(), "src", "data", "icons.js");
-const IPC_LOADER = join(process.cwd(), "src", "loaders", "ipcLoader.js");
-const TESTS_LOADER = join(process.cwd(), "src", "loaders", "testsLoader.js");
+import { join } from 'path';
+const ROOT = process.cwd();
+
+const ROOT_CONFIG = join(ROOT, "config.js");
+const SRC_CONFIG = join(ROOT, "src", "config.js");
+const UTILS_ICONS = join(ROOT, "src", "utils", "icons.js");
+const DATA_ICONS = join(ROOT, "src", "data", "icons.js");
+const IPC_LOADER = join(ROOT, "src", "loaders", "ipcLoader.js");
+const TESTS_LOADER = join(ROOT, "src", "loaders", "testsLoader.js");
 const tests = [
   {
     name: "root/config.js exists",
@@ -103,8 +105,8 @@ const tests = [
     run: async () => {
       const ipcExists = existsSync(IPC_LOADER);
       const testsExists = existsSync(TESTS_LOADER);
-      return { 
-        ok: ipcExists && testsExists, 
+      return {
+        ok: ipcExists && testsExists,
         details: [
           !ipcExists && "ipcLoader.js missing",
           !testsExists && "testsLoader.js missing"

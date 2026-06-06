@@ -10,6 +10,7 @@
 
 import { runTests } from './testUtils.js';
 
+
 // ─── Pomocnik: tymczasowy mock window.electronAPI
 //   @param {Object} overrides – metody do nadpisania/dodania
 //   @returns {Function} restore – przywraca oryginalne electronAPI

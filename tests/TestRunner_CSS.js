@@ -4,14 +4,13 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy spójności plików CSS — src/ui/index.css importuje layout.css + styles/theme.css + styles/components.css, brak kołowych zależności.
 // FUNCTIONS: runCssTests
-// DEPENDS ON: fs, path, testUtils.js
+// DEPENDS ON: fs, testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
 import { runTests } from './testUtils.js';
-
+import { join } from 'path';
 const UI_DIR    = join(process.cwd(), 'src', 'ui');
 const STYLES_DIR = join(UI_DIR, 'styles');
 

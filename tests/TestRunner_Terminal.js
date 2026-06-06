@@ -10,6 +10,7 @@
 
 import { runTests } from './testUtils.js';
 
+
 const tests = [
   {
     // ─── Sprawdza dostępność pakietu xterm.js (renderer ma do niego dostęp)

@@ -10,6 +10,7 @@
 
 import { runTests } from './testUtils.js';
 
+
 // ─── Mock electronAPI dla testów bez prawdziwego Electron
 const _mockGroups = [
   { id: 'tg_p1', name: 'Claude AI', profileIds: ['p1', 'p2'], createdAt: '2024-01-01T00:00:00Z' },

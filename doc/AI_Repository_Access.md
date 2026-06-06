@@ -74,6 +74,12 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   ├── 📜 [webviewRegistry.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/webviewRegistry.js)
 │   │   └── 📜 [webviewScriptInjector.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/engine/webviewScriptInjector.js)
 │   ├── 📁 📁 hooks/
+│   │   ├── 📁 📁 notepad/
+│   │   │   └── 📜 [useNotepadHandlers.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/notepad/useNotepadHandlers.js)
+│   │   ├── 📁 📁 sidebar/
+│   │   │   └── 📜 [useSidebarHandlers.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/sidebar/useSidebarHandlers.js)
+│   │   ├── 📁 📁 taskpanel/
+│   │   │   └── 📜 [useTaskPanelHandlers.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/taskpanel/useTaskPanelHandlers.js)
 │   │   ├── 📜 [useAppInitialization.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useAppInitialization.js)
 │   │   ├── 📜 [useAppLibrary.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useAppLibrary.js)
 │   │   ├── 📜 [useAsync.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/hooks/useAsync.js)
@@ -142,9 +148,6 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   └── 📜 [testsLoader.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/loaders/testsLoader.js)
 │   │   📁 DEPENDS ON: komponenty z folderu tests/
 │   ├── 📁 📁 locales/
-│   │   ├── 📁 📁 templates/
-│   │   │   ├── 📦 [help.template.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/locales/templates/help.template.json)
-│   │   │   └── 📦 [lang.template.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/locales/templates/lang.template.json)
 │   │   ├── 📦 [en.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/locales/en.json)
 │   │   ├── 📦 [help.en.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/locales/help.en.json)
 │   │   ├── 📦 [help.pl.json](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/locales/help.pl.json)
@@ -169,6 +172,8 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   ├── 📁 📁 ui/
 │   │   ├── 📁 📁 appLibrary/
 │   │   │   └── ⚛️ [AppLibraryBrowser.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/appLibrary/AppLibraryBrowser.jsx)
+│   │   ├── 📁 📁 common/
+│   │   │   └── ⚛️ [ContextMenu.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/common/ContextMenu.jsx)
 │   │   ├── 📁 📁 help/
 │   │   │   ├── ⚛️ [FAQ.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/help/FAQ.jsx)
 │   │   │   ├── ⚛️ [Help.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/help/Help.jsx)
@@ -224,7 +229,6 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   │   ├── ⚛️ [TabsSection.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/settings/TabsSection.jsx)
 │   │   │   └── ⚛️ [WebViewSection.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/settings/WebViewSection.jsx)
 │   │   ├── 📁 📁 sidebar/
-│   │   │   ├── ⚛️ [ContextMenu.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/sidebar/ContextMenu.jsx)
 │   │   │   ├── ⚛️ [Sidebar.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/sidebar/Sidebar.jsx)
 │   │   │   ├── ⚛️ [SidebarCategory.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/sidebar/SidebarCategory.jsx)
 │   │   │   ├── ⚛️ [SidebarHeader.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/sidebar/SidebarHeader.jsx)

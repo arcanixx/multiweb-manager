@@ -10,6 +10,7 @@
 
 import { runTests } from './testUtils.js';
 
+
 const tests = [
   {
     name: 'logEvent: nie zapisuje gdy eventLogEnabled=false (domyślne)',

@@ -166,6 +166,7 @@ export const logEngine = (...args) => logInfo('engine', ...args);
 export const logStore = (...args) => logInfo('store', ...args);
 export const logIPC = (...args) => logInfo('ipc', ...args);
 
+
 // ----------------------------------------------------------------
 // getLogFilePath() – ścieżka do pliku logów
 //   W rendererze (React/webpack) zawsze zwraca null,

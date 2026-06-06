@@ -4,13 +4,13 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy spójności plików w folderze assets/ — obecność, rozszerzenia, rozmiar.
 // FUNCTIONS: runAssetsTests
-// DEPENDS ON: fs, path, testUtils.js
+// DEPENDS ON: fs, testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { readdirSync, existsSync, statSync } from 'fs';
-import { join } from 'path';
 import { runTests } from './testUtils.js';
+import { join } from 'path';
 
 const ASSETS_DIR = join(process.cwd(), 'assets');
 

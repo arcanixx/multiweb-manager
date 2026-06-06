@@ -4,14 +4,11 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy wszystkich stores (main process) — eksporty CRUD, logika domenowa: workspacesStore, accountsStore, clipboardStore, taskGroupsStore, appLibraryStore, tasksStore (VALID_STATUSES, STATUS_TO_SECTION, resolveSection, normalizeTask).
 // FUNCTIONS: runStoresTests
-// DEPENDS ON: testUtils.js, path
+// DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { runTests } from './testUtils.js';
-import { join } from 'path';
-
-const ROOT = process.cwd();
 
 async function imp(relPath) {
   try { return { ok: true, mod: await import(join(ROOT, relPath)) }; }
@@ -84,7 +81,6 @@ const tests = [
       return { ok, details };
     }
   },
-
 
   // ── workspacesStore ────────────────────────────────────────────────────────
   {
@@ -373,7 +369,6 @@ const tests = [
       return { ok, details: ok ? '' : `history len=${history.length}` };
     }
   },
-
 
 ];
 

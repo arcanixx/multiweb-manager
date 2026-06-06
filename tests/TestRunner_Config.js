@@ -4,16 +4,15 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy modułów konfiguracyjnych z src/config/* — features, limits, settings, app, paths, endpoints oraz re-eksportu przez src/config.js.
 // FUNCTIONS: runConfigTests
-// DEPENDS ON: fs, path, testUtils.js
+// DEPENDS ON: fs, testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
 import { runTests } from './testUtils.js';
 
+import { join } from 'path';
 const ROOT = process.cwd();
-
 async function importModule(relPath) {
   try {
     const mod = await import(join(ROOT, relPath));

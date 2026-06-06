@@ -4,13 +4,13 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy komponentu SplashScreen – sprawdza eksport i podstawowe renderowanie
 // FUNCTIONS: runSplashScreenTests
-// DEPENDS ON: react, testUtils.js, react-dom
+// DEPENDS ON: react, react-dom, testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React from 'react';
-import { runTests } from './testUtils.js';
 import ReactDOMServer from 'react-dom/server';
+import { runTests } from './testUtils.js';
 
 const tests = [
   {

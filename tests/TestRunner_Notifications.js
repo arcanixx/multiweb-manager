@@ -10,6 +10,7 @@
 
 import { runTests } from './testUtils.js';
 
+
 const tests = [
   {
     name: 'showToast: dispatches CustomEvent mwm:toast',

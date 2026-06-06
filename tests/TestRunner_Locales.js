@@ -10,6 +10,7 @@
 
 import { runTests } from './testUtils.js';
 import { LANGUAGES } from '../src/config.js';
+
 const REQUIRED_SECTIONS = [
   'app', 'sidebar', 'notepad', 'projectManager', 'removebg',
   'stringCombiner', 'terminal', 'settings', 'help', 'webview',

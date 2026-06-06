@@ -2,18 +2,20 @@
 // FILE: TestRunner_Utils.js
 // PATH: tests/TestRunner_Utils.js
 // VERSION: 0.0.3
-// PURPOSE: Testy funkcji z src/utils/ – urlUtils, validators, searchIndex, notesStorage, notificationsManager, networkUtils, fileUtils.
-//          Testy modułów utils — logger (eksporty, setDebugModule, logUI/logStore/etc.), fileUtils (readJsonSafe/writeJsonSafe/streaming), persistence, sharpLoader, testrunner (assert/assertThrows), yamlLoader, notificationsManager, translations.
+// PURPOSE: Testy modułów utils bez osobnych plików testowych: logger, testrunner, fileUtils, persistence, sharpLoader, yamlLoader, translations, networkUtils, imageUtils, notepadStorage.
+//          Moduły urlUtils, validators, searchIndex, notificationsManager mają własne dedykowane pliki TestRunner_*.js i nie są tutaj duplikowane.
 // FUNCTIONS: runUtilsTests
 // DEPENDS ON: testUtils.js, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { runTests } from './testUtils.js';
-import { join } from 'path';
+import { join } from 'path'; 
 const ROOT = process.cwd();
 
+
 const tests = [
+
   // ── logger – eksporty i moduły ────────────────────────────────────────────
   {
     name: 'logger – all core functions exported',
@@ -36,10 +38,9 @@ const tests = [
     }
   },
   {
-    name: 'logger – setDebugModule toggles module state',
+    name: 'logger – setDebugModule toggles without throwing',
     run: async () => {
-      const { setDebugModule, isDebugMode } = await import(join(ROOT, 'src/utils/logger.js'));
-      // setDebugModule nie rzuca i jest callable
+      const { setDebugModule } = await import(join(ROOT, 'src/utils/logger.js'));
       let threw = false;
       try { setDebugModule('ui', true); setDebugModule('ui', false); } catch { threw = true; }
       return { ok: !threw, details: threw ? 'setDebugModule threw' : '' };
@@ -87,7 +88,7 @@ const tests = [
     }
   },
   {
-    name: 'testrunner – assert FAIL increments failCount',
+    name: 'testrunner – assert FAIL increments failCount (nie rzuca wyjątku)',
     run: async () => {
       const { initTestResults, assert, getTestResults } = await import(join(ROOT, 'src/utils/testrunner.js'));
       initTestResults();
@@ -97,7 +98,7 @@ const tests = [
     }
   },
   {
-    name: 'testrunner – assertThrows PASS when function throws',
+    name: 'testrunner – assertThrows PASS gdy funkcja rzuca',
     run: async () => {
       const { initTestResults, assertThrows, getTestResults } = await import(join(ROOT, 'src/utils/testrunner.js'));
       initTestResults();
@@ -107,7 +108,7 @@ const tests = [
     }
   },
   {
-    name: 'testrunner – assertThrows FAIL when function does not throw',
+    name: 'testrunner – assertThrows FAIL gdy funkcja nie rzuca',
     run: async () => {
       const { initTestResults, assertThrows, getTestResults } = await import(join(ROOT, 'src/utils/testrunner.js'));
       initTestResults();
@@ -117,7 +118,7 @@ const tests = [
     }
   },
   {
-    name: 'testrunner – getTestResults returns correct shape',
+    name: 'testrunner – getTestResults zwraca { passCount, failCount, total, results }',
     run: async () => {
       const { initTestResults, assert, getTestResults } = await import(join(ROOT, 'src/utils/testrunner.js'));
       initTestResults();
@@ -138,7 +139,7 @@ const tests = [
     }
   },
   {
-    name: 'fileUtils – readJsonSafe returns fallback for missing file',
+    name: 'fileUtils – readJsonSafe zwraca fallback dla nieistniejącego pliku',
     run: async () => {
       const { readJsonSafe } = await import(join(ROOT, 'src/utils/fileUtils.js'));
       const fallback = { default: true };
@@ -148,11 +149,11 @@ const tests = [
     }
   },
   {
-    name: 'fileUtils – writeJsonStreaming and readJsonStreaming are async',
+    name: 'fileUtils – writeJsonStreaming i readJsonStreaming są funkcjami async',
     run: async () => {
       const { writeJsonStreaming, readJsonStreaming } = await import(join(ROOT, 'src/utils/fileUtils.js'));
-      const ok = writeJsonStreaming instanceof Function && readJsonStreaming instanceof Function;
-      return { ok, details: ok ? '' : 'Not async functions' };
+      const ok = typeof writeJsonStreaming === 'function' && typeof readJsonStreaming === 'function';
+      return { ok, details: ok ? '' : 'Not functions' };
     }
   },
 
@@ -169,7 +170,7 @@ const tests = [
 
   // ── sharpLoader ───────────────────────────────────────────────────────────
   {
-    name: 'sharpLoader – loadSharp exported as async function',
+    name: 'sharpLoader – loadSharp exported as function',
     run: async () => {
       const { loadSharp } = await import(join(ROOT, 'src/utils/sharpLoader.js'));
       const ok = typeof loadSharp === 'function';
@@ -177,7 +178,7 @@ const tests = [
     }
   },
   {
-    name: 'sharpLoader – loadSharp returns Promise',
+    name: 'sharpLoader – loadSharp zwraca Promise',
     run: async () => {
       const { loadSharp } = await import(join(ROOT, 'src/utils/sharpLoader.js'));
       const result = loadSharp();
@@ -196,16 +197,6 @@ const tests = [
     }
   },
 
-  // ── notificationsManager ──────────────────────────────────────────────────
-  {
-    name: 'notificationsManager – showSystemNotification exported',
-    run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/notificationsManager.js'));
-      const ok = typeof mod.showSystemNotification === 'function';
-      return { ok, details: ok ? '' : 'showSystemNotification not exported' };
-    }
-  },
-
   // ── translations ──────────────────────────────────────────────────────────
   {
     name: 'translations – TranslationProvider exported as function',
@@ -215,166 +206,73 @@ const tests = [
       return { ok, details: ok ? '' : 'TranslationProvider not exported' };
     }
   },
-
-  // ─── urlUtils
   {
-    name: 'urlUtils – normalizeWebUrl dodaje https',
+    name: 'translations – TranslationContext exported',
     run: async () => {
-      const { normalizeWebUrl } = await import('../src/utils/urlUtils.js');
-      const result = normalizeWebUrl('google.com');
-      const ok = result === 'https://google.com';
-      return { ok, details: ok ? '' : `Otrzymano: ${result}` };
-    }
-  },
-  {
-    name: 'urlUtils – normalizeWebUrl nie duplikuje https',
-    run: async () => {
-      const { normalizeWebUrl } = await import('../src/utils/urlUtils.js');
-      const result = normalizeWebUrl('https://google.com');
-      const ok = result === 'https://google.com';
-      return { ok, details: ok ? '' : `Otrzymano: ${result}` };
-    }
-  },
-  {
-    name: 'urlUtils – isValidWebUrl zwraca true dla poprawnego URL',
-    run: async () => {
-      const { isValidWebUrl } = await import('../src/utils/urlUtils.js');
-      const ok = isValidWebUrl('https://google.com') === true;
-      return { ok, details: ok ? '' : 'isValidWebUrl zwróciło false dla poprawnego URL' };
-    }
-  },
-  {
-    name: 'urlUtils – isValidWebUrl zwraca false dla pustego stringa',
-    run: async () => {
-      const { isValidWebUrl } = await import('../src/utils/urlUtils.js');
-      const ok = isValidWebUrl('') === false;
-      return { ok, details: ok ? '' : 'isValidWebUrl zwróciło true dla pustego stringa' };
-    }
-  },
-  {
-    name: 'urlUtils – isSafeUrl blokuje javascript:',
-    run: async () => {
-      const { isSafeUrl } = await import('../src/utils/urlUtils.js');
-      const ok = isSafeUrl('javascript:alert(1)') === false;
-      return { ok, details: ok ? '' : 'isSafeUrl przepuściło javascript: URL' };
-    }
-  },
-  {
-    name: 'urlUtils – isSafeUrl przepuszcza https',
-    run: async () => {
-      const { isSafeUrl } = await import('../src/utils/urlUtils.js');
-      const ok = isSafeUrl('https://example.com') === true;
-      return { ok, details: ok ? '' : 'isSafeUrl blokowało poprawny https URL' };
+      const mod = await import(join(ROOT, 'src/utils/translations.js'));
+      const ok = mod.TranslationContext !== undefined;
+      return { ok, details: ok ? '' : 'TranslationContext not exported' };
     }
   },
 
-  // ─── validators
+  // ── networkUtils ──────────────────────────────────────────────────────────
   {
-    name: 'validators – ensureString zwraca string',
+    name: 'networkUtils – pingUrl exported as function',
     run: async () => {
-      const { ensureString } = await import('../src/utils/validators.js');
-      const ok = ensureString(123) === '123' || typeof ensureString('abc') === 'string';
-      return { ok, details: ok ? '' : 'ensureString nie działa poprawnie' };
-    }
-  },
-  {
-    name: 'validators – validateUrl zwraca true dla poprawnego URL',
-    run: async () => {
-      const { validateUrl } = await import('../src/utils/validators.js');
-      const ok = validateUrl('https://example.com') === true;
-      return { ok, details: ok ? '' : 'validateUrl failed dla poprawnego URL' };
-    }
-  },
-  {
-    name: 'validators – validateEmail zwraca true dla poprawnego emaila',
-    run: async () => {
-      const { validateEmail } = await import('../src/utils/validators.js');
-      const ok = validateEmail('test@example.com') === true;
-      return { ok, details: ok ? '' : 'validateEmail failed' };
-    }
-  },
-  {
-    name: 'validators – validateEmail zwraca false dla niepoprawnego emaila',
-    run: async () => {
-      const { validateEmail } = await import('../src/utils/validators.js');
-      const ok = validateEmail('niema-at-sign') === false;
-      return { ok, details: ok ? '' : 'validateEmail przepuściło niepoprawny email' };
-    }
-  },
-  {
-    name: 'validators – validateLength zwraca false gdy za krótkie',
-    run: async () => {
-      const { validateLength } = await import('../src/utils/validators.js');
-      const ok = validateLength('ab', 3, 10) === false;
-      return { ok, details: ok ? '' : 'validateLength nie wykryło za krótkiego stringa' };
+      const mod = await import(join(ROOT, 'src/utils/networkUtils.js'));
+      const ok = typeof mod.pingUrl === 'function';
+      return { ok, details: ok ? '' : 'pingUrl not exported' };
     }
   },
 
-  // ─── notesStorage
+  // ── imageUtils ────────────────────────────────────────────────────────────
   {
-    name: 'notesStorage – createNewTab zwraca obiekt z id i content',
+    name: 'imageUtils – all functions exported (resizeImage, convertImage, compressJpeg)',
     run: async () => {
-      const { createNewTab } = await import('../src/utils/notesStorage.js');
+      const mod = await import(join(ROOT, 'src/utils/imageUtils.js'));
+      const required = ['resizeImage', 'convertImage', 'compressJpeg'];
+      const missing = required.filter(fn => typeof mod[fn] !== 'function');
+      return { ok: missing.length === 0, details: missing.length ? `Missing: ${missing.join(', ')}` : '' };
+    }
+  },
+  {
+    name: 'imageUtils – resizeImage zwraca Promise (jest async)',
+    run: async () => {
+      const { resizeImage } = await import(join(ROOT, 'src/utils/imageUtils.js'));
+      // Wywołanie z błędnymi ścieżkami – sprawdzamy że zwraca Promise (nie rzuca synchronicznie)
+      let result;
+      try { result = resizeImage('/nonexistent.jpg', 100, 100, '/out.jpg'); } catch { result = null; }
+      const ok = result instanceof Promise;
+      return { ok, details: ok ? '' : 'resizeImage should return Promise' };
+    }
+  },
+
+  // ── notepadStorage ────────────────────────────────────────────────────────
+  {
+    name: 'notepadStorage – createNewTab, loadnotepadFromStorage, savenotepadToStorage exported',
+    run: async () => {
+      const mod = await import(join(ROOT, 'src/utils/notepadStorage.js'));
+      const required = ['createNewTab', 'loadnotepadFromStorage', 'savenotepadToStorage'];
+      const missing = required.filter(fn => typeof mod[fn] !== 'function');
+      return { ok: missing.length === 0, details: missing.length ? `Missing: ${missing.join(', ')}` : '' };
+    }
+  },
+  {
+    name: 'notepadStorage – createNewTab zwraca obiekt z id i content',
+    run: async () => {
+      const { createNewTab } = await import(join(ROOT, 'src/utils/notepadStorage.js'));
       const tab = createNewTab();
       const ok = tab && typeof tab.id === 'string' && 'content' in tab;
       return { ok, details: ok ? '' : `Niepoprawna struktura zakładki: ${JSON.stringify(tab)}` };
     }
   },
   {
-    name: 'notesStorage – loadNotesFromStorage / saveNotesToStorage eksportowane',
+    name: 'notepadStorage – createNewTab z podanym id zachowuje id',
     run: async () => {
-      const mod = await import('../src/utils/notesStorage.js');
-      const ok = typeof mod.loadNotesFromStorage === 'function' && typeof mod.saveNotesToStorage === 'function';
-      return { ok, details: ok ? '' : 'Brakuje eksportów load/saveNotesToStorage' };
-    }
-  },
-
-  // ─── searchIndex
-  {
-    name: 'searchIndex – buildSearchIndex i searchAll eksportowane',
-    run: async () => {
-      const mod = await import('../src/utils/searchIndex.js');
-      const ok = typeof mod.buildSearchIndex === 'function' && typeof mod.searchAll === 'function';
-      return { ok, details: ok ? '' : 'Brakuje eksportów buildSearchIndex lub searchAll' };
-    }
-  },
-  {
-    name: 'searchIndex – searchAll zwraca pustą tablicę dla pustego indeksu',
-    run: async () => {
-      const { buildSearchIndex, searchAll } = await import('../src/utils/searchIndex.js');
-      const index = buildSearchIndex({ profiles: [], projects: [], tasks: [], notes: [] });
-      const results = searchAll(index, 'test');
-      const ok = Array.isArray(results);
-      return { ok, details: ok ? '' : 'searchAll nie zwróciło tablicy' };
-    }
-  },
-
-  // ─── notificationsManager
-  {
-    name: 'notificationsManager – registerToastHandler i showToast eksportowane',
-    run: async () => {
-      const mod = await import('../src/utils/notificationsManager.js');
-      const ok = typeof mod.registerToastHandler === 'function' && typeof mod.showToast === 'function';
-      return { ok, details: ok ? '' : 'Brakuje eksportów notificationsManager' };
-    }
-  },
-  {
-    name: 'notificationsManager – showToast nie rzuca błędu bez zainstalowanego handlera',
-    run: async () => {
-      const { showToast } = await import('../src/utils/notificationsManager.js');
-      let error = null;
-      try { showToast('info', 'Test message'); } catch (e) { error = e.message; }
-      return { ok: error === null, details: error ? `Rzucono wyjątek: ${error}` : '' };
-    }
-  },
-
-  // ─── networkUtils
-  {
-    name: 'networkUtils – pingUrl eksportowane jako funkcja',
-    run: async () => {
-      const mod = await import('../src/utils/networkUtils.js');
-      const ok = typeof mod.pingUrl === 'function';
-      return { ok, details: ok ? '' : 'pingUrl nie jest eksportowane' };
+      const { createNewTab } = await import(join(ROOT, 'src/utils/notepadStorage.js'));
+      const tab = createNewTab('my-id');
+      const ok = tab && tab.id === 'my-id';
+      return { ok, details: ok ? '' : `Expected id 'my-id', got ${tab?.id}` };
     }
   },
 

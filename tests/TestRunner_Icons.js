@@ -4,12 +4,14 @@
 // VERSION: 0.0.3
 // PURPOSE: Testy integralności ikon (ICONS, SIDEBAR_ICON_MAP)
 // FUNCTIONS: runIconsTests
-// DEPENDS ON: testUtils.js, icons.js
+// DEPENDS ON: testUtils.js, icons.js, constants.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { runTests } from './testUtils.js';
-import { ICONS, SIDEBAR_ICON_MAP } from '../src/utils/icons.js';
+import { ICONS } from '../src/utils/icons.js';
+import { SIDEBAR_ICON_MAP } from '../src/constants/constants.js'
+
 const tests = [
   {
     name: 'ICONS is object',

@@ -18,6 +18,7 @@
 // TERMINAL full, WEBVIEW full, WORKSPACES
 import { runTests } from './testUtils.js';
 
+
 // ─── Pomocnik: sprawdza czy metoda istnieje i jest funkcją
 function hasMethod(name) {
   return typeof window.electronAPI?.[name] === 'function';
