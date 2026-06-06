@@ -27,7 +27,7 @@ const tests = [
   {
     name: 'useAsyncMutation: eksport jest funkcją',
     run: async () => {
-      const { useAsyncMutation } = await import('../src/hooks/useAsync.js');
+      const { useAsyncMutation } = await import('../src/hooks/useAsyncMutation.js');
       return { ok: typeof useAsyncMutation === 'function' };
     }
   },

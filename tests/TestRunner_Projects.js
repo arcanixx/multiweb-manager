@@ -8,12 +8,25 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { checkSourceExport, runTests, safeImport } from './testUtils.js';
 import { join } from 'path';
 
 const ROOT = process.cwd();
 
 const tests = [
+  {
+    name: 'ProjectList - src/ui/projects/ProjectList.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/projects/ProjectList.jsx', 'ProjectList')
+  },
+  {
+    name: 'ProjectManager - src/ui/projects/ProjectManager.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/projects/ProjectManager.jsx', 'ProjectManager')
+  },
+  {
+    name: 'ProjectModal - src/ui/projects/ProjectModal.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/projects/ProjectModal.jsx', 'ProjectModal')
+  },
+
   // ── Struktura projektu ─────────────────────────────────────────────────────
   {
     name: 'Project structure is valid',
@@ -40,7 +53,7 @@ const tests = [
     name: 'projectsStore – all CRUD functions exported',
     run: async () => {
       let mod;
-      try { mod = await import(join(ROOT, 'src/stores/projectsStore.js')); }
+      try { mod = await safeImport('src/stores/projectsStore.js'); }
       catch (e) { return { ok: false, details: `Import failed: ${e.message}` }; }
       const required = ['loadProjects', 'saveProjects', 'createProject', 'updateProject', 'archiveProject', 'deleteProject'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');

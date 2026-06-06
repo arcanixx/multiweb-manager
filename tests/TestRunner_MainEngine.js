@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { runTests, safeImport } from './testUtils.js';
 import { join } from 'path';
 const ROOT = process.cwd();
 
@@ -18,7 +18,7 @@ const tests = [
   {
     name: 'webviewRegistry – register and get entry',
     run: async () => {
-      const { registerWebView, getWebViewEntry } = await import(join(ROOT, 'src/engine/webviewRegistry.js'));
+      const { registerWebView, getWebViewEntry } = await safeImport('src/engine/webviewRegistry.js');
       registerWebView('tab-test-1', 999);
       const entry = getWebViewEntry('tab-test-1');
       const ok = entry && entry.webContentsId === 999;
@@ -28,7 +28,7 @@ const tests = [
   {
     name: 'webviewRegistry – unregister removes entry',
     run: async () => {
-      const { registerWebView, unregisterWebView, getWebViewEntry } = await import(join(ROOT, 'src/engine/webviewRegistry.js'));
+      const { registerWebView, unregisterWebView, getWebViewEntry } = await safeImport('src/engine/webviewRegistry.js');
       registerWebView('tab-to-delete', 888);
       unregisterWebView('tab-to-delete');
       const entry = getWebViewEntry('tab-to-delete');
@@ -38,7 +38,7 @@ const tests = [
   {
     name: 'webviewRegistry – getAllWebContents returns array',
     run: async () => {
-      const { getAllWebContents } = await import(join(ROOT, 'src/engine/webviewRegistry.js'));
+      const { getAllWebContents } = await safeImport('src/engine/webviewRegistry.js');
       if (typeof getAllWebContents !== 'function') return { ok: false, details: 'getAllWebContents not exported' };
       const result = getAllWebContents();
       const ok = Array.isArray(result);
@@ -48,7 +48,7 @@ const tests = [
   {
     name: 'webviewRegistry – registering same tabId overwrites previous entry',
     run: async () => {
-      const { registerWebView, getWebViewEntry } = await import(join(ROOT, 'src/engine/webviewRegistry.js'));
+      const { registerWebView, getWebViewEntry } = await safeImport('src/engine/webviewRegistry.js');
       registerWebView('tab-overwrite', 100);
       registerWebView('tab-overwrite', 200);
       const entry = getWebViewEntry('tab-overwrite');
@@ -61,7 +61,7 @@ const tests = [
   {
     name: 'resourceMonitor – getSystemUsage exported as function',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/engine/resourceMonitor.js'));
+      const mod = await safeImport('src/engine/resourceMonitor.js');
       const ok = typeof mod.getSystemUsage === 'function';
       return { ok, details: ok ? '' : 'getSystemUsage not exported' };
     }
@@ -69,7 +69,7 @@ const tests = [
   {
     name: 'resourceMonitor – getSystemUsage returns object with required fields',
     run: async () => {
-      const { getSystemUsage } = await import(join(ROOT, 'src/engine/resourceMonitor.js'));
+      const { getSystemUsage } = await safeImport('src/engine/resourceMonitor.js');
       const result = getSystemUsage();
       const required = ['cpuPercent', 'ramPercent', 'warnAt', 'criticalAt'];
       const missing = required.filter(k => !(k in result));
@@ -80,7 +80,7 @@ const tests = [
   {
     name: 'resourceMonitor – cpuPercent and ramPercent are numbers 0–100',
     run: async () => {
-      const { getSystemUsage } = await import(join(ROOT, 'src/engine/resourceMonitor.js'));
+      const { getSystemUsage } = await safeImport('src/engine/resourceMonitor.js');
       const { cpuPercent, ramPercent } = getSystemUsage();
       const ok = typeof cpuPercent === 'number' && cpuPercent >= 0 && cpuPercent <= 100
               && typeof ramPercent === 'number' && ramPercent >= 0 && ramPercent <= 100;
@@ -90,7 +90,7 @@ const tests = [
   {
     name: 'resourceMonitor – warnAt < criticalAt (sensible thresholds)',
     run: async () => {
-      const { getSystemUsage } = await import(join(ROOT, 'src/engine/resourceMonitor.js'));
+      const { getSystemUsage } = await safeImport('src/engine/resourceMonitor.js');
       const { warnAt, criticalAt } = getSystemUsage();
       const ok = warnAt < criticalAt;
       return { ok, details: ok ? '' : `warnAt(${warnAt}) should be < criticalAt(${criticalAt})` };
@@ -101,7 +101,7 @@ const tests = [
   {
     name: 'webviewScriptInjector – all functions exported',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/engine/webviewScriptInjector.js'));
+      const mod = await safeImport('src/engine/webviewScriptInjector.js');
       const required = ['injectUserCSS', 'removeUserCSS', 'injectUserScript',
         'scheduleInjectionOnLoad', 'removeInjectionListeners'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');
@@ -112,7 +112,7 @@ const tests = [
   {
     name: 'webviewScriptInjector – removeInjectionListeners handles missing wc gracefully',
     run: async () => {
-      const { removeInjectionListeners } = await import(join(ROOT, 'src/engine/webviewScriptInjector.js'));
+      const { removeInjectionListeners } = await safeImport('src/engine/webviewScriptInjector.js');
       let threw = false;
       try {
         // Wywołanie z null/undefined webContents nie powinno crashować
@@ -128,7 +128,7 @@ const tests = [
   {
     name: 'hotkeysManager – getAllHotkeys returns array',
     run: async () => {
-      const { getAllHotkeys } = await import(join(ROOT, 'src/engine/hotkeysManager.js'));
+      const { getAllHotkeys } = await safeImport('src/engine/hotkeysManager.js');
       const hotkeys = await getAllHotkeys();
       const ok = Array.isArray(hotkeys);
       return { ok, details: ok ? '' : 'getAllHotkeys did not return array' };
@@ -137,7 +137,7 @@ const tests = [
   {
     name: 'hotkeysManager – required functions exported',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/engine/hotkeysManager.js'));
+      const mod = await safeImport('src/engine/hotkeysManager.js');
       const required = ['getAllHotkeys', 'setMainWindow', 'unregisterAllHotkeys',
         'registerGlobalHotkeys', 'registerHotkeysFromList'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');

@@ -8,16 +8,34 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { checkSourceExport, runTests, safeImport } from './testUtils.js';
 import { join } from 'path';
 const ROOT = process.cwd();
 
 const tests = [
+  ...[
+    ['AccountSection', 'src/ui/settings/AccountSection.jsx'],
+    ['DataManagementSection', 'src/ui/settings/DataManagementSection.jsx'],
+    ['DebugModulesSection', 'src/ui/settings/DebugModulesSection.jsx'],
+    ['GeneralSection', 'src/ui/settings/GeneralSection.jsx'],
+    ['HotkeyModal', 'src/ui/settings/HotkeyModal.jsx'],
+    ['HotkeysList', 'src/ui/settings/HotkeysList.jsx'],
+    ['HotkeysManager', 'src/ui/settings/HotkeysManager.jsx'],
+    ['LogsSection', 'src/ui/settings/LogsSection.jsx'],
+    ['NotificationsSection', 'src/ui/settings/NotificationsSection.jsx'],
+    ['TabsSection', 'src/ui/settings/TabsSection.jsx'],
+    ['WebViewSection', 'src/ui/settings/WebViewSection.jsx'],
+    ['SettingsContainer', 'src/ui/views/SettingsContainer.jsx']
+  ].map(([name, path]) => ({
+    name: `${name} - ${path} eksportuje komponent`,
+    run: async () => checkSourceExport(path, name)
+  })),
+
   // ── DEFAULT_SETTINGS i getDefaultSetting ──────────────────────────────────
   {
     name: 'DEFAULT_SETTINGS – theme is dark|light|system',
     run: async () => {
-      const { DEFAULT_SETTINGS } = await import(join(ROOT, 'src/config/settings.js'));
+      const { DEFAULT_SETTINGS } = await safeImport('src/config/settings.js');
       const ok = ['dark', 'light', 'system'].includes(DEFAULT_SETTINGS.theme);
       return { ok, details: ok ? '' : `Invalid theme: ${DEFAULT_SETTINGS.theme}` };
     }
@@ -25,7 +43,7 @@ const tests = [
   {
     name: 'getDefaultSetting – returns value for known key',
     run: async () => {
-      const { getDefaultSetting, DEFAULT_SETTINGS } = await import(join(ROOT, 'src/config/settings.js'));
+      const { getDefaultSetting, DEFAULT_SETTINGS } = await safeImport('src/config/settings.js');
       const ok = getDefaultSetting('theme') === DEFAULT_SETTINGS.theme
               && getDefaultSetting('hotkeysEnabled') === DEFAULT_SETTINGS.hotkeysEnabled;
       return { ok, details: ok ? '' : 'getDefaultSetting mismatch' };
@@ -34,7 +52,7 @@ const tests = [
   {
     name: 'getDefaultSetting – unknown key returns undefined',
     run: async () => {
-      const { getDefaultSetting } = await import(join(ROOT, 'src/config/settings.js'));
+      const { getDefaultSetting } = await safeImport('src/config/settings.js');
       const ok = getDefaultSetting('__nonexistent__') === undefined;
       return { ok, details: ok ? '' : 'Should return undefined for unknown key' };
     }
@@ -42,7 +60,7 @@ const tests = [
   {
     name: 'DEBUG_MODULES – contains all required module names',
     run: async () => {
-      const { DEBUG_MODULES } = await import(join(ROOT, 'src/config/settings.js'));
+      const { DEBUG_MODULES } = await safeImport('src/config/settings.js');
       const required = ['webview', 'terminal', 'tasks', 'tools', 'settings', 'engine', 'store', 'ipc', 'ui'];
       const missing = required.filter(m => !(m in DEBUG_MODULES));
       const ok = missing.length === 0;
@@ -88,7 +106,7 @@ const tests = [
   {
     name: 'Export data structure has required fields',
     run: async () => {
-      const { DEFAULT_SETTINGS } = await import(join(ROOT, 'src/config/settings.js'));
+      const { DEFAULT_SETTINGS } = await safeImport('src/config/settings.js');
       const exportData = {
         version: '0.0.3',
         exportedAt: Date.now(),
@@ -108,7 +126,7 @@ const tests = [
     run: async () => {
       let mod;
       try {
-        mod = await import(join(ROOT, 'src/stores/settingsStore.js'));
+        mod = await safeImport('src/stores/settingsStore.js');
       } catch (e) {
         return { ok: false, details: `Import failed: ${e.message}` };
       }

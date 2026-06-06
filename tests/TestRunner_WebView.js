@@ -8,9 +8,21 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { checkSourceExport, runTests } from './testUtils.js';
 
 const tests = [
+  {
+    name: 'WebViewContainer - src/ui/views/WebViewContainer.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/views/WebViewContainer.jsx', 'WebViewContainer')
+  },
+  {
+    name: 'WebViewTab - src/ui/webview/WebViewTab.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/webview/WebViewTab.jsx', 'WebViewTab')
+  },
+  {
+    name: 'WebViewToolbar - src/ui/webview/WebViewToolbar.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/webview/WebViewToolbar.jsx', 'WebViewToolbar')
+  },
   {
     name: 'Single App Mode – IPC available',
     run: async () => {

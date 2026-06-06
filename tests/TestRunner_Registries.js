@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { runTests, safeImport } from './testUtils.js';
 import { join } from 'path';
 const ROOT = process.cwd();
 
@@ -17,7 +17,7 @@ const tests = [
   {
     name: 'settingsRegistry – SETTINGS_REGISTRY and getSettingsComponent exported',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/config/settingsRegistry.js'));
+      const mod = await safeImport('src/config/settingsRegistry.js');
       const ok = Array.isArray(mod.SETTINGS_REGISTRY) && typeof mod.getSettingsComponent === 'function';
       return { ok, details: ok ? '' : 'Missing exports' };
     }
@@ -25,7 +25,7 @@ const tests = [
   {
     name: 'settingsRegistry – required ids present (settings, help, aggregatedTasks, history)',
     run: async () => {
-      const { SETTINGS_REGISTRY } = await import(join(ROOT, 'src/config/settingsRegistry.js'));
+      const { SETTINGS_REGISTRY } = await safeImport('src/config/settingsRegistry.js');
       const ids = SETTINGS_REGISTRY.map(e => e.id);
       const required = ['settings', 'help', 'aggregatedTasks', 'history'];
       const missing = required.filter(id => !ids.includes(id));
@@ -36,7 +36,7 @@ const tests = [
   {
     name: 'settingsRegistry – every entry has id and component',
     run: async () => {
-      const { SETTINGS_REGISTRY } = await import(join(ROOT, 'src/config/settingsRegistry.js'));
+      const { SETTINGS_REGISTRY } = await safeImport('src/config/settingsRegistry.js');
       const bad = SETTINGS_REGISTRY.filter(e => !e.id || !e.component);
       const ok = bad.length === 0;
       return { ok, details: ok ? '' : `Bad entries: ${bad.map(e => e.id).join(', ')}` };
@@ -45,8 +45,8 @@ const tests = [
   {
     name: 'settingsRegistry – featureFlag entries reference valid FEATURES keys',
     run: async () => {
-      const { SETTINGS_REGISTRY } = await import(join(ROOT, 'src/config/settingsRegistry.js'));
-      const { FEATURES } = await import(join(ROOT, 'src/config/features.js'));
+      const { SETTINGS_REGISTRY } = await safeImport('src/config/settingsRegistry.js');
+      const { FEATURES } = await safeImport('src/config/features.js');
       const bad = SETTINGS_REGISTRY
         .filter(e => e.featureFlag)
         .filter(e => !(e.featureFlag in FEATURES));
@@ -57,7 +57,7 @@ const tests = [
   {
     name: 'getSettingsComponent – returns entry for known id',
     run: async () => {
-      const { getSettingsComponent } = await import(join(ROOT, 'src/config/settingsRegistry.js'));
+      const { getSettingsComponent } = await safeImport('src/config/settingsRegistry.js');
       const entry = getSettingsComponent('settings');
       const ok = entry !== null && entry.id === 'settings' && typeof entry.disabled === 'boolean';
       return { ok, details: ok ? '' : `Got: ${JSON.stringify(entry)}` };
@@ -66,7 +66,7 @@ const tests = [
   {
     name: 'getSettingsComponent – returns null for unknown id',
     run: async () => {
-      const { getSettingsComponent } = await import(join(ROOT, 'src/config/settingsRegistry.js'));
+      const { getSettingsComponent } = await safeImport('src/config/settingsRegistry.js');
       const entry = getSettingsComponent('__nonexistent__');
       return { ok: entry === null, details: entry === null ? '' : `Expected null, got ${JSON.stringify(entry)}` };
     }
@@ -74,7 +74,7 @@ const tests = [
   {
     name: 'getSettingsComponent – disabled=false for active feature, disabled=true for inactive',
     run: async () => {
-      const { getSettingsComponent } = await import(join(ROOT, 'src/config/settingsRegistry.js'));
+      const { getSettingsComponent } = await safeImport('src/config/settingsRegistry.js');
       // help ma featureFlag: 'helpScreen' (true domyślnie)
       const helpEntry = getSettingsComponent('help');
       // settings nie ma featureFlag — zawsze disabled=false
@@ -88,7 +88,7 @@ const tests = [
   {
     name: 'toolsRegistry – TOOLS_REGISTRY and getToolComponent exported',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/config/toolsRegistry.js'));
+      const mod = await safeImport('src/config/toolsRegistry.js');
       const ok = Array.isArray(mod.TOOLS_REGISTRY) && typeof mod.getToolComponent === 'function';
       return { ok, details: ok ? '' : 'Missing exports' };
     }
@@ -96,7 +96,7 @@ const tests = [
   {
     name: 'toolsRegistry – required tool ids present',
     run: async () => {
-      const { TOOLS_REGISTRY } = await import(join(ROOT, 'src/config/toolsRegistry.js'));
+      const { TOOLS_REGISTRY } = await safeImport('src/config/toolsRegistry.js');
       const ids = TOOLS_REGISTRY.map(e => e.id);
       const required = ['notepad', 'projectManager', 'removebg', 'stringCombiner',
         'terminal', 'jsonYamlXmlFormatter', 'regexTester', 'markdownPreviewer',
@@ -109,7 +109,7 @@ const tests = [
   {
     name: 'toolsRegistry – every entry has id and component',
     run: async () => {
-      const { TOOLS_REGISTRY } = await import(join(ROOT, 'src/config/toolsRegistry.js'));
+      const { TOOLS_REGISTRY } = await safeImport('src/config/toolsRegistry.js');
       const bad = TOOLS_REGISTRY.filter(e => !e.id || !e.component);
       const ok = bad.length === 0;
       return { ok, details: ok ? '' : `Bad entries: ${bad.map(e => e.id || '?').join(', ')}` };
@@ -118,8 +118,8 @@ const tests = [
   {
     name: 'toolsRegistry – featureFlag entries reference valid FEATURES keys',
     run: async () => {
-      const { TOOLS_REGISTRY } = await import(join(ROOT, 'src/config/toolsRegistry.js'));
-      const { FEATURES } = await import(join(ROOT, 'src/config/features.js'));
+      const { TOOLS_REGISTRY } = await safeImport('src/config/toolsRegistry.js');
+      const { FEATURES } = await safeImport('src/config/features.js');
       const bad = TOOLS_REGISTRY
         .filter(e => e.featureFlag)
         .filter(e => !(e.featureFlag in FEATURES));
@@ -130,7 +130,7 @@ const tests = [
   {
     name: 'getToolComponent – returns entry for known id',
     run: async () => {
-      const { getToolComponent } = await import(join(ROOT, 'src/config/toolsRegistry.js'));
+      const { getToolComponent } = await safeImport('src/config/toolsRegistry.js');
       const entry = getToolComponent('notepad');
       const ok = entry !== null && entry.id === 'notepad' && typeof entry.disabled === 'boolean';
       return { ok, details: ok ? '' : `Got: ${JSON.stringify(entry)}` };
@@ -139,7 +139,7 @@ const tests = [
   {
     name: 'getToolComponent – returns null for unknown id',
     run: async () => {
-      const { getToolComponent } = await import(join(ROOT, 'src/config/toolsRegistry.js'));
+      const { getToolComponent } = await safeImport('src/config/toolsRegistry.js');
       const entry = getToolComponent('__nonexistent__');
       return { ok: entry === null, details: entry === null ? '' : `Expected null, got: ${JSON.stringify(entry)}` };
     }
@@ -149,8 +149,8 @@ const tests = [
   {
     name: 'No id overlap between SETTINGS_REGISTRY and TOOLS_REGISTRY',
     run: async () => {
-      const { SETTINGS_REGISTRY } = await import(join(ROOT, 'src/config/settingsRegistry.js'));
-      const { TOOLS_REGISTRY }    = await import(join(ROOT, 'src/config/toolsRegistry.js'));
+      const { SETTINGS_REGISTRY } = await safeImport('src/config/settingsRegistry.js');
+      const { TOOLS_REGISTRY }    = await safeImport('src/config/toolsRegistry.js');
       const settingsIds = new Set(SETTINGS_REGISTRY.map(e => e.id));
       const overlap = TOOLS_REGISTRY.map(e => e.id).filter(id => settingsIds.has(id));
       const ok = overlap.length === 0;

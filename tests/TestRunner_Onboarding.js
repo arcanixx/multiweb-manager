@@ -8,12 +8,24 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { checkSourceExport, runTests } from './testUtils.js';
 import { join } from 'path';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 const tests = [
+  ...[
+    ['StepAccount', 'src/ui/onboarding/StepAccount.jsx'],
+    ['StepApps', 'src/ui/onboarding/StepApps.jsx'],
+    ['StepIndicator', 'src/ui/onboarding/StepIndicator.jsx'],
+    ['StepLanguage', 'src/ui/onboarding/StepLanguage.jsx'],
+    ['StepPrivacy', 'src/ui/onboarding/StepPrivacy.jsx'],
+    ['StepTheme', 'src/ui/onboarding/StepTheme.jsx']
+  ].map(([name, path]) => ({
+    name: `${name} - ${path} eksportuje komponent kroku onboardingu`,
+    run: async () => checkSourceExport(path, name)
+  })),
+
   {
     name: 'Onboarding component is a function',
     run: async () => {

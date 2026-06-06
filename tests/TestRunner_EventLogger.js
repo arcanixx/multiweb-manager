@@ -10,11 +10,25 @@
 
 import { runTests } from './testUtils.js';
 
+function ensureElectronWindow() {
+  if (typeof globalThis.window === 'undefined') {
+    const target = new EventTarget();
+    globalThis.window = {
+      addEventListener: target.addEventListener.bind(target),
+      removeEventListener: target.removeEventListener.bind(target),
+      dispatchEvent: target.dispatchEvent.bind(target),
+      electronAPI: { invoke: async () => ({ ok: true, data: {} }) }
+    };
+  } else if (!globalThis.window.electronAPI) {
+    globalThis.window.electronAPI = { invoke: async () => ({ ok: true, data: {} }) };
+  }
+}
 
 const tests = [
   {
     name: 'logEvent: nie zapisuje gdy eventLogEnabled=false (domyślne)',
     run: async () => {
+      ensureElectronWindow();
       const calls = [];
       // Mockuj invoke — przechwytuj wywołania events:append
       const origInvoke = window.electronAPI?.invoke;
@@ -41,6 +55,7 @@ const tests = [
   {
     name: 'logEvent: sanityzuje blacklistowane klucze params',
     run: async () => {
+      ensureElectronWindow();
       // Test _sanitizeParams przez pośrednie sprawdzenie modułu
       // Importujemy i sprawdzamy czy wyeksportowane logEvent nie przepuszcza wrażliwych danych
       const calls = [];
@@ -76,6 +91,7 @@ const tests = [
   {
     name: 'logEvent: wpis zawiera wymagane pola (ts, module, fn, action, source)',
     run: async () => {
+      ensureElectronWindow();
       const calls = [];
       const origInvoke = window.electronAPI?.invoke;
       if (window.electronAPI) {

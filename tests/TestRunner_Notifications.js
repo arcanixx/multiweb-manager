@@ -10,11 +10,31 @@
 
 import { runTests } from './testUtils.js';
 
+function ensureWindowEvents() {
+  if (typeof globalThis.window === 'undefined') {
+    const target = new EventTarget();
+    globalThis.window = {
+      addEventListener: target.addEventListener.bind(target),
+      removeEventListener: target.removeEventListener.bind(target),
+      dispatchEvent: target.dispatchEvent.bind(target),
+      electronAPI: { invoke: async () => ({ ok: true }) }
+    };
+  }
+  if (typeof globalThis.CustomEvent === 'undefined') {
+    globalThis.CustomEvent = class CustomEvent extends Event {
+      constructor(type, params = {}) {
+        super(type);
+        this.detail = params.detail;
+      }
+    };
+  }
+}
 
 const tests = [
   {
     name: 'showToast: dispatches CustomEvent mwm:toast',
     run: async () => {
+      ensureWindowEvents();
       let received = null;
       const handler = (e) => { received = e.detail; };
       window.addEventListener('mwm:toast', handler);
@@ -36,6 +56,7 @@ const tests = [
   {
     name: 'showToast: generuje unikalny id dla każdego toastu',
     run: async () => {
+      ensureWindowEvents();
       const ids = [];
       const handler = (e) => ids.push(e.detail.id);
       window.addEventListener('mwm:toast', handler);
@@ -58,6 +79,7 @@ const tests = [
   {
     name: 'showToast: akceptuje wszystkie typy (success/error/warning/info)',
     run: async () => {
+      ensureWindowEvents();
       const types = ['success', 'error', 'warning', 'info'];
       const received = [];
       const handler = (e) => received.push(e.detail.type);

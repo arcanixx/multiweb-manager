@@ -2,15 +2,20 @@
 // FILE: TestRunner_Locales.js
 // PATH: tests/TestRunner_Locales.js
 // VERSION: 0.0.3
-// PURPOSE: Testy integralności plików locales (dynamicznie z LANGUAGES z config.js)
+// PURPOSE: Testy integralnosci plikow locales - sekcje, klucze krytyczne i help JSON.
 // FUNCTIONS: runLocalesTests
-// DEPENDS ON: testUtils.js, config.js
+// DEPENDS ON: fs, path, testUtils.js, config.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
+// Nie usuwac komentarzy - opisuja flow aplikacji.
+
+import { existsSync, readFileSync } from 'fs';
+import { join } from 'path';
 import { runTests } from './testUtils.js';
 import { LANGUAGES } from '../src/config.js';
 
+const LOCALES_DIR = join(process.cwd(), 'src/locales');
 const REQUIRED_SECTIONS = [
   'app', 'sidebar', 'notepad', 'projectManager', 'removebg',
   'stringCombiner', 'terminal', 'settings', 'help', 'webview',
@@ -28,139 +33,94 @@ const CRITICAL_KEYS = [
   ['notifications', 'offline'],
   ['notifications', 'online']
 ];
-const HELP_REQUIRED_FIELDS = ['id', 'title', 'content'];
+
+function readLocaleJson(fileName) {
+  const filePath = join(LOCALES_DIR, fileName);
+  if (!existsSync(filePath)) throw new Error(`${fileName} not found`);
+  return JSON.parse(readFileSync(filePath, 'utf8'));
+}
+
 const tests = [
-  // Test 1: Wszystkie pliki locales (lang i help) istnieją i ładują się
   {
     name: 'All locale files exist and load',
     run: async () => {
       const errors = [];
       for (const lang of LANGUAGES) {
-        try {
-          await import(`../src/locales/${lang}.json`);
-        } catch (e) {
-          errors.push(`${lang}.json – ${e.message}`);
-        }
-        try {
-          await import(`../src/locales/help_${lang}.json`);
-        } catch (e) {
-          errors.push(`help_${lang}.json – ${e.message}`);
+        for (const fileName of [`${lang}.json`, `help.${lang}.json`]) {
+          try { readLocaleJson(fileName); }
+          catch (err) { errors.push(`${fileName}: ${err.message}`); }
         }
       }
-      const ok = errors.length === 0;
-      return { ok, details: ok ? '' : errors.join('; ') };
+      return { ok: errors.length === 0, details: errors.join('; ') };
     }
   },
-  // Test 2: Wszystkie pliki językowe mają wymagane sekcje
   {
     name: 'Language files have required sections',
     run: async () => {
       const errors = [];
       for (const lang of LANGUAGES) {
-        try {
-          const data = await import(`../src/locales/${lang}.json`);
-          for (const section of REQUIRED_SECTIONS) {
-            if (!data.default[section]) {
-              errors.push(`${lang}.json missing section: ${section}`);
-            }
-          }
-        } catch (e) {
-          errors.push(`${lang}.json – ${e.message}`);
+        const data = readLocaleJson(`${lang}.json`);
+        for (const section of REQUIRED_SECTIONS) {
+          if (!data[section]) errors.push(`${lang}.json missing section: ${section}`);
         }
       }
-      const ok = errors.length === 0;
-      return { ok, details: ok ? '' : errors.join('; ') };
+      return { ok: errors.length === 0, details: errors.join('; ') };
     }
   },
-  // Test 3: Kluczowe klucze istnieją we wszystkich językach
   {
     name: 'Critical keys exist in all languages',
     run: async () => {
       const errors = [];
       for (const lang of LANGUAGES) {
-        try {
-          const data = await import(`../src/locales/${lang}.json`);
-          for (const [section, key] of CRITICAL_KEYS) {
-            if (!data.default[section]?.[key]) {
-              errors.push(`${lang}.json missing ${section}.${key}`);
-            }
-          }
-        } catch (e) {
-          errors.push(`${lang}.json – ${e.message}`);
+        const data = readLocaleJson(`${lang}.json`);
+        for (const [section, key] of CRITICAL_KEYS) {
+          if (!data[section]?.[key]) errors.push(`${lang}.json missing ${section}.${key}`);
         }
       }
-      const ok = errors.length === 0;
-      return { ok, details: ok ? '' : errors.join('; ') };
+      return { ok: errors.length === 0, details: errors.join('; ') };
     }
   },
-  // Test 4: Spójność kluczy między językami (dla tych samych sekcji)
   {
     name: 'Same keys across all languages for required sections',
     run: async () => {
+      const [baseLang, ...rest] = LANGUAGES;
+      const base = readLocaleJson(`${baseLang}.json`);
       const errors = [];
-      const langData = {};
-      for (const lang of LANGUAGES) {
-        try {
-          langData[lang] = await import(`../src/locales/${lang}.json`);
-        } catch (e) {
-          errors.push(`${lang}.json – ${e.message}`);
-        }
-      }
-      if (errors.length) return { ok: false, details: errors.join('; ') };
 
-      const baseLang = LANGUAGES[0];
-      const baseKeys = {};
-      for (const section of REQUIRED_SECTIONS) {
-        baseKeys[section] = Object.keys(langData[baseLang].default[section] || {});
-      }
-
-      for (const lang of LANGUAGES.slice(1)) {
+      for (const lang of rest) {
+        const current = readLocaleJson(`${lang}.json`);
         for (const section of REQUIRED_SECTIONS) {
-          const currentKeys = Object.keys(langData[lang].default[section] || {});
-          const missingInCurrent = baseKeys[section].filter(k => !currentKeys.includes(k));
-          if (missingInCurrent.length) {
-            errors.push(`${lang}.json missing keys in ${section}: ${missingInCurrent.join(',')}`);
-          }
-          const extraInCurrent = currentKeys.filter(k => !baseKeys[section].includes(k));
-          if (extraInCurrent.length) {
-            errors.push(`${lang}.json has extra keys in ${section}: ${extraInCurrent.join(',')}`);
-          }
+          const baseKeys = Object.keys(base[section] || {});
+          const currentKeys = Object.keys(current[section] || {});
+          const missing = baseKeys.filter((key) => !currentKeys.includes(key));
+          const extra = currentKeys.filter((key) => !baseKeys.includes(key));
+          if (missing.length) errors.push(`${lang}.json missing keys in ${section}: ${missing.join(',')}`);
+          if (extra.length) errors.push(`${lang}.json has extra keys in ${section}: ${extra.join(',')}`);
         }
       }
-      const ok = errors.length === 0;
-      return { ok, details: ok ? '' : errors.join('; ') };
+      return { ok: errors.length === 0, details: errors.join('; ') };
     }
   },
-  // Test 5: Wszystkie pliki help mają poprawną strukturę
   {
     name: 'Help files have valid structure',
     run: async () => {
       const errors = [];
       for (const lang of LANGUAGES) {
-        try {
-          const data = await import(`../src/locales/help_${lang}.json`);
-          if (!data.default.sections || !Array.isArray(data.default.sections)) {
-            errors.push(`help_${lang}.json: missing sections array`);
-            continue;
-          }
-          for (let i = 0; i < data.default.sections.length; i++) {
-            const section = data.default.sections[i];
-            for (const field of HELP_REQUIRED_FIELDS) {
-              if (!section[field]) {
-                errors.push(`help_${lang}.json: section ${i} missing "${field}"`);
-              }
-            }
-          }
-          // Dodatkowo sprawdź, czy sections nie jest puste
-          if (data.default.sections.length === 0) {
-            errors.push(`help_${lang}.json: sections array is empty`);
-          }
-        } catch (e) {
-          errors.push(`help_${lang}.json – ${e.message}`);
+        const fileName = `help.${lang}.json`;
+        const data = readLocaleJson(fileName);
+        if (!Array.isArray(data.sections) || data.sections.length === 0) {
+          errors.push(`${fileName}: sections array missing or empty`);
+          continue;
         }
+        data.sections.forEach((section, index) => {
+          if (!section.id) errors.push(`${fileName}: section ${index} missing id`);
+          if (!section.title) errors.push(`${fileName}: section ${index} missing title`);
+          if (!section.content && !section.items && !section.children) {
+            errors.push(`${fileName}: section ${index} missing content/items/children`);
+          }
+        });
       }
-      const ok = errors.length === 0;
-      return { ok, details: ok ? '' : errors.join('; ') };
+      return { ok: errors.length === 0, details: errors.join('; ') };
     }
   }
 ];

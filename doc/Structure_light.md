@@ -1900,6 +1900,12 @@ root/
 │ │ FUNCTIONS: runAdBlockerTests
 │ │ DEPENDS ON: testUtils.js
 │ │ -->
+│ ├── TestRunner_AppLibrary.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_AppLibrary.js
+│ │ PURPOSE: Testy UI biblioteki aplikacji - eksport komponentu
+│ │ AppLibraryBrowser.
+│ │ FUNCTIONS: runAppLibraryTests
+│ │ DEPENDS ON: testUtils.js
+│ │ -->
 │ ├── TestRunner_Assets.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Assets.js
 │ │ PURPOSE: Testy spójności plików w folderze assets/ — obecność,
 │ │ rozszerzenia, rozmiar.
@@ -1923,6 +1929,12 @@ root/
 │ │ PURPOSE: Testy hooka useCategories – CRUD kategorii, stan
 │ │ zwinięcia, persistencja przez mock electronAPI.
 │ │ FUNCTIONS: runCategoriesTests
+│ │ DEPENDS ON: testUtils.js
+│ │ -->
+│ ├── TestRunner_Common.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Common.js
+│ │ PURPOSE: Testy wspolnych komponentow UI - ContextMenu i
+│ │ kontrakty menu.
+│ │ FUNCTIONS: runCommonTests
 │ │ DEPENDS ON: testUtils.js
 │ │ -->
 │ ├── TestRunner_Config.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Config.js
@@ -1957,6 +1969,12 @@ root/
 │ │ isFeatureEnabled, isToolEnabled, spójność FEATURES.
 │ │ FUNCTIONS: runFeaturesTests
 │ │ DEPENDS ON: path, testUtils.js
+│ │ -->
+│ ├── TestRunner_Help.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Help.js
+│ │ PURPOSE: Testy komponentow pomocy - HelpSection, Shortcut,
+│ │ ToolCard.
+│ │ FUNCTIONS: runHelpTests
+│ │ DEPENDS ON: testUtils.js
 │ │ -->
 │ ├── TestRunner_History.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_History.js
 │ │ PURPOSE: Testy historii aktywności — historyStore CRUD,
@@ -1993,6 +2011,11 @@ root/
 │ │ FUNCTIONS: runIpcChannelsTests
 │ │ DEPENDS ON: testUtils.js, path
 │ │ -->
+│ ├── TestRunner_Layout.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Layout.js
+│ │ PURPOSE: Testy layoutu aplikacji - eksport MainLayout.
+│ │ FUNCTIONS: runLayoutTests
+│ │ DEPENDS ON: testUtils.js
+│ │ -->
 │ ├── TestRunner_Limits.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Limits.js
 │ │ PURPOSE: Testy modułu limitów aplikacji (src/config/limits.js) —
 │ │ LIMITS, getLimit.
@@ -2007,10 +2030,10 @@ root/
 │ │ DEPENDS ON: testUtils.js, path, fs
 │ │ -->
 │ ├── TestRunner_Locales.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Locales.js
-│ │ PURPOSE: Testy integralności plików locales (dynamicznie z
-│ │ LANGUAGES z config.js)
+│ │ PURPOSE: Testy integralnosci plikow locales - sekcje, klucze
+│ │ krytyczne i help JSON.
 │ │ FUNCTIONS: runLocalesTests
-│ │ DEPENDS ON: testUtils.js, config.js
+│ │ DEPENDS ON: fs, path, testUtils.js, config.js
 │ │ -->
 │ ├── TestRunner_LogWriter.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_LogWriter.js
 │ │ PURPOSE: Testy dla LogWritera (zapis, odczyt, czyszczenie, limit
@@ -2023,6 +2046,12 @@ root/
 │ │ resourceMonitor, webviewScriptInjector, hotkeysManager.
 │ │ FUNCTIONS: runMainEngineTests
 │ │ DEPENDS ON: testUtils.js, path
+│ │ -->
+│ ├── TestRunner_Modals.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Modals.js
+│ │ PURPOSE: Testy komponentow modalnych oraz podstawowych
+│ │ kontraktow formularzy.
+│ │ FUNCTIONS: runModalsTests
+│ │ DEPENDS ON: testUtils.js
 │ │ -->
 │ ├── TestRunner_Notepad.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Notepad.js
 │ │ PURPOSE: Testy modułu notatnika — notepadStorage (createNewTab,
@@ -2081,6 +2110,12 @@ root/
 │ │ FUNCTIONS: runSettingsTests
 │ │ DEPENDS ON: testUtils.js, path
 │ │ -->
+│ ├── TestRunner_Sidebar.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Sidebar.js
+│ │ PURPOSE: Testy komponentow sidebara oraz podstawowej logiki list
+│ │ profili.
+│ │ FUNCTIONS: runSidebarTests
+│ │ DEPENDS ON: testUtils.js
+│ │ -->
 │ ├── TestRunner_SleepTabs.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_SleepTabs.js
 │ │ PURPOSE: Testy jednostkowe dla Sleep Tabs – sleepTabsManager
 │ │ (getSleepTimeoutMs, shouldSleepTab, markTabActive,
@@ -2101,6 +2136,12 @@ root/
 │ │ tasksStore (VALID_STATUSES, STATUS_TO_SECTION,
 │ │ resolveSection, normalizeTask).
 │ │ FUNCTIONS: runStoresTests
+│ │ DEPENDS ON: testUtils.js
+│ │ -->
+│ ├── TestRunner_System.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_System.js
+│ │ PURPOSE: Testy komponentow systemowych - ModalPortal,
+│ │ ToastContainer, UpdateChecker.
+│ │ FUNCTIONS: runSystemTests
 │ │ DEPENDS ON: testUtils.js
 │ │ -->
 │ ├── TestRunner_Tasks.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Tasks.js
@@ -2172,17 +2213,24 @@ root/
 │ │ FUNCTIONS: runValidatorsTests
 │ │ DEPENDS ON: testUtils.js, path
 │ │ -->
+│ ├── TestRunner_Views.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Views.js
+│ │ PURPOSE: Testy kontenerow widokow - ContentRenderer,
+│ │ SettingsContainer, Spinner, ToolsContainer,
+│ │ WebViewContainer.
+│ │ FUNCTIONS: runViewsTests
+│ │ DEPENDS ON: testUtils.js
+│ │ -->
 │ ├── TestRunner_WebView.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_WebView.js
 │ │ PURPOSE: Testy jednostkowe dla WebView (Single App, Screenshot,
 │ │ Resource Monitor, Zoom)
 │ │ FUNCTIONS: runWebViewTests
 │ │ DEPENDS ON: testUtils.js
 │ │ -->
-│ └── testUtils.js ❗ <!-- VERSION: 0.0.3 PATH: tests/testUtils.js
+│ └── testUtils.js <!-- VERSION: 0.0.3 PATH: tests/testUtils.js
 │ PURPOSE: Wspólne funkcje dla wszystkich testów (runner,
 │ logowanie)
-│ FUNCTIONS: safeImport, runTests
-│ DEPENDS ON: icons.js, url, path
+│ FUNCTIONS: safeImport, checkSourceExport, runTests
+│ DEPENDS ON: icons.js, url, path, fs
 │ -->
 ├── config.js <!-- VERSION: 0.0.3 PATH: config.js
 │ PURPOSE: Re-eksport konfiguracji z src/config.js.

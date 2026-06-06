@@ -8,16 +8,33 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { checkSourceExport, runTests, safeImport } from './testUtils.js';
 import { join } from 'path';
 const ROOT = process.cwd();
 const tests = [
+  {
+    name: 'HistoryExport - src/ui/history/HistoryExport.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/history/HistoryExport.jsx', 'HistoryExport')
+  },
+  {
+    name: 'HistoryFilters - src/ui/history/HistoryFilters.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/history/HistoryFilters.jsx', 'HistoryFilters')
+  },
+  {
+    name: 'HistoryList - src/ui/history/HistoryList.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/history/HistoryList.jsx', 'HistoryList')
+  },
+  {
+    name: 'HistoryLog - src/ui/history/HistoryLog.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/history/HistoryLog.jsx', 'HistoryLog')
+  },
+
   // ── historyStore exports ───────────────────────────────────────────────────
   {
     name: 'historyStore – all functions exported',
     run: async () => {
       let mod;
-      try { mod = await import(join(ROOT, 'src/stores/historyStore.js')); }
+      try { mod = await safeImport('src/stores/historyStore.js'); }
       catch (e) { return { ok: false, details: `Import failed: ${e.message}` }; }
       const required = ['loadHistory', 'saveHistory', 'addHistoryEntry', 'clearHistory', 'getRecentHistory'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');

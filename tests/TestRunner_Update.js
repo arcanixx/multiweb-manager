@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { runTests, safeImport } from './testUtils.js';
 import { join } from 'path';
 const ROOT = process.cwd();
 
@@ -16,7 +16,7 @@ const tests = [
   {
     name: 'checkForUpdates – exported as function',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/engine/updateService.js'));
+      const mod = await safeImport('src/engine/updateService.js');
       const ok = typeof mod.checkForUpdates === 'function';
       return { ok, details: ok ? '' : 'checkForUpdates not exported as function' };
     }
@@ -24,7 +24,7 @@ const tests = [
   {
     name: 'checkForUpdates – returns object with "available" field',
     run: async () => {
-      const { checkForUpdates } = await import(join(ROOT, 'src/engine/updateService.js'));
+      const { checkForUpdates } = await safeImport('src/engine/updateService.js');
       const result = await checkForUpdates();
       const ok = result !== null && typeof result === 'object' && 'available' in result;
       return { ok, details: ok ? '' : `Bad shape: ${JSON.stringify(result)}` };
@@ -33,7 +33,7 @@ const tests = [
   {
     name: 'checkForUpdates – "available" is boolean',
     run: async () => {
-      const { checkForUpdates } = await import(join(ROOT, 'src/engine/updateService.js'));
+      const { checkForUpdates } = await safeImport('src/engine/updateService.js');
       const result = await checkForUpdates();
       const ok = typeof result.available === 'boolean';
       return { ok, details: ok ? '' : `available is ${typeof result.available}` };
@@ -42,7 +42,7 @@ const tests = [
   {
     name: 'checkForUpdates – stub returns available=false (no server in UAT)',
     run: async () => {
-      const { checkForUpdates } = await import(join(ROOT, 'src/engine/updateService.js'));
+      const { checkForUpdates } = await safeImport('src/engine/updateService.js');
       const result = await checkForUpdates();
       // Stub zawsze zwraca false – to jest oczekiwane dopóki API nie jest gotowe
       const ok = result.available === false;
@@ -52,7 +52,7 @@ const tests = [
   {
     name: 'checkForUpdates – does not throw',
     run: async () => {
-      const { checkForUpdates } = await import(join(ROOT, 'src/engine/updateService.js'));
+      const { checkForUpdates } = await safeImport('src/engine/updateService.js');
       let threw = false;
       try { await checkForUpdates(); } catch { threw = true; }
       return { ok: !threw, details: threw ? 'checkForUpdates threw unexpectedly' : '' };

@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { checkSourceExport, runTests, safeImport } from './testUtils.js';
 
 import { join } from 'path';
 import { existsSync, readFileSync } from 'fs';
@@ -16,6 +16,11 @@ import { existsSync, readFileSync } from 'fs';
 const ROOT = process.cwd();
 
 const tests = [
+  {
+    name: 'Profiles - src/ui/profiles/Profiles.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/profiles/Profiles.jsx', 'Profiles')
+  },
+
   // ── Struktura profilu ──────────────────────────────────────────────────────
   {
     name: 'Profile structure is valid',
@@ -64,7 +69,7 @@ const tests = [
     name: 'profilesStore – all CRUD functions exported',
     run: async () => {
       let mod;
-      try { mod = await import(join(ROOT, 'src/stores/profilesStore.js')); }
+      try { mod = await safeImport('src/stores/profilesStore.js'); }
       catch (e) { return { ok: false, details: `Import failed: ${e.message}` }; }
       const required = ['loadProfiles', 'saveProfiles', 'createProfile', 'updateProfile', 'deleteProfile'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');

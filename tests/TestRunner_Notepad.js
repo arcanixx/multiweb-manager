@@ -8,17 +8,42 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { checkSourceExport, runTests, safeImport } from './testUtils.js';
 import { join } from 'path';
 
 const ROOT = process.cwd();
 
 const tests = [
+  {
+    name: 'ClipboardHistoryModal - src/ui/notepad/ClipboardHistoryModal.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/notepad/ClipboardHistoryModal.jsx', 'ClipboardHistoryModal')
+  },
+  {
+    name: 'Notepad - src/ui/notepad/Notepad.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/notepad/Notepad.jsx', 'Notepad')
+  },
+  {
+    name: 'NotepadFindReplace - src/ui/notepad/NotepadFindReplace.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/notepad/NotepadFindReplace.jsx', 'NotepadFindReplace')
+  },
+  {
+    name: 'NotepadStatusBar - src/ui/notepad/NotepadStatusBar.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/notepad/NotepadStatusBar.jsx', 'NotepadStatusBar')
+  },
+  {
+    name: 'NotepadTabs - src/ui/notepad/NotepadTabs.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/notepad/NotepadTabs.jsx', 'NotepadTabs')
+  },
+  {
+    name: 'NotepadToolbar - src/ui/notepad/NotepadToolbar.jsx eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/notepad/NotepadToolbar.jsx', 'NotepadToolbar')
+  },
+
   // ── notepadStorage – createNewTab ──────────────────────────────────────────
   {
     name: 'createNewTab – returns valid tab structure',
     run: async () => {
-      const { createNewTab } = await import(join(ROOT, 'src/utils/notepadStorage.js'));
+      const { createNewTab } = await safeImport('src/utils/notepadStorage.js');
       const tab = createNewTab();
       const ok = tab.id && typeof tab.title === 'string' && typeof tab.content === 'string'
               && tab.createdAt && tab.updatedAt;
@@ -28,7 +53,7 @@ const tests = [
   {
     name: 'createNewTab – uses provided id when given',
     run: async () => {
-      const { createNewTab } = await import(join(ROOT, 'src/utils/notepadStorage.js'));
+      const { createNewTab } = await safeImport('src/utils/notepadStorage.js');
       const tab = createNewTab('my-custom-id');
       const ok = tab.id === 'my-custom-id';
       return { ok, details: ok ? '' : `Expected my-custom-id, got ${tab.id}` };
@@ -37,7 +62,7 @@ const tests = [
   {
     name: 'createNewTab – auto-generates id when not provided',
     run: async () => {
-      const { createNewTab } = await import(join(ROOT, 'src/utils/notepadStorage.js'));
+      const { createNewTab } = await safeImport('src/utils/notepadStorage.js');
       const tab = createNewTab();
       const ok = typeof tab.id === 'string' && tab.id.startsWith('tab-');
       return { ok, details: ok ? '' : `Bad auto-id: ${tab.id}` };
@@ -46,7 +71,7 @@ const tests = [
   {
     name: 'createNewTab – throws on non-string id',
     run: async () => {
-      const { createNewTab } = await import(join(ROOT, 'src/utils/notepadStorage.js'));
+      const { createNewTab } = await safeImport('src/utils/notepadStorage.js');
       let threw = false;
       try { createNewTab(123); } catch { threw = true; }
       return { ok: threw, details: threw ? '' : 'Should throw for numeric id' };
@@ -55,7 +80,7 @@ const tests = [
   {
     name: 'createNewTab – two calls produce different ids',
     run: async () => {
-      const { createNewTab } = await import(join(ROOT, 'src/utils/notepadStorage.js'));
+      const { createNewTab } = await safeImport('src/utils/notepadStorage.js');
       const a = createNewTab();
       await new Promise(r => setTimeout(r, 2)); // gwarantuje inny Date.now()
       const b = createNewTab();
@@ -66,7 +91,7 @@ const tests = [
   {
     name: 'notepadStorage – required functions exported',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/notepadStorage.js'));
+      const mod = await safeImport('src/utils/notepadStorage.js');
       const required = ['createNewTab', 'loadnotepadFromStorage', 'savenotepadToStorage'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');
       const ok = missing.length === 0;
@@ -79,7 +104,7 @@ const tests = [
     name: 'notepadStore – required CRUD functions exported',
     run: async () => {
       let mod;
-      try { mod = await import(join(ROOT, 'src/stores/notepadStore.js')); }
+      try { mod = await safeImport('src/stores/notepadStore.js'); }
       catch (e) { return { ok: false, details: `Import failed: ${e.message}` }; }
       const required = ['getAllnotepad', 'addNote', 'updateNote', 'deleteNote'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');

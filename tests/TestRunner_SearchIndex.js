@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { runTests, safeImport } from './testUtils.js';
 import {join} from 'path';
 const ROOT = process.cwd();
 
@@ -16,7 +16,7 @@ const tests = [
   {
     name: 'buildSearchIndex and searchAll exported as functions',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/searchIndex.js'));
+      const mod = await safeImport('src/utils/searchIndex.js');
       const ok = typeof mod.buildSearchIndex === 'function' && typeof mod.searchAll === 'function';
       return { ok, details: ok ? '' : 'Missing exports' };
     }
@@ -24,7 +24,7 @@ const tests = [
   {
     name: 'buildSearchIndex – returns all four groups',
     run: async () => {
-      const { buildSearchIndex } = await import(join(ROOT, 'src/utils/searchIndex.js'));
+      const { buildSearchIndex } = await safeImport('src/utils/searchIndex.js');
       const idx = buildSearchIndex({ profiles: [], projects: [], tasks: [], notepad: [] });
       const ok = 'profiles' in idx && 'projects' in idx && 'tasks' in idx && 'notepad' in idx;
       return { ok, details: ok ? '' : `Keys: ${Object.keys(idx).join(', ')}` };
@@ -33,7 +33,7 @@ const tests = [
   {
     name: 'buildSearchIndex – maps profile to correct shape',
     run: async () => {
-      const { buildSearchIndex } = await import(join(ROOT, 'src/utils/searchIndex.js'));
+      const { buildSearchIndex } = await safeImport('src/utils/searchIndex.js');
       const idx = buildSearchIndex({ profiles: [{ id: 'p1', name: 'Claude', url: 'https://claude.ai' }] });
       const item = idx.profiles[0];
       const ok = item.type === 'profile' && item.id === 'p1' && item.label === 'Claude' && item.sub === 'https://claude.ai';
@@ -43,7 +43,7 @@ const tests = [
   {
     name: 'buildSearchIndex – maps task to correct shape',
     run: async () => {
-      const { buildSearchIndex } = await import(join(ROOT, 'src/utils/searchIndex.js'));
+      const { buildSearchIndex } = await safeImport('src/utils/searchIndex.js');
       const idx = buildSearchIndex({ tasks: [{ id: 't1', title: 'Fix bug', description: 'urgent' }] });
       const item = idx.tasks[0];
       const ok = item.type === 'task' && item.label === 'Fix bug' && item.sub === 'urgent';
@@ -53,7 +53,7 @@ const tests = [
   {
     name: 'buildSearchIndex – notepad sub is truncated to 80 chars',
     run: async () => {
-      const { buildSearchIndex } = await import(join(ROOT, 'src/utils/searchIndex.js'));
+      const { buildSearchIndex } = await safeImport('src/utils/searchIndex.js');
       const longContent = 'x'.repeat(200);
       const idx = buildSearchIndex({ notepad: [{ id: 'n1', title: 'Note', content: longContent }] });
       const ok = idx.notepad[0].sub.length === 80;
@@ -63,7 +63,7 @@ const tests = [
   {
     name: 'searchAll – empty query returns empty results',
     run: async () => {
-      const { buildSearchIndex, searchAll } = await import(join(ROOT, 'src/utils/searchIndex.js'));
+      const { buildSearchIndex, searchAll } = await safeImport('src/utils/searchIndex.js');
       const idx = buildSearchIndex({ profiles: [{ id: 'p1', name: 'Claude', url: 'https://claude.ai' }] });
       const results = searchAll(idx, '');
       const allEmpty = Object.values(results).every(arr => arr.length === 0);
@@ -73,7 +73,7 @@ const tests = [
   {
     name: 'searchAll – finds match in label (case-insensitive)',
     run: async () => {
-      const { buildSearchIndex, searchAll } = await import(join(ROOT, 'src/utils/searchIndex.js'));
+      const { buildSearchIndex, searchAll } = await safeImport('src/utils/searchIndex.js');
       const idx = buildSearchIndex({
         profiles: [
           { id: 'p1', name: 'Claude AI', url: 'https://claude.ai' },
@@ -88,7 +88,7 @@ const tests = [
   {
     name: 'searchAll – finds match in sub field',
     run: async () => {
-      const { buildSearchIndex, searchAll } = await import(join(ROOT, 'src/utils/searchIndex.js'));
+      const { buildSearchIndex, searchAll } = await safeImport('src/utils/searchIndex.js');
       const idx = buildSearchIndex({
         projects: [
           { id: 'pr1', name: 'Alpha', description: 'main project backend' },
@@ -103,7 +103,7 @@ const tests = [
   {
     name: 'searchAll – no false positives across groups',
     run: async () => {
-      const { buildSearchIndex, searchAll } = await import(join(ROOT, 'src/utils/searchIndex.js'));
+      const { buildSearchIndex, searchAll } = await safeImport('src/utils/searchIndex.js');
       const idx = buildSearchIndex({
         profiles: [{ id: 'p1', name: 'Xyz', url: 'https://xyz.com' }],
         tasks: [{ id: 't1', title: 'Something else', description: '' }]
@@ -116,7 +116,7 @@ const tests = [
   {
     name: 'buildSearchIndex – handles missing optional fields gracefully',
     run: async () => {
-      const { buildSearchIndex } = await import(join(ROOT, 'src/utils/searchIndex.js'));
+      const { buildSearchIndex } = await safeImport('src/utils/searchIndex.js');
       let threw = false;
       try {
         buildSearchIndex({

@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { checkSourceExport, runTests } from './testUtils.js';
 
 
 // ─── Pomocnik: tymczasowy mock window.electronAPI
@@ -21,6 +21,19 @@ function mockElectronAPI(overrides = {}) {
 }
 
 const tests = [
+  {
+    name: 'useNotepadHandlers - src/hooks/notepad/useNotepadHandlers.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadHandlers.js', 'useNotepadHandlers')
+  },
+  {
+    name: 'useSidebarHandlers - src/hooks/sidebar/useSidebarHandlers.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/sidebar/useSidebarHandlers.js', 'useSidebarHandlers')
+  },
+  {
+    name: 'useTaskPanelHandlers - src/hooks/taskpanel/useTaskPanelHandlers.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/taskpanel/useTaskPanelHandlers.js', 'useTaskPanelHandlers')
+  },
+
   // ─── useProfiles
   {
     name: 'useProfiles – zwraca wymagane pola',

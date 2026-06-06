@@ -9,7 +9,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { runTests, safeImport } from './testUtils.js';
 import { join } from 'path'; 
 const ROOT = process.cwd();
 
@@ -20,7 +20,7 @@ const tests = [
   {
     name: 'logger – all core functions exported',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/logger.js'));
+      const mod = await safeImport('src/utils/logger.js');
       const required = ['initLogger', 'setDebugModule', 'isDebugMode', 'logDebug',
         'logInfo', 'logWarn', 'logError'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');
@@ -30,7 +30,7 @@ const tests = [
   {
     name: 'logger – module-specific aliases exported (logUI, logStore, logIPC…)',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/logger.js'));
+      const mod = await safeImport('src/utils/logger.js');
       const aliases = ['logUI', 'logWebview', 'logTerminal', 'logTasks',
         'logTools', 'logSettings', 'logEngine', 'logStore', 'logIPC'];
       const missing = aliases.filter(fn => typeof mod[fn] !== 'function');
@@ -40,7 +40,7 @@ const tests = [
   {
     name: 'logger – setDebugModule toggles without throwing',
     run: async () => {
-      const { setDebugModule } = await import(join(ROOT, 'src/utils/logger.js'));
+      const { setDebugModule } = await safeImport('src/utils/logger.js');
       let threw = false;
       try { setDebugModule('ui', true); setDebugModule('ui', false); } catch { threw = true; }
       return { ok: !threw, details: threw ? 'setDebugModule threw' : '' };
@@ -49,7 +49,7 @@ const tests = [
   {
     name: 'logger – getLogFilePath exported as function',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/logger.js'));
+      const mod = await safeImport('src/utils/logger.js');
       const ok = typeof mod.getLogFilePath === 'function';
       return { ok, details: ok ? '' : 'getLogFilePath not exported' };
     }
@@ -59,7 +59,7 @@ const tests = [
   {
     name: 'testrunner – all functions exported',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/testrunner.js'));
+      const mod = await safeImport('src/utils/testrunner.js');
       const required = ['initTestResults', 'assert', 'assertThrows', 'getTestResults', 'logTestSummary'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');
       return { ok: missing.length === 0, details: missing.length ? `Missing: ${missing.join(', ')}` : '' };
@@ -68,7 +68,7 @@ const tests = [
   {
     name: 'testrunner – initTestResults resets counters',
     run: async () => {
-      const { initTestResults, assert, getTestResults } = await import(join(ROOT, 'src/utils/testrunner.js'));
+      const { initTestResults, assert, getTestResults } = await safeImport('src/utils/testrunner.js');
       initTestResults();
       assert('dummy', true);
       initTestResults();
@@ -80,7 +80,7 @@ const tests = [
   {
     name: 'testrunner – assert PASS increments passCount',
     run: async () => {
-      const { initTestResults, assert, getTestResults } = await import(join(ROOT, 'src/utils/testrunner.js'));
+      const { initTestResults, assert, getTestResults } = await safeImport('src/utils/testrunner.js');
       initTestResults();
       assert('test pass', true);
       const { passCount } = getTestResults();
@@ -90,7 +90,7 @@ const tests = [
   {
     name: 'testrunner – assert FAIL increments failCount (nie rzuca wyjątku)',
     run: async () => {
-      const { initTestResults, assert, getTestResults } = await import(join(ROOT, 'src/utils/testrunner.js'));
+      const { initTestResults, assert, getTestResults } = await safeImport('src/utils/testrunner.js');
       initTestResults();
       assert('test fail', false);
       const { failCount } = getTestResults();
@@ -100,7 +100,7 @@ const tests = [
   {
     name: 'testrunner – assertThrows PASS gdy funkcja rzuca',
     run: async () => {
-      const { initTestResults, assertThrows, getTestResults } = await import(join(ROOT, 'src/utils/testrunner.js'));
+      const { initTestResults, assertThrows, getTestResults } = await safeImport('src/utils/testrunner.js');
       initTestResults();
       assertThrows('should throw', () => { throw new Error('expected'); });
       const { passCount } = getTestResults();
@@ -110,7 +110,7 @@ const tests = [
   {
     name: 'testrunner – assertThrows FAIL gdy funkcja nie rzuca',
     run: async () => {
-      const { initTestResults, assertThrows, getTestResults } = await import(join(ROOT, 'src/utils/testrunner.js'));
+      const { initTestResults, assertThrows, getTestResults } = await safeImport('src/utils/testrunner.js');
       initTestResults();
       assertThrows('should not throw', () => {});
       const { failCount } = getTestResults();
@@ -120,7 +120,7 @@ const tests = [
   {
     name: 'testrunner – getTestResults zwraca { passCount, failCount, total, results }',
     run: async () => {
-      const { initTestResults, assert, getTestResults } = await import(join(ROOT, 'src/utils/testrunner.js'));
+      const { initTestResults, assert, getTestResults } = await safeImport('src/utils/testrunner.js');
       initTestResults();
       const r = getTestResults();
       const ok = 'passCount' in r && 'failCount' in r && 'total' in r && Array.isArray(r.results);
@@ -132,7 +132,7 @@ const tests = [
   {
     name: 'fileUtils – all functions exported',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/fileUtils.js'));
+      const mod = await safeImport('src/utils/fileUtils.js');
       const required = ['readJsonSafe', 'writeJsonSafe', 'writeJsonStreaming', 'readJsonStreaming'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');
       return { ok: missing.length === 0, details: missing.length ? `Missing: ${missing.join(', ')}` : '' };
@@ -141,7 +141,7 @@ const tests = [
   {
     name: 'fileUtils – readJsonSafe zwraca fallback dla nieistniejącego pliku',
     run: async () => {
-      const { readJsonSafe } = await import(join(ROOT, 'src/utils/fileUtils.js'));
+      const { readJsonSafe } = await safeImport('src/utils/fileUtils.js');
       const fallback = { default: true };
       const result = readJsonSafe('/nonexistent/path/file.json', fallback);
       const ok = result === fallback;
@@ -151,7 +151,7 @@ const tests = [
   {
     name: 'fileUtils – writeJsonStreaming i readJsonStreaming są funkcjami async',
     run: async () => {
-      const { writeJsonStreaming, readJsonStreaming } = await import(join(ROOT, 'src/utils/fileUtils.js'));
+      const { writeJsonStreaming, readJsonStreaming } = await safeImport('src/utils/fileUtils.js');
       const ok = typeof writeJsonStreaming === 'function' && typeof readJsonStreaming === 'function';
       return { ok, details: ok ? '' : 'Not functions' };
     }
@@ -161,7 +161,7 @@ const tests = [
   {
     name: 'persistence – getUserDataPath, readJsonFile, writeJsonFile exported',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/persistence.js'));
+      const mod = await safeImport('src/utils/persistence.js');
       const required = ['getUserDataPath', 'readJsonFile', 'writeJsonFile'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');
       return { ok: missing.length === 0, details: missing.length ? `Missing: ${missing.join(', ')}` : '' };
@@ -172,7 +172,7 @@ const tests = [
   {
     name: 'sharpLoader – loadSharp exported as function',
     run: async () => {
-      const { loadSharp } = await import(join(ROOT, 'src/utils/sharpLoader.js'));
+      const { loadSharp } = await safeImport('src/utils/sharpLoader.js');
       const ok = typeof loadSharp === 'function';
       return { ok, details: ok ? '' : 'loadSharp not exported' };
     }
@@ -180,7 +180,7 @@ const tests = [
   {
     name: 'sharpLoader – loadSharp zwraca Promise',
     run: async () => {
-      const { loadSharp } = await import(join(ROOT, 'src/utils/sharpLoader.js'));
+      const { loadSharp } = await safeImport('src/utils/sharpLoader.js');
       const result = loadSharp();
       const ok = result instanceof Promise;
       return { ok, details: ok ? '' : 'loadSharp should return Promise' };
@@ -191,7 +191,7 @@ const tests = [
   {
     name: 'yamlLoader – loadYaml exported as function',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/yamlLoader.js'));
+      const mod = await safeImport('src/utils/yamlLoader.js');
       const ok = typeof mod.loadYaml === 'function';
       return { ok, details: ok ? '' : 'loadYaml not exported' };
     }
@@ -201,7 +201,7 @@ const tests = [
   {
     name: 'translations – TranslationProvider exported as function',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/translations.js'));
+      const mod = await safeImport('src/utils/translations.js');
       const ok = typeof mod.TranslationProvider === 'function';
       return { ok, details: ok ? '' : 'TranslationProvider not exported' };
     }
@@ -209,7 +209,7 @@ const tests = [
   {
     name: 'translations – TranslationContext exported',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/translations.js'));
+      const mod = await safeImport('src/utils/translations.js');
       const ok = mod.TranslationContext !== undefined;
       return { ok, details: ok ? '' : 'TranslationContext not exported' };
     }
@@ -219,7 +219,7 @@ const tests = [
   {
     name: 'networkUtils – pingUrl exported as function',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/networkUtils.js'));
+      const mod = await safeImport('src/utils/networkUtils.js');
       const ok = typeof mod.pingUrl === 'function';
       return { ok, details: ok ? '' : 'pingUrl not exported' };
     }
@@ -229,7 +229,7 @@ const tests = [
   {
     name: 'imageUtils – all functions exported (resizeImage, convertImage, compressJpeg)',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/imageUtils.js'));
+      const mod = await safeImport('src/utils/imageUtils.js');
       const required = ['resizeImage', 'convertImage', 'compressJpeg'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');
       return { ok: missing.length === 0, details: missing.length ? `Missing: ${missing.join(', ')}` : '' };
@@ -238,7 +238,7 @@ const tests = [
   {
     name: 'imageUtils – resizeImage zwraca Promise (jest async)',
     run: async () => {
-      const { resizeImage } = await import(join(ROOT, 'src/utils/imageUtils.js'));
+      const { resizeImage } = await safeImport('src/utils/imageUtils.js');
       // Wywołanie z błędnymi ścieżkami – sprawdzamy że zwraca Promise (nie rzuca synchronicznie)
       let result;
       try { result = resizeImage('/nonexistent.jpg', 100, 100, '/out.jpg'); } catch { result = null; }
@@ -251,7 +251,7 @@ const tests = [
   {
     name: 'notepadStorage – createNewTab, loadnotepadFromStorage, savenotepadToStorage exported',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/utils/notepadStorage.js'));
+      const mod = await safeImport('src/utils/notepadStorage.js');
       const required = ['createNewTab', 'loadnotepadFromStorage', 'savenotepadToStorage'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');
       return { ok: missing.length === 0, details: missing.length ? `Missing: ${missing.join(', ')}` : '' };
@@ -260,7 +260,7 @@ const tests = [
   {
     name: 'notepadStorage – createNewTab zwraca obiekt z id i content',
     run: async () => {
-      const { createNewTab } = await import(join(ROOT, 'src/utils/notepadStorage.js'));
+      const { createNewTab } = await safeImport('src/utils/notepadStorage.js');
       const tab = createNewTab();
       const ok = tab && typeof tab.id === 'string' && 'content' in tab;
       return { ok, details: ok ? '' : `Niepoprawna struktura zakładki: ${JSON.stringify(tab)}` };
@@ -269,7 +269,7 @@ const tests = [
   {
     name: 'notepadStorage – createNewTab z podanym id zachowuje id',
     run: async () => {
-      const { createNewTab } = await import(join(ROOT, 'src/utils/notepadStorage.js'));
+      const { createNewTab } = await safeImport('src/utils/notepadStorage.js');
       const tab = createNewTab('my-id');
       const ok = tab && tab.id === 'my-id';
       return { ok, details: ok ? '' : `Expected id 'my-id', got ${tab?.id}` };

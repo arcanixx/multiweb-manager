@@ -8,10 +8,10 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { runTests, safeImport } from './testUtils.js';
 
 async function imp(relPath) {
-  try { return { ok: true, mod: await import(join(ROOT, relPath)) }; }
+  try { return { ok: true, mod: await safeImport(relPath) }; }
   catch (e) { return { ok: false, error: e.message }; }
 }
 

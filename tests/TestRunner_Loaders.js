@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { runTests, safeImport } from './testUtils.js';
 
 import { join } from 'path';
 import { readdirSync } from 'fs';
@@ -20,7 +20,7 @@ const tests = [
   {
     name: 'ipcLoader – loadAllIpcHandlers exported as function',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/loaders/ipcLoader.js'));
+      const mod = await safeImport('src/loaders/ipcLoader.js');
       const ok = typeof mod.loadAllIpcHandlers === 'function';
       return { ok, details: ok ? '' : 'loadAllIpcHandlers not exported' };
     }
@@ -54,7 +54,7 @@ const tests = [
   {
     name: 'testsLoader – loadAndRunAllTests exported as function',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/loaders/testsLoader.js'));
+      const mod = await safeImport('src/loaders/testsLoader.js');
       const ok = typeof mod.loadAndRunAllTests === 'function';
       return { ok, details: ok ? '' : 'loadAndRunAllTests not exported' };
     }

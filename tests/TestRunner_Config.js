@@ -9,13 +9,13 @@
 // =============================================================================
 
 import { existsSync, readFileSync } from 'fs';
-import { runTests } from './testUtils.js';
+import { runTests, safeImport } from './testUtils.js';
 
 import { join } from 'path';
 const ROOT = process.cwd();
 async function importModule(relPath) {
   try {
-    const mod = await import(join(ROOT, relPath));
+    const mod = await safeImport(relPath);
     return { ok: true, data: mod };
   } catch (err) {
     return { ok: false, error: err.message };

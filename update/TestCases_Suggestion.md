@@ -28,6 +28,241 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
     }
   },
 ```
+### src/hooks/notepad/useNotepadHandlers.js
+
+```js
+  {
+    name: 'useNotepadHandlers – eksportowane funkcje',
+    run: async () => {
+      const results = [];
+      try {
+        const module = await import('../../../src/hooks/notepad/useNotepadHandlers.js');
+        const functions = ['useNotepadHandlers'];
+        for (const fn of functions) {
+          const ok = typeof module[fn] === 'function';
+          results.push({ fn, ok, details: ok ? '' : `${fn} nie jest eksportowane` });
+        }
+        const allOk = results.every(r => r.ok);
+        return { 
+          ok: allOk, 
+          details: allOk ? '' : results.filter(r => !r.ok).map(r => r.fn).join(', ')
+        };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/hooks/sidebar/useSidebarHandlers.js
+
+```js
+  {
+    name: 'useSidebarHandlers – eksportowane funkcje',
+    run: async () => {
+      const results = [];
+      try {
+        const module = await import('../../../src/hooks/sidebar/useSidebarHandlers.js');
+        const functions = ['useSidebarHandlers'];
+        for (const fn of functions) {
+          const ok = typeof module[fn] === 'function';
+          results.push({ fn, ok, details: ok ? '' : `${fn} nie jest eksportowane` });
+        }
+        const allOk = results.every(r => r.ok);
+        return { 
+          ok: allOk, 
+          details: allOk ? '' : results.filter(r => !r.ok).map(r => r.fn).join(', ')
+        };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/hooks/taskpanel/useTaskPanelHandlers.js
+
+```js
+  {
+    name: 'useTaskPanelHandlers – eksportowane funkcje',
+    run: async () => {
+      const results = [];
+      try {
+        const module = await import('../../../src/hooks/taskpanel/useTaskPanelHandlers.js');
+        const functions = ['useTaskPanelHandlers'];
+        for (const fn of functions) {
+          const ok = typeof module[fn] === 'function';
+          results.push({ fn, ok, details: ok ? '' : `${fn} nie jest eksportowane` });
+        }
+        const allOk = results.every(r => r.ok);
+        return { 
+          ok: allOk, 
+          details: allOk ? '' : results.filter(r => !r.ok).map(r => r.fn).join(', ')
+        };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/appLibrary/AppLibraryBrowser.jsx
+
+```js
+  {
+    name: 'AppLibraryBrowser – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/appLibrary/AppLibraryBrowser.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'AppLibraryBrowser nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/common/ContextMenu.jsx
+
+```js
+  {
+    name: 'ContextMenu – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/common/ContextMenu.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'ContextMenu nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/help/HelpSection.jsx
+
+```js
+  {
+    name: 'HelpSection – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/help/HelpSection.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'HelpSection nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/help/Shortcut.jsx
+
+```js
+  {
+    name: 'Shortcut – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/help/Shortcut.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'Shortcut nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/help/ToolCard.jsx
+
+```js
+  {
+    name: 'ToolCard – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/help/ToolCard.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'ToolCard nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/history/HistoryExport.jsx
+
+```js
+  {
+    name: 'HistoryExport – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/history/HistoryExport.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'HistoryExport nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/history/HistoryFilters.jsx
+
+```js
+  {
+    name: 'HistoryFilters – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/history/HistoryFilters.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'HistoryFilters nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/history/HistoryList.jsx
+
+```js
+  {
+    name: 'HistoryList – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/history/HistoryList.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'HistoryList nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/history/HistoryLog.jsx
+
+```js
+  {
+    name: 'HistoryLog – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/history/HistoryLog.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'HistoryLog nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/layout/MainLayout.jsx
+
+```js
+  {
+    name: 'MainLayout – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/layout/MainLayout.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'MainLayout nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
 ### src/ui/modals/CategoryModal.jsx
 
 ```js
@@ -38,6 +273,22 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
         const module = await import('../../../src/ui/modals/CategoryModal.jsx');
         const ok = typeof module.default === 'function';
         return { ok, details: ok ? '' : 'CategoryModal nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/modals/ConfirmModal.jsx
+
+```js
+  {
+    name: 'ConfirmModal – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/modals/ConfirmModal.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'ConfirmModal nie jest eksportowany jako default' };
       } catch (e) {
         return { ok: false, details: `Import failed: ${e.message}` };
       }
@@ -60,6 +311,22 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
     }
   },
 ```
+### src/ui/modals/ProfileModal.jsx
+
+```js
+  {
+    name: 'ProfileModal – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/modals/ProfileModal.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'ProfileModal nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
 ### src/ui/modals/PromptModal.jsx
 
 ```js
@@ -70,6 +337,102 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
         const module = await import('../../../src/ui/modals/PromptModal.jsx');
         const ok = typeof module.default === 'function';
         return { ok, details: ok ? '' : 'PromptModal nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/notepad/ClipboardHistoryModal.jsx
+
+```js
+  {
+    name: 'ClipboardHistoryModal – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/notepad/ClipboardHistoryModal.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'ClipboardHistoryModal nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/notepad/Notepad.jsx
+
+```js
+  {
+    name: 'Notepad – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/notepad/Notepad.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'Notepad nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/notepad/NotepadFindReplace.jsx
+
+```js
+  {
+    name: 'NotepadFindReplace – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/notepad/NotepadFindReplace.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'NotepadFindReplace nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/notepad/NotepadStatusBar.jsx
+
+```js
+  {
+    name: 'NotepadStatusBar – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/notepad/NotepadStatusBar.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'NotepadStatusBar nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/notepad/NotepadTabs.jsx
+
+```js
+  {
+    name: 'NotepadTabs – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/notepad/NotepadTabs.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'NotepadTabs nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/notepad/NotepadToolbar.jsx
+
+```js
+  {
+    name: 'NotepadToolbar – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/notepad/NotepadToolbar.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'NotepadToolbar nie jest eksportowany jako default' };
       } catch (e) {
         return { ok: false, details: `Import failed: ${e.message}` };
       }
@@ -166,6 +529,70 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
         const module = await import('../../../src/ui/onboarding/StepTheme.jsx');
         const ok = typeof module.default === 'function';
         return { ok, details: ok ? '' : 'StepTheme nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/profiles/Profiles.jsx
+
+```js
+  {
+    name: 'Profiles – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/profiles/Profiles.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'Profiles nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/projects/ProjectList.jsx
+
+```js
+  {
+    name: 'ProjectList – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/projects/ProjectList.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'ProjectList nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/projects/ProjectManager.jsx
+
+```js
+  {
+    name: 'ProjectManager – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/projects/ProjectManager.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'ProjectManager nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/projects/ProjectModal.jsx
+
+```js
+  {
+    name: 'ProjectModal – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/projects/ProjectModal.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'ProjectModal nie jest eksportowany jako default' };
       } catch (e) {
         return { ok: false, details: `Import failed: ${e.message}` };
       }
@@ -348,6 +775,22 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
     }
   },
 ```
+### src/ui/sidebar/Sidebar.jsx
+
+```js
+  {
+    name: 'Sidebar – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/sidebar/Sidebar.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'Sidebar nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
 ### src/ui/sidebar/SidebarCategory.jsx
 
 ```js
@@ -396,6 +839,22 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
     }
   },
 ```
+### src/ui/sidebar/SidebarProfileList.jsx
+
+```js
+  {
+    name: 'SidebarProfileList – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/sidebar/SidebarProfileList.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'SidebarProfileList nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
 ### src/ui/sidebar/SidebarSearch.jsx
 
 ```js
@@ -438,6 +897,54 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
         const module = await import('../../../src/ui/sidebar/SidebarWorkspaces.jsx');
         const ok = typeof module.default === 'function';
         return { ok, details: ok ? '' : 'SidebarWorkspaces nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/system/ModalPortal.jsx
+
+```js
+  {
+    name: 'ModalPortal – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/system/ModalPortal.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'ModalPortal nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/system/ToastContainer.jsx
+
+```js
+  {
+    name: 'ToastContainer – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/system/ToastContainer.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'ToastContainer nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/system/UpdateChecker.jsx
+
+```js
+  {
+    name: 'UpdateChecker – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/system/UpdateChecker.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'UpdateChecker nie jest eksportowany jako default' };
       } catch (e) {
         return { ok: false, details: `Import failed: ${e.message}` };
       }
@@ -806,6 +1313,54 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
         const module = await import('../../../src/ui/views/ToolsContainer.jsx');
         const ok = typeof module.default === 'function';
         return { ok, details: ok ? '' : 'ToolsContainer nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/views/WebViewContainer.jsx
+
+```js
+  {
+    name: 'WebViewContainer – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/views/WebViewContainer.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'WebViewContainer nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/webview/WebViewTab.jsx
+
+```js
+  {
+    name: 'WebViewTab – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/webview/WebViewTab.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'WebViewTab nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/webview/WebViewToolbar.jsx
+
+```js
+  {
+    name: 'WebViewToolbar – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/webview/WebViewToolbar.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'WebViewToolbar nie jest eksportowany jako default' };
       } catch (e) {
         return { ok: false, details: `Import failed: ${e.message}` };
       }

@@ -8,24 +8,42 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { checkSourceExport, runTests, safeImport } from './testUtils.js';
 import { join } from 'path';
 const ROOT = process.cwd();
 
 
 const tests = [
+  ...[
+    ['ClipboardHistory', 'src/ui/tools/ClipboardHistory.jsx'],
+    ['CookieGrabber', 'src/ui/tools/CookieGrabber.jsx'],
+    ['FilePreviewer', 'src/ui/tools/FilePreviewer.jsx'],
+    ['ImageTools', 'src/ui/tools/ImageTools.jsx'],
+    ['JsonFormatter', 'src/ui/tools/JsonFormatter.jsx'],
+    ['MarkdownPreviewer', 'src/ui/tools/MarkdownPreviewer.jsx'],
+    ['MiniPostman', 'src/ui/tools/MiniPostman.jsx'],
+    ['RegexTester', 'src/ui/tools/RegexTester.jsx'],
+    ['RemoveBgTool', 'src/ui/tools/RemoveBgTool.jsx'],
+    ['StringCombiner', 'src/ui/tools/StringCombiner.jsx'],
+    ['SvgToPngConverter', 'src/ui/tools/SvgToPngConverter.jsx'],
+    ['ToolsPanel', 'src/ui/tools/ToolsPanel.jsx']
+  ].map(([name, path]) => ({
+    name: `${name} - ${path} eksportuje komponent`,
+    run: async () => checkSourceExport(path, name)
+  })),
+
   // ── regexEngine.testRegex ─────────────────────────────────────────────────
   {
     name: 'regexEngine – testRegex exported as function',
     run: async () => {
-      const { testRegex } = await import(join(ROOT, 'src/tools/regexEngine.js'));
+      const { testRegex } = await safeImport('src/tools/regexEngine.js');
       return { ok: typeof testRegex === 'function', details: 'testRegex not exported' };
     }
   },
   {
     name: 'regexEngine – testRegex finds match',
     run: async () => {
-      const { testRegex } = await import(join(ROOT, 'src/tools/regexEngine.js'));
+      const { testRegex } = await safeImport('src/tools/regexEngine.js');
       const matches = testRegex('test', 'g', 'this is a test string');
       const ok = matches.length === 1;
       return { ok, details: ok ? '' : `Expected 1, got ${matches.length}` };
@@ -34,7 +52,7 @@ const tests = [
   {
     name: 'regexEngine – testRegex returns all matches with global flag',
     run: async () => {
-      const { testRegex } = await import(join(ROOT, 'src/tools/regexEngine.js'));
+      const { testRegex } = await safeImport('src/tools/regexEngine.js');
       const matches = testRegex('\\d+', 'g', 'abc 123 def 456');
       const ok = matches.length === 2;
       return { ok, details: ok ? '' : `Expected 2, got ${matches.length}` };
@@ -43,7 +61,7 @@ const tests = [
   {
     name: 'regexEngine – testRegex extracts capture groups',
     run: async () => {
-      const { testRegex } = await import(join(ROOT, 'src/tools/regexEngine.js'));
+      const { testRegex } = await safeImport('src/tools/regexEngine.js');
       const matches = testRegex('(\\d+)-(\\d+)', 'g', 'code: 123-456');
       const ok = matches.length === 1 && matches[0][1] === '123' && matches[0][2] === '456';
       return { ok, details: ok ? '' : 'Group extraction failed' };
@@ -52,7 +70,7 @@ const tests = [
   {
     name: 'regexEngine – testRegex throws on invalid pattern',
     run: async () => {
-      const { testRegex } = await import(join(ROOT, 'src/tools/regexEngine.js'));
+      const { testRegex } = await safeImport('src/tools/regexEngine.js');
       let threw = false;
       try { testRegex('[invalid', 'g', 'text'); } catch { threw = true; }
       return { ok: threw, details: threw ? '' : 'Should throw for invalid regex' };
@@ -61,7 +79,7 @@ const tests = [
   {
     name: 'regexEngine – testRegex case-insensitive flag works',
     run: async () => {
-      const { testRegex } = await import(join(ROOT, 'src/tools/regexEngine.js'));
+      const { testRegex } = await safeImport('src/tools/regexEngine.js');
       const matches = testRegex('hello', 'gi', 'Hello HELLO hello');
       const ok = matches.length === 3;
       return { ok, details: ok ? '' : `Expected 3, got ${matches.length}` };
@@ -72,14 +90,14 @@ const tests = [
   {
     name: 'markdownRenderer – renderMarkdown exported as function',
     run: async () => {
-      const { renderMarkdown } = await import(join(ROOT, 'src/tools/markdownRenderer.js'));
+      const { renderMarkdown } = await safeImport('src/tools/markdownRenderer.js');
       return { ok: typeof renderMarkdown === 'function', details: 'renderMarkdown not exported' };
     }
   },
   {
     name: 'markdownRenderer – h1 heading converts to <h1>',
     run: async () => {
-      const { renderMarkdown } = await import(join(ROOT, 'src/tools/markdownRenderer.js'));
+      const { renderMarkdown } = await safeImport('src/tools/markdownRenderer.js');
       const html = renderMarkdown('# Heading 1');
       const ok = html.includes('<h1') && html.includes('Heading 1');
       return { ok, details: ok ? '' : `Got: ${html}` };
@@ -88,7 +106,7 @@ const tests = [
   {
     name: 'markdownRenderer – bold converts to <strong>',
     run: async () => {
-      const { renderMarkdown } = await import(join(ROOT, 'src/tools/markdownRenderer.js'));
+      const { renderMarkdown } = await safeImport('src/tools/markdownRenderer.js');
       const html = renderMarkdown('**bold text**');
       const ok = html.includes('<strong>bold text</strong>');
       return { ok, details: ok ? '' : `Got: ${html}` };
@@ -97,7 +115,7 @@ const tests = [
   {
     name: 'markdownRenderer – link converts to <a>',
     run: async () => {
-      const { renderMarkdown } = await import(join(ROOT, 'src/tools/markdownRenderer.js'));
+      const { renderMarkdown } = await safeImport('src/tools/markdownRenderer.js');
       const html = renderMarkdown('[DeepSeek](https://deepseek.com)');
       const ok = html.includes('href="https://deepseek.com"') && html.includes('DeepSeek');
       return { ok, details: ok ? '' : `Got: ${html}` };
@@ -106,7 +124,7 @@ const tests = [
   {
     name: 'markdownRenderer – returns string',
     run: async () => {
-      const { renderMarkdown } = await import(join(ROOT, 'src/tools/markdownRenderer.js'));
+      const { renderMarkdown } = await safeImport('src/tools/markdownRenderer.js');
       const result = renderMarkdown('hello');
       return { ok: typeof result === 'string' && result.length > 0, details: `Got: ${typeof result}` };
     }
@@ -114,7 +132,7 @@ const tests = [
   {
     name: 'markdownRenderer – throws on non-string input',
     run: async () => {
-      const { renderMarkdown } = await import(join(ROOT, 'src/tools/markdownRenderer.js'));
+      const { renderMarkdown } = await safeImport('src/tools/markdownRenderer.js');
       let threw = false;
       try { renderMarkdown(null); } catch { threw = true; }
       return { ok: threw, details: threw ? '' : 'Should throw for null input' };
@@ -125,7 +143,7 @@ const tests = [
   {
     name: 'apiClient – all functions exported',
     run: async () => {
-      const mod = await import(join(ROOT, 'src/tools/apiClient.js'));
+      const mod = await safeImport('src/tools/apiClient.js');
       const required = ['apiFetch', 'apiGet', 'apiPost', 'apiRequest'];
       const missing = required.filter(fn => typeof mod[fn] !== 'function');
       return { ok: missing.length === 0, details: missing.length ? `Missing: ${missing.join(', ')}` : '' };
@@ -134,7 +152,7 @@ const tests = [
   {
     name: 'apiClient – apiFetch is async function',
     run: async () => {
-      const { apiFetch } = await import(join(ROOT, 'src/tools/apiClient.js'));
+      const { apiFetch } = await safeImport('src/tools/apiClient.js');
       const result = apiFetch('https://example.com', {}, {});
       const ok = result instanceof Promise;
       return { ok, details: ok ? '' : 'apiFetch should return Promise' };
@@ -143,7 +161,7 @@ const tests = [
   {
     name: 'apiClient – apiGet wraps apiFetch (same signature)',
     run: async () => {
-      const { apiGet } = await import(join(ROOT, 'src/tools/apiClient.js'));
+      const { apiGet } = await safeImport('src/tools/apiClient.js');
       const result = apiGet('https://example.com');
       const ok = result instanceof Promise;
       return { ok, details: ok ? '' : 'apiGet should return Promise' };
@@ -152,7 +170,7 @@ const tests = [
   {
     name: 'apiClient – apiPost wraps apiFetch (same signature)',
     run: async () => {
-      const { apiPost } = await import(join(ROOT, 'src/tools/apiClient.js'));
+      const { apiPost } = await safeImport('src/tools/apiClient.js');
       const result = apiPost('https://example.com', { data: 1 });
       const ok = result instanceof Promise;
       return { ok, details: ok ? '' : 'apiPost should return Promise' };

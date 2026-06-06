@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { checkSourceExport, runTests } from './testUtils.js';
 
 import {
   normalizeTask,
@@ -33,6 +33,18 @@ const makeTask = (overrides = {}) => ({
 });
 
 const tests = [
+  ...[
+    ['CommentModal', 'src/ui/taskpanel/CommentModal.jsx'],
+    ['TaskDetails', 'src/ui/taskpanel/TaskDetails.jsx'],
+    ['TaskEditor', 'src/ui/taskpanel/TaskEditor.jsx'],
+    ['TaskEmptyState', 'src/ui/taskpanel/TaskEmptyState.jsx'],
+    ['TaskList', 'src/ui/taskpanel/TaskList.jsx'],
+    ['AggregatedProjectSection', 'src/ui/tasks/AggregatedProjectSection.jsx'],
+    ['AggregatedTaskItem', 'src/ui/tasks/AggregatedTaskItem.jsx']
+  ].map(([name, path]) => ({
+    name: `${name} - ${path} eksportuje komponent`,
+    run: async () => checkSourceExport(path, name)
+  })),
 
   // ─── Model danych ──────────────────────────────────────────────
   {
