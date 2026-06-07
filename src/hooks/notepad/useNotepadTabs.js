@@ -9,8 +9,8 @@
 // =============================================================================
 
 import { useState, useCallback, useRef } from 'react';
-import { createNewTab, loadnotepadFromStorage, savenotepadToStorage } from '../utils/notepadStorage.js';
-import { logInfo, logError } from "../utils/loggerRenderer.js";
+import { createNewTab, loadnotepadFromStorage, savenotepadToStorage } from '../../utils/notepadStorage.js';
+import { logInfo, logError } from "../../utils/loggerRenderer.js";
 
 // ─── useNotepadTabs() – hook do zarządzania zakładkami notatnika
 // @returns {Object} – stan zakładek i funkcje operacji na nich
