@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { getUserDataPath, readJsonFile, writeJsonFile } from './persistence.js';
+import { getUserDataPath, readJsonFile, writeJsonFile } from '../utils/persistence.js';
 import { logInfo, logError, logWarn } from '../utils/logger.js';
 
 // ─── GROUPS_FILE() – ścieżka do pliku task_groups.json w userData
