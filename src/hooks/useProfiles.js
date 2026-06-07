@@ -15,6 +15,20 @@ import { useAsyncMutation } from './useAsync.js';
 
 // ─── useProfiles() – hook do zarządzania profilami z cache (StorageService) i optimistic updates
 //   @returns {Object} – profiles, loading, error, reloadProfiles, addProfile, updateProfile, deleteProfile, toggleFavorite
+//
+//   ARCHITEKTURA MUTACJI PROFILI — routing IPC przez osobne kanały:
+//   ┌─────────────────┬──────────────────────┬────────────────────────────┐
+//   │ Operacja        │ Kanał IPC            │ Payload                    │
+//   ├─────────────────┼──────────────────────┼────────────────────────────┤
+//   │ Odczyt (cache)  │ profiles:getAll      │ (brak) — przez StorageService│
+//   │ Tworzenie       │ profiles:create      │ profileData (cały obiekt)  │
+//   │ Aktualizacja    │ profiles:update      │ { id, patch }              │
+//   │ Usuwanie        │ profiles:delete      │ id (string)                │
+//   │ Touch (lastUsed)│ profiles:touch       │ id (string)                │
+//   └─────────────────┴──────────────────────┴────────────────────────────┘
+//   UWAGA: StorageService.set('profiles', ...) zawsze trafia do profiles:update —
+//          create i delete muszą używać bezpośredniego invoke() z właściwym kanałem.
+//          Po mutacji invalidujemy cache StorageService przez storageService.invalidate().
 export function useProfiles() {
   const [profiles, setProfiles] = useState([]);
   const [loading,  setLoading]  = useState(true);
@@ -50,8 +64,15 @@ export function useProfiles() {
   }, [loadFromService]);
 
   // ─── addProfile – dodaje nowy profil z optimistic update
+  //   Używa profiles:create (nie profiles:update) przez bezpośrednie invoke()
   const { execute: addProfile, loading: adding } = useAsyncMutation(
-    (profileData) => storageService.set('profiles', { action: 'create', profile: profileData }),
+    async (profileData) => {
+      const res = await window.electronAPI.invoke('profiles:create', profileData);
+      if (!res?.ok) throw new Error(res?.error ?? 'CREATE_FAILED');
+      // Invaliduj cache — następny get() pobierze świeże dane z IPC
+      storageService.invalidate('profiles');
+      return res.data;
+    },
     {
       key: 'useProfiles.add',
       onMutate: (profileData) => {
@@ -65,10 +86,11 @@ export function useProfiles() {
   );
 
   // ─── updateProfile – aktualizuje profil z optimistic update
+  //   Używa profiles:update przez StorageService (payload: { id, patch })
   //   @param {string} id    – ID profilu
   //   @param {Object} patch – pola do zaktualizowania
   const { execute: _updateExecute, loading: updating } = useAsyncMutation(
-    ({ id, patch }) => storageService.set('profiles', { action: 'update', id, patch }),
+    ({ id, patch }) => storageService.set('profiles', { id, patch }),
     {
       key: 'useProfiles.update',
       onMutate: ({ id, patch }) => {
@@ -86,8 +108,16 @@ export function useProfiles() {
   );
 
   // ─── deleteProfile – usuwa profil z optimistic update
+  //   Używa profiles:delete (nie profiles:update) przez bezpośrednie invoke()
+  //   Handler oczekuje id jako string (nie obiekt)
   const { execute: deleteProfile, loading: deleting } = useAsyncMutation(
-    (id) => storageService.set('profiles', { action: 'delete', id }),
+    async (id) => {
+      const res = await window.electronAPI.invoke('profiles:delete', id);
+      if (!res?.ok) throw new Error(res?.error ?? 'DELETE_FAILED');
+      // Invaliduj cache — następny get() pobierze świeże dane z IPC
+      storageService.invalidate('profiles');
+      return res.data;
+    },
     {
       key: 'useProfiles.delete',
       onMutate: (id) => {
