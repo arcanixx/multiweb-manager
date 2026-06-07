@@ -15,8 +15,8 @@ import { TranslationContext }     from '../../utils/translations.js';
 import { logDebug }               from '../../utils/loggerRenderer.js';
 import { ICONS }                  from '../../utils/icons.js';
 import ConfirmModal               from '../modals/ConfirmModal.jsx';
-import TaskModal                  from './TaskModal.jsx';
-import CommentModal               from './CommentModal.jsx';
+import TaskModal    from '../modals/TaskModal.jsx';
+import CommentModal from '../modals/CommentModal.jsx';
 import TaskSectionList            from './TaskSectionList.jsx';
 
 // ─── TaskPanel() – panel zadań dla grupy (taskGroupId)
