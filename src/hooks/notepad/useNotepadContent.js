@@ -9,8 +9,8 @@
 // =============================================================================
 
 import { useState, useCallback, useRef } from 'react';
-import { savenotepadToStorage } from '../utils/notepadStorage.js';
-import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
+import { savenotepadToStorage } from '../../utils/notepadStorage.js';
+import { logInfo, logError, logWarn } from "../../utils/loggerRenderer.js";
 
 // ─── useNotepadContent() – hook do zarządzania treścią i zapisem notatnika
 // @param {Object} options
