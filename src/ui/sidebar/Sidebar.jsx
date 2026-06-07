@@ -17,7 +17,7 @@ import { isFeatureEnabled } from '../../config.js';
 // ─── Hooki danych
 import { useProfiles }      from '../../hooks/useProfiles.js';
 import { useCategories }    from '../../hooks/useCategories.js';
-import { useSidebarSearch } from '../../hooks/useSidebarSearch.js';
+import { useSidebarSearch } from '../../hooks/sidebar/useSidebarSearch.js';
 import { useWorkspaces }    from '../../hooks/useWorkspaces.js';
 
 // ─── Hook logiki Sidebar
