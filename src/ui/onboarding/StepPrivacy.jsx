@@ -9,7 +9,7 @@
 // =============================================================================
 
 import React from 'react';
-import { PRIVACY_OPTIONS } from './onboardingConfig.js';
+import { PRIVACY_OPTIONS } from '../../config/onboardingConfig.js';
 
 // ─── StepPrivacy() – krok 3: prywatność + disclaimer
 //   @param {object}   props.privacy             – obiekt ustawień prywatności
