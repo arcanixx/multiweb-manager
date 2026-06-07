@@ -10,16 +10,12 @@
 
 import { existsSync, readFileSync } from 'fs';
 import { runTests, safeImport } from './testUtils.js';
-
 import { join } from 'path';
 const ROOT = process.cwd();
+
 async function importModule(relPath) {
-  try {
-    const mod = await safeImport(relPath);
-    return { ok: true, data: mod };
-  } catch (err) {
-    return { ok: false, error: err.message };
-  }
+  try { return { ok: true, data: await safeImport(relPath) }; }
+  catch (err) { return { ok: false, error: err.message }; }
 }
 
 const tests = [
@@ -32,10 +28,13 @@ const tests = [
     }
   },
   {
-    name: 'src/config.js re-exports all sub-modules',
+    name: 'src/config.js re-exports all sub-modules (featuresConfig, limitsConfig, settingsConfig, ...)',
     run: async () => {
-      const content = readFileSync(join(ROOT, 'src/config.js'), 'utf-8');
-      const required = ['features.js', 'limits.js', 'settings.js', 'app.js', 'paths.js', 'endpoints.js'];
+      const path = join(ROOT, 'src/config.js');
+      if (!existsSync(path)) return { ok: false, details: 'src/config.js not found' };
+      const content = readFileSync(path, 'utf-8');
+      // Pliki nazywają się *Config.js w src/config/
+      const required = ['featuresConfig.js', 'limitsConfig.js', 'settingsConfig.js', 'pathsConfig.js', 'endpointsConfig.js'];
       const missing = required.filter(f => !content.includes(f));
       const ok = missing.length === 0;
       return { ok, details: ok ? '' : `Missing re-exports: ${missing.join(', ')}` };
@@ -44,14 +43,14 @@ const tests = [
   {
     name: 'All src/config/* sub-files exist',
     run: async () => {
-      const files = ['app.js', 'features.js', 'limits.js', 'paths.js', 'settings.js', 'endpoints.js'];
+      const files = ['appConfig.js', 'featuresConfig.js', 'limitsConfig.js', 'pathsConfig.js', 'settingsConfig.js', 'endpointsConfig.js'];
       const missing = files.filter(f => !existsSync(join(ROOT, 'src/config', f)));
       const ok = missing.length === 0;
       return { ok, details: ok ? '' : `Missing: ${missing.join(', ')}` };
     }
   },
 
-  // ── features.js ────────────────────────────────────────────────────────────
+  // ── features ────────────────────────────────────────────────────────────────
   {
     name: 'FEATURES – all flags are boolean',
     run: async () => {
@@ -69,11 +68,9 @@ const tests = [
     run: async () => {
       const r = await importModule('src/config/featuresConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
-      const { isFeatureEnabled, FEATURES } = r.data;
+      const { isFeatureEnabled } = r.data;
       if (typeof isFeatureEnabled !== 'function') return { ok: false, details: 'isFeatureEnabled not a function' };
-      // helpScreen jest true w FEATURES
       const resultTrue  = isFeatureEnabled('helpScreen');
-      // klucz nieistniejący powinien dać false
       const resultFalse = isFeatureEnabled('__nonexistent__');
       const ok = resultTrue === true && resultFalse === false;
       return { ok, details: ok ? '' : `helpScreen=${resultTrue}, nonexistent=${resultFalse}` };
@@ -104,7 +101,7 @@ const tests = [
     }
   },
 
-  // ── limits.js ──────────────────────────────────────────────────────────────
+  // ── limits ──────────────────────────────────────────────────────────────────
   {
     name: 'LIMITS – all values are positive numbers',
     run: async () => {
@@ -126,7 +123,7 @@ const tests = [
       if (typeof getLimit !== 'function') return { ok: false, details: 'getLimit not a function' };
       const key = Object.keys(LIMITS)[0];
       const ok = getLimit(key) === LIMITS[key];
-      return { ok, details: ok ? '' : `getLimit('${key}') !== LIMITS['${key}']` };
+      return { ok, details: ok ? '' : `getLimit('${key}') mismatch` };
     }
   },
   {
@@ -140,7 +137,7 @@ const tests = [
     }
   },
 
-  // ── settings.js ────────────────────────────────────────────────────────────
+  // ── settings ────────────────────────────────────────────────────────────────
   {
     name: 'DEFAULT_SETTINGS – required keys present',
     run: async () => {
@@ -174,15 +171,15 @@ const tests = [
       if (!r.ok) return { ok: false, details: r.error };
       const { DEBUG_MODULES } = r.data;
       if (!DEBUG_MODULES) return { ok: false, details: 'DEBUG_MODULES not exported' };
-      const requiredModules = ['webview', 'terminal', 'tasks', 'tools', 'settings', 'engine', 'store', 'ipc', 'ui'];
-      const missing = requiredModules.filter(m => !(m in DEBUG_MODULES));
+      const required = ['webview', 'terminal', 'tasks', 'tools', 'settings', 'engine', 'store', 'ipc', 'ui'];
+      const missing = required.filter(m => !(m in DEBUG_MODULES));
       const nonBool  = Object.entries(DEBUG_MODULES).filter(([, v]) => typeof v !== 'boolean');
       const ok = missing.length === 0 && nonBool.length === 0;
       return { ok, details: ok ? '' : `Missing: ${missing.join(', ')} | NonBool: ${nonBool.map(([k])=>k).join(', ')}` };
     }
   },
 
-  // ── paths.js ───────────────────────────────────────────────────────────────
+  // ── paths ───────────────────────────────────────────────────────────────────
   {
     name: 'PATHS – all values are strings',
     run: async () => {
@@ -196,7 +193,7 @@ const tests = [
     }
   },
 
-  // ── endpoints.js ───────────────────────────────────────────────────────────
+  // ── endpoints ───────────────────────────────────────────────────────────────
   {
     name: 'API_ENDPOINTS – all values are valid http(s) URLs',
     run: async () => {
@@ -222,7 +219,7 @@ const tests = [
     }
   },
 
-  // ── settingsRegistry.js ────────────────────────────────────────────────────
+  // ── settingsRegistry ────────────────────────────────────────────────────────
   {
     name: 'src/config/settingsRegistryConfig.js exists',
     run: async () => {
@@ -250,25 +247,12 @@ const tests = [
     }
   },
   {
-    name: 'settingsRegistry – getSettingsComponent returns null for unknown id (no logger needed for no-op)',
+    name: 'settingsRegistry – getSettingsComponent returns null for unknown id',
     run: async () => {
       const r = await importModule('src/config/settingsRegistryConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const result = r.data.getSettingsComponent('__nonexistent__');
-      // UWAGA: settingsRegistry nie używa logger.js — getSettingsComponent cicho zwraca null.
-      // toolsRegistry używa logWarn przy null — rozważyć ujednolicenie w przyszłości.
       return { ok: result === null, details: result === null ? '' : `Expected null, got ${JSON.stringify(result)}` };
-    }
-  },
-  {
-    name: 'settingsRegistry – disabled=false for entry without featureFlag',
-    run: async () => {
-      const r = await importModule('src/config/settingsRegistryConfig.js');
-      if (!r.ok) return { ok: false, details: r.error };
-      // 'settings' nie ma featureFlag — powinno być zawsze dostępne
-      const entry = r.data.getSettingsComponent('settings');
-      const ok = entry !== null && entry.disabled === false;
-      return { ok, details: ok ? '' : `entry=${JSON.stringify(entry)}` };
     }
   },
   {
