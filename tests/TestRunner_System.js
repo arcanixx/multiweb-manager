@@ -34,6 +34,8 @@ const tests = [
     name: 'SplashScreen - src/ui/system/SplashScreen.jsx eksportuje komponent',
     run: async () => checkSourceExport('src/ui/system/SplashScreen.jsx', 'SplashScreen')
   },
+  { name: 'ToastItem - src/ui/system/ToastItem.jsx eksportuje komponent', 
+    run: async () => checkSourceExport('src/ui/system/ToastItem.jsx', 'ToastItem') },
   {
     name: 'ToastContainer - limit widocznych toastow zachowuje najnowsze wpisy',
     run: async () => {

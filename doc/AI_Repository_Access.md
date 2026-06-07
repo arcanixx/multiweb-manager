@@ -369,6 +369,7 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   ├── 📜 [TestRunner_SystemToast.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_SystemToast.js)
 │   ├── 📜 [TestRunner_TaskPanel.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_TaskPanel.js)
 │   ├── 📜 [TestRunner_Terminal.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_Terminal.js)
+│   ├── 📜 [TestRunner_Toast.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_Toast.js)
 │   ├── 📜 [TestRunner_Tools.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_Tools.js)
 │   ├── 📜 [TestRunner_Utils.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_Utils.js)
 │   ├── 📜 [TestRunner_UtilsEventLogger.js](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/tests/TestRunner_UtilsEventLogger.js)

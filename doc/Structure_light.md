@@ -335,7 +335,7 @@ root/
 │ │ -->
 │ ├── hooks/
 │ │ ├── aggregated/
-│ │ │ ├── useAggregated.js ❗ <!-- VERSION: 0.0.3 PATH: src/hooks/aggregated/useAggregated.js
+│ │ │ ├── useAggregated.js <!-- VERSION: 0.0.3 PATH: src/hooks/aggregated/useAggregated.js
 │ │ │ │ PURPOSE: Hook logiki widoku zbiorczego zadań – ładowanie danych,
 │ │ │ │ filtrowanie, grupowanie, zwijanie/ukrywanie grup
 │ │ │ │ FUNCTIONS: useAggregatedTasks
@@ -402,20 +402,20 @@ root/
 │ │ │ loggerRenderer.js, notificationsManager.js
 │ │ │ -->
 │ │ ├── settings/
-│ │ │ ├── useHotkeysManager.js ❗ <!-- VERSION: 0.0.3 PATH: src/hooks/settings/useHotkeysManager.js
+│ │ │ ├── useHotkeysManager.js <!-- VERSION: 0.0.3 PATH: src/hooks/settings/useHotkeysManager.js
 │ │ │ │ PURPOSE: Hook logiki HotkeysManager – ładowanie, CRUD skrótów,
 │ │ │ │ walidacja, zapis IPC
 │ │ │ │ FUNCTIONS: useHotkeysManager
 │ │ │ │ DEPENDS ON: react, translations.js, loggerRenderer.js,
 │ │ │ │ notificationsManager.js
 │ │ │ │ -->
-│ │ │ ├── useLogsSection.js ❗ <!-- VERSION: 0.0.3 PATH: src/hooks/settings/useLogsSection.js
+│ │ │ ├── useLogsSection.js <!-- VERSION: 0.0.3 PATH: src/hooks/settings/useLogsSection.js
 │ │ │ │ PURPOSE: Hook logiki sekcji logów – ładowanie ustawień, handlery
 │ │ │ │ logów testów i dziennika zdarzeń
 │ │ │ │ FUNCTIONS: useLogsSection
 │ │ │ │ DEPENDS ON: react, loggerRenderer.js
 │ │ │ │ -->
-│ │ │ ├── useNotificationsSection.js ❗ <!-- VERSION: 0.0.3 PATH: src/hooks/settings/useNotificationsSection.js
+│ │ │ ├── useNotificationsSection.js <!-- VERSION: 0.0.3 PATH: src/hooks/settings/useNotificationsSection.js
 │ │ │ │ PURPOSE: Hook logiki sekcji powiadomień – ładowanie ustawień,
 │ │ │ │ handlery toastów, systemu OS i Pushbullet
 │ │ │ │ FUNCTIONS: useNotificationsSection
@@ -1075,7 +1075,7 @@ root/
 │ │ │ PURPOSE: Widok zbiorczy zadań – orkiestrator renderujący filtry,
 │ │ │ nagłówek i listę grup. Logika w useAggregatedTasks.
 │ │ │ FUNCTIONS: AggregatedTasks
-│ │ │ DEPENDS ON: react, translations.js, icons.js,
+│ │ │ DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js,
 │ │ │ AggregatedProjectSection.jsx, useAggregatedTasks.js
 │ │ │ -->
 │ │ ├── appLibrary/
@@ -1372,27 +1372,27 @@ root/
 │ │ │ │ FUNCTIONS: HotkeysList
 │ │ │ │ DEPENDS ON: react, translations.js, icons.js
 │ │ │ │ -->
-│ │ │ ├── HotkeysManagerSection.jsx ❗ <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManagerSection.jsx
+│ │ │ ├── HotkeysManagerSection.jsx <!-- VERSION: 0.0.3 PATH: src/ui/settings/HotkeysManagerSection.jsx
 │ │ │ │ PURPOSE: Widok zarządzania skrótami klawiszowymi – orkiestrator
 │ │ │ │ renderujący podkomponenty. Logika w useHotkeysManager.
 │ │ │ │ FUNCTIONS: HotkeysManager
-│ │ │ │ DEPENDS ON: react, config.js, translations.js,
+│ │ │ │ DEPENDS ON: react, config.js, translations.js, loggerRenderer.js,
 │ │ │ │ useHotkeysManager.js, HotkeysListSection.jsx,
 │ │ │ │ HotkeyModal.jsx, ConfirmModal.jsx
 │ │ │ │ -->
-│ │ │ ├── LogsSection.jsx ❗ <!-- VERSION: 0.0.3 PATH: src/ui/settings/LogsSection.jsx
+│ │ │ ├── LogsSection.jsx <!-- VERSION: 0.0.3 PATH: src/ui/settings/LogsSection.jsx
 │ │ │ │ PURPOSE: Widok sekcji zarządzania logami – logi testów i
 │ │ │ │ dziennik zdarzeń. Logika w useLogsSection.
 │ │ │ │ FUNCTIONS: LogsSection
-│ │ │ │ DEPENDS ON: react, translations.js, icons.js, Modal,
-│ │ │ │ useLogsSection.js
+│ │ │ │ DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js,
+│ │ │ │ Modal, useLogsSection.js
 │ │ │ │ -->
-│ │ │ ├── NotificationsSection.jsx ❗ <!-- VERSION: 0.0.3 PATH: src/ui/settings/NotificationsSection.jsx
+│ │ │ ├── NotificationsSection.jsx <!-- VERSION: 0.0.3 PATH: src/ui/settings/NotificationsSection.jsx
 │ │ │ │ PURPOSE: Widok sekcji powiadomień – toasty UI, powiadomienia
 │ │ │ │ systemowe OS, Pushbullet. Logika w
 │ │ │ │ useNotificationsSection.
 │ │ │ │ FUNCTIONS: NotificationsSection
-│ │ │ │ DEPENDS ON: react, translations.js, icons.js,
+│ │ │ │ DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js,
 │ │ │ │ useNotificationsSection.js
 │ │ │ │ -->
 │ │ │ ├── Settings.jsx <!-- VERSION: 0.0.3 PATH: src/ui/settings/Settings.jsx
@@ -1425,7 +1425,7 @@ root/
 │ │ │ icons
 │ │ │ -->
 │ │ ├── sidebar/
-│ │ │ ├── Sidebar.jsx ❗ <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/Sidebar.jsx
+│ │ │ ├── Sidebar.jsx <!-- VERSION: 0.0.3 PATH: src/ui/sidebar/Sidebar.jsx
 │ │ │ │ PURPOSE: Główny panel nawigacyjny aplikacji – czysty
 │ │ │ │ orkiestrator. Kompozycja podkomponentów i delegacja
 │ │ │ │ logiki do useSidebarHandlers.
@@ -2219,6 +2219,12 @@ root/
 │ │ PURPOSE: Testy jednostkowe dla Terminala (xterm, node-pty,
 │ │ historia, ANSI, multi-session API)
 │ │ FUNCTIONS: runTerminalTests
+│ │ DEPENDS ON: testUtils.js
+│ │ -->
+│ ├── TestRunner_Toast.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Toast.js
+│ │ PURPOSE: Testy systemu toastów – hook useToastQueue i reducer
+│ │ toastReducer
+│ │ FUNCTIONS: runToastTests
 │ │ DEPENDS ON: testUtils.js
 │ │ -->
 │ ├── TestRunner_Tools.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Tools.js

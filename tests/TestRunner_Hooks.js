@@ -91,7 +91,42 @@ const tests = [
     name: 'useAsyncMutation – eksportuje hook',
     run: async () => checkSourceExport('src/hooks/useAsyncMutation.js', 'useAsyncMutation')
   },
-
+// ============================================================================
+  // NOTEPAD HOOKS (8 hooków)
+  // ============================================================================
+  {
+    name: 'useNotepadHandlers – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadHandlers.js', 'useNotepadHandlers')
+  },
+  {
+    name: 'useNotepadAutosave – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadAutosave.js', 'useNotepadAutosave')
+  },
+  {
+    name: 'useNotepadContent – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadContent.js', 'useNotepadContent')
+  },
+  {
+    name: 'useNotepadFindReplace – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadFindReplace.js', 'useNotepadFindReplace')
+  },
+  {
+    name: 'useNotepadModals – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadModals.js', 'useNotepadModals')
+  },
+  {
+    name: 'useNotepadTabActions – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadTabActions.js', 'useNotepadTabActions')
+  },
+  {
+    name: 'useNotepadTabs – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadTabs.js', 'useNotepadTabs')
+  },
+  {
+    name: 'useNotepadUI – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadUI.js', 'useNotepadUI')
+  },
+  
   // ============================================================================
   // 2. TESTY FUNKCJONALNE (z mockowaniem – dla hooków które wymagają IPC)
   // ============================================================================
@@ -249,41 +284,7 @@ const tests = [
       return { ok, details: ok ? '' : 'useNotepadFindReplace nie jest eksportowane' };
     }
   },
-  // ============================================================================
-  // NOTEPAD HOOKS (8 hooków)
-  // ============================================================================
-  {
-    name: 'useNotepadHandlers – eksportuje hook',
-    run: async () => checkSourceExport('src/hooks/notepad/useNotepadHandlers.js', 'useNotepadHandlers')
-  },
-  {
-    name: 'useNotepadAutosave – eksportuje hook',
-    run: async () => checkSourceExport('src/hooks/notepad/useNotepadAutosave.js', 'useNotepadAutosave')
-  },
-  {
-    name: 'useNotepadContent – eksportuje hook',
-    run: async () => checkSourceExport('src/hooks/notepad/useNotepadContent.js', 'useNotepadContent')
-  },
-  {
-    name: 'useNotepadFindReplace – eksportuje hook',
-    run: async () => checkSourceExport('src/hooks/notepad/useNotepadFindReplace.js', 'useNotepadFindReplace')
-  },
-  {
-    name: 'useNotepadModals – eksportuje hook',
-    run: async () => checkSourceExport('src/hooks/notepad/useNotepadModals.js', 'useNotepadModals')
-  },
-  {
-    name: 'useNotepadTabActions – eksportuje hook',
-    run: async () => checkSourceExport('src/hooks/notepad/useNotepadTabActions.js', 'useNotepadTabActions')
-  },
-  {
-    name: 'useNotepadTabs – eksportuje hook',
-    run: async () => checkSourceExport('src/hooks/notepad/useNotepadTabs.js', 'useNotepadTabs')
-  },
-  {
-    name: 'useNotepadUI – eksportuje hook',
-    run: async () => checkSourceExport('src/hooks/notepad/useNotepadUI.js', 'useNotepadUI')
-  },
+  
   // ─── useWebViewActions / useWebViewEvents
   {
     name: 'useWebViewActions – eksportowany jako funkcja',
