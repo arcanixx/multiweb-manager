@@ -57,6 +57,36 @@ const tests = [
     },
   },
 
+
+  // ─── Nowa lokalizacja onboardingConfig w src/config/ ─────────────────────
+  {
+    name: 'onboardingConfig – src/config/onboardingConfig.js zawiera ONBOARDING_STEPS',
+    run: async () => {
+      try {
+        const mod = await safeImport('src/config/onboardingConfig.js');
+        const ok = Array.isArray(mod.ONBOARDING_STEPS) && mod.ONBOARDING_STEPS.length >= 3;
+        return { ok, details: ok ? '' : `ONBOARDING_STEPS: ${JSON.stringify(mod.ONBOARDING_STEPS)}` };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    },
+  },
+  {
+    name: 'onboardingConfig – PRIVACY_OPTIONS zawiera wymagane klucze',
+    run: async () => {
+      try {
+        const mod = await safeImport('src/config/onboardingConfig.js');
+        const required = ['toastsEnabled', 'logsEnabled', 'analyticsEnabled'];
+        const keys = (mod.PRIVACY_OPTIONS || []).map(o => o.key);
+        const missing = required.filter(k => !keys.includes(k));
+        const ok = missing.length === 0;
+        return { ok, details: ok ? '' : `Brakuje kluczy: ${missing.join(', ')}` };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    },
+  },
+
   // ─── Logika walidacji kroków (czysta, bez React) ──────────────────────────────
   {
     name: 'Onboarding – krok privacy blokuje "Dalej" gdy disclaimer niezaakceptowany',
@@ -114,3 +144,4 @@ const tests = [
 export async function runOnboardingTests() {
   return runTests('Onboarding', tests);
 }
+

@@ -3,7 +3,7 @@
  PATH: doc/DevelopersGuide.md
  VERSION: 0.0.3
  PURPOSE: Dokumentacja specyfikacji projektowej - Kompletny przewodnik developerski MultiWeb Manager
- FUNCTIONS: Dokumentacja: 19 sekcji głównych
+ FUNCTIONS: Dokumentacja: 23 sekcji głównych
  DEPENDS ON: -
  UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
  ============================================================================= -->
@@ -2090,5 +2090,82 @@ window.electronAPI.invoke('webview:removeInjection', {
 
 ---
 
+---
+
+# 23. ZASADY TWORZENIA TESTÓW (DLA AI)
+
+## 23.1. Złota zasada: NIE USUWAJ TESTÓW — DODAWAJ FALLBACKI
+
+Jeśli test failuje w środowisku Node (np. `window is not defined`, `document is not defined`, `TranslationContext` missing):
+
+**❌ ZŁE podejście:**
+```js
+// Zastąpienie testu checkSourceExport (traci funkcjonalność)
+{ name: 'useProfiles – eksportuje hook',
+  run: async () => checkSourceExport('src/hooks/useProfiles.js', 'useProfiles') }
+```
+
+**✅ DOBRE podejście:**
+```js
+// Fallback – testuje tyle ile może w danym środowisku
+{ name: 'useProfiles – eksportuje hook i ma podstawowe funkcje',
+  run: async () => {
+    if (typeof window === 'undefined') {
+      const mod = await safeImport('src/hooks/useProfiles.js');
+      return { ok: typeof mod.useProfiles === 'function', details: 'Node fallback' };
+    }
+    const restore = mockElectronAPI({ getProfiles: async () => ({ ok: true, data: [] }) });
+    try {
+      const { useProfiles } = await import('../src/hooks/useProfiles.js');
+      return { ok: typeof useProfiles === 'function' };
+    } finally { restore(); }
+  }
+}
+```
+
+## 23.2. Kiedy używać `checkSourceExport`?
+
+**TYLKO gdy:**
+- Plik zawiera `React.lazy()` (nie można zaimportować w Node)
+- Plik jest re-eksportem (eksportuje tylko z innego pliku)
+- Testujemy czystą stałą (np. `export const MAX_ACTIVE = 3`)
+
+**NIGDY do:**
+- Testowania hooków React (chyba że mają fallback)
+- Testowania komponentów React (chyba że mają fallback)
+
+## 23.3. Wzorzec testu hooka z mockowaniem
+
+```js
+import { mockElectronAPI, safeImport } from './testUtils.js';
+
+{
+  name: 'useExample – działa poprawnie',
+  run: async () => {
+    if (typeof window === 'undefined') {
+      const mod = await safeImport('src/hooks/useExample.js');
+      return { ok: typeof mod.useExample === 'function', details: 'Node fallback' };
+    }
+    const restore = mockElectronAPI({ getData: async () => ({ ok: true, data: [] }) });
+    try {
+      const { useExample } = await import('../src/hooks/useExample.js');
+      return { ok: typeof useExample === 'function' };
+    } finally { restore(); }
+  }
+}
+```
+
+## 23.4. Zasady dla AI przy modyfikacji testów
+
+| Co robić | Czego NIE robić |
+|---|---|
+| Dodawać fallbacki dla środowiska Node | Zastępować testy `checkSourceExport` |
+| Używać `safeImport` dla importów w Node | Zakładać że `window` istnieje |
+| Mockować `window.electronAPI` | Importować pliki z `React.lazy()` w Node |
+| Sprawdzać czy plik istnieje przed dodaniem testu | Dodawać testy dla nieistniejących plików |
+| Zachowywać oryginalną funkcjonalność testu | Upraszczać test "żeby przechodził" |
+
+
 <!-- KONIEC DOKUMENTU -->
 <!-- ============================================================================= -->
+

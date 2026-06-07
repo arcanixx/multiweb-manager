@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: useTasks.js
-// PATH: src/hooks/useTasks.js
+// FILE: useTaskPanel.js
+// PATH: src/hooks/aggregated/useTaskPanel.js
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania zadaniami użytkownika per taskGroupId – CRUD przez IPC z optimistic update i rollbackiem.
 // FUNCTIONS: useTasks
@@ -9,7 +9,7 @@
 // =============================================================================
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
+import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 
 // ─── useTasks() – hook do zarządzania zadaniami dla taskGroupId
 //   @returns {Object} – tasks, loading, reloadTasks, addTask, updateTask, deleteTask
@@ -126,3 +126,4 @@ export function useTasks() {
 
   return { tasks, loading, reloadTasks, addTask, updateTask, deleteTask };
 }
+
