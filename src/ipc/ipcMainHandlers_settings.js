@@ -16,7 +16,7 @@ import {
   resetSettings,
   mergeSettings
 } from "../stores/settingsStore.js";
-import { DEFAULT_SETTINGS } from "../../config.js";
+import { DEFAULT_SETTINGS } from "../config.js";
 import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // ----------------------------------------------------------------
 // settings:get – zwraca aktualne ustawienia z settingsStore
