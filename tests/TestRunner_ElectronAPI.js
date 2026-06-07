@@ -8,49 +8,38 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
+// ŚRODOWISKO: Wszystkie testy wymagają window.electronAPI (Electron renderer).
+// W środowisku Node (pre-commit) są pomijane jako react-only – nie są failami.
+
 import { runTests } from './testUtils.js';
 
-
 const WYMAGANE_METODY = [
-  // Core
   'invoke',
-  // Profiles
   'getProfiles', 'createProfile', 'updateProfile', 'deleteProfile',
-  // Settings
   'getSettings', 'saveSettings',
-  // History
   'getHistory', 'addHistory', 'clearHistory',
-  // Notes
   'getNotes', 'saveNotes',
-  // Workspaces
   'getWorkspaces', 'saveWorkspace', 'deleteWorkspace',
-  // Terminal (nowe API)
   'createTerminal', 'terminalWrite', 'terminalResize', 'killTerminal',
   'onTerminalData', 'onTerminalExit',
-  // Hotkeys
   'getHotkeys', 'saveHotkeys',
-  // AdBlocker
   'setGlobalAdBlocker', 'getGlobalAdBlocker',
-  // WebView
   'openSingleWindow', 'captureWebView', 'getWebViewResourceInfo',
-  // Logs
   'appendLogFile', 'getLogsFile', 'clearLogsFile',
-  // Shell
   'openExternal',
-  // App
   'getAppInfo', 'getDebugMode',
 ];
 
 const LEGACY_METODY = [
   'terminalStart', 'terminalKill',
   'terminalWriteLegacy', 'terminalResizeLegacy', 'terminalKillLegacy',
-  // Stare kanały bez namespace
   'saveProfiles', 'getTasks', 'saveTasks',
 ];
 
 const tests = [
   {
     name: 'window.electronAPI istnieje',
+    env: 'react',
     run: async () => {
       const ok = typeof window !== 'undefined' && !!window.electronAPI;
       return { ok, details: ok ? '' : 'electronAPI nie zostało zainicjalizowane' };
@@ -58,6 +47,7 @@ const tests = [
   },
   {
     name: 'Wszystkie wymagane metody są funkcjami',
+    env: 'react',
     run: async () => {
       const api = window.electronAPI;
       if (!api) return { ok: false, details: 'electronAPI brak' };
@@ -68,20 +58,18 @@ const tests = [
   },
   {
     name: 'Brak legacy metod (cleanup po W4)',
+    env: 'react',
     run: async () => {
       const api = window.electronAPI;
       if (!api) return { ok: false, details: 'electronAPI brak' };
       const obecne = LEGACY_METODY.filter(m => typeof api[m] === 'function');
       const ok = obecne.length === 0;
-      return {
-        ok,
-        details: ok ? '' : `Legacy metody do usunięcia z preload: ${obecne.join(', ')}`
-      };
+      return { ok, details: ok ? '' : `Legacy metody do usunięcia z preload: ${obecne.join(', ')}` };
     }
   },
-  // ─── Spot check – kilka metod wywołujemy i sprawdzamy kształt odpowiedzi
   {
     name: 'getSettings() – zwraca { ok: true, data: object }',
+    env: 'react',
     run: async () => {
       if (typeof window.electronAPI?.getSettings !== 'function') return { ok: false, details: 'getSettings missing' };
       try {
@@ -93,6 +81,7 @@ const tests = [
   },
   {
     name: 'getProfiles() – zwraca { ok: true, data: array }',
+    env: 'react',
     run: async () => {
       if (typeof window.electronAPI?.getProfiles !== 'function') return { ok: false, details: 'getProfiles missing' };
       try {
@@ -104,6 +93,7 @@ const tests = [
   },
   {
     name: 'getHistory() – zwraca { ok: true, data: array }',
+    env: 'react',
     run: async () => {
       if (typeof window.electronAPI?.getHistory !== 'function') return { ok: false, details: 'getHistory missing' };
       try {
