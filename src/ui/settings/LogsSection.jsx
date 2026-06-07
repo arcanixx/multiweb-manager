@@ -12,7 +12,7 @@ import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import Modal from '../modals/Modal';
-import { useLogsSection } from '../../hooks/useLogsSection.js';
+import { useLogsSection } from '../../hooks/settings/useLogsSection.js';
 
 // ─── LogsSection() – sekcja zarządzania logami testów i dziennika zdarzeń
 export default function LogsSection() {
