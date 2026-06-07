@@ -15,6 +15,7 @@ import { join } from 'path';
 const DOC_DIR = join(process.cwd(), 'doc');
 
 // Wszystkie pliki obecne w doc/ na branchu UAT-v0.0.4
+// UWAGA: TestCases_Suggestion.md jest generowany przez build_structure.py – jest tu celowo
 const EXPECTED_DOC_FILES = [
   'AI_Development_Standards.md',
   'AI_Repository_Access.md',
@@ -26,10 +27,16 @@ const EXPECTED_DOC_FILES = [
   'Requirements.md',
   'Structure.md',
   'Structure_light.md',
+  'TestCases_Suggestion.md',
   'pending_updates_for_Definition_Mockups_UI_UX.md'
 ];
 
-// Wzór nagłówka dla plików .md
+// Pliki które mogą nie mieć formalnego nagłówka (generowane lub tymczasowe)
+const NO_HEADER_REQUIRED = [
+  'pending_updates_for_Definition_Mockups_UI_UX.md',
+  'TestCases_Suggestion.md'
+];
+
 const HEADER_PATTERN = /<!--\s*={5,}\n FILE: (.+?)\n PATH: (.+?)\n VERSION: (.+?)\n PURPOSE: (.+?)\n FUNCTIONS: (.+?)\n DEPENDS ON: (.+?)\n UWAGA: (.+?)\n ={5,}\s*-->/s;
 
 const tests = [
@@ -64,8 +71,7 @@ const tests = [
     name: 'Core doc files have valid MD headers',
     run: async () => {
       if (!existsSync(DOC_DIR)) return { ok: false, details: 'doc/ directory not found' };
-      // Pomijamy pending_updates — może nie mieć formalnego nagłówka
-      const toCheck = EXPECTED_DOC_FILES.filter(f => f !== 'pending_updates_for_Definition_Mockups_UI_UX.md');
+      const toCheck = EXPECTED_DOC_FILES.filter(f => !NO_HEADER_REQUIRED.includes(f));
       const errors = [];
       for (const file of toCheck) {
         const filePath = join(DOC_DIR, file);
