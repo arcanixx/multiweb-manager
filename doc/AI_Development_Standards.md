@@ -3,7 +3,7 @@
  PATH: doc/AI_Development_Standards.md
  VERSION: 0.0.3
  PURPOSE: Dokumentacja specyfikacji projektowej - Standardy tworzenia i modyfikacji kodu dla AI – kompaktowy przewodnik
- FUNCTIONS: Dokumentacja: 12 sekcji głównych
+ FUNCTIONS: Dokumentacja: 13 sekcji głównych
  DEPENDS ON: -
  UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
  ============================================================================= -->
@@ -195,4 +195,25 @@ Po każdej istotnej zmianie:
 
 ---
 
+---
+
+## 13. ZASADY MODYFIKACJI TESTÓW
+
+- **NIGDY** nie zastępuj testu `checkSourceExport` gdy hook/komponent zaczyna failować — dodaj fallback Node
+- **NIGDY** nie upraszczaj testu "żeby przechodził" — zachowaj oryginalną funkcjonalność
+- Wzorzec fallback:
+  ```js
+  run: async () => {
+    if (typeof window === 'undefined') {
+      const mod = await safeImport('src/hooks/useExample.js');
+      return { ok: typeof mod.useExample === 'function', details: 'Node fallback' };
+    }
+    // normalny test z mockElectronAPI
+  }
+  ```
+- `checkSourceExport` tylko dla: re-exportów, `React.lazy()`, czystych stałych
+- Szczegóły: `doc/DevelopersGuide.md` sekcja 23
+
+
 <!-- KONIEC DOKUMENTU -->
+
