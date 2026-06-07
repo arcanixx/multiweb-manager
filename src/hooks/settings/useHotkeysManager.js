@@ -9,9 +9,9 @@
 // =============================================================================
 
 import { useState, useEffect, useContext } from 'react';
-import { TranslationContext } from '../utils/translations.js';
-import { logDebug, logError, logInfo, logWarn } from '../utils/loggerRenderer.js';
-import { showNotification } from '../utils/notificationsManager.js';
+import { TranslationContext } from '../../utils/translations.js';
+import { logDebug, logError, logInfo, logWarn } from '../../utils/loggerRenderer.js';
+import { showNotification } from '../../utils/notificationsManager.js';
 
 // UWAGA: DEFAULT_HOTKEYS celowo pozostaje tu – fallback ściśle powiązany z logiką ładowania.
 const DEFAULT_HOTKEYS = [
