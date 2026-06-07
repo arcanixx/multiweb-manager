@@ -9,7 +9,7 @@
 // =============================================================================
 
 import { useState, useCallback } from 'react';
-import { logDebug } from '../utils/loggerRenderer.js';
+import { logDebug } from '../../utils/loggerRenderer.js';
 
 // Hook zarządzający modalem potwierdzenia i tostem.
 export function useNotepadModals() {
