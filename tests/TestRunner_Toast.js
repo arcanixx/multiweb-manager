@@ -30,6 +30,10 @@ const tests = [
     name: 'toastReducer – src/stores/toastReducerStore.js eksportuje initialState',
     run: async () => checkSourceExport('src/stores/toastReducerStore.js', 'initialState'),
   },
+  {
+    name: 'toastConfig – src/config/toastConfig.js eksportuje MAX_ACTIVE',
+    run: async () => checkSourceExport('src/config/toastConfig.js', 'MAX_ACTIVE'),
+  },
 
   // ── Testy czystej funkcji toastReducer ────────────────────────────────────
   {
@@ -45,22 +49,20 @@ const tests = [
     }
   },
   {
-    name: 'toastReducer – PUSH trafia do queue gdy active pełne (MAX_ACTIVE)',
+    name: 'toastReducer – PUSH trafia do queue gdy active pełne (MAX_ACTIVE=3)',
     run: async () => {
       const r = await imp('src/stores/toastReducerStore.js');
+      const cfg = await imp('src/config/toastConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { toastReducer, initialState } = r.mod;
-      // Wypełnij active do MAX_ACTIVE (3)
+      const MAX_ACTIVE = cfg.ok ? cfg.mod.MAX_ACTIVE : 3;
       const stateWith3 = [
         { id: 't-1', type: 'info', message: 'A' },
         { id: 't-2', type: 'info', message: 'B' },
         { id: 't-3', type: 'info', message: 'C' },
-      ].reduce(
-        (s, toast) => toastReducer(s, { type: 'PUSH', payload: toast }),
-        initialState
-      );
+      ].reduce((s, toast) => toastReducer(s, { type: 'PUSH', payload: toast }), initialState);
       const overflow = toastReducer(stateWith3, { type: 'PUSH', payload: { id: 't-4', type: 'info', message: 'D' } });
-      const ok = overflow.active.length === 3 && overflow.queue.length === 1 && overflow.queue[0].id === 't-4';
+      const ok = overflow.active.length === MAX_ACTIVE && overflow.queue.length === 1 && overflow.queue[0].id === 't-4';
       return { ok, details: ok ? '' : `active=${overflow.active.length}, queue=${overflow.queue.length}` };
     }
   },
@@ -83,7 +85,6 @@ const tests = [
       const r = await imp('src/stores/toastReducerStore.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { toastReducer, initialState } = r.mod;
-      // 3 w active + 1 w queue
       const full = [
         { id: 't-1', type: 'info', message: 'A' },
         { id: 't-2', type: 'info', message: 'B' },

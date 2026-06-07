@@ -17,15 +17,16 @@ const tests = [
     run: async () => checkSourceExport('src/ui/system/ToastContainer.jsx', 'ToastContainer'),
   },
   {
-    name: 'ToastItem – src/ui/system/toast/ToastItem.jsx posiada default export',
-    run: async () => checkSourceExport('src/ui/system/toast/ToastItem.jsx', 'ToastItem'),
+    name: 'ToastItem – src/ui/system/ToastItem.jsx posiada default export',
+    run: async () => checkSourceExport('src/ui/system/ToastItem.jsx', 'ToastItem'),
   },
 
   // ─── toastConfig – czyste stałe, można importować w Node ─────────────────
+  // UWAGA: toastConfig jest w src/config/toastConfig.js (nie w src/ui/system/toast/)
   {
     name: 'toastConfig – MAX_ACTIVE wynosi 3',
     run: async () => {
-      const mod = await safeImport('src/ui/system/toast/toastConfig.js');
+      const mod = await safeImport('src/config/toastConfig.js');
       const ok = mod.MAX_ACTIVE === 3;
       return { ok, details: ok ? '' : `MAX_ACTIVE: ${mod.MAX_ACTIVE}` };
     },
@@ -33,7 +34,7 @@ const tests = [
   {
     name: 'toastConfig – VISIBLE_MS wynosi 2000',
     run: async () => {
-      const mod = await safeImport('src/ui/system/toast/toastConfig.js');
+      const mod = await safeImport('src/config/toastConfig.js');
       const ok = mod.VISIBLE_MS === 2000;
       return { ok, details: ok ? '' : `VISIBLE_MS: ${mod.VISIBLE_MS}` };
     },
@@ -41,7 +42,7 @@ const tests = [
   {
     name: 'toastConfig – TOAST_EVENT to "mwm:toast"',
     run: async () => {
-      const mod = await safeImport('src/ui/system/toast/toastConfig.js');
+      const mod = await safeImport('src/config/toastConfig.js');
       const ok = mod.TOAST_EVENT === 'mwm:toast';
       return { ok, details: ok ? '' : `TOAST_EVENT: ${mod.TOAST_EVENT}` };
     },
@@ -49,7 +50,7 @@ const tests = [
   {
     name: 'toastConfig – TOAST_CONFIG zawiera typy success/error/warning/info',
     run: async () => {
-      const mod = await safeImport('src/ui/system/toast/toastConfig.js');
+      const mod = await safeImport('src/config/toastConfig.js');
       const required = ['success', 'error', 'warning', 'info'];
       const missing = required.filter(k => !mod.TOAST_CONFIG?.[k]);
       const ok = missing.length === 0;
@@ -58,10 +59,11 @@ const tests = [
   },
 
   // ─── toastReducer – czysta funkcja, testowalny w Node ─────────────────────
+  // UWAGA: toastReducer jest w src/stores/toastReducerStore.js
   {
     name: 'toastReducer – PUSH dodaje toast do active gdy jest miejsce',
     run: async () => {
-      const { toastReducer, initialState } = await safeImport('src/ui/system/toast/toastReducer.js');
+      const { toastReducer, initialState } = await safeImport('src/stores/toastReducerStore.js');
       const toast = { id: '1', type: 'info', message: 'test' };
       const state = toastReducer(initialState, { type: 'PUSH', payload: toast });
       const ok = state.active.length === 1 && state.queue.length === 0;
@@ -71,19 +73,20 @@ const tests = [
   {
     name: 'toastReducer – PUSH trafia do kolejki gdy active jest pełne (MAX_ACTIVE=3)',
     run: async () => {
-      const { toastReducer, initialState } = await safeImport('src/ui/system/toast/toastReducer.js');
+      const { toastReducer, initialState } = await safeImport('src/stores/toastReducerStore.js');
+      const { MAX_ACTIVE } = await safeImport('src/config/toastConfig.js');
       let state = initialState;
-      for (let i = 1; i <= 4; i++) {
+      for (let i = 1; i <= MAX_ACTIVE + 1; i++) {
         state = toastReducer(state, { type: 'PUSH', payload: { id: String(i), type: 'info', message: `msg${i}` } });
       }
-      const ok = state.active.length === 3 && state.queue.length === 1;
+      const ok = state.active.length === MAX_ACTIVE && state.queue.length === 1;
       return { ok, details: ok ? '' : `active: ${state.active.length}, queue: ${state.queue.length}` };
     },
   },
   {
     name: 'toastReducer – DISMISS ustawia exiting: true na toaście',
     run: async () => {
-      const { toastReducer, initialState } = await safeImport('src/ui/system/toast/toastReducer.js');
+      const { toastReducer, initialState } = await safeImport('src/stores/toastReducerStore.js');
       let state = toastReducer(initialState, { type: 'PUSH', payload: { id: 'x', type: 'success', message: 'ok' } });
       state = toastReducer(state, { type: 'DISMISS', id: 'x' });
       const ok = state.active[0]?.exiting === true;
@@ -93,12 +96,11 @@ const tests = [
   {
     name: 'toastReducer – REMOVE usuwa toast i promuje z kolejki',
     run: async () => {
-      const { toastReducer, initialState } = await safeImport('src/ui/system/toast/toastReducer.js');
+      const { toastReducer, initialState } = await safeImport('src/stores/toastReducerStore.js');
       let state = initialState;
       for (let i = 1; i <= 4; i++) {
         state = toastReducer(state, { type: 'PUSH', payload: { id: String(i), type: 'info', message: `msg${i}` } });
       }
-      // Usuń pierwszy z active (id='1') – powinien wejść z queue (id='4')
       state = toastReducer(state, { type: 'REMOVE', id: '1' });
       const ids = state.active.map(t => t.id);
       const ok = state.active.length === 3 && ids.includes('4') && state.queue.length === 0;
@@ -106,13 +108,14 @@ const tests = [
     },
   },
 
-  // ─── useToastQueue – eksport (checkSourceExport, nie importuje w Node przez useEffect) ──
+  // ─── useToastQueue – eksport ──────────────────────────────────────────────
+  // UWAGA: useToastQueue jest w src/hooks/useToastQueue.js (nie w src/ui/system/toast/)
   {
-    name: 'useToastQueue – src/ui/system/toast/useToastQueue.js eksportuje hook',
-    run: async () => checkSourceExport('src/ui/system/toast/useToastQueue.js', 'useToastQueue'),
+    name: 'useToastQueue – src/hooks/useToastQueue.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useToastQueue.js', 'useToastQueue'),
   },
 ];
 
 export async function runToastTests() {
-  return runTests('Toast', tests);
+  return runTests('Toast (System)', tests);
 }

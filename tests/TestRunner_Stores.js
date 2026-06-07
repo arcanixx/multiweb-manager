@@ -17,71 +17,6 @@ async function imp(relPath) {
 
 const tests = [
 
-{
-    name: 'settings is object',
-    run: async () => {
-      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
-      const settings = await window.electronAPI.getSettings().catch(() => null);
-      const ok = settings && typeof settings === 'object';
-      return { ok, details: ok ? '' : 'settings is not an object or null' };
-    }
-  },
-  {
-    name: 'settings has language',
-    run: async () => {
-      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
-      const settings = await window.electronAPI.getSettings().catch(() => ({}));
-      const ok = 'language' in settings;
-      return { ok, details: ok ? '' : 'language key missing in settings' };
-    }
-  },
-  {
-    name: 'settings has theme',
-    run: async () => {
-      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
-      const settings = await window.electronAPI.getSettings().catch(() => ({}));
-      const ok = 'theme' in settings;
-      return { ok, details: ok ? '' : 'theme key missing in settings' };
-    }
-  },
-  {
-    name: 'settings has debugMode',
-    run: async () => {
-      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
-      const settings = await window.electronAPI.getSettings().catch(() => ({}));
-      const ok = 'debugMode' in settings;
-      return { ok, details: ok ? '' : 'debugMode key missing in settings' };
-    }
-  },
-  {
-    name: 'notepad is object',
-    run: async () => {
-      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
-      const notepad = await window.electronAPI.getnotepad().catch(() => null);
-      const ok = notepad && typeof notepad === 'object';
-      return { ok, details: ok ? '' : 'notepad is not an object or null' };
-    }
-  },
-  {
-    name: 'notepad has tabs array',
-    run: async () => {
-      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
-      const notepad = await window.electronAPI.getnotepad().catch(() => ({ tabs: [] }));
-      const ok = Array.isArray(notepad.tabs);
-      return { ok, details: ok ? '' : 'notepad.tabs is not an array' };
-    }
-  },
-  {
-    name: 'history is array and max 100 entries',
-    run: async () => {
-      if (!window.electronAPI) return { ok: false, details: 'electronAPI missing' };
-      const history = await window.electronAPI.getHistory().catch(() => []);
-      const ok = Array.isArray(history) && history.length <= 100;
-      const details = ok ? '' : `history is ${Array.isArray(history) ? `array with ${history.length} entries` : 'not an array'}`;
-      return { ok, details };
-    }
-  },
-
   // ── workspacesStore ────────────────────────────────────────────────────────
   {
     name: 'workspacesStore – all functions exported',
@@ -96,7 +31,6 @@ const tests = [
   {
     name: 'workspacesStore – saveWorkspace upsert logic (pure)',
     run: async () => {
-      // Symulacja upsert bez fs
       const data = [{ id: 'ws-1', name: 'Alpha' }];
       const upsert = (arr, ws) => {
         const idx = arr.findIndex(w => w.id === ws.id);
@@ -112,7 +46,6 @@ const tests = [
     name: 'workspacesStore – name uniqueness guard (pure)',
     run: async () => {
       const data = [{ id: 'ws-1', name: 'Alpha' }];
-      // Nowy workspace z istniejącą nazwą powinien rzucić wyjątek
       const tryAdd = (arr, ws) => {
         if (!arr.find(w => w.id === ws.id) && arr.find(w => w.name === ws.name)) {
           throw new Error('Workspace name already exists');
@@ -183,7 +116,6 @@ const tests = [
     name: 'clipboardStore – FIFO trim to maxClipboardItems (pure)',
     run: async () => {
       const MAX = 50;
-      // Symulacja in-memory z unshift + trim
       let history = [];
       for (let i = 0; i < 60; i++) {
         history.unshift({ id: i, text: `text-${i}` });
@@ -296,8 +228,6 @@ const tests = [
       return { ok, details: ok ? '' : `Keys: ${Object.keys(VALID_STATUSES).join(', ')}` };
     }
   },
-
-// ── tasksStore – funkcje FS (main process) ────────────────────────────────
   {
     name: 'tasksStore – FS functions exported',
     run: async () => {
@@ -321,9 +251,8 @@ const tests = [
     }
   },
   {
-    name: 'tasksStore – loadAllTasksGrouped returns array',
+    name: 'tasksStore – loadAllTasksGrouped returns array (pure mock)',
     run: async () => {
-      // Symulacja loadAllTasksGrouped bez dostępu do fs
       const mockGrouped = [{ groupId: 'g1', sections: { active: [], backlog: [], done: [] } }];
       const ok = Array.isArray(mockGrouped) && mockGrouped[0].sections;
       return { ok, details: ok ? '' : 'Expected array of groups with sections' };
@@ -332,7 +261,6 @@ const tests = [
   {
     name: 'tasksStore – saveTasksForGroup payload structure (pure)',
     run: async () => {
-      // Weryfikacja kształtu payload który saveTasksForGroup oczekuje
       const payload = { sections: { active: [], backlog: [], done: [] }, version: '0.0.3' };
       const ok = payload.sections && 'active' in payload.sections
               && 'backlog' in payload.sections && 'done' in payload.sections;
@@ -340,7 +268,7 @@ const tests = [
     }
   },
 
-  // ── IPC-level store tests (wymagają electronAPI) ──────────────────────────
+  // ── IPC-level store tests (wymagają electronAPI – działają przy starcie apki) ──
   {
     name: 'Store IPC – settings is object with required keys',
     run: async () => {
