@@ -339,7 +339,7 @@
 
 
 ### [Deep merge ustawień (lodash.merge)] :
-- **ID:** ARCH_REQ-042
+- **ID:** ARCH_REQ-044
 - **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
 - **Opis:** Zastąpiono `{...current, ...patch}` przez `_.merge({}, current, patch)` w `settingsStore.js`. Zapewnia poprawną aktualizację zagnieżdżonych pól (np. resourceMonitor.warnAt).
 - **Status:** IN_SPRINT
@@ -348,6 +348,16 @@
 - **Komentarz:** Lodash musi być zainstalowany (`npm i lodash`). Zgodne z ARCH_REQ-006.
 
 ---
+
+
+### [Naprawa ścieżek importu persistence.js w stores] :
+- **ID:** ARCH_REQ-045
+- **Sekcja:** ARCHITEKTURA I STABILNOŚĆ
+- **Opis:** 5 store'ów (`profilesStore`, `projectsStore`, `settingsStore`, `aggregatedStore`, `historyStore`) importowało `./persistence.js` (błędna ścieżka — plik jest w `src/utils/`). `ipcLoader.js` łapał błąd cicho, handlery IPC dla profili/settings/projektów/historii/taskGroups nie rejestrowały się. Naprawiono wszystkie ścieżki na `../utils/persistence.js`.
+- **Status:** DONE
+- **Priorytet:** CRITICAL
+- **Version:** 0.0.4
+- **Komentarz:** Naprawiono w sprincie UAT-v0.0.4. Wzorzec naprawionej ścieżki: `taskPanelStore.js` (już używał `../utils/persistence.js`).
 
 ## 🗂️ SIDEBAR / PROFILE MANAGER
 
@@ -1618,10 +1628,10 @@
 - **ID:** WEBVIEW_REQ-011
 - **Sekcja:** WEBVIEW MANAGER
 - **Opis:** Możliwość wstrzykiwania własnego kodu JS/CSS do ładowanej strony WebView (per profil). Wykorzystanie `webContents.executeJavaScript()` lub `<webview>` preload. Przydatne do automatyzacji testów, wymuszenia dark mode, ukrywania elementów.
-- **Status:** BACKLOG
+- **Status:** IN_SPRINT
 - **Priorytet:** MAJOR
 - **Version:** 0.0.5
-- **Komentarz:** Dla zaawansowanych użytkowników / QA.
+- **Komentarz:** Implementacja gotowa w `src/engine/webviewScriptInjector.js`. Brakuje: flaga FEATURES.webviewScriptInjector (dodana jako false), UI konfiguracji per-profil. Aktywować gdy UI gotowe.
 
 ---
 
