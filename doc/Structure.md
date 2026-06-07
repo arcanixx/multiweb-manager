@@ -2231,7 +2231,7 @@ root/
 │   │                                                   FUNCTIONS: runWebViewTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   └── 📜 testUtils.js                            <!-- VERSION: 0.0.3 PATH: tests/testUtils.js
+│   └── 📜 testUtils.js ❗                          <!-- VERSION: 0.0.3 PATH: tests/testUtils.js
 │                                                       PURPOSE: Wspólne funkcje dla wszystkich testów (runner,
 │                                                                logowanie)
 │                                                       FUNCTIONS: safeImport, checkSourceExport, runTests
@@ -4493,7 +4493,7 @@ root/
 │   │                                                   FUNCTIONS: runWebViewTests
 │   │                                                   DEPENDS ON: testUtils.js
 │   │                                                   -->
-│   └── 📜 testUtils.js                            <!-- VERSION: 0.0.3 PATH: tests/testUtils.js
+│   └── 📜 testUtils.js ❗                          <!-- VERSION: 0.0.3 PATH: tests/testUtils.js
 │                                                       PURPOSE: Wspólne funkcje dla wszystkich testów (runner,
 │                                                                logowanie)
 │                                                       FUNCTIONS: safeImport, checkSourceExport, runTests

@@ -236,7 +236,15 @@ const tests = [
     }
   },
 
-  // ─── Brakujące hooki z audytu ──────────────────────────────────────────────
+  // ─── useAsyncMutation (osobny plik po refaktorze)
+  {
+    name: 'useAsyncMutation – eksportowany jako funkcja z useAsyncMutation.js',
+    run: async () => {
+      const mod = await import('../src/hooks/useAsyncMutation.js');
+      const ok = typeof mod.useAsyncMutation === 'function';
+      return { ok, details: ok ? '' : 'useAsyncMutation not exported from useAsyncMutation.js' };
+    }
+  },
   {
     name: 'useAppInitialization – eksportowany jako funkcja',
     run: async () => {

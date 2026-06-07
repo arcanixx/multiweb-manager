@@ -20,7 +20,8 @@ const sidebarComponents = [
   ['SidebarProfileList', 'src/ui/sidebar/SidebarProfileList.jsx'],
   ['SidebarSearch', 'src/ui/sidebar/SidebarSearch.jsx'],
   ['SidebarTools', 'src/ui/sidebar/SidebarTools.jsx'],
-  ['SidebarWorkspaces', 'src/ui/sidebar/SidebarWorkspaces.jsx']
+  ['SidebarWorkspaces', 'src/ui/sidebar/SidebarWorkspaces.jsx'],
+  ['ContextMenu', 'src/ui/sidebar/ContextMenu.jsx'],
 ];
 
 const tests = [

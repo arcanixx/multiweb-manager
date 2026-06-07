@@ -24,10 +24,11 @@ export function checkSourceExport(relativePath, exportName) {
   try {
     const source = readFileSync(join(process.cwd(), relativePath), 'utf8');
     const patterns = [
-      new RegExp(`export\\s+default\\s+function\\s+${exportName}\\b`),
-      new RegExp(`export\\s+function\\s+${exportName}\\b`),
-      new RegExp(`export\\s+const\\s+${exportName}\\b`),
-      new RegExp(`export\\s*\\{[^}]*\\b${exportName}\\b[^}]*\\}`)
+	  new RegExp(`export\\s+default\\s+(?:function\\s+)?${exportName}\\b`),
+	  new RegExp(`export\\s+function\\s+${exportName}\\b`),
+	  new RegExp(`export\\s+const\\s+${exportName}\\b`),
+	  new RegExp(`export\\s*\\{\\s*${exportName}\\s*(?:,\\s*|\\})`),
+	  new RegExp(`export\\s*\\{[^}]*\\b${exportName}\\b[^}]*\\}`)
     ];
     const ok = patterns.some((pattern) => pattern.test(source));
     return { ok, details: ok ? '' : `${exportName} nie ma jawnego eksportu w ${relativePath}` };
