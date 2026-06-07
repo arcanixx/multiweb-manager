@@ -9,7 +9,7 @@
 // =============================================================================
 
 import { LIMITS } from "../config.js";
-import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
+import { getUserDataPath, readJsonFile, writeJsonFile } from "../utils/persistence.js";
 import { logInfo, logError } from "../utils/logger.js";
 
 // Ścieżka do pliku historii w userData – stała (nie funkcja)
