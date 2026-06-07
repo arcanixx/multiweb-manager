@@ -9,8 +9,8 @@
 // =============================================================================
 
 import { useState, useCallback, useEffect } from 'react';
-import { logDebug, logWarn } from '../utils/loggerRenderer.js';
-import { storageService } from '../utils/StorageService.js';
+import { logDebug, logWarn } from '../../utils/loggerRenderer.js';
+import { storageService } from '../../utils/StorageService.js';
 
 // ─── useSettings() – hook do zarządzania ustawieniami z cache (StorageService)
 //   @returns {Object} – settings, loading, error, reloadSettings, saveSettings
