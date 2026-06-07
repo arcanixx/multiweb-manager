@@ -14,7 +14,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { DEFAULT_SETTINGS } from "../config.js";
-import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
+import { getUserDataPath, readJsonFile, writeJsonFile } from "../utils/persistence.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
