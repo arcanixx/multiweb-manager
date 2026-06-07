@@ -11,7 +11,7 @@
 import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
-import { useNotificationsSection } from '../../hooks/useNotificationsSection.js';
+import { useNotificationsSection } from '../../hooks/settings/useNotificationsSection.js';
 
 // ─── NotificationsSection() – sekcja ustawień powiadomień
 export default function NotificationsSection() {
