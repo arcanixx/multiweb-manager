@@ -17,8 +17,8 @@ export const FEATURES = {
   startupTests: true,
   helpScreen: true,
   appLibrary: true,
-  unifiedSearch: true,       // Ctrl+K
-  quickSwitcher: true,       // Ctrl+P
+  unifiedSearch: false,      // Ctrl+K — BACKLOG, brak implementacji
+  quickSwitcher: false,      // Ctrl+P — BACKLOG, brak implementacji
 
   // WebView
   tileView: true,
@@ -35,8 +35,8 @@ export const FEATURES = {
   devTools: false,
 
   // Notepad
-  syntaxHighlight: true,
-  richText: true,
+  syntaxHighlight: false,    // BACKLOG, brak implementacji
+  richText: false,           // BACKLOG, brak implementacji
 
   // Tools
   removeBg: true,
