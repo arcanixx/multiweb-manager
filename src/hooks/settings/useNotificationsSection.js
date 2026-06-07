@@ -9,7 +9,7 @@
 // =============================================================================
 
 import { useState, useEffect } from 'react';
-import { logInfo, logError } from '../utils/loggerRenderer.js';
+import { logInfo, logError } from '../../utils/loggerRenderer.js';
 
 // ─── useNotificationsSection() – logika sekcji NotificationsSection
 export function useNotificationsSection() {
