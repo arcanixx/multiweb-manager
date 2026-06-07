@@ -10,7 +10,7 @@
 
 import { ipcMain } from "electron";
 import {
-  getAllnotepad,
+  getAllNotepad,
   addNote,
   updateNote,
   deleteNote
@@ -19,7 +19,7 @@ import { logError } from "../utils/logger.js";
 import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 ipcMain.handle(IPC_CHANNELS.notepad.GET_ALL, async () => {
   try {
-    return { ok: true, data: getAllnotepad() };
+    return { ok: true, data: getAllNotepad() };
   } catch (err) {
     logError('ipc', "notepad:getAll", err);
     return { ok: false, error: err.message };
