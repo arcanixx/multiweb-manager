@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MultiWeb Manager — UI/UX Mockup v0.0.3</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   CSS VARIABLES — design tokens
+   ===================================================================== */
+:root {
+  --bg-primary:    #0f0f17;
+  --bg-secondary:  #161622;
+  --bg-tertiary:   #1e1e2e;
+  --bg-hover:      #252535;
+  --bg-active:     #2a2a3e;
+  --border:        #2e2e42;
+  --border-subtle: #1e1e2e;
+
+  --accent:        #7c6af7;
+  --accent-hover:  #9580ff;
+  --accent-subtle: rgba(124,106,247,0.12);
+  --accent-glow:   rgba(124,106,247,0.25);
+
+  --text-primary:  #e8e8f0;
+  --text-secondary:#9898b0;
+  --text-muted:    #5a5a72;
+  --text-accent:   #7c6af7;
+
+  --success:       #22c55e;
+  --warning:       #eab308;
+  --error:         #ef4444;
+  --info:          #3b82f6;
+
+  --pri-a:         #ef4444;
+  --pri-b:         #f97316;
+  --pri-c:         #eab308;
+  --pri-d:         #3b82f6;
+  --pri-e:         #22c55e;
+
+  --sidebar-w:     260px;
+  --radius:        8px;
+  --radius-lg:     12px;
+  --font-ui:       'Sora', sans-serif;
+  --font-mono:     'JetBrains Mono', monospace;
+  --transition:    150ms ease;
+}
+
+/* =====================================================================
+   RESET & BASE
+   ===================================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: var(--font-ui);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, textarea { font-family: inherit; color: inherit; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* =====================================================================
+   SCREEN ROUTER — only one screen visible at a time
+   ===================================================================== */
+.screen { display: none; width: 100%; height: 100%; }
+.screen.active { display: flex; }
+
+/* =====================================================================
+   SCREEN NAV (dev tool strip)
+   ===================================================================== */
+#dev-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 32px;
+  background: rgba(10,10,20,0.95);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+  z-index: 99999;
+  backdrop-filter: blur(8px);
+}
+#dev-nav span {
+  color: var(--text-muted);
+  font-size: 11px;
+  margin-right: 6px;
+  font-family: var(--font-mono);
+}
+.dev-btn {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.dev-btn:hover { color: var(--text-primary); border-color: var(--accent); background: var(--accent-subtle); }
+.dev-btn.active { color: var(--accent); border-color: var(--accent); background: var(--accent-subtle); }
+body { padding-top: 32px; }
+.screen { height: calc(100vh - 32px); }
+
+/* =====================================================================
+   1. SPLASH SCREEN
+   ===================================================================== */
+#screen-splash {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+#screen-splash::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(124,106,247,0.08) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.splash-logo {
+  width: 96px; height: 96px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 42px;
+  margin-bottom: 24px;
+  box-shadow: 0 0 40px var(--accent-glow);
+}
+.splash-title {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+.splash-tagline {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-bottom: 40px;
+}
+.splash-progress-wrap {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.splash-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.splash-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  width: 0%;
+  transition: width 50ms linear;
+}
+.splash-pct {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+/* =====================================================================
+   2. ONBOARDING
+   ===================================================================== */
+#screen-onboarding {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+}
+.onboarding-card {
+  width: 480px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.ob-header {
+  padding: 20px 24px 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.ob-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background var(--transition);
+}
+.ob-dot.active { background: var(--accent); }
+.ob-body {
+  padding: 28px 24px 20px;
+  min-height: 280px;
+}
+.ob-icon { font-size: 32px; margin-bottom: 12px; }
+.ob-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+.ob-desc { color: var(--text-secondary); margin-bottom: 24px; font-size: 13px; }
+.ob-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ob-tiles { display: flex; gap: 10px; flex-wrap: wrap; }
+.ob-tile {
+  padding: 14px 20px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+  min-width: 100px;
+}
+.ob-tile:hover { border-color: var(--accent); background: var(--accent-subtle); }
+.ob-tile.selected { border-color: var(--accent); background: var(--accent-subtle); }
+.ob-tile-icon { font-size: 22px; margin-bottom: 4px; }
+.ob-tile-label { font-size: 12px; color: var(--text-secondary); }
+.ob-privacy-box {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 16px;
+  font-size: 12px;
+}
+.ob-privacy-box li { color: var(--text-secondary); margin-left: 14px; margin-bottom: 3px; }
+.ob-checkbox { display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 16px; }
+.ob-checkbox input { accent-color: var(--accent); width: 14px; height: 14px; }
+.ob-toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.ob-toggle-row:last-child { border-bottom: none; }
+.toggle-switch {
+  width: 36px; height: 20px;
+  background: var(--border);
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.toggle-switch.on { background: var(--accent); }
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: white;
+  top: 3px; left: 3px;
+  transition: transform var(--transition);
+}
+.toggle-switch.on::after { transform: translateX(16px); }
+.ob-apps-section { margin-bottom: 16px; }
+.ob-apps-category { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
+.ob-app-tiles { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.ob-app-tile {
+  padding: 8px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all var(--transition);
+  display: flex; align-items: center; gap: 6px;
+}
+.ob-app-tile:hover { border-color: var(--accent); }
+.ob-app-tile.selected { border-color: var(--accent); background: var(--accent-subtle); color: var(--accent); }
+.ob-account-placeholder { text-align: center; padding: 20px 0; }
+.ob-account-icon { font-size: 40px; margin-bottom: 12px; }
+.ob-account-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+.ob-account-desc { color: var(--text-secondary); font-size: 12px; margin-bottom: 20px; }
+.ob-disabled-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.ob-soon { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+
+/* =====================================================================
+   BUTTONS
+   ===================================================================== */
+.btn {
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all var(--transition);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary {
+  background: var(--accent);
+  color: white;
+}
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-primary:disabled { background: var(--bg-tertiary); color: var(--text-muted); cursor: not-allowed; }
+.btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { color: var(--text-primary); border-color: var(--text-muted); }
+.btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-ghost { color: var(--text-secondary); padding: 6px 10px; border-radius: var(--radius); }
+.btn-ghost:hover { background: var(--bg-hover); color: var(--text-primary); }
+.btn-icon {
+  width: 28px; height: 28px;
+  border-radius: var(--radius);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  transition: all var(--transition);
+}
+.btn-icon:hover { background: var(--bg-hover); color: var(--text-primary); }
+.btn-icon.active { background: var(--accent-subtle); color: var(--accent); }
+
+/* =====================================================================
+   3. MAIN LAYOUT
+   ===================================================================== */
+#screen-main {
+  flex-direction: row;
+  background: var(--bg-primary);
+  position: relative;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  height: 100%;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sidebar-header {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sidebar-header-row { display: flex; gap: 6px; }
+.sidebar-search {
+  flex: 1;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  outline: none;
+  transition: border-color var(--transition);
+}
+.sidebar-search:focus { border-color: var(--accent); color: var(--text-primary); }
+.sidebar-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.sidebar-section-label {
+  padding: 10px 12px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background var(--transition);
+  color: var(--text-secondary);
+  font-size: 13px;
+  user-select: none;
+  position: relative;
+}
+.sidebar-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.sidebar-item.active {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+.sidebar-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 4px; bottom: 4px;
+  width: 2px;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+.sidebar-item-icon { width: 18px; text-align: center; font-size: 14px; }
+.sidebar-item-label { flex: 1; }
+.sidebar-item-badge {
+  font-size: 10px;
+  background: var(--accent-subtle);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 10px;
+  font-family: var(--font-mono);
+}
+.category-header {
+  display: flex; align-items: center;
+  padding: 5px 12px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+  transition: color var(--transition);
+  user-select: none;
+}
+.category-header:hover { color: var(--text-secondary); }
+.category-arrow { margin-right: 6px; font-size: 10px; transition: transform var(--transition); }
+.category-arrow.open { transform: rotate(90deg); }
+.profile-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.sidebar-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 6px 12px;
+}
+.app-library-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 13px;
+  border-radius: 0;
+  transition: all var(--transition);
+}
+.app-library-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+.app-library-item.active { background: var(--accent); color: white; }
+
+/* workspace items */
+.workspace-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 12px 5px 24px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: all var(--transition);
+}
+.workspace-item:hover { color: var(--text-secondary); }
+.workspace-item.active { color: var(--accent); font-weight: 500; }
+
+/* --- MAIN CONTENT --- */
+.main-content {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.content-view { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+.content-view.active { display: flex; }
+
+/* =====================================================================
+   WEBVIEW TAB
+   ===================================================================== */
+.webview-toolbar {
+  height: 40px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+}
+.webview-toolbar .separator { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+.address-bar {
+  flex: 1;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 10px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  margin: 0 6px;
+  transition: border-color var(--transition);
+}
+.address-bar:focus { outline: none; border-color: var(--accent); color: var(--text-primary); }
+.webview-mock {
+  flex: 1;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+}
+.webview-mock-inner {
+  text-align: center;
+  color: #444;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.webview-mock-url { color: #888; font-size: 12px; margin-top: 6px; }
+.error-bar {
+  background: rgba(239,68,68,0.12);
+  border-bottom: 1px solid rgba(239,68,68,0.3);
+  padding: 7px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #fca5a5;
+}
+.sleep-overlay {
+  position: absolute;
+  inset: 40px 0 0 0;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  display: none;
+}
+.sleep-overlay.visible { display: flex; }
+.sleep-icon { font-size: 40px; }
+
+/* =====================================================================
+   NOTEPAD
+   ===================================================================== */
+.notepad-tabs {
+  display: flex;
+  align-items: center;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  padding: 0 8px;
+  height: 36px;
+  gap: 2px;
+}
+.notepad-tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: all var(--transition);
+  border-bottom: 2px solid transparent;
+}
+.notepad-tab:hover { color: var(--text-secondary); background: var(--bg-hover); }
+.notepad-tab.active { color: var(--text-primary); border-bottom-color: var(--accent); background: var(--bg-primary); }
+.notepad-tab-close { font-size: 10px; color: var(--text-muted); margin-left: 2px; }
+.notepad-tab-close:hover { color: var(--error); }
+.notepad-add-tab { color: var(--text-muted); font-size: 16px; padding: 2px 6px; border-radius: 4px; }
+.notepad-add-tab:hover { color: var(--accent); background: var(--accent-subtle); }
+.notepad-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+.notepad-toolbar-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  color: var(--text-secondary);
+  transition: all var(--transition);
+}
+.notepad-toolbar-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+.notepad-editor {
+  flex: 1;
+  background: var(--bg-primary);
+  padding: 16px 20px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.7;
+  resize: none;
+  border: none;
+  outline: none;
+  overflow-y: auto;
+}
+.notepad-status {
+  height: 26px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 16px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+.notepad-status span { display: flex; align-items: center; gap: 4px; }
+.notepad-findbar {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border);
+}
+.notepad-findbar.visible { display: flex; }
+.findbar-input {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 8px;
+  font-size: 12px;
+  width: 140px;
+  color: var(--text-primary);
+  outline: none;
+}
+.findbar-input:focus { border-color: var(--accent); }
+
+/* =====================================================================
+   TASK PANEL (overlay)
+   ===================================================================== */
+.task-panel-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+  display: none;
+}
+.task-panel-overlay.visible { display: block; }
+.task-panel {
+  position: absolute;
+  top: 0; right: 0;
+  width: 380px;
+  height: 100%;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 101;
+  overflow: hidden;
+}
+.task-panel-header {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.task-panel-title { flex: 1; font-weight: 600; font-size: 14px; }
+.task-add-bar {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.task-add-input {
+  width: 100%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 7px 10px;
+  font-size: 13px;
+  color: var(--text-primary);
+  outline: none;
+}
+.task-add-input:focus { border-color: var(--accent); }
+.task-panel-body { flex: 1; overflow-y: auto; padding: 8px 0; }
+.task-section-header {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+.task-section-header:hover { color: var(--text-secondary); }
+.task-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 14px;
+  transition: background var(--transition);
+  cursor: pointer;
+}
+.task-item:hover { background: var(--bg-hover); }
+.task-priority {
+  width: 20px; height: 20px;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+.task-label { flex: 1; font-size: 13px; }
+.task-done .task-label { text-decoration: line-through; color: var(--text-muted); }
+.task-actions { display: none; gap: 2px; }
+.task-item:hover .task-actions { display: flex; }
+
+/* =====================================================================
+   AGGREGATED TASKS
+   ===================================================================== */
+.agg-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+.agg-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+.agg-meta { font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; }
+.agg-filters {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.filter-select {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 5px 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  outline: none;
+  cursor: pointer;
+}
+.filter-select:focus { border-color: var(--accent); }
+.agg-search {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 5px 10px;
+  font-size: 12px;
+  color: var(--text-primary);
+  outline: none;
+  width: 160px;
+}
+.agg-search:focus { border-color: var(--accent); }
+.agg-body { flex: 1; overflow-y: auto; padding: 12px 16px; }
+.agg-group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.agg-group-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  background: var(--bg-secondary);
+  cursor: pointer;
+}
+.agg-group-title { flex: 1; font-weight: 600; font-size: 13px; }
+.agg-group-count {
+  font-size: 11px;
+  background: var(--bg-tertiary);
+  padding: 1px 6px;
+  border-radius: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+.agg-section-divider {
+  padding: 4px 14px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* =====================================================================
+   SETTINGS
+   ===================================================================== */
+.settings-layout {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+}
+.settings-nav {
+  width: 200px;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  padding: 12px 0;
+  overflow-y: auto;
+}
+.settings-nav-item {
+  padding: 7px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: all var(--transition);
+  display: flex; align-items: center; gap: 8px;
+}
+.settings-nav-item:hover { color: var(--text-primary); background: var(--bg-hover); }
+.settings-nav-item.active { color: var(--accent); background: var(--accent-subtle); }
+.settings-body { flex: 1; overflow-y: auto; padding: 24px; }
+.settings-section { display: none; }
+.settings-section.active { display: block; }
+.settings-section-title {
+  font-size: 16px; font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.settings-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-row-label { font-size: 13px; }
+.settings-row-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.settings-select {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  font-size: 13px;
+  color: var(--text-primary);
+  outline: none;
+  cursor: pointer;
+}
+.settings-select:focus { border-color: var(--accent); }
+.settings-input {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  font-size: 13px;
+  color: var(--text-primary);
+  outline: none;
+  width: 240px;
+}
+.settings-input:focus { border-color: var(--accent); }
+
+/* hotkeys table */
+.hotkeys-table { width: 100%; border-collapse: collapse; }
+.hotkeys-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.hotkeys-table td {
+  padding: 9px 0;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+.hotkey-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+/* =====================================================================
+   TOOLS
+   ===================================================================== */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  padding: 20px;
+}
+.tool-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.tool-card:hover { border-color: var(--accent); background: var(--bg-tertiary); transform: translateY(-1px); }
+.tool-card-icon { font-size: 24px; margin-bottom: 8px; }
+.tool-card-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.tool-card-desc { font-size: 11px; color: var(--text-muted); }
+.tool-card-badge {
+  display: inline-block;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-top: 6px;
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+/* =====================================================================
+   TERMINAL
+   ===================================================================== */
+.terminal-body {
+  flex: 1;
+  background: #0a0a12;
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-y: auto;
+  color: #c0caf5;
+}
+.terminal-line { display: block; }
+.t-prompt { color: #7aa2f7; }
+.t-path { color: #9ece6a; }
+.t-cmd { color: #c0caf5; }
+.t-output { color: #787c99; }
+.t-err { color: #f7768e; }
+.t-cursor { display: inline-block; width: 8px; height: 14px; background: #7c6af7; vertical-align: text-bottom; animation: blink 1s step-end infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.terminal-footer {
+  height: 36px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+}
+
+/* =====================================================================
+   HISTORY LOG
+   ===================================================================== */
+.log-header {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.log-filter-btn {
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.log-filter-btn.active-info { border-color: var(--info); color: var(--info); background: rgba(59,130,246,0.1); }
+.log-filter-btn.active-warn { border-color: var(--warning); color: var(--warning); background: rgba(234,179,8,0.1); }
+.log-filter-btn.active-err { border-color: var(--error); color: var(--error); background: rgba(239,68,68,0.1); }
+.log-body { flex: 1; overflow-y: auto; }
+.log-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  transition: background var(--transition);
+}
+.log-row:hover { background: var(--bg-hover); }
+.log-badge {
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.log-badge.info { background: rgba(59,130,246,0.2); color: #60a5fa; }
+.log-badge.warn { background: rgba(234,179,8,0.2); color: #fbbf24; }
+.log-badge.error { background: rgba(239,68,68,0.2); color: #f87171; }
+.log-time { color: var(--text-muted); flex-shrink: 0; }
+.log-msg { color: var(--text-secondary); }
+
+/* =====================================================================
+   SECTION HEADER BAR (shared)
+   ===================================================================== */
+.view-header {
+  height: 44px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 10px;
+}
+.view-title { font-size: 14px; font-weight: 600; flex: 1; }
+
+/* =====================================================================
+   TOAST SYSTEM
+   ===================================================================== */
+#toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+  z-index: 9000;
+  pointer-events: none;
+}
+.toast {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  min-width: 240px;
+  max-width: 340px;
+  pointer-events: all;
+  animation: slideIn 200ms ease forwards;
+  backdrop-filter: blur(8px);
+}
+@keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.toast.success { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #86efac; }
+.toast.error   { background: rgba(239,68,68,0.15);  border: 1px solid rgba(239,68,68,0.3);  color: #fca5a5; }
+.toast.warning { background: rgba(234,179,8,0.15);  border: 1px solid rgba(234,179,8,0.3);  color: #fde047; }
+.toast.info    { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); color: #93c5fd; }
+.toast-icon { font-size: 16px; }
+.toast-msg { flex: 1; }
+.toast-close { color: inherit; opacity: 0.6; font-size: 14px; }
+.toast-close:hover { opacity: 1; }
+
+/* =====================================================================
+   MODAL
+   ===================================================================== */
+#modal-backdrop {
+  position: fixed;
+  inset: 32px 0 0 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 20000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+#modal-backdrop.visible { display: flex; }
+.modal {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 420px;
+  overflow: hidden;
+}
+.modal-header {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+}
+.modal-title { font-size: 15px; font-weight: 600; flex: 1; }
+.modal-body { padding: 18px; }
+.modal-footer {
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end; gap: 8px;
+}
+.form-row { margin-bottom: 14px; }
+.form-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 5px; }
+.form-input {
+  width: 100%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--text-primary);
+  outline: none;
+}
+.form-input:focus { border-color: var(--accent); }
+.form-select {
+  width: 100%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--text-primary);
+  outline: none;
+  cursor: pointer;
+}
+
+/* =====================================================================
+   IMPLEMENTATION STATUS BADGE
+   ===================================================================== */
+.impl-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.impl-done { background: rgba(34,197,94,0.15); color: #86efac; }
+.impl-backlog { background: rgba(239,68,68,0.15); color: #fca5a5; }
+
+/* =====================================================================
+   PROJECT MANAGER VIEW
+   ===================================================================== */
+.pm-kanban {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  flex: 1;
+  overflow-x: auto;
+}
+.pm-column {
+  min-width: 240px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.pm-col-header {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+}
+.pm-col-dot { width: 8px; height: 8px; border-radius: 50%; }
+.pm-col-body { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.pm-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.pm-card:hover { border-color: var(--accent); background: var(--bg-hover); }
+.pm-card-title { font-size: 13px; margin-bottom: 4px; }
+.pm-card-meta { font-size: 11px; color: var(--text-muted); }
+
+</style>
+</head>
+<body>
+
+<!-- =====================================================================
+     DEV NAV — screen switcher
+     ===================================================================== -->
+<div id="dev-nav">
+  <span>MWM mockup</span>
+  <button class="dev-btn active" onclick="showScreen('splash')">Splash</button>
+  <button class="dev-btn" onclick="showScreen('onboarding')">Onboarding</button>
+  <button class="dev-btn" onclick="showScreen('main'); setView('webview')">WebView</button>
+  <button class="dev-btn" onclick="showScreen('main'); setView('notepad')">Notepad</button>
+  <button class="dev-btn" onclick="showScreen('main'); setView('agg-tasks')">Agg.Tasks</button>
+  <button class="dev-btn" onclick="showScreen('main'); setView('pm')">Projects</button>
+  <button class="dev-btn" onclick="showScreen('main'); setView('tools')">Tools</button>
+  <button class="dev-btn" onclick="showScreen('main'); setView('terminal')">Terminal</button>
+  <button class="dev-btn" onclick="showScreen('main'); setView('history')">History</button>
+  <button class="dev-btn" onclick="showScreen('main'); setView('settings')">Settings</button>
+  <button class="dev-btn" onclick="showModal('task')">+ Modal</button>
+  <button class="dev-btn" onclick="demoToasts()">Toasty 🍞</button>
+</div>
+
+<!-- =====================================================================
+     SCREEN 1: SPLASH
+     ===================================================================== -->
+<div id="screen-splash" class="screen active">
+  <div class="splash-logo">🌐</div>
+  <div class="splash-title">MultiWeb Manager</div>
+  <div class="splash-tagline">your personal web hub</div>
+  <div class="splash-progress-wrap">
+    <div class="splash-progress-bar">
+      <div class="splash-progress-fill" id="splash-fill"></div>
+    </div>
+    <div class="splash-pct" id="splash-pct">0%</div>
+  </div>
+</div>
+
+<!-- =====================================================================
+     SCREEN 2: ONBOARDING
+     ===================================================================== -->
+<div id="screen-onboarding" class="screen">
+  <div class="onboarding-card">
+    <div class="ob-header" id="ob-dots"></div>
+    <div class="ob-body" id="ob-body"></div>
+    <div class="ob-footer">
+      <button class="btn btn-secondary" id="ob-back" onclick="obPrev()">← Wstecz</button>
+      <button class="btn btn-primary" id="ob-next" onclick="obNext()">Dalej →</button>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================================
+     SCREEN 3: MAIN LAYOUT
+     ===================================================================== -->
+<div id="screen-main" class="screen">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-header-row">
+        <button class="btn btn-primary" style="flex:1;font-size:12px;padding:6px 10px;" onclick="showModal('profile')">+ Dodaj profil</button>
+        <button class="btn-icon" title="Nowa kategoria">📁</button>
+      </div>
+      <div class="sidebar-header-row">
+        <input class="sidebar-search" placeholder="🔍  Szukaj profili..." />
+        <button class="btn-icon" title="Globalne wyszukiwanie">🌐</button>
+      </div>
+    </div>
+
+    <div class="sidebar-scroll">
+      <!-- App Library -->
+      <div class="app-library-item" id="sidebar-applibrary" onclick="setSidebarActive('applibrary'); setView('app-library')">
+        <span>📚</span> App Library
+      </div>
+      <div class="sidebar-divider"></div>
+
+      <!-- Ulubione -->
+      <div class="sidebar-section-label">★ Ulubione</div>
+      <div class="sidebar-item active" id="sp-claude" onclick="setSidebarActive('claude'); setView('webview')">
+        <span class="sidebar-item-icon"><span class="profile-dot"></span></span>
+        <span class="sidebar-item-label">Claude AI</span>
+        <span class="sidebar-item-badge">3</span>
+        <button class="btn-icon" style="font-size:11px" onclick="event.stopPropagation();showTaskPanel()" title="Zadania">☑</button>
+      </div>
+      <div class="sidebar-item" id="sp-chatgpt" onclick="setSidebarActive('chatgpt'); setView('webview')">
+        <span class="sidebar-item-icon"><span class="profile-dot" style="background:var(--success)"></span></span>
+        <span class="sidebar-item-label">ChatGPT</span>
+        <span class="sidebar-item-badge">1</span>
+        <button class="btn-icon" style="font-size:11px" onclick="event.stopPropagation();showTaskPanel()" title="Zadania">☑</button>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- AI Category -->
+      <div class="category-header" onclick="toggleCategory('cat-ai', this)">
+        <span class="category-arrow open">▶</span>AI
+      </div>
+      <div id="cat-ai">
+        <div class="sidebar-item" onclick="setSidebarActive('gemini'); setView('webview')">
+          <span class="sidebar-item-icon">🔮</span>
+          <span class="sidebar-item-label">Gemini</span>
+        </div>
+        <div class="sidebar-item" onclick="setSidebarActive('perplexity'); setView('webview')">
+          <span class="sidebar-item-icon">🔍</span>
+          <span class="sidebar-item-label">Perplexity</span>
+        </div>
+      </div>
+
+      <!-- DEV Category -->
+      <div class="category-header" onclick="toggleCategory('cat-dev', this)">
+        <span class="category-arrow open">▶</span>DEV
+      </div>
+      <div id="cat-dev">
+        <div class="sidebar-item" onclick="setSidebarActive('github'); setView('webview')">
+          <span class="sidebar-item-icon">🐙</span>
+          <span class="sidebar-item-label">GitHub</span>
+        </div>
+        <div class="sidebar-item" onclick="setSidebarActive('so'); setView('webview')">
+          <span class="sidebar-item-icon">📦</span>
+          <span class="sidebar-item-label">StackOverflow</span>
+        </div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- Special Tools -->
+      <div class="sidebar-section-label">Narzędzia</div>
+      <div class="sidebar-item" id="sp-notepad" onclick="setSidebarActive('notepad'); setView('notepad')">
+        <span class="sidebar-item-icon">📓</span>
+        <span class="sidebar-item-label">Notepad</span>
+      </div>
+      <div class="sidebar-item" id="sp-pm" onclick="setSidebarActive('pm'); setView('pm')">
+        <span class="sidebar-item-icon">📋</span>
+        <span class="sidebar-item-label">Project Manager</span>
+      </div>
+      <div class="sidebar-item" id="sp-agg" onclick="setSidebarActive('agg'); setView('agg-tasks')">
+        <span class="sidebar-item-icon">☑</span>
+        <span class="sidebar-item-label">Aggregated Tasks</span>
+      </div>
+      <div class="sidebar-item" id="sp-history" onclick="setSidebarActive('history'); setView('history')">
+        <span class="sidebar-item-icon">📅</span>
+        <span class="sidebar-item-label">Historia</span>
+      </div>
+      <div class="sidebar-item" id="sp-tools" onclick="setSidebarActive('tools'); setView('tools')">
+        <span class="sidebar-item-icon">🛠</span>
+        <span class="sidebar-item-label">Narzędzia / Tools</span>
+      </div>
+      <div class="sidebar-item" id="sp-terminal" onclick="setSidebarActive('terminal'); setView('terminal')">
+        <span class="sidebar-item-icon">&gt;_</span>
+        <span class="sidebar-item-label">Terminal</span>
+      </div>
+      <div class="sidebar-item" id="sp-settings" onclick="setSidebarActive('settings'); setView('settings')">
+        <span class="sidebar-item-icon">⚙</span>
+        <span class="sidebar-item-label">Settings</span>
+      </div>
+      <div class="sidebar-item" id="sp-help" onclick="setSidebarActive('help'); setView('help')">
+        <span class="sidebar-item-icon">❓</span>
+        <span class="sidebar-item-label">Help</span>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- Workspaces -->
+      <div class="category-header" onclick="toggleCategory('cat-ws', this)">
+        <span class="category-arrow open">▶</span>Workspaces
+      </div>
+      <div id="cat-ws">
+        <div class="workspace-item active">▣ Workspace 1</div>
+        <div class="workspace-item">📁 Workspace 2</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- ─── WEBVIEW ─── -->
+    <div id="view-webview" class="content-view active">
+      <div class="webview-toolbar">
+        <button class="btn-icon" title="Wstecz">←</button>
+        <button class="btn-icon" title="Naprzód">→</button>
+        <button class="btn-icon" title="Odśwież">⟳</button>
+        <button class="btn-icon" title="Otwórz w przeglądarce">⬡</button>
+        <button class="btn-icon" title="Kopiuj URL">📋</button>
+        <div class="separator"></div>
+        <input class="address-bar" value="https://claude.ai/chat" id="address-bar" />
+        <div class="separator"></div>
+        <button class="btn-icon" title="DevTools">🛠</button>
+        <button class="btn-icon" title="Zoom +">+</button>
+        <button class="btn-icon" title="Zoom −">−</button>
+        <button class="btn-icon" title="Clear cache" onclick="showToast('Cache wyczyszczone', 'success')">🗑</button>
+        <button class="btn-icon" title="Single App Mode" id="single-app-btn" onclick="toggleSingleApp()">◼</button>
+        <button class="btn-icon" title="Screenshot" onclick="showToast('Screenshot zapisany', 'success')">📷</button>
+        <button class="btn-icon" title="Resource Monitor" onclick="showToast('Resource Monitor — BACKLOG', 'warning')">📊</button>
+      </div>
+      <div class="error-bar" id="error-bar" style="display:none">
+        ❗ Brak internetu – strona nie odpowiada
+        <button class="btn btn-secondary" style="font-size:11px;padding:3px 10px;margin-left:8px">Reload</button>
+        <button class="btn-ghost" style="margin-left:auto;font-size:11px" onclick="document.getElementById('error-bar').style.display='none'">✕</button>
+      </div>
+      <div style="flex:1;background:#1a1a1a;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;position:relative">
+        <div id="sleep-overlay" class="sleep-overlay">
+          <div class="sleep-icon">💤</div>
+          <div style="font-size:16px;color:var(--text-secondary)">Ta zakładka śpi</div>
+          <button class="btn btn-primary" onclick="wakeTab()">Obudź</button>
+        </div>
+        <div style="text-align:center;color:#555;font-family:var(--font-mono);font-size:13px">
+          <div style="font-size:32px;margin-bottom:12px">🌐</div>
+          <div>WebView — <span id="wv-site">claude.ai</span></div>
+          <div style="color:#333;margin-top:6px;font-size:12px">Electron webview renderuje tutaj</div>
+        </div>
+        <div style="position:absolute;bottom:12px;right:12px;display:flex;gap:6px">
+          <button class="btn btn-secondary" style="font-size:11px" onclick="document.getElementById('error-bar').style.display='flex'">Symuluj błąd</button>
+          <button class="btn btn-secondary" style="font-size:11px" onclick="document.getElementById('sleep-overlay').classList.add('visible')">Sleep tab</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── NOTEPAD ─── -->
+    <div id="view-notepad" class="content-view">
+      <div class="notepad-tabs">
+        <div class="notepad-tab active" onclick="switchNotepadTab(this, 'README.md')">README.md <span class="notepad-tab-close">✕</span></div>
+        <div class="notepad-tab" onclick="switchNotepadTab(this, 'notatki')">notatki <span class="notepad-tab-close">✕</span></div>
+        <div class="notepad-tab" onclick="switchNotepadTab(this, 'API')">API <span class="notepad-tab-close">✕</span></div>
+        <button class="notepad-add-tab" onclick="showToast('Nowa zakładka dodana', 'info')">+</button>
+      </div>
+      <div class="notepad-findbar" id="notepad-findbar">
+        <span style="font-size:12px;color:var(--text-muted)">Szukaj:</span>
+        <input class="findbar-input" placeholder="Tekst..." />
+        <span style="font-size:12px;color:var(--text-muted)">Zamień:</span>
+        <input class="findbar-input" placeholder="Zamień na..." />
+        <button class="btn-icon" title="Poprzedni">↑</button>
+        <button class="btn-icon" title="Następny">↓</button>
+        <button class="btn btn-secondary" style="font-size:11px;padding:3px 8px">Zamień</button>
+        <button class="btn btn-secondary" style="font-size:11px;padding:3px 8px">Zamień wszystkie</button>
+        <button class="btn-ghost" onclick="document.getElementById('notepad-findbar').classList.remove('visible')">✕</button>
+      </div>
+      <div class="notepad-toolbar">
+        <button class="notepad-toolbar-btn" onclick="showToast('Zapisano', 'success')">💾 Zapisz</button>
+        <button class="notepad-toolbar-btn" onclick="showToast('Skopiowano', 'info')">📋 Kopiuj</button>
+        <button class="notepad-toolbar-btn" onclick="document.getElementById('notepad-findbar').classList.toggle('visible')">🔍 Znajdź</button>
+        <button class="notepad-toolbar-btn">📥 Import</button>
+        <button class="notepad-toolbar-btn">📤 Eksport</button>
+        <button class="notepad-toolbar-btn">📋 Historia schowka</button>
+      </div>
+      <textarea class="notepad-editor" id="notepad-editor"># MultiWeb Manager
+
+## Opis projektu
+
+Electron-based browser/profile manager.
+
+```js
+// przykładowy kod
+const profiles = await window.electronAPI.invoke('profiles:getAll');
+```
+
+- Zarządzanie profilami
+- Zakładki z sleep tabs
+- Notepad, Terminal, Tasks
+</textarea>
+      <div class="notepad-status">
+        <span>Linie: <span id="np-lines">14</span></span>
+        <span>Znaki: <span id="np-chars">187</span></span>
+        <span>Autosave: włączony ✓</span>
+      </div>
+    </div>
+
+    <!-- ─── AGGREGATED TASKS ─── -->
+    <div id="view-agg-tasks" class="content-view">
+      <div class="agg-header">
+        <div class="agg-title">☑ Wszystkie zadania</div>
+        <div class="agg-meta">8 active · 23 total · 4 groups</div>
+        <div class="agg-filters">
+          <input class="agg-search" placeholder="🔍 Filtruj..." />
+          <select class="filter-select"><option>Status ▾</option><option>active</option><option>backlog</option><option>done</option></select>
+          <select class="filter-select"><option>Priorytet ▾</option><option>A</option><option>B</option><option>C</option></select>
+          <select class="filter-select"><option>Sekcja ▾</option></select>
+          <button class="btn btn-secondary" style="font-size:11px;padding:4px 10px">Zwiń wszystkie</button>
+          <button class="btn btn-secondary" style="font-size:11px;padding:4px 10px">Rozwiń wszystkie</button>
+          <button class="btn-icon" title="Odśwież">🔄</button>
+        </div>
+      </div>
+      <div class="agg-body">
+        <!-- Group 1 -->
+        <div class="agg-group">
+          <div class="agg-group-header">
+            <span>▼</span>
+            <span class="agg-group-title">MultiWeb Manager</span>
+            <span class="agg-group-count">12</span>
+            <button class="btn-icon" title="Ukryj grupę">👁</button>
+            <button class="btn-icon">∧</button>
+          </div>
+          <div class="agg-section-divider">ACTIVE</div>
+          <div class="task-item"><div class="task-priority" style="background:var(--pri-a)">A</div><span class="task-label">Zaimplementować Sleep Tabs</span><div class="task-actions"><button class="btn-icon">✏</button><button class="btn-icon">🗑</button></div></div>
+          <div class="task-item"><div class="task-priority" style="background:var(--pri-b)">B</div><span class="task-label">Poprawić autosave Notepad</span><div class="task-actions"><button class="btn-icon">✏</button><button class="btn-icon">🗑</button></div></div>
+          <div class="task-item"><div class="task-priority" style="background:var(--pri-c)">C</div><span class="task-label">Dodać tooltipsy do toolbara</span><div class="task-actions"><button class="btn-icon">✏</button><button class="btn-icon">🗑</button></div></div>
+          <div class="agg-section-divider">BACKLOG</div>
+          <div class="task-item"><div class="task-priority" style="background:var(--pri-d)">D</div><span class="task-label">Refaktor Settings</span><div class="task-actions"><button class="btn-icon">✏</button><button class="btn-icon">🗑</button></div></div>
+          <div class="task-item"><div class="task-priority" style="background:var(--pri-e)">E</div><span class="task-label">Tile View</span><div class="task-actions"><button class="btn-icon">✏</button><button class="btn-icon">🗑</button></div></div>
+          <div class="agg-section-divider">DONE</div>
+          <div class="task-item task-done"><div class="task-priority" style="background:var(--text-muted)">✓</div><span class="task-label">App Library Browser</span></div>
+        </div>
+        <!-- Group 2 -->
+        <div class="agg-group">
+          <div class="agg-group-header">
+            <span>▼</span>
+            <span class="agg-group-title">Projekt Backend API</span>
+            <span class="agg-group-count">5</span>
+            <button class="btn-icon" title="Ukryj grupę">👁</button>
+            <button class="btn-icon">∧</button>
+          </div>
+          <div class="agg-section-divider">ACTIVE</div>
+          <div class="task-item"><div class="task-priority" style="background:var(--pri-a)">A</div><span class="task-label">Endpoint autoryzacji JWT</span></div>
+          <div class="task-item"><div class="task-priority" style="background:var(--pri-b)">B</div><span class="task-label">Rate limiting middleware</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PROJECT MANAGER ─── -->
+    <div id="view-pm" class="content-view">
+      <div class="view-header">
+        <span class="view-title">📋 Project Manager</span>
+        <button class="btn btn-primary" style="font-size:12px;padding:5px 12px" onclick="showModal('project')">+ Nowy projekt</button>
+      </div>
+      <div class="pm-kanban">
+        <div class="pm-column">
+          <div class="pm-col-header"><span class="pm-col-dot" style="background:#3b82f6"></span>Backlog <span class="agg-group-count" style="margin-left:auto">4</span></div>
+          <div class="pm-col-body">
+            <div class="pm-card"><div class="pm-card-title">Global Search (Ctrl+K)</div><div class="pm-card-meta">Feature flag: unifiedSearch</div></div>
+            <div class="pm-card"><div class="pm-card-title">Tile View</div><div class="pm-card-meta">WebView obok siebie</div></div>
+            <div class="pm-card"><div class="pm-card-title">Syntax Highlight</div><div class="pm-card-meta">Notepad — CodeMirror</div></div>
+          </div>
+        </div>
+        <div class="pm-column">
+          <div class="pm-col-header"><span class="pm-col-dot" style="background:#eab308"></span>In Progress <span class="agg-group-count" style="margin-left:auto">3</span></div>
+          <div class="pm-col-body">
+            <div class="pm-card"><div class="pm-card-title">IPC Audit Sprint 2</div><div class="pm-card-meta">webview / logs / files</div></div>
+            <div class="pm-card"><div class="pm-card-title">notepadStorage.js fix</div><div class="pm-card-meta">notes:saveState gap</div></div>
+          </div>
+        </div>
+        <div class="pm-column">
+          <div class="pm-col-header"><span class="pm-col-dot" style="background:#22c55e"></span>Done <span class="agg-group-count" style="margin-left:auto">8</span></div>
+          <div class="pm-col-body">
+            <div class="pm-card"><div class="pm-card-title">IPC channel registry</div><div class="pm-card-meta">ipcChannels.js ✓</div></div>
+            <div class="pm-card"><div class="pm-card-title">Config split</div><div class="pm-card-meta">src/config/ ✓</div></div>
+            <div class="pm-card"><div class="pm-card-title">apiClient merge</div><div class="pm-card-meta">apiFetch + retry ✓</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── TOOLS ─── -->
+    <div id="view-tools" class="content-view">
+      <div class="view-header">
+        <span class="view-title">🛠 Tools</span>
+      </div>
+      <div style="overflow-y:auto;flex:1">
+        <div class="tools-grid">
+          <div class="tool-card"><div class="tool-card-icon">{ }</div><div class="tool-card-name">JSON Formatter</div><div class="tool-card-desc">Formatuj i waliduj JSON</div><span class="tool-card-badge">jsonFormatter</span></div>
+          <div class="tool-card"><div class="tool-card-icon">.*</div><div class="tool-card-name">Regex Tester</div><div class="tool-card-desc">Testuj wyrażenia regularne</div><span class="tool-card-badge">regexTester</span></div>
+          <div class="tool-card"><div class="tool-card-icon">MD</div><div class="tool-card-name">Markdown Previewer</div><div class="tool-card-desc">Podgląd Markdown na żywo</div><span class="tool-card-badge">markdownPreviewer</span></div>
+          <div class="tool-card"><div class="tool-card-icon">🖼</div><div class="tool-card-name">Image Tools</div><div class="tool-card-desc">Konwersja i edycja obrazów</div><span class="tool-card-badge">imageTools</span></div>
+          <div class="tool-card"><div class="tool-card-icon">SVG</div><div class="tool-card-name">SVG → PNG</div><div class="tool-card-desc">Konwertuj SVG do PNG</div><span class="tool-card-badge">svgToPng</span></div>
+          <div class="tool-card"><div class="tool-card-icon">📄</div><div class="tool-card-name">File Previewer</div><div class="tool-card-desc">Podgląd plików</div><span class="tool-card-badge">filePreviewer</span></div>
+          <div class="tool-card"><div class="tool-card-icon">🚀</div><div class="tool-card-name">Mini Postman</div><div class="tool-card-desc">Testowanie endpointów HTTP</div><span class="tool-card-badge">miniPostman</span></div>
+          <div class="tool-card"><div class="tool-card-icon">📋</div><div class="tool-card-name">Clipboard History</div><div class="tool-card-desc">Historia schowka</div><span class="tool-card-badge">clipboardHistory</span></div>
+          <div class="tool-card"><div class="tool-card-icon">🍪</div><div class="tool-card-name">Cookie Grabber</div><div class="tool-card-desc">Zarządzanie cookies</div><span class="tool-card-badge">cookieGrabber</span></div>
+          <div class="tool-card" style="opacity:0.5"><div class="tool-card-icon">🖼</div><div class="tool-card-name">Remove.bg</div><div class="tool-card-desc">Usuń tło z obrazu</div><span class="tool-card-badge" style="background:rgba(239,68,68,0.15);color:#f87171">feature: null</span></div>
+          <div class="tool-card" style="opacity:0.5"><div class="tool-card-icon">🔗</div><div class="tool-card-name">String Combiner</div><div class="tool-card-desc">Łącz i transformuj stringi</div><span class="tool-card-badge" style="background:rgba(239,68,68,0.15);color:#f87171">feature: null</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── TERMINAL ─── -->
+    <div id="view-terminal" class="content-view">
+      <div class="view-header">
+        <span class="view-title">&gt;_ Terminal</span>
+        <span style="font-size:11px;color:var(--text-muted)">node-pty + xterm.js</span>
+      </div>
+      <div class="terminal-body">
+        <span class="terminal-line"><span class="t-prompt">user</span><span style="color:var(--text-muted)">@</span><span class="t-prompt">multiweb</span><span style="color:var(--text-muted)">:</span><span class="t-path">~/projects/multiweb-manager</span><span style="color:var(--text-muted)">$ </span><span class="t-cmd">git status</span></span>
+        <span class="terminal-line t-output">On branch UAT-v0.0.4</span>
+        <span class="terminal-line t-output">Your branch is up to date with 'origin/UAT-v0.0.4'.</span>
+        <span class="terminal-line t-output">&nbsp;</span>
+        <span class="terminal-line t-output">Changes not staged for commit:</span>
+        <span class="terminal-line t-output">  (use "git add &lt;file&gt;..." to update what will be committed)</span>
+        <span class="terminal-line t-output">&nbsp;</span>
+        <span class="terminal-line"><span style="color:#9ece6a">        modified:   src/ipc/ipcMainHandlers_profiles.js</span></span>
+        <span class="terminal-line"><span style="color:#9ece6a">        modified:   src/utils/loggerRenderer.js</span></span>
+        <span class="terminal-line t-output">&nbsp;</span>
+        <span class="terminal-line"><span class="t-prompt">user</span><span style="color:var(--text-muted)">@</span><span class="t-prompt">multiweb</span><span style="color:var(--text-muted)">:</span><span class="t-path">~/projects/multiweb-manager</span><span style="color:var(--text-muted)">$ </span><span class="t-cmd">npm run test</span></span>
+        <span class="terminal-line t-output">&nbsp;</span>
+        <span class="terminal-line"><span style="color:#7aa2f7">▶ TestRunner — uruchamianie testów...</span></span>
+        <span class="terminal-line"><span style="color:#9ece6a">  ✓ [Profiles] getAll — OK</span></span>
+        <span class="terminal-line"><span style="color:#9ece6a">  ✓ [Profiles] create — OK</span></span>
+        <span class="terminal-line"><span style="color:#f7768e">  ✗ [Notepad] saveState — FAIL: notepadStorage gap</span></span>
+        <span class="terminal-line t-output">&nbsp;</span>
+        <span class="terminal-line"><span class="t-prompt">user</span><span style="color:var(--text-muted)">@</span><span class="t-prompt">multiweb</span><span style="color:var(--text-muted)">:</span><span class="t-path">~/projects/multiweb-manager</span><span style="color:var(--text-muted)">$ </span><span class="t-cursor"></span></span>
+      </div>
+      <div class="terminal-footer">
+        <button class="btn btn-secondary" style="font-size:11px;padding:4px 10px">Wyczyść</button>
+        <button class="btn btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Sesja restarted', 'info')">Restart sesji</button>
+        <span style="margin-left:auto;font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">ANSI ✓ · Historia ↑</span>
+      </div>
+    </div>
+
+    <!-- ─── HISTORY LOG ─── -->
+    <div id="view-history" class="content-view">
+      <div class="log-header">
+        <span style="font-weight:600;font-size:14px;flex:1">📅 Historia zdarzeń</span>
+        <button class="log-filter-btn active-info" onclick="toggleLogFilter(this)">Info</button>
+        <button class="log-filter-btn active-warn" onclick="toggleLogFilter(this)">Warn</button>
+        <button class="log-filter-btn active-err" onclick="toggleLogFilter(this)">Error</button>
+        <select class="filter-select"><option>Najnowsze ▾</option><option>Najstarsze</option></select>
+        <button class="btn btn-secondary" style="font-size:11px;padding:4px 10px">Eksport CSV</button>
+        <button class="btn btn-secondary" style="font-size:11px;padding:4px 10px" onclick="showToast('Logi wyczyszczone', 'warning')">Wyczyść</button>
+      </div>
+      <div class="log-body">
+        <div class="log-row"><span class="log-badge info">INFO</span><span class="log-time">2026-06-07 13:08</span><span class="log-msg">Settings saved — theme: dark</span></div>
+        <div class="log-row"><span class="log-badge info">INFO</span><span class="log-time">2026-06-07 13:05</span><span class="log-msg">Profile activated: Claude AI</span></div>
+        <div class="log-row"><span class="log-badge warn">WARN</span><span class="log-time">2026-06-07 12:01</span><span class="log-msg">WebView crashed — reloading</span></div>
+        <div class="log-row"><span class="log-badge error">ERROR</span><span class="log-time">2026-06-07 12:00</span><span class="log-msg">IPC save failed: profiles — notepadStorage gap</span></div>
+        <div class="log-row"><span class="log-badge info">INFO</span><span class="log-time">2026-06-07 11:55</span><span class="log-msg">App Library loaded: 142 entries</span></div>
+        <div class="log-row"><span class="log-badge info">INFO</span><span class="log-time">2026-06-07 11:50</span><span class="log-msg">Terminal session started (node-pty)</span></div>
+        <div class="log-row"><span class="log-badge warn">WARN</span><span class="log-time">2026-06-07 11:48</span><span class="log-msg">Sleep tab timeout fired: ChatGPT</span></div>
+        <div class="log-row"><span class="log-badge info">INFO</span><span class="log-time">2026-06-07 11:45</span><span class="log-msg">Application started — v0.0.3</span></div>
+      </div>
+    </div>
+
+    <!-- ─── SETTINGS ─── -->
+    <div id="view-settings" class="content-view">
+      <div class="settings-layout">
+        <nav class="settings-nav">
+          <div class="settings-nav-item active" onclick="setSettingsSection('general', this)">⚙ Ogólne</div>
+          <div class="settings-nav-item" onclick="setSettingsSection('webview', this)">🌐 WebView</div>
+          <div class="settings-nav-item" onclick="setSettingsSection('tabs', this)">📑 Zakładki</div>
+          <div class="settings-nav-item" onclick="setSettingsSection('notifications', this)">🔔 Powiadomienia</div>
+          <div class="settings-nav-item" onclick="setSettingsSection('hotkeys', this)">⌨ Skróty</div>
+          <div class="settings-nav-item" onclick="setSettingsSection('data', this)">💾 Dane</div>
+          <div class="settings-nav-item" onclick="setSettingsSection('account', this)">👤 Konto</div>
+          <div class="settings-nav-item" onclick="setSettingsSection('logs', this)">🪵 Logi</div>
+          <div class="settings-nav-item" onclick="setSettingsSection('debug', this)">🐛 Debug</div>
+        </nav>
+        <div class="settings-body">
+
+          <div id="ss-general" class="settings-section active">
+            <div class="settings-section-title">Ogólne</div>
+            <div class="settings-row"><div><div class="settings-row-label">Język</div><div class="settings-row-desc">Język interfejsu aplikacji</div></div><select class="settings-select"><option>🇵🇱 Polski</option><option>🇬🇧 English</option></select></div>
+            <div class="settings-row"><div><div class="settings-row-label">Motyw</div></div><select class="settings-select"><option>🌙 Ciemny</option><option>☀️ Jasny</option><option>💻 System</option></select></div>
+            <div class="settings-row"><div><div class="settings-row-label">Debug mode</div><div class="settings-row-desc">Włącza dodatkowe opcje i logi</div></div><div class="toggle-switch" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+
+          <div id="ss-webview" class="settings-section">
+            <div class="settings-section-title">WebView</div>
+            <div class="settings-row"><div><div class="settings-row-label">AdBlocker</div><div class="settings-row-desc">Blokuje reklamy i trackery</div></div><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div><div class="settings-row-label">Edytowalny pasek URL</div></div><div class="toggle-switch" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div><div class="settings-row-label">Domyślny User Agent</div></div><input class="settings-input" placeholder="Pozostaw puste = domyślny" /></div>
+          </div>
+
+          <div id="ss-tabs" class="settings-section">
+            <div class="settings-section-title">Zakładki</div>
+            <div class="settings-row"><div><div class="settings-row-label">Sleep tabs timeout</div><div class="settings-row-desc">Czas nieaktywności zanim zakładka zaśnie</div></div><select class="settings-select"><option>5 min</option><option selected>15 min</option><option>30 min</option><option>60 min</option><option>Nigdy</option></select></div>
+          </div>
+
+          <div id="ss-notifications" class="settings-section">
+            <div class="settings-section-title">Powiadomienia</div>
+            <div class="settings-row"><div><div class="settings-row-label">Toasty UI</div></div><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div><div class="settings-row-label">Powiadomienia systemowe</div></div><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div><div class="settings-row-label">Pushbullet API key</div><div class="settings-row-desc">Opcjonalne powiadomienia push</div></div>
+              <div style="display:flex;gap:6px">
+                <input class="settings-input" style="width:180px" placeholder="API key..." />
+                <button class="btn btn-secondary" style="font-size:11px" onclick="showToast('Klucz zapisany', 'success')">Zapisz</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="ss-hotkeys" class="settings-section">
+            <div class="settings-section-title">Skróty klawiaturowe</div>
+            <table class="hotkeys-table">
+              <thead><tr><th>Skrót</th><th>Nazwa</th><th>Tekst</th><th>Wł.</th><th></th></tr></thead>
+              <tbody>
+                <tr><td><span class="hotkey-badge">Ctrl+Shift+S</span></td><td>Screenshot WebView</td><td>—</td><td><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></td><td><button class="btn-icon">✏</button><button class="btn-icon">🗑</button></td></tr>
+                <tr><td><span class="hotkey-badge">Ctrl+Shift+M</span></td><td>Resource Monitor</td><td>—</td><td><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></td><td><button class="btn-icon">✏</button><button class="btn-icon">🗑</button></td></tr>
+                <tr><td><span class="hotkey-badge">Ctrl+Shift+1</span></td><td>Snippet: Email sig.</td><td>Best…</td><td><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></td><td><button class="btn-icon">✏</button><button class="btn-icon">🗑</button></td></tr>
+              </tbody>
+            </table>
+            <button class="btn btn-secondary" style="margin-top:12px;font-size:12px" onclick="showModal('hotkey')">+ Dodaj skrót</button>
+          </div>
+
+          <div id="ss-data" class="settings-section">
+            <div class="settings-section-title">Dane & Zarządzanie</div>
+            <div class="settings-row"><div><div class="settings-row-label">Eksport ustawień</div><div class="settings-row-desc">Pobierz kopię zapasową konfiguracji</div></div><button class="btn btn-secondary" onclick="showToast('Eksport gotowy', 'success')">Eksportuj</button></div>
+            <div class="settings-row"><div><div class="settings-row-label">Import ustawień</div></div><button class="btn btn-secondary">Importuj</button></div>
+          </div>
+
+          <div id="ss-account" class="settings-section">
+            <div class="settings-section-title">Konto</div>
+            <div style="text-align:center;padding:40px 20px">
+              <div style="font-size:36px;margin-bottom:12px">👤</div>
+              <div style="font-size:15px;font-weight:600;margin-bottom:8px">Synchronizacja konta</div>
+              <div style="color:var(--text-secondary);font-size:13px;margin-bottom:20px">Sync w przygotowaniu</div>
+              <button disabled class="btn btn-secondary" style="width:100%;margin-bottom:8px;cursor:not-allowed;opacity:0.4">Zaloguj przez Google</button>
+              <button disabled class="btn btn-secondary" style="width:100%;cursor:not-allowed;opacity:0.4">Zaloguj przez GitHub</button>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:12px">* Sync w przygotowaniu</div>
+            </div>
+          </div>
+
+          <div id="ss-logs" class="settings-section">
+            <div class="settings-section-title">Logi</div>
+            <div class="settings-row"><div><div class="settings-row-label">Logi testów</div><div class="settings-row-desc">userData/logs/test-fails.log</div></div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-secondary" style="font-size:11px">📂 Folder</button>
+                <button class="btn btn-secondary" style="font-size:11px">👁 Podgląd</button>
+                <button class="btn btn-secondary" style="font-size:11px" onclick="showToast('Logi wyczyszczone', 'warning')">🗑 Wyczyść</button>
+              </div>
+            </div>
+            <div class="settings-row"><div><div class="settings-row-label">Zapisuj logi</div></div><div class="toggle-switch" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div><div class="settings-row-label">Dziennik zdarzeń</div></div><div class="toggle-switch" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+
+          <div id="ss-debug" class="settings-section">
+            <div class="settings-section-title">Debug Modules</div>
+            <div style="color:var(--text-secondary);font-size:12px;margin-bottom:14px">Dostępne tylko gdy Debug mode = ON</div>
+            <div class="settings-row"><div class="settings-row-label">webview</div><div class="toggle-switch" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div class="settings-row-label">terminal</div><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div class="settings-row-label">tasks</div><div class="toggle-switch" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div class="settings-row-label">ipc</div><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div class="settings-row-label">store</div><div class="toggle-switch" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── APP LIBRARY ─── -->
+    <div id="view-app-library" class="content-view">
+      <div class="view-header"><span class="view-title">📚 App Library</span><input class="sidebar-search" style="width:200px" placeholder="🔍 Szukaj aplikacji..." /></div>
+      <div style="padding:16px;overflow-y:auto;flex:1">
+        <div class="sidebar-section-label" style="margin-bottom:8px">AI</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+          <div class="ob-app-tile selected">🤖 Claude</div>
+          <div class="ob-app-tile selected">💬 ChatGPT</div>
+          <div class="ob-app-tile">🔮 Gemini</div>
+          <div class="ob-app-tile">🔍 Perplexity</div>
+          <div class="ob-app-tile">🦙 Llama</div>
+        </div>
+        <div class="sidebar-section-label" style="margin-bottom:8px">PRODUCTIVITY</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+          <div class="ob-app-tile">📝 Notion</div>
+          <div class="ob-app-tile">📋 Trello</div>
+          <div class="ob-app-tile">✅ Asana</div>
+          <div class="ob-app-tile">📊 Linear</div>
+        </div>
+        <div class="sidebar-section-label" style="margin-bottom:8px">DEV</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="ob-app-tile selected">🐙 GitHub</div>
+          <div class="ob-app-tile">🦊 GitLab</div>
+          <div class="ob-app-tile">📦 npm</div>
+          <div class="ob-app-tile">🏗 Vercel</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── HELP ─── -->
+    <div id="view-help" class="content-view">
+      <div class="view-header"><span class="view-title">❓ Help</span></div>
+      <div style="padding:24px;overflow-y:auto;flex:1;max-width:640px">
+        <div style="font-size:22px;font-weight:600;margin-bottom:6px">MultiWeb Manager</div>
+        <div style="color:var(--text-secondary);margin-bottom:24px;font-size:13px">v0.0.3 — dokumentacja i skróty</div>
+        <div style="margin-bottom:20px">
+          <div style="font-size:14px;font-weight:600;margin-bottom:8px">Skróty klawiaturowe</div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+            <div style="display:flex;gap:12px"><span class="hotkey-badge">Ctrl+Shift+S</span><span style="color:var(--text-secondary)">Screenshot WebView</span></div>
+            <div style="display:flex;gap:12px"><span class="hotkey-badge">Ctrl+Shift+M</span><span style="color:var(--text-secondary)">Resource Monitor</span></div>
+          </div>
+        </div>
+        <div style="font-size:14px;font-weight:600;margin-bottom:8px">Status implementacji</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+          <div style="display:flex;justify-content:space-between"><span>SplashScreen</span><span class="impl-badge impl-done">✅ zaimplementowany</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Onboarding (5 kroków)</span><span class="impl-badge impl-done">✅ zaimplementowany</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Sidebar</span><span class="impl-badge impl-done">✅ zaimplementowany</span></div>
+          <div style="display:flex;justify-content:space-between"><span>WebViewTab</span><span class="impl-badge impl-done">✅ zaimplementowany</span></div>
+          <div style="display:flex;justify-content:space-between"><span>TaskPanel</span><span class="impl-badge impl-done">✅ zaimplementowany</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Notepad</span><span class="impl-badge impl-done">✅ zaimplementowany</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Terminal</span><span class="impl-badge impl-done">✅ zaimplementowany</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Resource Monitor UI</span><span class="impl-badge impl-backlog">❌ BACKLOG</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Tile View</span><span class="impl-badge impl-backlog">❌ BACKLOG</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Global Search (Ctrl+K)</span><span class="impl-badge impl-backlog">❌ BACKLOG</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Account / Sync</span><span class="impl-badge impl-backlog">❌ BACKLOG</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TASK PANEL OVERLAY -->
+    <div class="task-panel-overlay" id="task-panel-overlay" onclick="hideTaskPanel()">
+    </div>
+    <div class="task-panel" id="task-panel">
+      <div class="task-panel-header">
+        <span class="task-panel-title">☑ MultiWeb Manager Tasks</span>
+        <button class="btn-icon" title="Odśwież">🔄</button>
+        <button class="btn-icon" onclick="hideTaskPanel()">✕</button>
+      </div>
+      <div class="task-add-bar">
+        <input class="task-add-input" placeholder="+ Dodaj zadanie..." onkeydown="if(event.key==='Enter')addTask(this)"/>
+      </div>
+      <div class="task-panel-body">
+        <div class="task-section-header">▼ ACTIVE (3)</div>
+        <div class="task-item"><div class="task-priority" style="background:var(--pri-a)">A</div><span class="task-label">Zaimplementować Sleep Tabs</span><div class="task-actions"><button class="btn-icon">✏</button><button class="btn-icon">🗑</button></div></div>
+        <div class="task-item"><div class="task-priority" style="background:var(--pri-b)">B</div><span class="task-label">Poprawić autosave Notepad</span><div class="task-actions"><button class="btn-icon">✏</button><button class="btn-icon">🗑</button></div></div>
+        <div class="task-item"><div class="task-priority" style="background:var(--pri-c)">C</div><span class="task-label">Dodać tooltipsy</span><div class="task-actions"><button class="btn-icon">✏</button><button class="btn-icon">🗑</button></div></div>
+        <div class="task-section-header">▼ BACKLOG (2)</div>
+        <div class="task-item"><div class="task-priority" style="background:var(--pri-d)">D</div><span class="task-label">Refaktor Settings</span><div class="task-actions"><button class="btn-icon">✏</button><button class="btn-icon">🗑</button></div></div>
+        <div class="task-item"><div class="task-priority" style="background:var(--pri-e)">E</div><span class="task-label">Tile View</span><div class="task-actions"><button class="btn-icon">✏</button><button class="btn-icon">🗑</button></div></div>
+        <div class="task-section-header">▼ DONE (1)</div>
+        <div class="task-item task-done"><div class="task-priority" style="background:var(--text-muted)">✓</div><span class="task-label">App Library Browser</span></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- =====================================================================
+     TOAST CONTAINER
+     ===================================================================== -->
+<div id="toast-container"></div>
+
+<!-- =====================================================================
+     MODAL BACKDROP
+     ===================================================================== -->
+<div id="modal-backdrop" onclick="hideModal(event)">
+  <!-- Task Modal -->
+  <div class="modal" id="modal-task" onclick="event.stopPropagation()">
+    <div class="modal-header"><span class="modal-title">Nowe zadanie</span><button class="btn-icon" onclick="hideModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-label">Tytuł *</div><input class="form-input" placeholder="Opis zadania..." /></div>
+      <div class="form-row"><div class="form-label">Priorytet</div><select class="form-select"><option>A — krytyczny</option><option>B — wysoki</option><option>C — średni</option><option>D — niski</option><option>E — opcjonalny</option></select></div>
+      <div class="form-row"><div class="form-label">Sekcja</div><select class="form-select"><option>active</option><option>backlog</option><option>done</option></select></div>
+      <div class="form-row"><div class="form-label">Komentarz</div><input class="form-input" placeholder="Opcjonalnie..." /></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="hideModal()">Anuluj</button><button class="btn btn-primary" onclick="hideModal();showToast('Zadanie zapisane','success')">Zapisz</button></div>
+  </div>
+  <!-- Profile Modal -->
+  <div class="modal" id="modal-profile" onclick="event.stopPropagation()" style="display:none">
+    <div class="modal-header"><span class="modal-title">Nowy profil</span><button class="btn-icon" onclick="hideModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-label">Nazwa *</div><input class="form-input" placeholder="Np. Claude AI" /></div>
+      <div class="form-row"><div class="form-label">URL *</div><input class="form-input" placeholder="https://..." /></div>
+      <div class="form-row"><div class="form-label">Kategoria</div><select class="form-select"><option>AI</option><option>DEV</option><option>PRODUCTIVITY</option><option>INNE</option></select></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="hideModal()">Anuluj</button><button class="btn btn-primary" onclick="hideModal();showToast('Profil dodany','success')">Dodaj</button></div>
+  </div>
+  <!-- Hotkey Modal -->
+  <div class="modal" id="modal-hotkey" onclick="event.stopPropagation()" style="display:none">
+    <div class="modal-header"><span class="modal-title">Nowy skrót</span><button class="btn-icon" onclick="hideModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-label">Skrót *</div><input class="form-input" placeholder="Np. Ctrl+Shift+X" /></div>
+      <div class="form-row"><div class="form-label">Nazwa *</div><input class="form-input" placeholder="Opis skrótu..." /></div>
+      <div class="form-row"><div class="form-label">Tekst (snippet)</div><input class="form-input" placeholder="Opcjonalnie..." /></div>
+      <div class="form-row"><div class="form-label">Akcja</div><select class="form-select"><option>screenshot</option><option>snippet</option><option>openProfile</option></select></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="hideModal()">Anuluj</button><button class="btn btn-primary" onclick="hideModal();showToast('Skrót zapisany','success')">Zapisz</button></div>
+  </div>
+  <!-- Project Modal -->
+  <div class="modal" id="modal-project" onclick="event.stopPropagation()" style="display:none">
+    <div class="modal-header"><span class="modal-title">Nowy projekt</span><button class="btn-icon" onclick="hideModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-label">Nazwa projektu *</div><input class="form-input" placeholder="Np. Backend API" /></div>
+      <div class="form-row"><div class="form-label">Opis</div><input class="form-input" placeholder="Opcjonalnie..." /></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="hideModal()">Anuluj</button><button class="btn btn-primary" onclick="hideModal();showToast('Projekt utworzony','success')">Utwórz</button></div>
+  </div>
+</div>
+
+<!-- =====================================================================
+     JAVASCRIPT
+     ===================================================================== -->
+<script>
+/* ---- Screen router ---- */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  document.querySelectorAll('.dev-btn').forEach(b => b.classList.remove('active'));
+}
+
+/* ---- Main content views ---- */
+function setView(id) {
+  document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
+  const el = document.getElementById('view-' + id);
+  if (el) el.classList.add('active');
+  // update dev-nav active
+  const map = {
+    'webview':'WebView','notepad':'Notepad','agg-tasks':'Agg.Tasks',
+    'pm':'Projects','tools':'Tools','terminal':'Terminal',
+    'history':'History','settings':'Settings'
+  };
+  document.querySelectorAll('.dev-btn').forEach(b => {
+    if (b.textContent.trim() === (map[id] || '')) b.classList.add('active');
+  });
+  // sidebar active
+}
+
+/* ---- Sidebar active ---- */
+function setSidebarActive(id) {
+  document.querySelectorAll('.sidebar-item, .app-library-item').forEach(i => i.classList.remove('active'));
+  const el = document.getElementById('sp-' + id) || document.getElementById('sidebar-' + id);
+  if (el) el.classList.add('active');
+}
+
+/* ---- Category collapse ---- */
+function toggleCategory(id, header) {
+  const el = document.getElementById(id);
+  const arrow = header.querySelector('.category-arrow');
+  if (el.style.display === 'none') {
+    el.style.display = '';
+    arrow.classList.add('open');
+  } else {
+    el.style.display = 'none';
+    arrow.classList.remove('open');
+  }
+}
+
+/* ---- Task panel ---- */
+function showTaskPanel() {
+  document.getElementById('task-panel-overlay').classList.add('visible');
+  document.getElementById('task-panel').style.right = '0';
+}
+function hideTaskPanel() {
+  document.getElementById('task-panel-overlay').classList.remove('visible');
+}
+function addTask(input) {
+  if (!input.value.trim()) return;
+  showToast('Zadanie dodane: ' + input.value.trim(), 'success');
+  input.value = '';
+}
+
+/* ---- Settings sections ---- */
+function setSettingsSection(id, navEl) {
+  document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('ss-' + id).classList.add('active');
+  document.querySelectorAll('.settings-nav-item').forEach(n => n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+}
+
+/* ---- Onboarding ---- */
+let obStep = 0;
+const obSteps = [
+  {
+    icon: '🎨', title: 'Wybierz motyw',
+    render: () => `
+      <div class="ob-desc">Jak chcesz, żeby wyglądał MultiWeb Manager?</div>
+      <div class="ob-tiles">
+        <div class="ob-tile selected" onclick="selectTile(this)"><div class="ob-tile-icon">🌙</div><div class="ob-tile-label">Dark</div></div>
+        <div class="ob-tile" onclick="selectTile(this)"><div class="ob-tile-icon">☀️</div><div class="ob-tile-label">Light</div></div>
+        <div class="ob-tile" onclick="selectTile(this)"><div class="ob-tile-icon">💻</div><div class="ob-tile-label">System</div></div>
+      </div>`
+  },
+  {
+    icon: '🌍', title: 'Wybierz język',
+    render: () => `
+      <div class="ob-desc">W jakim języku chcesz używać aplikacji?</div>
+      <div class="ob-tiles">
+        <div class="ob-tile selected" onclick="selectTile(this)"><div class="ob-tile-icon">🇵🇱</div><div class="ob-tile-label">Polski</div></div>
+        <div class="ob-tile" onclick="selectTile(this)"><div class="ob-tile-icon">🇬🇧</div><div class="ob-tile-label">English</div></div>
+      </div>`
+  },
+  {
+    icon: '🔒', title: 'Prywatność',
+    render: () => `
+      <div class="ob-privacy-box">
+        <ul>
+          <li>Dane przechowywane lokalnie</li>
+          <li>Brak śledzenia użytkownika</li>
+          <li>Open source</li>
+        </ul>
+      </div>
+      <label class="ob-checkbox"><input type="checkbox" id="ob-accept" onchange="document.getElementById('ob-next').disabled=!this.checked"> Akceptuję warunki</label>
+      <div class="ob-toggle-row"><span>Włącz powiadomienia toast</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="ob-toggle-row"><span>Włącz logi debugowania</span><div class="toggle-switch" onclick="this.classList.toggle('on')"></div></div>
+      <div class="ob-toggle-row"><span>Włącz analitykę</span><div class="toggle-switch" onclick="this.classList.toggle('on')"></div></div>`
+  },
+  {
+    icon: '🚀', title: 'Szybki start',
+    render: () => `
+      <div class="ob-desc">Wybierz aplikacje do dodania jako profile:</div>
+      <div class="ob-apps-section">
+        <div class="ob-apps-category">AI</div>
+        <div class="ob-app-tiles">
+          <div class="ob-app-tile selected" onclick="this.classList.toggle('selected')">🤖 Claude</div>
+          <div class="ob-app-tile selected" onclick="this.classList.toggle('selected')">💬 ChatGPT</div>
+          <div class="ob-app-tile" onclick="this.classList.toggle('selected')">🔮 Gemini</div>
+          <div class="ob-app-tile" onclick="this.classList.toggle('selected')">🔍 Perplexity</div>
+        </div>
+        <div class="ob-apps-category">PRODUCTIVITY</div>
+        <div class="ob-app-tiles">
+          <div class="ob-app-tile" onclick="this.classList.toggle('selected')">📝 Notion</div>
+          <div class="ob-app-tile" onclick="this.classList.toggle('selected')">📋 Trello</div>
+          <div class="ob-app-tile" onclick="this.classList.toggle('selected')">✅ Asana</div>
+        </div>
+      </div>`
+  },
+  {
+    icon: '👤', title: 'Konto',
+    render: () => `
+      <div class="ob-account-placeholder">
+        <div class="ob-account-icon">🔗</div>
+        <div class="ob-account-title">Synchronizacja konta</div>
+        <div class="ob-account-desc">Sync w przygotowaniu — wkrótce</div>
+        <div class="ob-disabled-btn">Google — wkrótce</div>
+        <div class="ob-disabled-btn">GitHub — wkrótce</div>
+        <div class="ob-soon">* Sync w przygotowaniu</div>
+      </div>`
+  }
+];
+
+function renderOb() {
+  const step = obSteps[obStep];
+  // dots
+  let dots = '';
+  obSteps.forEach((_, i) => { dots += `<div class="ob-dot ${i === obStep ? 'active' : ''}"></div>`; });
+  document.getElementById('ob-dots').innerHTML = dots;
+  // body
+  document.getElementById('ob-body').innerHTML = `
+    <div class="ob-icon">${step.icon}</div>
+    <div class="ob-title">${step.title}</div>
+    ${step.render()}
+  `;
+  // buttons
+  document.getElementById('ob-back').disabled = obStep === 0;
+  const nextBtn = document.getElementById('ob-next');
+  nextBtn.disabled = obStep === 2; // waits for checkbox
+  nextBtn.textContent = obStep === obSteps.length - 1 ? 'Zakończ →' : 'Dalej →';
+}
+
+function obNext() {
+  if (obStep < obSteps.length - 1) { obStep++; renderOb(); }
+  else { showScreen('main'); setView('webview'); }
+}
+function obPrev() { if (obStep > 0) { obStep--; renderOb(); } }
+function selectTile(el) {
+  el.closest('.ob-tiles').querySelectorAll('.ob-tile').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+/* ---- Splash animation ---- */
+function runSplash() {
+  const fill = document.getElementById('splash-fill');
+  const pct = document.getElementById('splash-pct');
+  let p = 0;
+  const t = setInterval(() => {
+    p = Math.min(p + 2, 100);
+    fill.style.width = p + '%';
+    pct.textContent = p + '%';
+    if (p >= 100) {
+      clearInterval(t);
+      setTimeout(() => {
+        showScreen('onboarding');
+        renderOb();
+      }, 400);
+    }
+  }, 36);
+}
+
+/* ---- Toasts ---- */
+const toastQueue = [];
+let activeToasts = 0;
+const MAX_TOASTS = 3;
+function showToast(msg, type = 'info') {
+  if (activeToasts >= MAX_TOASTS) { toastQueue.push({ msg, type }); return; }
+  activeToasts++;
+  const icons = { success: '✓', error: '✕', warning: '⚠', info: 'ℹ' };
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span class="toast-icon">${icons[type]}</span><span class="toast-msg">${msg}</span><button class="toast-close" onclick="removeToast(this.parentElement)">✕</button>`;
+  document.getElementById('toast-container').appendChild(t);
+  setTimeout(() => removeToast(t), 2300);
+}
+function removeToast(el) {
+  if (!el || !el.parentElement) return;
+  el.style.opacity = '0'; el.style.transform = 'translateX(30px)'; el.style.transition = '300ms';
+  setTimeout(() => { el.remove(); activeToasts--; if (toastQueue.length) { const n = toastQueue.shift(); showToast(n.msg, n.type); } }, 300);
+}
+function demoToasts() {
+  showToast('Ustawienia zapisane', 'success');
+  setTimeout(() => showToast('Brak połączenia z siecią', 'warning'), 300);
+  setTimeout(() => showToast('IPC save failed: profiles', 'error'), 600);
+  setTimeout(() => showToast('App Library załadowana', 'info'), 900);
+}
+
+/* ---- Modals ---- */
+function showModal(type) {
+  ['task','profile','hotkey','project'].forEach(t => {
+    document.getElementById('modal-' + t).style.display = t === type ? '' : 'none';
+  });
+  document.getElementById('modal-backdrop').classList.add('visible');
+}
+function hideModal(e) {
+  if (e && e.target !== document.getElementById('modal-backdrop')) return;
+  document.getElementById('modal-backdrop').classList.remove('visible');
+}
+
+/* ---- Notepad ---- */
+const notepadContents = {
+  'README.md': `# MultiWeb Manager\n\n## Opis projektu\n\nElectron-based browser/profile manager.\n\n\`\`\`js\n// przykładowy kod\nconst profiles = await window.electronAPI.invoke('profiles:getAll');\n\`\`\`\n\n- Zarządzanie profilami\n- Zakładki z sleep tabs\n- Notepad, Terminal, Tasks`,
+  'notatki': `## Notatki robocze\n\n- notepadStorage.js gap → notes:saveState\n- feature: null w ToolsPanel dla removeBg, stringCombiner\n- TestRunner_Config.js → LIMITS.maxNotepadEntries\n`,
+  'API': `## API Notes\n\n### Profiles\nGET profiles:getAll\nPOST profiles:create\nPUT profiles:update\nDELETE profiles:delete\n\n### Notepad\nnotes:getAll\nnotes:save\nnotes:delete`
+};
+function switchNotepadTab(el, name) {
+  document.querySelectorAll('.notepad-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const editor = document.getElementById('notepad-editor');
+  editor.value = notepadContents[name] || '';
+  updateNotepadStatus();
+}
+function updateNotepadStatus() {
+  const ed = document.getElementById('notepad-editor');
+  document.getElementById('np-lines').textContent = ed.value.split('\n').length;
+  document.getElementById('np-chars').textContent = ed.value.length;
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('notepad-editor').addEventListener('input', updateNotepadStatus);
+});
+
+/* ---- WebView helpers ---- */
+function toggleSingleApp() {
+  const btn = document.getElementById('single-app-btn');
+  btn.classList.toggle('active');
+  showToast(btn.classList.contains('active') ? 'Single App Mode włączony' : 'Single App Mode wyłączony', 'info');
+}
+function wakeTab() {
+  document.getElementById('sleep-overlay').classList.remove('visible');
+  showToast('Zakładka obudzona', 'info');
+}
+
+/* ---- Log filter ---- */
+function toggleLogFilter(btn) {
+  const cls = btn.textContent === 'Info' ? 'active-info' : btn.textContent === 'Warn' ? 'active-warn' : 'active-err';
+  btn.classList.toggle(cls);
+}
+
+/* ---- Init ---- */
+runSplash();
+</script>
+</body>
+</html>

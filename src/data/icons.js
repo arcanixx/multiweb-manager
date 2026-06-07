@@ -45,6 +45,9 @@ export const ICONS = {
   LOCK: "🔒",
   UNLOCK: "🔓",
   DEFAULT: "🌐",
+  SKIP: "⏭️",
+  RESTART: "🔄",
+  SHUTDOWN: "⏹️",
 
   // ========== Nawigacja ==========
   CHEVRON_DOWN: "▼",

@@ -52,7 +52,7 @@ root/
 │ ├── Definition_Mockups_UI_UX.md <!-- VERSION: 0.0.3 PATH: doc/Definition_Mockups_UI_UX.md
 │ │ PURPOSE: Dokumentacja specyfikacji projektowej - Kompletny opis
 │ │ UI/UX aplikacji MultiWeb Manager (do np. Figma)
-│ │ FUNCTIONS: Dokumentacja: 41 sekcji głównych
+│ │ FUNCTIONS: Dokumentacja: 14 sekcji głównych
 │ │ DEPENDS ON: -
 │ │ -->
 │ ├── DevelopersGuide.md <!-- VERSION: 0.0.3 PATH: doc/DevelopersGuide.md
@@ -2064,9 +2064,11 @@ root/
 │ │ DEPENDS ON: testUtils.js, path
 │ │ -->
 │ ├── TestRunner_Hooks.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_Hooks.js
-│ │ PURPOSE: Testy hooków React – weryfikacja eksportów, obsługi
-│ │ błędów i struktury zwracanych danych przez mock
-│ │ electronAPI.
+│ │ PURPOSE: Testy hooków React – weryfikacja eksportów
+│ │ (checkSourceExport – Node-safe) i testy funkcjonalne z
+│ │ mockElectronAPI. Testy direct-import hooków React są
+│ │ wykonywane przy starcie aplikacji (pełne środowisko
+│ │ Electron+JSDOM).
 │ │ FUNCTIONS: runHooksTests
 │ │ DEPENDS ON: testUtils.js
 │ │ -->
