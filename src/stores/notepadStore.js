@@ -28,7 +28,16 @@ import fs from "fs";
 import path from "path";
 import { app } from "electron";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
-const notepad_FILE = path.join(app.getPath("userData"), "notepad.json");
+
+// ─── notepad_FILE – ścieżka do notepad.json w userData
+//   try/catch – app.getPath() może rzucić przed pełną inicjalizacją Electrona
+let notepad_FILE;
+try {
+  notepad_FILE = path.join(app.getPath("userData"), "notepad.json");
+} catch (err) {
+  logError("store", "notepadStore: nie można ustalić ścieżki userData – używam fallback", err.message);
+  notepad_FILE = path.join(".", "notepad.json");
+}
 
 // ─── loadStore() – Wczytuje i deserializuje dane notatek z pliku notepad.json; w przypadku błędu lub braku pliku zwraca domyślną strukturę z pustą listą
 function loadStore() {
