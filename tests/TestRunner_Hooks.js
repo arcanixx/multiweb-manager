@@ -285,8 +285,60 @@ const tests = [
       return { ok, details: ok ? '' : 'useNotepadTabActions not exported' };
     }
   },
+
+  // ─── Hooki z folderów podfunkcjonalnych ─────────────────────────────────
+
+  // settings/
+  {
+    name: 'useSettings – src/hooks/settings/useSettings.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/settings/useSettings.js', 'useSettings'),
+  },
+  {
+    name: 'useLogsSection – src/hooks/settings/useLogsSection.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/settings/useLogsSection.js', 'useLogsSection'),
+  },
+  {
+    name: 'useNotificationsSection – src/hooks/settings/useNotificationsSection.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/settings/useNotificationsSection.js', 'useNotificationsSection'),
+  },
+  {
+    name: 'useHotkeysManager – src/hooks/settings/useHotkeysManager.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/settings/useHotkeysManager.js', 'useHotkeysManager'),
+  },
+
+  // aggregated/
+  {
+    name: 'useAggregatedGroups – src/hooks/aggregated/useAggregatedGroups.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/aggregated/useAggregatedGroups.js', 'useTaskGroups'),
+  },
+  {
+    name: 'useTaskPanel – src/hooks/aggregated/useTaskPanel.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/aggregated/useTaskPanel.js', 'useTasks'),
+  },
+  {
+    name: 'useAggregated – src/hooks/aggregated/useAggregated.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/aggregated/useAggregated.js', 'useAggregatedTasks'),
+  },
+
+  // sidebar/
+  {
+    name: 'useSidebarSearch – src/hooks/sidebar/useSidebarSearch.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/sidebar/useSidebarSearch.js', 'useSidebarSearch'),
+  },
+
+  // notepad/ (przeniesione)
+  {
+    name: 'useNotepadContent – src/hooks/notepad/useNotepadContent.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadContent.js', 'useNotepadContent'),
+  },
+  {
+    name: 'useNotepadTabs – src/hooks/notepad/useNotepadTabs.js eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadTabs.js', 'useNotepadTabs'),
+  },
+
 ];
 
 export async function runHooksTests() {
   return runTests('Hooks', tests);
 }
+
