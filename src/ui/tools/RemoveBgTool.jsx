@@ -1,34 +1,35 @@
 // =============================================================================
 // FILE: RemoveBgTool.jsx
-// PATH: src/components/RemoveBgTool.jsx
+// PATH: src/ui/tools/RemoveBgTool.jsx
 // VERSION: 0.0.3
 // PURPOSE: Narzędzie do masowego usuwania tła ze zdjęć przez API remove.bg.
-//          - Plan free: max 30 plików, obniżona rozdzielczość.
-//          - Plan pro: max 120 plików, pełna rozdzielczość.
-//          - Drag & drop lub klik do wybrania plików.
-//          - Progress per plik, błędy per plik, podsumowanie.
-// DEPENDS ON: axios, icons.js, useTranslation.js, logger.js, config.js (endpoint)
-// FUNCTIONS: handleDrop, handleFileSelect, processImages, removeFile, clearList
+// FUNCTIONS: RemoveBgTool
+// DEPENDS ON: react, axios, icons, translations.js, loggerRenderer, config, notificationsManager.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { ICONS } from "../../utils/icons";
-import { useTranslation } from "../../hooks/useTranslation";
-import { log, error as logError } from "../../utils/loggerRenderer";
+import { TranslationContext } from '../utils/translations.js';
+import { logInfo, logError, logWarn, logDebug } from "../../utils/loggerRenderer";
 import { API_ENDPOINTS } from "../../config";
+import { showNotification } from '../../utils/notificationsManager.js';
+
+// ─── RemoveBgTool() – narzędzie do usuwania tła przez API remove.bg
+//   @param {Object} props – właściwości komponentu
+//   @param {string} props.apiKey – klucz API remove.bg
+//   @param {string} props.plan – plan subskrypcji (free/pro)
+//   @returns {JSX.Element} – renderowany interfejs narzędzia
 
 export default function RemoveBgTool({ apiKey, plan = "free" }) {
-  const { t } = useTranslation();
-
+  const { t } = React.useContext(TranslationContext);
   const MAX_FILES = plan === "pro" ? 120 : 30;
-
   const [files, setFiles] = useState([]); // { file, status, error }
   const [processing, setProcessing] = useState(false);
   const [done, setDone] = useState(0);
   const [errors, setErrors] = useState(0);
   const [dragging, setDragging] = useState(false);
-
   const addFiles = useCallback(
     newFiles => {
       const all = [
@@ -37,13 +38,11 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
           .filter(f => f.type.startsWith("image/"))
           .map(f => ({ file: f, status: "pending", error: null }))
       ].slice(0, MAX_FILES);
-
       setFiles(all);
-      log(`RemoveBg: ${all.length} files queued`);
+      logInfo('tools', `RemoveBg: ${all.length} files queued`);
     },
     [files]
   );
-
   const handleDrop = useCallback(
     e => {
       e.preventDefault();
@@ -53,26 +52,33 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
     },
     [addFiles]
   );
-
-  const handleFileSelect = e => {
+  
+   // ─── handleFileSelect() – Obsługuje wybór plików przez użytkownika – dodaje wybrane obrazy do kolejki przetwarzania i czyści pole wyboru pliku.
+   //   @param {React.ChangeEvent<HTMLInputElement>} e – zdarzenie zmiany wyboru pliku
+   const handleFileSelect = e => {
     addFiles(Array.from(e.target.files));
     e.target.value = "";
   };
 
-  const removeFile = idx => {
+   // ─── removeFile() – Usuwa plik z kolejki przetwarzania pod podanym indeksem.
+   //   @param {number} idx – indeks pliku do usunięcia
+   const removeFile = idx => {
     setFiles(f => f.filter((_, i) => i !== idx));
   };
 
-  const clearList = () => {
+   // ─── clearList() – Czyści całą kolejkę plików oraz zeruje liczniki przetworzonych i błędnych plików.
+   const clearList = () => {
     setFiles([]);
     setDone(0);
     setErrors(0);
   };
 
-  const processImages = async () => {
+   // ─── processImages() – Przetwarza wszystkie kolejkowane obrazy przez API remove.bg – pobiera wyniki, inicjalizuje pobieranie plików i aktualizuje status przetwarzania.
+   //   @returns {Promise<void>} – obietnica rozwiązywana po zakończeniu przetwarzania wszystkich obrazów
+   const processImages = async () => {
     if (!apiKey) {
-      alert(t("removebg.no_api_key"));
-      logError("RemoveBg: no API key");
+      showNotification(t('removebg.no_api_key'), 'warning');
+      logError('tools', "RemoveBg: no API key");
       return;
     }
     if (!files.length) return;
@@ -117,7 +123,7 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
         );
         doneCount++;
         setDone(doneCount);
-        log(`RemoveBg: done for ${file.name}`);
+        logInfo('tools', `RemoveBg: done for ${file.name}`);
       } catch (err) {
         const errMsg = err.response?.data
           ? `HTTP ${err.response.status}`
@@ -130,12 +136,12 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
         );
         errCount++;
         setErrors(errCount);
-        logError(`RemoveBg: failed for ${file.name}: ${errMsg}`);
+        logError('tools', `RemoveBg: failed for ${file.name}: ${errMsg}`);
       }
     }
 
     setProcessing(false);
-    log(`RemoveBg: batch done. ${doneCount} ok, ${errCount} errors`);
+    logInfo('tools', `RemoveBg: batch done. ${doneCount} ok, ${errCount} errors`);
   };
 
   const pendingCount = files.filter(f => f.status === "pending").length;
@@ -423,7 +429,3 @@ export default function RemoveBgTool({ apiKey, plan = "free" }) {
     </div>
   );
 }
-
-// =============================================================================
-// END OF FILE
-// =============================================================================

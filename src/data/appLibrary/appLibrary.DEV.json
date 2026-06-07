@@ -1,0 +1,22 @@
+[
+  { "id": "github", "name": "GitHub", "url": "https://github.com", "icon": "https://github.com/favicon.ico", "categoryId": "dev" },
+  { "id": "gitlab", "name": "GitLab", "url": "https://gitlab.com", "icon": "https://gitlab.com/favicon.ico", "categoryId": "dev" },
+  { "id": "bitbucket", "name": "Bitbucket", "url": "https://bitbucket.org", "icon": "https://bitbucket.org/favicon.ico", "categoryId": "dev" },
+  { "id": "stackoverflow", "name": "Stack Overflow", "url": "https://stackoverflow.com", "icon": "https://stackoverflow.com/favicon.ico", "categoryId": "dev" },
+  { "id": "jira", "name": "Jira", "url": "https://www.atlassian.com/software/jira", "icon": "https://www.atlassian.com/favicon.ico", "categoryId": "dev" },
+  { "id": "trello", "name": "Trello", "url": "https://trello.com", "icon": "https://trello.com/favicon.ico", "categoryId": "dev" },
+  { "id": "confluence", "name": "Confluence", "url": "https://www.atlassian.com/software/confluence", "icon": "https://www.atlassian.com/favicon.ico", "categoryId": "dev" },
+  { "id": "jenkins", "name": "Jenkins", "url": "https://www.jenkins.io", "icon": "https://www.jenkins.io/favicon.ico", "categoryId": "dev" },
+  { "id": "sentry", "name": "Sentry", "url": "https://sentry.io", "icon": "https://sentry.io/favicon.ico", "categoryId": "dev" },
+  { "id": "datadog", "name": "Datadog", "url": "https://www.datadoghq.com", "icon": "https://www.datadoghq.com/favicon.ico", "categoryId": "dev" },
+  { "id": "postman", "name": "Postman", "url": "https://www.postman.com", "icon": "https://www.postman.com/favicon.ico", "categoryId": "dev" },
+  { "id": "vercel", "name": "Vercel", "url": "https://vercel.com", "icon": "https://vercel.com/favicon.ico", "categoryId": "dev" },
+  { "id": "netlify", "name": "Netlify", "url": "https://www.netlify.com", "icon": "https://www.netlify.com/favicon.ico", "categoryId": "dev" },
+  { "id": "firebase", "name": "Firebase", "url": "https://firebase.google.com", "icon": "https://www.gstatic.com/devrel-devsite/prod/v3458/firebase/images/favicon.png", "categoryId": "dev" },
+  { "id": "aws", "name": "AWS Console", "url": "https://aws.amazon.com/console", "icon": "https://a0.awsstatic.com/main/images/site/favicons/favicon.ico", "categoryId": "dev" },
+  { "id": "azure", "name": "Azure Portal", "url": "https://portal.azure.com", "icon": "https://portal.azure.com/favicon.ico", "categoryId": "dev" },
+  { "id": "digitalocean", "name": "DigitalOcean", "url": "https://www.digitalocean.com", "icon": "https://www.digitalocean.com/favicon.ico", "categoryId": "dev" },
+  { "id": "heroku", "name": "Heroku", "url": "https://www.heroku.com", "icon": "https://www.heroku.com/favicon.ico", "categoryId": "dev" },
+  { "id": "supabase", "name": "Supabase", "url": "https://supabase.com", "icon": "https://supabase.com/favicon.ico", "categoryId": "dev" },
+  { "id": "docker", "name": "Docker Hub", "url": "https://hub.docker.com", "icon": "https://www.docker.com/favicon.ico", "categoryId": "dev" }
+]

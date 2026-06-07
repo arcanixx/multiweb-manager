@@ -1,369 +1,717 @@
-=============================================================================
-FILE: Definition_Mockups_UI_UX.md
-PATH: DOC/Definition_Mockups_UI_UX.md
-VERSION: 0.0.3
-PURPOSE: Kompletny opis UI/UX aplikacji MultiWeb Manager v0.0.3 (do Figma)
-DEPENDS ON: structure.txt, DevelopersGuide.md
-=============================================================================
+<!-- =============================================================================
+ FILE: Definition_Mockups_UI_UX.md
+ PATH: doc/Definition_Mockups_UI_UX.md
+ VERSION: 0.0.3
+ PURPOSE: Dokumentacja specyfikacji projektowej - Kompletny opis UI/UX aplikacji MultiWeb Manager (do np. Figma)
+ FUNCTIONS: Dokumentacja: 14 sekcji głównych
+ DEPENDS ON: -
+ UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+ ============================================================================= -->
 
-# =============================================================================
-# 1. GŁÓWNY LAYOUT APLIKACJI
-# =============================================================================
+# DEFINITION MOCKUPS UI/UX — MultiWeb Manager
 
-## Struktura ekranu (desktop)
+> Stan na: `v0.0.3` / branch `UAT-v0.0.4`
+> Dokument opisuje **rzeczywisty stan aplikacji** (nie backlog/wizja).
 
-┌──────────────────────────────┬──────────────────────────────────────────────┐
-│ SIDEBAR │ MAIN CONTENT │
-│ (stała szerokość ~260px) │ (dynamiczny obszar widoku modułów) │
-│ │ │
-│ • Search bar │ • TaskPanel / WebViewTab / Notepad / │
-│ • Kategorie profili │ ProjectManager / AggregatedTasks / │
-│ • Lista profili │ Terminal / HistoryLog / Settings / Tools │
-│ • Last used │ │
-│ • Tools │ │
-│ • Workspaces │ │
-└──────────────────────────────┴──────────────────────────────────────────────┘
+---
 
-## Zasady ogólne UI
+## 1. PRZEPŁYW STARTOWY APLIKACJI
 
-- **ciemny motyw domyślny**, jasny opcjonalny (Settings → Dark Mode)
-- **płaskie UI**, bez gradientów
-- **ikonografia z `icons.js`** (zero emoji w kodzie)
-- **tooltips wszędzie**
-- **toasty zamiast alertów**
-- **modale zamiast promptów**
-- **loading states** (spinner / skeleton)
-- **animacje 150–200ms** (fade / slide)
-- **layout responsywny** (desktop-first)
+Przy każdym uruchomieniu aplikacja przechodzi przez 3 etapy zanim wyświetli główny UI:
 
-# =============================================================================
-# 2. SIDEBAR
-# =============================================================================
+```
+App.jsx
+  │
+  ├─► [splashDone = false]
+  │     SplashScreen (1.8s)
+  │       ├─ Logo (PNG z assets/ lub SVG fallback)
+  │       ├─ Nazwa: "MultiWeb Manager"
+  │       ├─ Tagline (z locales)
+  │       ├─ Animowany pasek postępu (0→100% przez 1.8s, krok co 30ms)
+  │       └─ Fade-out 300ms → onFinished() → splashDone = true
+  │
+  ├─► [settings.firstRun = true → onboardingDone = false]
+  │     OnboardingScreen (wizard 5 kroków)
+  │       └─ po finish → onboardingDone = true, firstRun = false
+  │
+  └─► [splashDone && onboardingDone]
+        MainLayout
+```
 
-## 2.1. Search bar
+### 1.1. SplashScreen
 
-- pole input z ikoną `ICONS.SEARCH` (z `icons.js`)
-- filtruje w czasie rzeczywistym: profile, narzędzia, App Library, workspace’y
-- placeholder: `t('sidebar.searchPlaceholder')`
+```
+┌─────────────────────────────────────────────────────┐
+│                                                     │
+│               [LOGO SVG/PNG ~120px]                 │
+│                                                     │
+│            MultiWeb Manager                         │
+│         your personal web hub                       │
+│                                                     │
+│    ████████████████████████░░░░░░░░░░  78%          │
+│                                                     │
+└─────────────────────────────────────────────────────┘
+```
 
-## 2.2. Kategorie profili
+- Tło: `var(--bg-primary, #1a1a2e)`
+- Logo: PNG z `assets/` jeśli dostępne, fallback SVG inline
+- Pasek postępu: `var(--accent)`, `border-radius: 4px`, pełna szerokość 200px
 
-Kategorie (tłumaczone przez `t('categories.XXX')`):
+---
 
-- AI
-- Dev
-- Design
-- Productivity
-- Special
+## 2. ONBOARDING (5 kroków)
 
-Każda kategoria:
+Wyświetlany tylko przy `firstRun = true`. Po zakończeniu zapisuje ustawienia przez IPC i ustawia `firstRun: false`.
 
-- nagłówek (mała czcionka, uppercase)
-- lista profili z ikonami
-- klik = otwarcie `WebViewTab`
-- PPM = menu kontekstowe:
+### Układ ogólny
+
+```
+┌─────────────────────────────────────────┐
+│  ● ○ ○ ○ ○   [StepIndicator]            │
+├─────────────────────────────────────────┤
+│                                         │
+│  [Ikona 40px]                           │
+│  Tytuł kroku (18px bold)                │
+│                                         │
+│  [Zawartość kroku]                      │
+│                                         │
+├─────────────────────────────────────────┤
+│  [← Wstecz]              [Dalej →]      │
+└─────────────────────────────────────────┘
+```
+
+- `StepIndicator` – kółka (aktywne = `var(--accent)`, nieaktywne = `var(--border)`)
+- Przyciski nawigacji: Wstecz (disabled na kroku 0), Dalej / Zakończ (disabled jeśli walidacja nie przejdzie)
+
+### Krok 1: Motyw (Theme)
+
+3 przyciski-kafelki (min-width: 100px, padding: 16px 24px):
+
+| Opcja | Ikona | Klucz |
+|---|---|---|
+| Dark | `ICONS.ONBOARDING_THEME_DARK` | `onboarding.theme_dark` |
+| Light | `ICONS.ONBOARDING_THEME_LIGHT` | `onboarding.theme_light` |
+| System | `ICONS.ONBOARDING_LANGUAGE` | `onboarding.theme_system` |
+
+- Wybrany: `border: 2px solid var(--accent)`, `background: var(--accent-subtle)`
+- Zmiana stosowana live na `document.documentElement.classList`
+
+### Krok 2: Język (Language)
+
+Kafelki dla każdego z `LANGUAGES` z `config.js`:
+
+| Język | Flaga | Label |
+|---|---|---|
+| pl | 🇵🇱 | Polski |
+| en | 🇬🇧 | English |
+
+- Zmiana stosowana live przez `setLocale()`
+
+### Krok 3: Prywatność (Privacy)
+
+```
+┌──────────────────────────────────────────────┐
+│ Disclaimer                                   │
+│ • Dane przechowywane lokalnie                │
+│ • Brak śledzenia                             │
+│ • Open source                                │
+└──────────────────────────────────────────────┘
+[☑] Akceptuję (required – odblokowuje przycisk Dalej)
+
+Opcje prywatności (toggle-y):
+• Włącz powiadomienia toast    [ON]
+• Włącz logi debugowania       [OFF]
+• Włącz analitykę              [OFF]
+```
+
+- Przycisk Dalej disabled dopóki `disclaimerAccepted = false`
+
+### Krok 4: Szybki start – Aplikacje
+
+```
+AI
+  [ Claude ]  [ ChatGPT ]  [ Gemini ]  ...
+
+PRODUCTIVITY
+  [ Notion ]  [ Trello ]  [ Asana ]  ...
+```
+
+- Aplikacje z `app-library.json`, filtrowane przez `QUICK_START_MAP` z `onboardingConfig.js`
+- Wybrana: `border: 1.5px solid var(--accent)`, `border-radius: 20px`
+- Po zakończeniu onboardingu wybrane aplikacje dodawane jako profile
+
+### Krok 5: Konto (Account) — placeholder
+
+```
+        [ICONS.ONBOARDING_ACCOUNT  48px]
+
+        Synchronizacja konta – wkrótce
+
+  [ Zaloguj przez Google ]  (disabled)
+  [ Zaloguj przez GitHub ]  (disabled)
+
+  * Sync w przygotowaniu
+```
+
+- Wszystkie przyciski `disabled`, `cursor: not-allowed`
+- Nie blokuje ukończenia onboardingu
+
+---
+
+## 3. GŁÓWNY LAYOUT
+
+### Struktura (po onboardingu)
+
+```
+┌──────────────────────┬────────────────────────────────────────────────┐
+│ SIDEBAR (~260px)     │ MAIN CONTENT                                   │
+│ ─────────────────── │ ────────────────────────────────────────────── │
+│ [+] Profil [📁+]     │  ContentRenderer                               │
+│ [🔍 Szukaj...]       │                                                │
+│ ──── ─────────────── │  ← WebViewTab | Notepad | TaskPanel |          │
+│ ► AI                 │    ProjectManager | AggregatedTasks |          │
+│   • Claude AI        │    Terminal | HistoryLog | Settings |          │
+│   • ChatGPT          │    Tools (JSON/Regex/…) | Help                 │
+│ ► DEV                │                                                │
+│   • GitHub           │                                                │
+│ ──────────────────── │                                                │
+│ [App Library]        │                                                │
+│ ──────────────────── │                                                │
+│ ▼ Narzędzia spec.    │                                                │
+│   📓 Notepad         │                                                │
+│   📋 Project Manager │                                                │
+│   ☑  Aggregated      │                                                │
+│   📅 Historia        │                                                │
+│   🖼  Remove.bg      │                                                │
+│   🔗 StringCombiner  │                                                │
+│   >_ Terminal        │                                                │
+│   ⚙  Settings        │                                                │
+│   ❓ Help            │                                                │
+│ ──────────────────── │                                                │
+│ ▣ Workspaces         │                                                │
+│   • Workspace 1      │                                                │
+└──────────────────────┴────────────────────────────────────────────────┘
+```
+
+- CSS klasa `main-area--webview` gdy aktywny WebView (inna obsługa overflow)
+- CSS klasa `main-area--module` dla pozostałych widoków
+- `key` na `module-view` zmienia się przy każdej nawigacji → reset stanu
+
+---
+
+## 4. SIDEBAR
+
+### 4.1. SidebarHeader
+
+```
+┌───────────────────────────────┐
+│ [+ Dodaj profil]  [📁+]       │
+│ [🔍 Szukaj... ]  [🌐]         │
+└───────────────────────────────┘
+```
+
+- `[+ Dodaj profil]` – `btn-primary`, flex: 1
+- `[📁+]` – `btn-icon`, otwiera modal kategorii
+- `[🌐]` – toggle globalnego wyszukiwania (przeszukuje przez IPC)
+- Globalny search: wyniki drop-down pod polem, spinner `isGlobalSearching`
+
+### 4.2. App Library (kafelek nad listą profili)
+
+Widoczny tylko gdy `isFeatureEnabled('appLibrary')`:
+
+```
+┌──────────────────────────────────┐
+│ [ikona]  App Library             │
+└──────────────────────────────────┘
+```
+
+- Styl aktywny: `background: var(--accent)`, tekst biały
+- Otwiera widok `AppLibraryBrowser` w MAIN CONTENT
+
+### 4.3. Lista profili (SidebarProfileList)
+
+```
+★ ULUBIONE
+  ● Claude AI          [☑ tasks]
+  ● ChatGPT            [☑ tasks]
+
+► AI
+  ● Gemini
+  ● Perplexity
+
+► DEV
+  ● GitHub
+  ● StackOverflow
+```
+
+- Kategorie zwijane/rozwijane, stan w `settings.categories.collapsed`
+- PPM na profilu → `ContextMenu`:
   - Edytuj profil
   - Duplikuj
   - Usuń
+  - Przenieś do kategorii → podmenu
   - Otwórz w przeglądarce
-  - Przenieś do kategorii → lista kategorii
 
-## 2.3. Last used
+### 4.4. Narzędzia specjalne (SidebarTools)
 
-- 5–10 ostatnio otwieranych profili
-- sortowane po `lastUsedAt`
-- ikona: `ICONS.CLOCK`
+Lista z `SPECIAL_TOOLS`:
 
-## 2.4. Tools (narzędzia specjalne)
+```
+📓 Notepad
+📋 Project Manager
+☑  Aggregated Tasks
+─────────────────── (reszta sortowana alfabetycznie)
+📅 Historia
+❓ Help             (tylko gdy isFeatureEnabled('helpScreen'))
+🖼  Remove.bg
+>_ Terminal
+🔗 String Combiner
+⚙  Settings
+```
+
+- Pierwsze 3 (Notepad, Project Manager, Aggregated) zawsze na górze
+- Reszta sortowana alfabetycznie wg `t(labelKey)`
 
-Lista narzędzi (każde z ikoną z `ICONS` i tooltipem):
+### 4.5. SidebarWorkspaces
+
+```
+▣ Workspaces
+  📁 Workspace 1  ← aktywny (podświetlony)
+  📁 Workspace 2
+```
 
-- JSON Formatter (`ICONS.JSON`)
-- Regex Tester (`ICONS.REGEX`)
-- Markdown Previewer (`ICONS.MARKDOWN`)
-- Image Tools (`ICONS.IMAGE`)
-- SVG → PNG Converter (`ICONS.SVG`)
-- File Previewer (`ICONS.PREVIEW`)
-- Mini Postman (`ICONS.API`)
-- Clipboard History (`ICONS.CLIPBOARD`)
-- Remove.bg (`ICONS.REMOVEBG`)
-- String Combiner (`ICONS.STRINGCOMBINER`)
-- Update Checker (`ICONS.UPDATE`)
+- Widoczny tylko gdy `workspaces.length > 0`
+- Klik = `onSelect(workspace)`
+
+---
+
+## 5. WEBVIEWTAB
+
+### 5.1. Toolbar
+
+```
+[←] [→] [⟳] [⬡] [📋] [  https://claude.ai  ▸] [🛠] [+] [−] [🗑] [◼] [📷] [📊]
+```
+
+| Ikona | Akcja |
+|---|---|
+| `ICONS.BACK` | Wstecz |
+| `ICONS.FORWARD` | Naprzód |
+| `ICONS.REFRESH` | Odśwież |
+| `ICONS.EXTERNAL` | Otwórz w przeglądarce |
+| `ICONS.COPY` | Kopiuj URL |
+| Address bar | Readonly lub edytowalne (Settings) |
+| `ICONS.DEVTOOLS` | DevTools |
+| `ICONS.ZOOM_IN` | Zoom + |
+| `ICONS.ZOOM_OUT` | Zoom − |
+| `ICONS.CLEAR_CACHE` | Clear cache (ConfirmModal) |
+| `ICONS.SINGLE_APP` | Single App Mode |
+| `ICONS.CAMERA` | Screenshot |
+| `ICONS.MONITOR` | Resource Monitor (BACKLOG – UI brakuje) |
+
+### 5.2. Error bar
+
+```
+┌─────────────────────────────────────────────────────┐
+│ ❗  Brak internetu – strona nie odpowiada   [Reload] │
+└─────────────────────────────────────────────────────┘
+```
+
+Czerwony pasek pojawia się nad WebView przy HTTP error (`webview_httpErrors` handler).
+
+### 5.3. Sleep tabs
+
+Gdy zakładka śpi (`sleepTabsManager` po ustawionym timeout):
+
+```
+┌─────────────────────────────────────────────────────┐
+│                                                     │
+│           💤  Ta zakładka śpi                       │
+│                                                     │
+│                  [ Obudź ]                          │
+│                                                     │
+└─────────────────────────────────────────────────────┘
+```
+
+WebView unloaded, placeholder wyświetlony zamiast. `Wake up` = reload.
+
+---
+
+## 6. TASKPANEL
+
+Panel wysuwa się nad głównym contentem (overlay). Otwierany z ikony `[☑]` przy profilu lub z Sidebaru.
+
+### 6.1. Nagłówek
+
+```
+┌───────────────────────────────────────────────────┐
+│ ☑  MultiWeb Manager Tasks    [🔄]        [✕]      │
+│ ─────────────────────────────────────────────────  │
+│ [+ Dodaj zadanie]                                  │
+└───────────────────────────────────────────────────┘
+```
+
+### 6.2. Sekcje zadań
+
+```
+▼ ACTIVE (3)
+  [A] Zaimplementować Sleep Tabs             [✏] [🗑]
+  [B] Poprawić autosave Notepad              [✏] [🗑]
+  [C] Dodać tooltipsy                        [✏] [🗑]
+
+▼ BACKLOG (2)
+  [D] Refaktor Settings                      [✏] [🗑]
+  [E] Tile view                              [✏] [🗑]
+
+▼ DONE (1)
+  [✓] App Library Browser                   [✏] [🗑]
+```
+
+Kolory priorytetu:
+
+| Priorytet | Kolor |
+|---|---|
+| A | `#ef4444` (czerwony) |
+| B | `#f97316` (pomarańczowy) |
+| C | `#eab308` (żółty) |
+| D | `#3b82f6` (niebieski) |
+| E | `#22c55e` (zielony) |
+
+### 6.3. TaskModal
+
+```
+┌─────────────────────────────────┐
+│  Nowe zadanie                   │
+│  ─────────────────────────────  │
+│  Tytuł *  [                   ] │
+│  Priorytet [A ▾]                │
+│  Sekcja    [active ▾]           │
+│  Komentarz [                   ]│
+│  ─────────────────────────────  │
+│             [Anuluj]  [Zapisz]  │
+└─────────────────────────────────┘
+```
 
-Klik = otwarcie narzędzia w `MAIN CONTENT`.
+---
 
-## 2.5. Workspaces
+## 7. AGGREGATED TASKS
 
-- lista workspace’ów
-- klik = przełączenie workspace’a
-- aktywny workspace podświetlony (klasa `.active`)
-- PPM:
-  - Edytuj
-  - Duplikuj
-  - Usuń
+Widok zbiorczy zadań ze wszystkich grup. Dostępny z Sidebaru.
 
-# =============================================================================
-# 3. WEBVIEWTAB (PRZEGLĄDARKA)
-# =============================================================================
+### 7.1. Nagłówek z filtrami
 
-## 3.1. Toolbar (jak mini przeglądarka)
+```
+┌────────────────────────────────────────────────────────────────┐
+│ ☑  Wszystkie zadania                              [🔄]         │
+│  X active · Y total · Z groups                                 │
+│ ─────────────────────────────────────────────────────────────  │
+│ [🔍 Filtruj...] [Status ▾] [Priorytet ▾] [Sekcja ▾]           │
+│ [Zwiń wszystkie] [Rozwiń wszystkie] (gdy aktywny filtr: [✕])   │
+└────────────────────────────────────────────────────────────────┘
+```
 
-Elementy od lewej (każdy z `ICONS` i tooltipem):
+### 7.2. Lista grup
 
-- `ICONS.BACK` – Back
-- `ICONS.FORWARD` – Forward
-- `ICONS.REFRESH` – Refresh
-- `ICONS.EXTERNAL` – Open in browser
-- `ICONS.COPY` – Copy URL
-- Address bar (readonly lub editable)
-- `ICONS.DEVTOOLS` – DevTools
-- `ICONS.ZOOM_IN` – Zoom in
-- `ICONS.ZOOM_OUT` – Zoom out
-- `ICONS.CLEAR_CACHE` – Clear cache (z modałem potwierdzenia)
-- `ICONS.SINGLE_APP` – Single App Mode
+```
+▼ MultiWeb Manager (12)          [👁] [∧]
+  ─ ACTIVE ──────────────────────────────
+  [A] Zaimplementować Sleep Tabs
+  [B] Dodać App Library
+  ─ BACKLOG ─────────────────────────────
+  [C] Poprawić autosave
+  ─ DONE ────────────────────────────────
+  [✓] SplashScreen
 
-## 3.2. Error bar (zamiast alertów)
+▼ Projekt B (3)                  [👁] [∧]
+  ...
 
-Czerwony pasek nad WebView:
-❗ Brak internetu – strona nie odpowiada [Reload]
+■ Projekt C (ukryty)             [👁]
+  (uproszczony pasek, opacity 0.5)
+```
 
-- Ikona: `ICONS.WARNING`
-- Przycisk `Reload` odświeża WebView
+- `[👁]` – toggle ukrycia grupy (zapis w `settings.hiddenTaskGroups`)
+- `[∧]` / `[∨]` – zwijanie (zapis w `settings.collapsedTaskGroups`)
+- Pinnowane zadania (`task.pinned = true`) wyświetlane na górze sekcji
 
-## 3.3. Sleep tabs
+---
 
-Gdy zakładka nieaktywna przez ustawiony czas (Settings → Tabs):
-💤 Tab is sleeping [Wake up]
+## 8. NOTEPAD
 
-- WebView zatrzymany, placeholder z ikoną `ICONS.SLEEP`
-- Kliknięcie `Wake up` = reload
+### 8.1. Zakładki
 
-## 3.4. Tile view (opcjonalnie, planowane)
+```
+[ README.md ✕ ] [ notatki ✕ ] [ API ✕ ] [+]
+```
+
+- Double click → rename (inline edit)
+- `✕` → zamknięcie (ConfirmModal jeśli niezapisany)
+- `[+]` → nowa zakładka z domyślną nazwą
+
+### 8.2. Toolbar
+
+```
+[💾 Zapisz] [📋 Kopiuj] [🔍 Znajdź] [📥 Import] [📤 Eksport] [📋 Historia schowka]
+```
+
+### 8.3. Editor
 
-- 2–3 WebView obok siebie w gridzie
-- Status: BACKLOG
+```
+┌─────────────────────────────────────────────────────────────┐
+│  [Zawartość plain text — textarea]                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
 
-# =============================================================================
-# 4. TASKPANEL I AGGREGATEDTASKS
-# =============================================================================
+- Plain text (obecny stan)
+- Syntax highlight: BACKLOG (`isFeatureEnabled('syntaxHighlight') = false`)
+- Rich text: BACKLOG (`isFeatureEnabled('richText') = false`)
 
-## 4.1. TaskPanel (górny pasek)
+### 8.4. FindReplace bar (toggle przez toolbar)
 
-- przycisk `+ Add Task` – otwiera `TaskModal`
-- dropdown priorytetu (A/B/C/D/E)
-- search bar (filtruje po tytule / opisie)
-- filtr statusu: `Active` / `Done`
+```
+┌──────────────────────────────────────────────────┐
+│ Szukaj: [           ]  Zamień: [           ]     │
+│ [↑] [↓]  [Zamień]  [Zamień wszystkie]  [✕]       │
+└──────────────────────────────────────────────────┘
+```
 
-## 4.2. Lista zadań
+### 8.5. Status bar
 
-Każde zadanie:
-[ ] [A] Tytuł zadania
-Opis (max 1 linia)
-Projekt: X | Deadline: 2025-05-18
-[Edit] [Delete]
+```
+Linie: 142  |  Znaki: 3241  |  Autosave: włączony
+```
 
-- checkbox = toggle `done`
-- kolory priorytetów:
-  - A = czerwony
-  - B = pomarańczowy
-  - C = żółty
-  - D = zielony
-  - E = niebieski
+- Autosave co 5s tylko gdy content zmieniony (porównanie hash)
 
-## 4.3. TaskModal (dodawanie/edycja)
+---
 
-Pola:
+## 9. SETTINGS
 
-- Title (input)
-- Description (rich text – na przyszłość)
-- Priority (dropdown A–E)
-- Deadline (date/time)
-- Project (select)
-- Przyciski: `Save`, `Cancel`
+Sekcje w osobnych komponentach JSX, dostępne z Sidebaru lub `ContentRenderer`.
 
-## 4.4. AggregatedTasks (widok zbiorczy)
+### 9.1. General
 
-Sekcje per projekt:
-▼ Projekt: MultiWeb Manager (12 tasks)
-• [A] Zaimplementować Sleep Tabs
-• [B] Dodać App Library
-• [C] Poprawić autosave
+```
+Język          [ Polski ▾ ]
+Motyw          [ Ciemny ▾ ]
+Debug mode     [ OFF ]
+```
 
-Funkcje:
+### 9.2. WebView
 
-- collapse / expand (zapis w `settings.aggregatedTasks.collapsedProjects`)
-- hide / show (zapis w `settings.aggregatedTasks.hiddenProjects`)
-- sortowanie projektów po liczbie aktywnych zadań
-- liczniki: `Active`, `Backlog`, `Done`
+```
+AdBlocker               [ ON ]
+Edytowalny pasek URL    [ OFF ]
+Domyślny User Agent     [                      ]
+```
 
-# =============================================================================
-# 5. NOTEPAD
-# =============================================================================
+### 9.3. Tabs
 
-## 5.1. Tabs
-[ README.md ] [ Notes ] [ API ] [+]
+```
+Sleep tabs timeout      [ 15 min ▾ ]
+  (opcje: 5 / 15 / 30 / 60 min / nigdy)
+```
 
-- Double click → rename
-- `x` → close
-- `+` → new note
+### 9.4. Notifications
 
-## 5.2. Editor
+```
+Toasty UI               [ ON ]
+Powiadomienia systemowe [ ON ]
+Pushbullet API key      [                      ]  [Zapisz]
+  ▶ Jak ustawić Pushbullet?
+    1. Wejdź na pushbullet.com
+    2. Przejdź do ustawień API
+    3. Skopiuj klucz i wklej powyżej
+```
 
-Tryby (na przyszłość):
+### 9.5. Hotkeys (HotkeysManagerSection)
 
-- plain text
-- syntax highlight (CodeMirror/Monaco)
-- rich text (bold, italic, listy)
-- Markdown (opcjonalnie w Tools)
+```
+Skrót             Nazwa                   Tekst  Wł.   Akcje
+Ctrl+Shift+S      Screenshot WebView       -      [✓]  [✏][🗑]
+Ctrl+Shift+M      Resource Monitor         -      [✓]  [✏][🗑]
+Ctrl+Shift+1      Snippet: Email sig.     Best…  [✓]  [✏][🗑]
 
-## 5.3. Autosave
+[+ Dodaj skrót]
+```
 
-- zapis co 5s **tylko jeśli content się zmienił**
-- w rogu: `Autosave enabled`
+Modal edycji:
+```
+┌──────────────────────────────────┐
+│  Edytuj skrót                    │
+│  Skrót *    [Ctrl+Shift+S      ] │
+│  Nazwa *    [Screenshot        ] │
+│  Tekst      [                  ] │
+│  Akcja      [screenshot ▾]       │
+│  Włączony   [✓]                  │
+│             [Anuluj]  [Zapisz]   │
+└──────────────────────────────────┘
+```
 
-# =============================================================================
-# 6. TERMINAL
-# =============================================================================
+### 9.6. Konto (AccountSection)
 
-- okno terminala oparte o `xterm.js` + `node-pty`
-- historia komend (strzałka ↑)
-- kolorowanie ANSI
-- przyciski: `Clear`, `Restart session`
+Placeholder — przyciski logowania disabled (sync w przygotowaniu).
 
-# =============================================================================
-# 7. HISTORY LOG
-# =============================================================================
+### 9.7. Data & Management (DataManagementSection)
 
-Widok:
-[INFO] 2025-05-18 12:00 – Settings saved
-[WARN] 2025-05-18 12:01 – WebView crashed
-[ERROR] 2025-05-18 12:02 – IPC save failed
+```
+[Eksportuj ustawienia]  [Importuj ustawienia]
+```
 
-Funkcje:
+### 9.8. Logi (LogsSection) — widoczne tylko gdy `debugMode = true`
 
-- filtry (`info` / `warn` / `error`)
-- sortowanie
-- eksport CSV
-- clear history
+```
+Logi testów:
+[📂 Otwórz folder]  [👁 Podgląd]  [🗑 Wyczyść]
+Zapisuj logi  [OFF]
 
-# =============================================================================
-# 8. SETTINGS
-# =============================================================================
+Dziennik zdarzeń:
+Włącz dziennik zdarzeń  [OFF]
+(gdy ON:) [👁 Podgląd]  [🗑 Wyczyść]
+```
 
-Sekcje (każda w osobnym pliku JSX):
+### 9.9. Debug modules (DebugModulesSection)
 
-## General
+Toggle-y modułów debugowania — widoczne tylko gdy `debugMode = true`.
 
-- Language (PL/EN)
-- Dark Mode
-- Debug Mode
+### 9.10. WebView section (WebViewSection)
 
-## WebView
+Konfiguracja zachowania webview per instancja.
 
-- AdBlocker (toggle)
-- Default User Agent (input)
+### 9.11. Tabs section (TabsSection)
 
-## Tabs
+Konfiguracja zakładek i sleep tabs.
 
-- Sleep Tabs timeout (select: 5/15/30/60 min, `never`)
+---
 
-## Notifications
+## 10. TOOLS
 
-- Toasts (domyślnie włączone)
-- System notifications (toggle)
-- Pushbullet API key (pole z instrukcją)
+Dostępne z Sidebaru przez `ToolsContainer`. Rejestr narzędzi w `src/config/toolsRegistryConfig.js` — dodanie narzędzia = nowy wpis w rejestrze, bez modyfikacji ToolsContainer.
 
-## Hotkeys
+### Lista narzędzi
 
-- lista skrótów (tabela)
-- edycja skrótów (modal)
-- toggle włącz/wyłącz
+| Narzędzie | Feature flag | Komponent |
+|---|---|---|
+| JSON Formatter | `jsonFormatter` | `JsonFormatter.jsx` |
+| Regex Tester | `regexTester` | `RegexTester.jsx` |
+| Markdown Previewer | `markdownPreviewer` | `MarkdownPreviewer.jsx` |
+| Image Tools | `imageTools` | `ImageTools.jsx` |
+| SVG → PNG | `svgToPng` | `SvgToPngConverter.jsx` |
+| File Previewer | `filePreviewer` | `FilePreviewer.jsx` |
+| Mini Postman | `miniPostman` | `MiniPostman.jsx` |
+| Clipboard History | `clipboardHistory` | `ClipboardHistory.jsx` |
+| Cookie Grabber | `cookieGrabber` | `CookieGrabber.jsx` |
+| Remove.bg | `removeBg` | `RemoveBgTool.jsx` |
+| String Combiner | `stringCombiner` | `StringCombiner.jsx` |
 
-## Data & Logs
+Narzędzie z `featureFlag: false` → wyświetla komunikat `t('tools.disabled')` zamiast crasha.
 
-- Export settings (przycisk)
-- Import settings (przycisk)
-- Open logs folder (przycisk)
-- Export logs (przycisk)
+---
 
-# =============================================================================
-# 9. TOOLS (WIDOK GŁÓWNY)
-# =============================================================================
+## 11. TERMINAL
 
-Lista narzędzi zgodna z Sidebar (pkt 2.4).  
-Każde narzędzie ma własny komponent w `src/ui/tools/`.
+```
+┌────────────────────────────────────────────────────────────┐
+│ xterm.js viewport                                          │
+│                                                            │
+│ user@machine:~$ █                                          │
+│                                                            │
+└────────────────────────────────────────────────────────────┘
+│ [Wyczyść]  [Restart sesji]                                 │
+```
 
-# =============================================================================
-# 10. ELEMENTY WSPÓLNE UI
-# =============================================================================
+- `node-pty` backend, `xterm.js` frontend
+- ANSI coloring, historia komend (↑)
 
-## 10.1. Modale
+---
 
-- globalny komponent `Modal` (ESC zamyka, klik poza zamyka)
-- `ConfirmModal` (potwierdzenie akcji, zastępuje `window.confirm`)
-- zawartość modal – centrowana, ciemne tło, padding, przyciski `Save` / `Cancel`
+## 12. HISTORY LOG
 
-## 10.2. Toasty
+```
+Filtry: [Info] [Warn] [Error]  Sortowanie: [Najnowsze ▾]  [Eksport CSV]  [Wyczyść]
 
-- pojawiają się u dołu po prawej
-- typy: `success` (zielony), `error` (czerwony), `info` (niebieski), `warning` (żółty)
-- automatyczne znikanie po 3–5s, ręczne zamknięcie
+[INFO]  2026-06-07 13:08 – Settings saved
+[WARN]  2026-06-07 12:01 – WebView crashed
+[ERROR] 2026-06-07 12:00 – IPC save failed: profiles
+```
 
-## 10.3. Tooltipy
+---
 
-- na każdym przycisku, ikonie, kafelku, polu formularza
-- treść z locales (`t('tooltips.xxx')`)
-- jeśli istnieje skrót klawiszowy – wyświetlany w tooltipie
+## 13. ELEMENTY WSPÓLNE UI
 
-## 10.4. Loading states
+### 13.1. Modale
 
-- spinner / skeleton dla każdej operacji > 200 ms
-- blokada przycisku w czasie operacji
+- `Modal` – bazowy, ESC i klik-poza zamykają, `ModalPortal` przez `createPortal`
+- `ConfirmModal` – zastępuje `window.confirm`
+- `ProfileModal`, `CategoryModal`, `TaskModal`, `CommentModal`, `PromptModal`, `HotkeyModal`
+- Rozmiary: `small` 400px / `medium` 600px / `large` 800px
+- `z-index: 20000` (powyżej toastów i reszty UI)
 
-# =============================================================================
-# 11. STAN WDROŻENIA (DLA FIGMA)
-# =============================================================================
+### 13.2. Toasty (system kolejkowania)
 
-| Sekcja                           | Wdrożone w kodzie |
-|----------------------------------|-------------------|
-| Sidebar                          | ✅ tak            |
-| WebViewTab (toolbar, sleep tabs) | ✅ tak            |
-| AdBlocker (global + per profil)  | ✅ tak            |
-| TaskPanel + AggregatedTasks      | ✅ tak            |
-| Notepad (multi-tab, autosave)    | ✅ tak            |
-| Terminal (xterm + node-pty)      | ✅ tak            |
-| History Log                      | ✅ tak            |
-| Settings (wszystkie sekcje)      | ✅ tak            |
-| Tools (wszystkie narzędzia)      | ✅ tak            |
-| Modale + Toasty + Tooltipy       | ✅ tak            |
-| Tile View                        | ❌ backlog        |
-| Global Search (Ctrl+K)           | ❌ backlog        |
-| Quick Switcher (Ctrl+P)          | ❌ backlog        |
+```
+                          ┌────────────────────────────────┐
+                          │ ✓  Ustawienia zapisane      [✕] │  ← success (zielony)
+                          ├────────────────────────────────┤
+                          │ ⚠  Brak połączenia z net.   [✕] │  ← warning (żółty)
+                          └────────────────────────────────┘
+```
 
-# =============================================================================
-# 12. UWAGI DLA GRAFIKA / FIGMA
-# =============================================================================
+- Pozycja: fixed, `bottom: 20px, right: 20px`, `flex-direction: column-reverse`
+- Max widocznych jednocześnie: `MAX_ACTIVE = 3` (z `toastConfig.js`)
+- Overflow → FIFO queue (`toastReducerStore.js`)
+- Auto-dismiss: `VISIBLE_MS = 2000ms`, animacja exit: `ANIMATE_MS = 300ms`
+- Typy: `success` (zielony) / `error` (czerwony) / `info` (niebieski) / `warning` (żółty)
+- `z-index: 9000` (poniżej modali 20000)
+- Źródło eventu: `CustomEvent('mwm:toast')` z `notificationsManager.js`
 
-- Użyj ikon odpowiadających `icons.js` (lub ich graficznych odpowiedników)
-- Tooltipy i toasty jako osobne komponenty – bez gradientów, z `border-radius: 8px`
-- Sidebar – ciemne tło, listy bez zbędnych ozdobników
-- WebView toolbar – płaski, kontrastowy
-- Formularze – inputy z zaokrąglonymi rogami, focus na bordero
-- Modale – rozmiary: `small` (400px), `medium` (600px), `large` (800px)
-- Stany ładowania – neutralny szary spinner
+### 13.3. Tooltipy
 
-# =============================================================================
-# 13. PODSUMOWANIE
-# =============================================================================
+Na każdym przycisku, ikonie, polu formularza. Treść z locales.
 
-Plik powstał na podstawie:
+### 13.4. Loading states
 
-- kodu źródłowego `v0.0.3`
-- `structure.txt` i `DevelopersGuide.md`
-- bezpośredniej znajomości komponentów UI (Sidebar, WebViewTab, TaskPanel, AggregatedTasks, Notepad, Terminal, Settings, Tools, Modals)
+Spinner/skeleton dla operacji > 200ms. Blokada przycisku w czasie operacji.
 
-Jest to dokumentacja **rzeczywistego stanu aplikacji**, nie wizja czy backlog.
+---
 
-=============================================================================
-END OF FILE
-=============================================================================
+## 14. STAN WDROŻENIA
+
+| Sekcja | Status |
+|---|---|
+| SplashScreen | ✅ zaimplementowany |
+| OnboardingScreen (5 kroków) | ✅ zaimplementowany (Account = placeholder) |
+| Sidebar (Header, Profile List, Tools, Workspaces) | ✅ zaimplementowany |
+| WebViewTab (toolbar, sleep, error bar, AdBlocker) | ✅ zaimplementowany |
+| TaskPanel (active/backlog/done, TaskModal) | ✅ zaimplementowany |
+| AggregatedTasks (filtry, grupy, collapse/hide) | ✅ zaimplementowany |
+| Notepad (multi-tab, autosave, FindReplace) | ✅ zaimplementowany |
+| Terminal (xterm + node-pty) | ✅ zaimplementowany |
+| History Log (filtry, eksport) | ✅ zaimplementowany |
+| Settings (wszystkie sekcje) | ✅ zaimplementowany |
+| Tools (rejestr, 11 narzędzi) | ✅ zaimplementowany |
+| Toast system (kolejka, FIFO, MAX_ACTIVE=3) | ✅ zaimplementowany |
+| App Library Browser | ✅ zaimplementowany |
+| ProjectManager | ✅ zaimplementowany |
+| Resource Monitor UI | ❌ BACKLOG |
+| Tile View (WebView obok siebie) | ❌ BACKLOG |
+| Global Search (Ctrl+K) | ❌ BACKLOG (`unifiedSearch: false`) |
+| Quick Switcher | ❌ BACKLOG (`quickSwitcher: false`) |
+| Syntax highlight / Rich text w Notepad | ❌ BACKLOG |
+| WebView Script Injector UI | ❌ BACKLOG (`webviewScriptInjector: false`) |
+| Account / Sync | ❌ BACKLOG |
+
+---
+
+## 15. ZASADY OGÓLNE PROJEKTU UI
+
+- **Ciemny motyw domyślny**, jasny opcjonalny
+- **CSS variables** dla wszystkich kolorów (`var(--bg-primary)`, `var(--accent)`, itd.)
+- **Płaskie UI** – zero gradientów
+- **Ikonografia** wyłącznie z `src/utils/icons.js` (fasada na `src/data/icons.js`)
+- **Zakaz** `alert()` / `confirm()` / `prompt()` – zastąpione modalami i toastami
+- **Zakaz** hardcoded tekstów – wszystko przez `t('...')` z `TranslationContext`
+- **Animacje** 150–200ms (fade/slide)
+- `border-radius: 8px` na elementach UI, `12px` na kafelkach onboardingu
+- Formularze: inputy z focus na borderze, `border-radius: 8px`
+- Modale portowane przez `ModalPortal` (`createPortal` do `document.body`)

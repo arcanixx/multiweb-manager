@@ -1,5 +1,5 @@
 {
-  "_comment": "FILE: defaultProfiles.json | VERSION: 0.0.3 | PURPOSE: Domyślne profile użytkownika (template)",
+  "_comment": "FILE: defaultProfiles.json | PATH: src/data/defaultProfiles.json | VERSION: 0.0.3 | PURPOSE: Domyślne profile użytkownika (template) | FUNCTIONS: - | DEPENDS ON: - | UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.",
   "version": "0.0.3",
   "data": [
     {

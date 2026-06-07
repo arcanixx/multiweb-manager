@@ -2,25 +2,30 @@
 // FILE: TaskEditor.jsx
 // PATH: src/ui/taskpanel/TaskEditor.jsx
 // VERSION: 0.0.3
-// PURPOSE: Modal dodawania/edycji zadania – walidacja, zapis,
-//          integracja z IPC
+// PURPOSE: Wyspecjalizowany edytor zadań (inline lub modal) obsługujący walidację danych wejściowych, komunikację z tasksStore przez IPC oraz integrację z systemem toastów.
+// FUNCTIONS: TaskEditor
+// DEPENDS ON: react, loggerRenderer.js, constants.js, translations.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useState } from "react";
-import { TASK_PRIORITIES, TASK_STATUS } from "../../constants.js";
-import { t } from "../../locales/locale.js";
+import { logInfo, logError, logWarn, logDebug } from '../../utils/loggerRenderer.js';
+import { TASK_PRIORITIES, TASK_STATUS } from "../../constants/constants.js";
+import { TranslationContext } from '../../utils/translations.js';
+
+// ─── TaskEditor() – modal edycji/dodawania zadania z formularzem
+//   @param {Object} props – właściwości komponentu
+//   @param {Object|null} props.task – istniejące zadanie (tryb edycji) lub null
+//   @param {Function} props.onCancel – callback anulowania
+//   @param {Function} props.onSaved – callback po zapisaniu
+//   @returns {JSX.Element} – renderowany formularz zadania
 
 // ---------------------------------------------------------------------------
-// TaskEditor
-// Props:
-//   task      – obiekt zadania (null = tryb dodawania, obiekt = tryb edycji)
-//   onCancel  – callback anulowania
-//   onSaved   – callback po pomyślnym zapisie
-// ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
 export default function TaskEditor({ task, onCancel, onSaved }) {
+  const { t } = React.useContext(TranslationContext);
   const isEdit = !!task;
-
   const [form, setForm] = useState(
     task || {
       title: "",
@@ -30,28 +35,38 @@ export default function TaskEditor({ task, onCancel, onSaved }) {
     }
   );
 
-  /** Aktualizuje pojedyncze pole formularza. */
+  // ─── update() – aktualizuje pole formularza
+  //   @param {string} field – nazwa pola
+  //   @param {any} value – nowa wartość
+  //   @returns {void}
   function update(field, value) {
     setForm({ ...form, [field]: value });
   }
 
-  /** Waliduje i zapisuje zadanie przez IPC (tasks:add lub tasks:update). */
+  // ─── save() – waliduje i zapisuje zadanie przez IPC
+  //   @returns {Promise<void>}
   async function save() {
-    if (!form.title.trim()) {
-      window.showToast("error", t("tasks.editor.error.titleRequired"));
-      return;
-    }
-
-    const channel = isEdit ? "tasks:update" : "tasks:add";
-    const payload  = isEdit ? { id: task.id, patch: form } : form;
-
-    const res = await window.electronAPI.invoke(channel, payload);
-
-    if (res?.ok) {
-      window.showToast("success", t("tasks.editor.saved"));
-      onSaved();
-    } else {
-      window.showToast("error", t("tasks.editor.error.saveFailed"));
+    try {
+      if (!form.title.trim()) {
+        logWarn('tasks', 'TaskEditor: title is required');
+        window.showToast("error", t("tasks.editor.error.titleRequired"));
+        return;
+      }
+      const channel = isEdit ? "tasks:update" : "tasks:add";
+      const payload = isEdit ? { id: task.id, patch: form } : form;
+      const res = await window.electronAPI.invoke(channel, payload);
+      if (res?.ok) {
+        logInfo('tasks', `TaskEditor: task ${isEdit ? 'updated' : 'created'}`);
+        window.showToast("success", t("tasks.editor.saved"));
+        onSaved();
+      } else {
+        logError('tasks', 'TaskEditor: save failed', res?.error || 'Unknown IPC error');
+        logWarn('tasks', 'Nie można zapisać zadania');
+        window.showToast("error", t("tasks.editor.error.saveFailed"));
+      }
+    } catch (err) {
+      logError('tasks', 'TaskEditor.save exception', err.message);
+      logWarn('tasks', 'Wystąpił błąd podczas zapisu zadania');
     }
   }
 
@@ -118,7 +133,3 @@ export default function TaskEditor({ task, onCancel, onSaved }) {
     </div>
   );
 }
-
-// =============================================================================
-// END OF FILE
-// =============================================================================

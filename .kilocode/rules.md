@@ -1,0 +1,22 @@
+# KiloCode Rules — MultiWeb Manager
+# Pełne standardy: doc/AI_Development_Standards.md
+# Architektura: doc/DevelopersGuide.md | Struktura: doc/Structure.md
+
+## Zasady (skrót — pełne w AI_Development_Standards.md)
+
+- ZAKAZ nadpisywania plików od zera, usuwania komentarzy, zgadywania struktury
+- ZAKAZ `alert()`/`confirm()`/`prompt()`, hardcoded tekstów/ikon, importu fs/electron w src/*
+- Komunikacja z Node.js WYŁĄCZNIE przez `window.electronAPI.invoke()`
+- Nagłówki: `FILE → PATH → VERSION → PURPOSE → FUNCTIONS → DEPENDS ON → UWAGA`
+  - PURPOSE — jedyne pole do ręcznej edycji; bez wyrównania spacjami po `:`
+  - VERSION — zawsze z `package.json`, nigdy z pamięci
+- Feature flags: `isFeatureEnabled()` ZAWSZE po wszystkich hookach React
+- Nie rób automatycznych commitów — daj do review
+- Jeśli coś jest niejednoznaczne — dopytaj, nie zgaduj
+
+## Warstwy
+```
+UI/Hooks (src/ui/, src/hooks/)  →  invoke('ns:action')  →  IPC (src/ipc/)  →  Store (src/stores/)
+```
+
+## Branch roboczy: UAT-v0.0.4

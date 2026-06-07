@@ -2,43 +2,38 @@
 // FILE: ipcMainHandlers_history.js
 // PATH: src/ipc/ipcMainHandlers_history.js
 // VERSION: 0.0.3
-// PURPOSE: IPC dla historii odwiedzin/akcji.
-//          - history:getAll    – zwraca pełną historię (max 100 wpisów)
-//          - history:add       – dodaje nowy wpis i zapisuje
-//          - history:clear     – czyści historię
-//          - history:getRecent – zwraca ostatnie 10 wpisów
-// FUNCTIONS: history:getAll, history:add, history:clear, history:getRecent
-// DEPENDS ON: electron (ipcMain), logger.js, core/historyStore.js
-// UWAGA: Nie usuwaj komentarzy — opisują przeznaczenie każdego handlera.
+// PURPOSE: IPC dla historii odwiedzin/akcji. history:getAll    – zwraca pełną historię (max 5000 wpisów) history:add       – dodaje nowy wpis i zapisuje history:clear     – czyści historię history:getRecent – zwraca ostatnie 100 wpisów
+// FUNCTIONS: const:IPC_CHANNELS.HISTORY.GET_ALL, const:IPC_CHANNELS.HISTORY.ADD, const:IPC_CHANNELS.HISTORY.CLEAR, const:IPC_CHANNELS.HISTORY.GET_RECENT
+// DEPENDS ON: electron, historyStore.js, logger.js, ipcChannels.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain } from "electron";
 import {
   loadHistory,
-  saveHistory,
   addHistoryEntry,
-  clearHistory
-} from "../core/historyStore.js";
+  clearHistory,
+  getRecentHistory
+} from "../stores/historyStore.js";
 import { logError } from "../utils/logger.js";
-
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // ----------------------------------------------------------------
 // history:getAll – zwraca pełną historię z historyStore
 // ----------------------------------------------------------------
-ipcMain.handle("history:getAll", async () => {
+ipcMain.handle(IPC_CHANNELS.HISTORY.GET_ALL, async () => {
   try {
     const history = loadHistory();
     return { ok: true, data: history };
   } catch (err) {
-    logError("history:getAll failed", err);
+    logError('ipc', "history:getAll failed", err);
     return { ok: false, error: err.message };
   }
 });
-
 // ----------------------------------------------------------------
 // history:add – dodaje nowy wpis i zapisuje do store
-//   entry: { profileName, url, timestamp? }
+//   entry: { profileName, url, timestamp?, level? }
 // ----------------------------------------------------------------
-ipcMain.handle("history:add", async (_, entry) => {
+ipcMain.handle(IPC_CHANNELS.HISTORY.ADD, async (_, entry) => {
   try {
     if (!entry || typeof entry !== "object") {
       throw new Error("INVALID_HISTORY_ENTRY");
@@ -46,34 +41,32 @@ ipcMain.handle("history:add", async (_, entry) => {
     const updated = addHistoryEntry(entry);
     return { ok: true, data: updated };
   } catch (err) {
-    logError("history:add failed", err);
+    logError('ipc', "history:add failed", err);
     return { ok: false, error: err.message };
   }
 });
-
 // ----------------------------------------------------------------
 // history:clear – czyści historię, zwraca pustą tablicę
 // ----------------------------------------------------------------
-ipcMain.handle("history:clear", async () => {
+ipcMain.handle(IPC_CHANNELS.HISTORY.CLEAR, async () => {
   try {
     const empty = clearHistory();
     return { ok: true, data: empty };
   } catch (err) {
-    logError("history:clear failed", err);
+    logError('ipc', "history:clear failed", err);
     return { ok: false, error: err.message };
   }
 });
 
 // ----------------------------------------------------------------
-// history:getRecent – zwraca ostatnie 10 wpisów (quick access)
+// history:getRecent – zwraca ostatnie 100 wpisów (quick access)
 // ----------------------------------------------------------------
-ipcMain.handle("history:getRecent", async () => {
+ipcMain.handle(IPC_CHANNELS.HISTORY.GET_RECENT, async () => {
   try {
-    const history = loadHistory();
-    const recent = history.slice(0, 10);
+    const recent = getRecentHistory(100);
     return { ok: true, data: recent };
   } catch (err) {
-    logError("history:getRecent failed", err);
+    logError('ipc', "history:getRecent failed", err);
     return { ok: false, error: err.message };
   }
 });

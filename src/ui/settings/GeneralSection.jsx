@@ -1,0 +1,134 @@
+// =============================================================================
+// FILE: GeneralSection.jsx
+// PATH: src/ui/settings/GeneralSection.jsx
+// VERSION: 0.0.3
+// PURPOSE: Sekcja ustawień ogólnych aplikacji – zarządza wyborem języka (i18n), motywem graficznym (Light/Dark) oraz globalnym trybem debugowania (developer mode).
+// FUNCTIONS: GeneralSection
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer, icons
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+// =============================================================================
+
+import React, { useState, useEffect } from 'react';
+import { isFeatureEnabled } from '../../config.js';
+import { TranslationContext } from '../../utils/translations.js';
+import { logDebug, logInfo, logError, logWarn } from '../../utils/loggerRenderer';
+import { ICONS } from '../../utils/icons';
+
+// ─── GeneralSection() – sekcja ustawień ogólnych (język, tryb ciemny, debug)
+//   @returns {JSX.Element} – renderowana sekcja ustawień ogólnych
+export default function GeneralSection() {
+  const { t, language, setLanguage } = React.useContext(TranslationContext);
+  const [darkMode, setDarkMode] = useState(false);
+  const [debugMode, setDebugMode] = useState(false);
+
+  // ─── useEffect – ładowanie ustawień (theme + debugMode) z settingsStore przez IPC
+  useEffect(() => {
+    // ─── loadSettings() – ładuję ustawienia (theme + debugMode) z settingsStore przez IPC
+    const loadSettings = async () => {
+      try {
+        if (window.electronAPI?.invoke) {
+          const res = await window.electronAPI.invoke('settings:get');
+          if (res?.ok) {
+            const theme = res.data?.theme || 'system';
+            setDarkMode(theme === 'dark');
+            setDebugMode(res.data?.debugMode === true);
+            logInfo('settings', 'GeneralSection: settings loaded from IPC');
+          }
+        }
+      } catch (err) {
+        logError('settings', 'GeneralSection: failed to load settings', err.message);
+        logWarn('settings', 'Nie można załadować ustawień — fallback na localStorage');
+        // Fallback na localStorage gdy IPC niedostępne
+        setDarkMode(localStorage.getItem('theme') === 'dark');
+      }
+    };
+    loadSettings();
+  }, []);
+
+  // ─── handleDarkModeToggle() – przełącza tryb ciemny i zapisuje przez IPC
+  //   @returns {Promise<void>}
+  const handleDarkModeToggle = async () => {
+    try {
+      const newMode = !darkMode;
+      setDarkMode(newMode);
+      document.documentElement.classList.toggle('dark', newMode);
+      if (window.electronAPI?.invoke) {
+        await window.electronAPI.invoke('settings:update', { theme: newMode ? 'dark' : 'light' });
+      }
+      logInfo('settings', `GeneralSection: dark mode ${newMode ? 'enabled' : 'disabled'}`);
+    } catch (err) {
+      logError('settings', 'GeneralSection: dark mode toggle failed', err.message);
+      logWarn('settings', 'Wystąpił błąd podczas przełączania trybu ciemnego');
+    }
+  };
+
+  // ─── handleDebugModeToggle() – przełącza tryb debug
+  //   @returns {Promise<void>}
+  const handleDebugModeToggle = async () => {
+    try {
+      const newMode = !debugMode;
+      setDebugMode(newMode);
+      if (window.electronAPI?.setDebugMode) {
+        await window.electronAPI.setDebugMode(newMode);
+      }
+      logInfo('settings', `GeneralSection: debug mode ${newMode ? 'enabled' : 'disabled'}`);
+    } catch (err) {
+      logError('settings', 'GeneralSection: debug mode toggle failed', err.message);
+      logWarn('settings', 'Wystąpił błąd podczas przełączania trybu debug');
+    }
+  };
+
+  // ─── handleLanguageChange() – zmienia język interfejsu
+  //   @param {Event} e – zdarzenie zmiany selecta
+  //   @returns {void}
+  // ─── handleLanguageChange() – zmienia język interfejsu
+  const handleLanguageChange = (e) => {
+    try {
+      const newLang = e.target.value;
+      setLanguage(newLang);
+      logInfo('settings', `GeneralSection: language changed to ${newLang}`);
+    } catch (err) {
+      logError('settings', 'GeneralSection: language change failed', err.message);
+      logWarn('settings', 'Wystąpił błąd podczas zmiany języka');
+    }
+  };
+
+  return (
+    <section className="settings-section">
+      <h2>{ICONS.SETTINGS} {t('settings.general')}</h2>
+
+      <div className="setting-item">
+        <label>{t('settings.language')}</label>
+        <select value={language} onChange={handleLanguageChange}>
+          <option value="pl">Polski</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+
+      {isFeatureEnabled('darkMode') && (
+        <div className="setting-item">
+          <label>
+            <input
+              type="checkbox"
+              checked={darkMode}
+              onChange={handleDarkModeToggle}
+            />
+            {ICONS.THEME_DARK} {t('settings.darkMode')}
+          </label>
+        </div>
+      )}
+
+      <div className="setting-item">
+        <label>
+          <input
+            type="checkbox"
+            checked={debugMode}
+            onChange={handleDebugModeToggle}
+          />
+          {ICONS.DEBUG} {t('settings.debugMode')}
+        </label>
+        <span className="setting-description">{t('settings.debugModeDesc')}</span>
+      </div>
+    </section>
+  );
+}

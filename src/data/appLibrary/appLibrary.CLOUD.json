@@ -1,0 +1,13 @@
+[
+  { "id": "google_drive", "name": "Google Drive", "url": "https://drive.google.com", "icon": "https://ssl.gstatic.com/docs/doclist/images/drive_2020q4_32dp.png", "categoryId": "cloud" },
+  { "id": "dropbox", "name": "Dropbox", "url": "https://www.dropbox.com", "icon": "https://www.dropbox.com/static/images/favicon.ico", "categoryId": "cloud" },
+  { "id": "onedrive", "name": "OneDrive", "url": "https://onedrive.live.com", "icon": "https://p.sfx.ms/icons/favicon.ico", "categoryId": "cloud" },
+  { "id": "icloud", "name": "iCloud", "url": "https://www.icloud.com", "icon": "https://www.icloud.com/favicon.ico", "categoryId": "cloud" },
+  { "id": "mega", "name": "MEGA", "url": "https://mega.nz", "icon": "https://mega.nz/favicon.ico", "categoryId": "cloud" },
+  { "id": "box", "name": "Box", "url": "https://www.box.com", "icon": "https://www.box.com/favicon.ico", "categoryId": "cloud" },
+  { "id": "pcloud", "name": "pCloud", "url": "https://my.pcloud.com", "icon": "https://www.pcloud.com/favicon.ico", "categoryId": "cloud" },
+  { "id": "nextcloud", "name": "Nextcloud", "url": "https://nextcloud.com", "icon": "https://nextcloud.com/favicon.ico", "categoryId": "cloud" },
+  { "id": "wetransfer", "name": "WeTransfer", "url": "https://wetransfer.com", "icon": "https://wetransfer.com/favicon.ico", "categoryId": "cloud" },
+  { "id": "mediafire", "name": "MediaFire", "url": "https://www.mediafire.com", "icon": "https://www.mediafire.com/favicon.ico", "categoryId": "cloud" },
+  { "id": "amazon_drive", "name": "Amazon Drive", "url": "https://www.amazon.com/clouddrive", "icon": "https://www.amazon.com/favicon.ico", "categoryId": "cloud" }
+]

@@ -1,389 +1,219 @@
-=============================================================================
-FILE: AI_Development_Standards.md
-PATH: DOC/AI_Development_Standards.md
-VERSION: 0.0.3
-PURPOSE: Standardy tworzenia i modyfikacji kodu dla MultiWeb Manager
-DEPENDS ON: structure.txt, DevelopersGuide.md
-=============================================================================
+<!-- =============================================================================
+ FILE: AI_Development_Standards.md
+ PATH: doc/AI_Development_Standards.md
+ VERSION: 0.0.3
+ PURPOSE: Dokumentacja specyfikacji projektowej - Standardy tworzenia i modyfikacji kodu dla AI – kompaktowy przewodnik
+ FUNCTIONS: Dokumentacja: 13 sekcji głównych
+ DEPENDS ON: -
+ UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+ ============================================================================= -->
 
-# =============================================================================
-# AI DEVELOPMENT STANDARDS – MULTIWEB MANAGER v0.0.3
-# =============================================================================
-
-## Zasady tworzenia i modyfikacji kodu dla AI
-Poniższe standardy są ogólne, a przykłady mają charakter poglądowy.
-Implementacja zależy od aktualnej architektury aplikacji, istniejących wywołań i struktury modułów.
-Nazwy funkcji, hooków, loggerów czy helperów mogą się różnić (`logger()`, `_log()`, itp.),
-ale efekt końcowy musi zawsze spełniać zasady opisane poniżej.
+# AI DEVELOPMENT STANDARDS — MULTIWEB MANAGER
+> Szczegółowe przykłady implementacji: `doc/DevelopersGuide.md`
+> Struktura projektu: `doc/Structure.md` | `doc/Structure_light.md`
 
 ---
 
-# =============================================================================
-# 1. NAGŁÓWEK PLIKU (OBOWIĄZKOWY)
-# =============================================================================
+## 1. NAGŁÓWEK PLIKU (OBOWIĄZKOWY)
 
-Dla wszystkich plików, poza .json i tam, gdzie się nie da komentarza dodać:
+Każdy plik `*.js`, `*.cjs`, `*.jsx`:
+```js
 // =============================================================================
 // FILE: nazwa_pliku.js
-// PATH: pełna/ścieżka/od/roota
-// VERSION: aktualna wersja pliku, zwykle w formacie #.#.# iteracyjnie
-// PURPOSE: 1–3 linijki opisujące przeznaczenie pliku
-// FUNCTIONS: wypisane jeżeli istnieją i mają sens, funkcje, jakie są obsługiwane w danym module etc, zbiory danych CONST (pliki z danymi), lub kategorie (np. w locales, icons.js etc)
-// DEPENDS ON: lista zależności (moduły, pliki, biblioteki)
+// PATH: src/folder/nazwa_pliku.js
+// VERSION: 0.0.3
+// PURPOSE: opis przeznaczenia (edytuj ręcznie przy zmianie odpowiedzialności)
+// FUNCTIONS: eksportowane funkcje (auto-skrypt)
+// DEPENDS ON: zależności (auto-skrypt)
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
+```
 
-Dla plików .json:
+**Zasady:**
+- Kolejność pól STAŁA: `FILE → PATH → VERSION → PURPOSE → FUNCTIONS → DEPENDS ON → UWAGA`
+- `PURPOSE` — jedyne pole do ręcznej edycji przez AI
+- Pozostałe pola — **NIE modyfikuj ręcznie** (nadpisze `build_structure.py --fix`)
+- `VERSION` — zawsze z `package.json`, nigdy z pamięci; jeśli brak — zapytaj
+- Dodatkowe uwagi umieszczaj **POD** blokiem nagłówka, nie wewnątrz
+- Dla `.css`: `/* ... */`, dla `.md`/`.html`: `<!-- ... -->`, dla `.json`: `"_comment": "..."`
 
-{
-  "_comment": "FILE: nazwa_pliku.json | PATH: pełna/ścieżka | VERSION: #.#.# | PURPOSE: opis | UWAGA: Nie usuwać komentarzy",
-  "version": "#.#.#"
+---
+
+## 2. BEZPIECZEŃSTWO IPC (KRYTYCZNE)
+
+```
+src/ui/ i src/hooks/  →  window.electronAPI  →  preload.cjs  →  src/ipc/  →  src/stores/
+```
+
+- **ZAKAZ** importu `electron`, `fs`, `path`, `child_process` w `src/*` (renderer process)
+- Komunikacja z Node.js **WYŁĄCZNIE** przez `window.electronAPI.invoke(channel, ...args)`
+- Generyczny invoke: `window.electronAPI.invoke('namespace:action', payload)`
+
+**Konwencja kanałów IPC:** `namespace:action` (np. `tasks:getAll`, `settings:update`)
+
+**Wzorzec warstw:**
+```
+KomponentUI.jsx  →  useFeature.js (hook)  →  invoke('feature:action')
+                                                    ↓
+                              ipcMainHandlers_feature.js  →  featureStore.js
+```
+
+---
+
+## 3. HOOKI — KONWENCJA NAZEWNICTWA
+
+| Typ hooka | Nazwa pliku | Kiedy używać |
+|---|---|---|
+| Hook głównego komponentu | `useTaskPanel.js` | 1:1 z komponentem |
+| Hook pomocniczy | `useTaskPanelFilters.js` | wydzielona logika |
+| Hook domeny IPC | `useTasks.js` | dane domenowe przez IPC |
+
+Hook **NIGDY** nie importuje ze `src/stores/` — tylko `window.electronAPI.invoke()`.
+
+---
+
+## 4. IKONY — ZERO HARDCODED
+
+```js
+import { ICONS } from '../utils/icons.js'; // ← JEDYNE dozwolone źródło
+```
+
+- **ZAKAZ** emoji bezpośrednio w JSX/JS (niekompatybilne ze starszym Chrome)
+- **ZAKAZ** importu z `src/data/icons.js` — tylko przez fasadę `src/utils/icons.js`
+- Brakująca ikona → dodaj w `src/data/icons.js`
+
+---
+
+## 5. TŁUMACZENIA — ZERO HARDCODED
+
+```js
+import { TranslationContext } from '../utils/translations.js';
+const { t } = useContext(TranslationContext);
+// Każdy string widoczny dla użytkownika: t('klucz')
+```
+
+- Nowy klucz → dodaj jednocześnie w `pl.json` **i** `en.json` (i template)
+- Pliki locales: `src/locales/pl.json`, `en.json`, `help.pl.json`, `help.en.json`
+- Ikony w locales: `` `${ICONS.CAMERA} ${t('action')}` `` (backticki)
+
+---
+
+## 6. LOGGER
+
+| Kontekst | Import |
+|---|---|
+| Komponenty React (`*.jsx`) | `src/utils/loggerRenderer.js` |
+| Pozostałe (`*.js`, `*.cjs`) | `src/utils/logger.js` |
+
+```js
+logInfo('module', 'komunikat', dane);   // moduły: webview, terminal, tasks,
+logError('module', 'błąd', err);        //   tools, settings, engine, store, ipc, ui
+logWarn('module', 'ostrzeżenie');
+logDebug('module', 'debug');
+```
+
+---
+
+## 7. FEATURE FLAGS
+
+Obiekt `FEATURES` w `src/config.js`. Szczegóły: `DevelopersGuide.md` sekcja 13.
+
+```jsx
+// ZAWSZE po wszystkich hookach — React Hook called conditionally to błąd
+export default function Komponent() {
+  const { t } = useContext(TranslationContext); // hook
+  const [s, setS] = useState(null);             // hook
+  if (!isFeatureEnabled('klucz')) return null;  // ← PO hookach
+  return <div>...</div>;
 }
+```
+
+Checklista nowego feature flaga: wpis w `FEATURES`, `isFeatureEnabled` po hookach, pole `feature` w `allTools` (jeśli tool), update tabeli w `DevelopersGuide.md` sekcja 13.5.
 
 ---
 
-# =============================================================================
-# 2. IKONY – ZERO HARDCODED
-# =============================================================================
+## 8. ZAKAZY BEZWZGLĘDNE
 
-## Zabronione
-- Emoji w kodzie (np. 🪟 – błędna ikona, niekompatybilna ze starszym Chrome).
-- Stringi z ikonami wpisane bezpośrednio w kodzie.
-- Fallbacki do emoji.
-- Wklejanie ikon bezpośrednio w JSX lub JS.
-
-## Dozwolone
-import { ICONS } from '../data/icons.js'
-<button>{ICONS.SINGLE_APP}</button>
-
-Użycie w JS:
-const label = `${ICONS.CAMERA} ${t('actions.takePhoto')}`
-
-Jeśli brakuje ikony — dodaj ją w icons.js, nie w komponencie.
-
-## Przykład w icons.js
-ICONS.CAMERA = '📸';
-ICONS.WINDOW_BAD = '🪟'; // przykład błędnej ikony – nie używać
-
-## Dodatkowe uwagi
-- Ikony muszą być zgodne ze starszym Chrome.
-- Przy refaktorze często gubi się fallback/title/label — zwracać uwagę.
-- Ikony w locales muszą być w backtickach:
-  `${ICONS.CAMERA} Zrób zdjęcie`
+- `alert()`, `confirm()`, `prompt()` → zamiast tego modale z `src/ui/modals/`
+- Hardcoded teksty → `t('klucz')`
+- Hardcoded ikony → `ICONS.NAZWA`
+- Import `electron`/`fs`/`path` w `src/*` → `window.electronAPI`
+- Automatyczne commity → zawsze daj do review
 
 ---
 
-# =============================================================================
-# 3. TŁUMACZENIA – ZERO HARDCODED
-# =============================================================================
+## 9. ZASADY EDYCJI PLIKÓW
 
-## Zabronione
-- Teksty w JSX (`<h1>Hello</h1>`)
-- Komunikaty w konsoli
-- Tooltipy, placeholdery, labelki
-- Teksty w modalach, toastach, potwierdzeniach
-
-## Dozwolone
-import { useTranslation } from '../hooks/useTranslation'
-const { t } = useTranslation()
-<h1>{t('hello')}</h1>
-
-## Locales
-src/locales/pl.json  
-src/locales/en.json  
-src/locales/helpData_pl.json  
-src/locales/helpData_en.json
-
-Każdy nowy klucz musi być dodany w PL i EN.
-
-## Ikony w tłumaczeniach
-Jeśli tłumaczenie zawiera `${ICONS.*}`, cały wpis musi być w backtickach:
-`${ICONS.CAMERA} Zrób zdjęcie`
+- **ZAKAZ** generowania pliku od zera jeśli istnieje — tylko chirurgiczne edycje
+- **ZAKAZ** usuwania komentarzy
+- **ZAKAZ** zgadywania struktury — najpierw przeczytaj plik z repo (`Structure.md`)
+- `config.js` — zawsze metoda merge, nigdy overwrite całego obiektu
+- Event listenery → cleanup w `return ()` hooka
+- IPC handlery → walidacja + `try/catch` + `{ ok, data, error }`
+- Nowe moduły → testy w `tests/TestRunner_*.js`
 
 ---
 
-# =============================================================================
-# 4. LOGGER – debugMode
-# =============================================================================
+## 10. CHECKLISTA PRZED COMMITEM
 
-## W plikach .js
-import { logDebug, logError, logWarn, logInfo } from '../utils/loggerRenderer.js'
-
-logDebug('LoggerRenderer.init', { context })
-logError('LoggerRenderer.error', err)
-
-## W plikach .jsx
-import { logDebug } from '../utils/loggerRenderer'
-
-const handleClick = () => {
-  logDebug('Button.clicked', { source: 'MainActionButton' })
-}
-
-## Zasada
-Każda istotna funkcja/akcja powinna logować, gdy debugMode = true.
+- [ ] Nagłówki: poprawna kolejność, `PURPOSE` uzupełnione
+- [ ] Brak `alert()` / `confirm()` / `prompt()`
+- [ ] Brak hardcoded tekstów i ikon
+- [ ] Ikony z `utils/icons.js`, logger z `utils/loggerRenderer.js` lub `utils/logger.js`
+- [ ] Komunikacja z Node.js tylko przez `window.electronAPI`
+- [ ] Event listenery mają cleanup
+- [ ] IPC handlery: walidacja + `try/catch` + `{ ok, data, error }`
+- [ ] Nowe funkcje mają testy
+- [ ] Zmiany UI → `pending_updates_for_Definition_Mockups_UI_UX.md`
+- [ ] Locales zaktualizowane (pl + en)
+- [ ] Brak automatycznych commitów
 
 ---
 
-# =============================================================================
-# 5. KOMENTARZE W KODZIE
-# =============================================================================
-
-- Każda istotna funkcja lub stała powinna mieć krótki komentarz (1–2 linijki).
-- Jeśli const zawiera dane — opisz skąd pochodzą.
-- Przy refaktorze aktualizuj nagłówek pliku.
-- Komentarzy nie usuwamy.
-
----
-
-# =============================================================================
-# 6. TESTY JEDNOSTKOWE
-# =============================================================================
-
-Każdy nowy moduł → nowe testy w tests/TestRunner_NazwaModulu.js  
-Minimum 3 testy na moduł.
-
-## Przykład
-import { ICONS } from '../src/data/icons.js'
-import { t } from '../src/locales/i18n'
-import { logInfo, logError } from '../src/utils/logger.js'
-
-export async function runNazwaModuluTests() {
-  const title = `${ICONS.TEST} ${t('tests.nazwaModulu.title')}`
-  let passed = 0
-  let failed = 0
-
-  console.log(title)
-
-  try {
-    // test 1 – t('tests.nazwaModulu.case1')
-    // test 2 – t('tests.nazwaModulu.case2')
-    // test 3 – t('tests.nazwaModulu.case3')
-  } catch (err) {
-    logError(t('tests.nazwaModulu.error'), err)
-    failed++
-  }
-
-  logInfo(t('tests.nazwaModulu.summary'), { passed, failed })
-  return { passed, failed }
-}
-
----
-
-# =============================================================================
-# 7. REFAKTOR – ROZBIJANIE DUŻYCH PLIKÓW
-# =============================================================================
-
-Jeśli plik > 8 KB i/lub zawiera różne logiki → rozbij na moduły. 
-Przykład poniżej dla Settings.
-
-## Konwencja
-Settings_Engine.js  
-Settings_UI.jsx  
-Settings_Data.json  
-Settings.utils.js
-
-## Katalogi
-src/core/  
-src/engine/  
-src/ui/[modul]/  
-src/utils/  
-src/data/
-
----
-
-# =============================================================================
-# 8. AKTUALIZACJA DOKUMENTACJI
-# =============================================================================
+## 11. AKTUALIZACJA DOKUMENTACJI
 
 Po każdej istotnej zmianie:
-
-- DevelopersGuide.md
-- helpData_pl.json / helpData_en.json
-- structure.txt — aktualizacja struktury, zależności, kolejności importów
-
-Jeśli structure.txt nie istnieje — należy go stworzyć.
-
-structure.txt powinien zawierać:
-- listę plików i folderów,
-- opis odpowiedzialności każdego modułu,
-- kolejność ładowania/importów,
-- zależności między modułami,
-- komentarze dotyczące architektury.
+- `doc/Structure.md` — uruchom `build_structure.py --fix`
+- `doc/Requirements.md` — zaktualizuj statusy zadań
+- `doc/DevelopersGuide.md` — jeśli zmienia się architektura/API
+- `pending_updates_for_Definition_Mockups_UI_UX.md` — jeśli zmienia się UI (nie główny plik!)
+- `src/locales/` — nowe klucze w pl + en
 
 ---
 
-# =============================================================================
-# 9. STYLE (CSS)
-# =============================================================================
+## 12. NAZEWNICTWO PLIKÓW
 
-## Zasady
-- Brak stylów inline (poza dynamicznymi).
-- Style podzielone logicznie.
-- Modułowość CSS zgodna ze strukturą projektu.
-
-## Przykład 1
-index.css  
-layout.css  
-theme.css  
-components.css
-
-## Przykład 2
-base.css  
-core.css  
-settings.css  
-minigames.css  
-actions.css  
-utils.css  
-modals.css  
-toasts.css
+| Typ | Lokalizacja | Przykład |
+|---|---|---|
+| Handler IPC | `src/ipc/ipcMainHandlers_*.js` | `ipcMainHandlers_tasks.js` |
+| Hook | `src/hooks/use*.js` | `useTaskPanel.js` |
+| Store | `src/stores/*Store.js` | `tasksStore.js` |
+| Engine | `src/engine/*.js` | `adBlocker.js` |
+| Komponent UI | `src/ui/[modul]/*.jsx` | `TaskPanel.jsx` |
+| Narzędzie (front) | `src/ui/tools/*.jsx` | `JsonFormatter.jsx` |
+| Test | `tests/TestRunner_*.js` | `TestRunner_Tasks.js` |
 
 ---
 
-# =============================================================================
-# 10. CHECKLISTA PRZED PUSH
-# =============================================================================
-
-- Nagłówki w plikach
-- Brak hardcoded ikon i tekstów
-- Dodane testy
-- Zaktualizowane locales
-- Logger w kluczowych miejscach
-- Komentarze aktualne
-- npm run dev bez błędów
-- debugMode: true → testy przechodzą
-
 ---
 
-# =============================================================================
-# 11. DODATKOWE UWAGI
-# =============================================================================
+## 13. ZASADY MODYFIKACJI TESTÓW
 
-- Nazwy plików: `_`, nie `-`
-- Ścieżki od roota
-- Wersja iteracyjna (#.#.#)
-- Komentarzy nie usuwamy
-- Jeżeli dostaniesz plik z poprawkami do merge jako cały plik do podmiany, 
-	upewnij się, że nic ważnego nie znika z poprzedniego, 
-	lub nie jest to okrojona wersja raptem.
+- **NIGDY** nie zastępuj testu `checkSourceExport` gdy hook/komponent zaczyna failować — dodaj fallback Node
+- **NIGDY** nie upraszczaj testu "żeby przechodził" — zachowaj oryginalną funkcjonalność
+- Wzorzec fallback:
+  ```js
+  run: async () => {
+    if (typeof window === 'undefined') {
+      const mod = await safeImport('src/hooks/useExample.js');
+      return { ok: typeof mod.useExample === 'function', details: 'Node fallback' };
+    }
+    // normalny test z mockElectronAPI
+  }
+  ```
+- `checkSourceExport` tylko dla: re-exportów, `React.lazy()`, czystych stałych
+- Szczegóły: `doc/DevelopersGuide.md` sekcja 23
 
----
 
-# =============================================================================
-# 12. TOOLTIPY
-# =============================================================================
+<!-- KONIEC DOKUMENTU -->
 
-Każdy przycisk powinien mieć tooltip.  
-Tekst tooltipa w locales.  
-Ikony w tooltipach: `${ICONS.INFO} ${t('tooltips.settings')}`
-
----
-
-# =============================================================================
-# 13. TOAST MESSAGES
-# =============================================================================
-
-Każde działanie → toast.  
-Tekst z locales.  
-Ikony z ICONS.
-
----
-
-# =============================================================================
-# 14. ZAKAZ UŻYWANIA NATYWNYCH PROMPTÓW
-# =============================================================================
-
-Nie używamy:
-window.alert  
-window.confirm  
-window.prompt
-
-Zamiast tego — własne modale,
-bazujące na spójnym CSS projektu,
-z tłumaczeniami z locales,
-z ikonami z ICONS,
-z pełną kontrolą nad UX.
-
----
-
-# =============================================================================
-# 15. STRUKTURA CSS A MODUŁY
-# =============================================================================
-
-Pliki CSS powinny być rozbite według funkcjonalności:
-base/core, settings, actions, utils, modals, toasts, itp.
-
----
-
-# =============================================================================
-# 16. REQUIREMENTS.MD — STANDARD ZARZĄDZANIA WYMAGANIAMI
-# =============================================================================
-
-Plik requirements.md jest obowiązkowy w każdym projekcie.  
-Zawiera pełną listę wymagań funkcjonalnych i niefunkcjonalnych, podzielonych na moduły.
-
-## Struktura pliku
-
-Każdy moduł powinien mieć własną sekcję:
-
-## [Nazwa Modułu]
-- ID: unikalny identyfikator wymagania, nawiązujący też do modułu np. (SETTINGS_REQ-001, SETTINGS_REQ-002, ...)
-- Opis: pełny opis wymagania
-- Status: IN_SPRINT / BLOCKED / BACKLOG / DONE
-- Priorytet: CRITICAL / MAJOR / MINOR
-- Version (opcjonalnie): wersja aplikacji, w której wymaganie ma być dostępne
-- Komentarz: dodatkowe informacje, powody blokady, zależności, cokolwiek użytecznego
-
-## Statusy
-
-### IN_SPRINT  
-Wymaganie jest aktualnie implementowane.
-
-### BLOCKED  
-Wymaganie nie może być realizowane (np. brak API, brak danych, zależność od innego modułu).  
-Zalecane: dopisać komentarz z powodem blokady.
-
-### BACKLOG  
-Wymaganie zaplanowane na później.
-
-### DONE  
-Wymaganie zaimplementowane, przetestowane i potwierdzone.
-
-## Priorytety
-
-### CRITICAL  
-Blokuje działanie aplikacji lub kluczowych funkcji.
-
-### MAJOR  
-Istotne wymaganie, ale nie blokujące.
-
-### MINOR  
-Dodatkowe funkcje, ulepszenia, kosmetyka.
-
-## Zasady aktualizacji
-
-- Każda zmiana w projekcie → aktualizacja requirements.md  
-- Każdy nowy pomysł → wpis do BACKLOG  
-- Każdy błąd → wpis jako nowe wymaganie (CRITICAL lub MAJOR)  
-- Każdy sprint → przeniesienie wymagań do IN_SPRINT  
-- Po wdrożeniu → DONE + Version 
-
----
-
-# =============================================================================
-# 17. KONFIGURACJA - Plik konfiguracyjny config.js
-# =============================================================================
-
-## Plik konfiguracyjny config.js”
-Zawiera wszystkie rzeczy z innych modulów, które mogą być łatwo zmieniane, jeśli dotyczą aplikacji, jak:
-- DEBUG MODE true/false
-- DEFAULT_LANGUAGE
-- wszelkiego rodzaju ilosci, jak np. ilosc wpisów, jakie ClipboardHistory ma przechowywać, czy czas, po jakim cos się ma zadziać jako event/akcja,
-- DEFAULT_THEME
-- DEFAULT_PROFILE
-- inne rzeczy z modułów, które warto mieć zebrane w jednym miejscu, z opisanym komentarzem, za co odpowiadają, a mają istotny wpływ jako konfiguracja
-
----
-
-=============================================================================
-# KONIEC DOKUMENTU
-=============================================================================

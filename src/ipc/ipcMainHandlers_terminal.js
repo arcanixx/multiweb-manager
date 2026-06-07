@@ -1,32 +1,28 @@
 // =============================================================================
 // FILE: ipcMainHandlers_terminal.js
 // PATH: src/ipc/ipcMainHandlers_terminal.js
-// VERSION: v1.0
-// PURPOSE: IPC dla Terminala (node-pty + xterm.js)
-//          - tworzenie sesji
-//          - wysyłanie danych
-//          - odbieranie danych
-//          - zamykanie sesji
-//          - restart
-//          - cleanup
+// VERSION: 0.0.3
+// PURPOSE: IPC dla Terminala (node-pty + xterm.js) tworzenie sesji wysyłanie danych odbieranie danych zamykanie sesji restart cleanup
+// FUNCTIONS: const:IPC_CHANNELS.TERMINAL.CREATE, const:IPC_CHANNELS.TERMINAL.WRITE, const:IPC_CHANNELS.TERMINAL.RESIZE, const:IPC_CHANNELS.TERMINAL.GET_BUFFER, const:IPC_CHANNELS.TERMINAL.KILL, const:IPC_CHANNELS.TERMINAL.RESTART
+// DEPENDS ON: electron, logger.js, ipcChannels.js, node-pty, os
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain } from "electron";
 import { logError } from "../utils/logger.js";
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 import pty from "node-pty";
 import os from "os";
-
 // =============================================================================
 // GLOBAL STORAGE
 // =============================================================================
-
 const terminals = {};
 const terminalBuffers = {};
-
 // =============================================================================
-// HELPER: create shell command per OS
+// HELPER: domyślna powłoka per OS
 // =============================================================================
 
+// ─── getDefaultShell() – Zwraca nazwę binarnego pliku domyślnej powłoki systemowej na podstawie platformy
 function getDefaultShell() {
   if (os.platform() === "win32") return "powershell.exe";
   if (os.platform() === "darwin") return "zsh";
@@ -34,41 +30,62 @@ function getDefaultShell() {
 }
 
 // =============================================================================
-// CREATE TERMINAL SESSION
+// HELPER: tworzenie procesu PTY
 // =============================================================================
 
-ipcMain.handle("terminal:create", async (_, { cwd }) => {
+// ─── spawnPty() – Tworzy nowy proces PTY z daną powłoką i CWD; rejestruje handlery onData/onError/onExit
+//   @param {string} terminalId – ID terminala (string z PID)
+//   @param {string} cwd        – katalog roboczy
+//   @returns {Object}          – instancja ptyProcess
+function spawnPty(terminalId, cwd) {
+  const shell = getDefaultShell();
+  const ptyProcess = pty.spawn(shell, [], {
+    name: "xterm-color",
+    cols: 120,
+    rows: 30,
+    cwd: cwd || process.cwd(),
+    env: process.env
+  });
+
+  terminals[terminalId]       = ptyProcess;
+  terminalBuffers[terminalId] = [];
+
+  ptyProcess.onData((data) => {
+    terminalBuffers[terminalId].push(data);
+    if (terminalBuffers[terminalId].length > 2000) {
+      terminalBuffers[terminalId].shift();
+    }
+  });
+
+  ptyProcess.on('error', (err) => {
+    logError('ipc', `PTY error on terminal ${terminalId}`, err);
+    try { ptyProcess.kill(); } catch (_) {}
+    delete terminals[terminalId];
+    delete terminalBuffers[terminalId];
+  });
+
+  ptyProcess.onExit(() => {
+    delete terminals[terminalId];
+    delete terminalBuffers[terminalId];
+  });
+
+  return ptyProcess;
+}
+// =============================================================================
+// CREATE TERMINAL SESSION
+// =============================================================================
+ipcMain.handle(IPC_CHANNELS.TERMINAL.CREATE, async (_, { cwd }) => {
   try {
-    const shell = getDefaultShell();
-
-    const ptyProcess = pty.spawn(shell, [], {
-      name: "xterm-color",
-      cols: 120,
-      rows: 30,
-      cwd: cwd || process.cwd(),
-      env: process.env
-    });
-
+    const ptyProcess = spawnPty('_tmp', cwd); // tymczasowe ID przed poznaniem PID
     const terminalId = String(ptyProcess.pid);
-
-    terminals[terminalId] = ptyProcess;
-    terminalBuffers[terminalId] = [];
-
-    ptyProcess.onData((data) => {
-      terminalBuffers[terminalId].push(data);
-      if (terminalBuffers[terminalId].length > 2000) {
-        terminalBuffers[terminalId].shift();
-      }
-    });
-
-    ptyProcess.onExit(() => {
-      delete terminals[terminalId];
-      delete terminalBuffers[terminalId];
-    });
-
+    // przenieś pod właściwe ID
+    terminals[terminalId]       = terminals['_tmp'];
+    terminalBuffers[terminalId] = terminalBuffers['_tmp'];
+    delete terminals['_tmp'];
+    delete terminalBuffers['_tmp'];
     return { ok: true, data: { terminalId } };
   } catch (err) {
-    logError("terminal:create failed", err);
+    logError('ipc', "terminal:create failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -77,15 +94,19 @@ ipcMain.handle("terminal:create", async (_, { cwd }) => {
 // WRITE TO TERMINAL
 // =============================================================================
 
-ipcMain.handle("terminal:write", async (_, { terminalId, data }) => {
+ipcMain.handle(IPC_CHANNELS.TERMINAL.WRITE, async (_, payload) => {
   try {
+    if (!payload || typeof payload !== 'object' || !('terminalId' in payload) || !('data' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { terminalId, data } = payload;
     const term = terminals[terminalId];
     if (!term) throw new Error("TERMINAL_NOT_FOUND");
 
     term.write(data);
     return { ok: true };
   } catch (err) {
-    logError("terminal:write failed", err);
+    logError('ipc', "terminal:write failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -94,7 +115,7 @@ ipcMain.handle("terminal:write", async (_, { terminalId, data }) => {
 // RESIZE TERMINAL
 // =============================================================================
 
-ipcMain.handle("terminal:resize", async (_, { terminalId, cols, rows }) => {
+ipcMain.handle(IPC_CHANNELS.TERMINAL.RESIZE, async (_, { terminalId, cols, rows }) => {
   try {
     const term = terminals[terminalId];
     if (!term) throw new Error("TERMINAL_NOT_FOUND");
@@ -102,7 +123,7 @@ ipcMain.handle("terminal:resize", async (_, { terminalId, cols, rows }) => {
     term.resize(cols, rows);
     return { ok: true };
   } catch (err) {
-    logError("terminal:resize failed", err);
+    logError('ipc', "terminal:resize failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -111,12 +132,12 @@ ipcMain.handle("terminal:resize", async (_, { terminalId, cols, rows }) => {
 // READ BUFFER (initial dump for xterm)
 // =============================================================================
 
-ipcMain.handle("terminal:getBuffer", async (_, terminalId) => {
+ipcMain.handle(IPC_CHANNELS.TERMINAL.GET_BUFFER, async (_, terminalId) => {
   try {
     const buffer = terminalBuffers[terminalId] || [];
     return { ok: true, data: buffer.join("") };
   } catch (err) {
-    logError("terminal:getBuffer failed", err);
+    logError('ipc', "terminal:getBuffer failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -125,7 +146,7 @@ ipcMain.handle("terminal:getBuffer", async (_, terminalId) => {
 // KILL TERMINAL
 // =============================================================================
 
-ipcMain.handle("terminal:kill", async (_, terminalId) => {
+ipcMain.handle(IPC_CHANNELS.TERMINAL.KILL, async (_, terminalId) => {
   try {
     const term = terminals[terminalId];
     if (!term) throw new Error("TERMINAL_NOT_FOUND");
@@ -136,7 +157,7 @@ ipcMain.handle("terminal:kill", async (_, terminalId) => {
 
     return { ok: true };
   } catch (err) {
-    logError("terminal:kill failed", err);
+    logError('ipc', "terminal:kill failed", err);
     return { ok: false, error: err.message };
   }
 });
@@ -145,39 +166,16 @@ ipcMain.handle("terminal:kill", async (_, terminalId) => {
 // RESTART TERMINAL
 // =============================================================================
 
-ipcMain.handle("terminal:restart", async (_, { terminalId, cwd }) => {
+ipcMain.handle(IPC_CHANNELS.TERMINAL.RESTART, async (_, { terminalId, cwd }) => {
   try {
     const old = terminals[terminalId];
     if (old) old.kill();
-
-    const shell = getDefaultShell();
-
-    const ptyProcess = pty.spawn(shell, [], {
-      name: "xterm-color",
-      cols: 120,
-      rows: 30,
-      cwd: cwd || process.cwd(),
-      env: process.env
-    });
-
-    terminals[terminalId] = ptyProcess;
-    terminalBuffers[terminalId] = [];
-
-    ptyProcess.onData((data) => {
-      terminalBuffers[terminalId].push(data);
-      if (terminalBuffers[terminalId].length > 2000) {
-        terminalBuffers[terminalId].shift();
-      }
-    });
-
-    ptyProcess.onExit(() => {
-      delete terminals[terminalId];
-      delete terminalBuffers[terminalId];
-    });
-
+    delete terminals[terminalId];
+    delete terminalBuffers[terminalId];
+    spawnPty(terminalId, cwd);
     return { ok: true };
   } catch (err) {
-    logError("terminal:restart failed", err);
+    logError('ipc', "terminal:restart failed", err);
     return { ok: false, error: err.message };
   }
 });

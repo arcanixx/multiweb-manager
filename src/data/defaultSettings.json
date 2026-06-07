@@ -1,5 +1,5 @@
 {
-  "_comment": "FILE: defaultSettings.json | VERSION: 0.0.3 | PURPOSE: Domyślne ustawienia aplikacji",
+  "_comment": "FILE: defaultSettings.json | PATH: src/data/defaultSettings.json | VERSION: 0.0.3 | PURPOSE: Domyślne ustawienia aplikacji | FUNCTIONS: - | DEPENDS ON: - | UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.",
   "version": "0.0.3",
   "data": {
     "theme": "dark",

@@ -1,0 +1,15 @@
+[
+  { "id": "x_twitter", "name": "X (Twitter)", "url": "https://x.com", "icon": "https://abs.twimg.com/favicons/twitter.3.ico", "categoryId": "social" },
+  { "id": "linkedin", "name": "LinkedIn", "url": "https://www.linkedin.com", "icon": "https://www.linkedin.com/favicon.ico", "categoryId": "social" },
+  { "id": "facebook", "name": "Facebook", "url": "https://www.facebook.com", "icon": "https://www.facebook.com/favicon.ico", "categoryId": "social" },
+  { "id": "instagram", "name": "Instagram", "url": "https://www.instagram.com", "icon": "https://www.instagram.com/static/images/ico/favicon.ico/36b3048c4445.ico", "categoryId": "social" },
+  { "id": "reddit", "name": "Reddit", "url": "https://www.reddit.com", "icon": "https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png", "categoryId": "social" },
+  { "id": "threads", "name": "Threads", "url": "https://www.threads.net", "icon": "https://www.threads.net/favicon.ico", "categoryId": "social" },
+  { "id": "mastodon", "name": "Mastodon", "url": "https://mastodon.social", "icon": "https://mastodon.social/favicon.ico", "categoryId": "social" },
+  { "id": "bluesky", "name": "Bluesky", "url": "https://bsky.app", "icon": "https://bsky.app/static/favicon-32x32.png", "categoryId": "social" },
+  { "id": "pinterest", "name": "Pinterest", "url": "https://www.pinterest.com", "icon": "https://www.pinterest.com/favicon.ico", "categoryId": "social" },
+  { "id": "tiktok", "name": "TikTok", "url": "https://www.tiktok.com", "icon": "https://www.tiktok.com/favicon.ico", "categoryId": "social" },
+  { "id": "quora", "name": "Quora", "url": "https://www.quora.com", "icon": "https://www.quora.com/favicon.ico", "categoryId": "social" },
+  { "id": "tumblr", "name": "Tumblr", "url": "https://www.tumblr.com", "icon": "https://www.tumblr.com/favicon.ico", "categoryId": "social" },
+  { "id": "product_hunt", "name": "Product Hunt", "url": "https://www.producthunt.com", "icon": "https://www.producthunt.com/favicon.ico", "categoryId": "social" }
+]

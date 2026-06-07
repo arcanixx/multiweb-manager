@@ -1,0 +1,26 @@
+<!-- 
+  FILE: splash_logo.svg
+  PATH: assets/splash_logo.svg
+  PURPOSE: Fallback logo dla Splash Screen i Onboarding (do zastąpienia przez PNG z assets/)
+  UWAGA: Wrzuć assets/splash_logo.png gdy będziesz mieć grafikę. Ten SVG jest tylko fallbackiem.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6c63ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="32" fill="url(#bg)" />
+  <rect x="36" y="36" width="52" height="52" rx="12" fill="url(#accent)" opacity="0.9"/>
+  <rect x="112" y="36" width="52" height="52" rx="12" fill="url(#accent)" opacity="0.7"/>
+  <rect x="36" y="112" width="52" height="52" rx="12" fill="url(#accent)" opacity="0.7"/>
+  <rect x="112" y="112" width="52" height="52" rx="12" fill="url(#accent)" opacity="0.5"/>
+  <circle cx="62" cy="62" r="16" fill="none" stroke="white" stroke-width="2.5" opacity="0.9"/>
+  <ellipse cx="62" cy="62" rx="7" ry="16" fill="none" stroke="white" stroke-width="1.5" opacity="0.7"/>
+  <line x1="46" y1="62" x2="78" y2="62" stroke="white" stroke-width="1.5" opacity="0.7"/>
+</svg>

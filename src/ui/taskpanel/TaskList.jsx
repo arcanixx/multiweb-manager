@@ -2,53 +2,61 @@
 // FILE: TaskList.jsx
 // PATH: src/ui/taskpanel/TaskList.jsx
 // VERSION: 0.0.3
-// PURPOSE: Lista zadań – grupowanie po statusie, sortowanie po priorytecie,
-//          filtrowanie, i18n, integracja z TaskDetails i TaskEditor
+// PURPOSE: Główny komponent listy zadań (Kanban/List view) – odpowiada za dynamiczne filtrowanie, grupowanie według statusu (TODO, IN_PROGRESS, BLOCKED, DONE) oraz wyzwalanie akcji edycji i podglądu.
+// FUNCTIONS: TaskList
+// DEPENDS ON: react, loggerRenderer.js, constants.js, translations.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useState } from "react";
-import { TASK_PRIORITIES, TASK_STATUS } from "../../constants.js";
-import { t } from "../../locales/locale.js";
+import { logInfo, logError, logWarn, logDebug } from '../../utils/loggerRenderer.js';
+import { TASK_PRIORITIES, TASK_STATUS } from "../../constants/constants.js";
+import { TranslationContext } from '../../utils/translations.js';
 
-// ---------------------------------------------------------------------------
-// TaskList
-// Props:
-//   tasks          – tablica zadań
-//   onOpenDetails  – callback otwierający TaskDetails dla zadania
-//   onOpenEditor   – callback otwierający TaskEditor (null = nowe zadanie)
-// ---------------------------------------------------------------------------
+// ─── TaskList() – lista zadań z grupowaniem po statusie i filtrem priorytetu
+//   @param {Object} props – właściwości komponentu
+//   @param {Array} props.tasks – lista zadań do wyświetlenia
+//   @param {Function} props.onOpenDetails – callback otwarcia szczegółów zadania
+//   @param {Function} props.onOpenEditor – callback otwarcia edytora zadania
+//   @returns {JSX.Element} – renderowana lista zadań
 
 export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
+  const { t } = React.useContext(TranslationContext);
   const [filter, setFilter] = useState("all");
 
-  /** Sortuje zadania według priorytetu A → E. */
+  // ─── sortByPriority() – sortuje zadania według priorytetu A → E
+  //   @param {Array} list – lista zadań do posortowania
+  //   @returns {Array} – posortowana lista
   function sortByPriority(list) {
     const order = ["A", "B", "C", "D", "E"];
     return [...list].sort((a, b) => order.indexOf(a.priority) - order.indexOf(b.priority));
   }
 
+  // ─── useEffect – logowanie załadowania zadań przy mount
+  //   @returns {void}
+
   // Grupowanie zadań po statusie z uwzględnieniem aktywnego filtra priorytetu
+
   const grouped = {
     [TASK_STATUS.TODO]:        [],
     [TASK_STATUS.IN_PROGRESS]: [],
     [TASK_STATUS.BLOCKED]:     [],
     [TASK_STATUS.DONE]:        []
   };
-
   tasks.forEach(task => {
     if (filter !== "all" && task.priority !== filter) return;
     if (!grouped[task.status]) return;
     grouped[task.status].push(task);
   });
-
   // Sortowanie każdej grupy po priorytecie
   Object.keys(grouped).forEach(status => {
     grouped[status] = sortByPriority(grouped[status]);
   });
 
-  // ---------------------------------------------------------------------------
-  // Helper – renderuje pojedynczą sekcję statusu
-  // ---------------------------------------------------------------------------
+  // ─── renderSection() – renderuje pojedynczą sekcję statusu
+  //   @param {string} statusKey – klucz statusu
+  //   @param {string} labelKey – klucz tłumaczenia nazwy sekcji
+  //   @returns {JSX.Element} – renderowana sekcja
   function renderSection(statusKey, labelKey) {
     const items = grouped[statusKey];
     return (
@@ -61,7 +69,10 @@ export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
           <div
             key={task.id}
             className="tasklist-item"
-            onClick={() => onOpenDetails(task)}
+            onClick={() => {
+              logDebug('tasks', `TaskList: opening details for task ${task.id}`);
+              onOpenDetails(task);
+            }}
           >
             <div className={`priority-dot priority-${task.priority}`} />
             <div className="tasklist-title">{task.title}</div>
@@ -105,7 +116,3 @@ export default function TaskList({ tasks, onOpenDetails, onOpenEditor }) {
     </div>
   );
 }
-
-// =============================================================================
-// END OF FILE
-// =============================================================================

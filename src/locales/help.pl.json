@@ -1,0 +1,130 @@
+{
+  "_comment": "FILE: help.pl.json | PATH: src/locales/help.pl.json | VERSION: 0.0.3 | PURPOSE: Treści pomocy (PL) | FUNCTIONS: - | DEPENDS ON: - | UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.",
+  "version": "0.0.3",
+  "sections": [
+    {
+      "id": "toc",
+      "title": "Spis treści",
+      "type": "toc",
+      "items": [
+        {
+          "id": "intro",
+          "label": "Wprowadzenie"
+        },
+        {
+          "id": "sidebar",
+          "label": "Sidebar i Profile"
+        },
+        {
+          "id": "webview",
+          "label": "WebView i przeglądarka"
+        },
+        {
+          "id": "notepad",
+          "label": "Notepad"
+        },
+        {
+          "id": "tasks",
+          "label": "TaskPanel i zadania"
+        },
+        {
+          "id": "projects",
+          "label": "Projekty i AggregatedTasks"
+        },
+        {
+          "id": "terminal",
+          "label": "Terminal"
+        },
+        {
+          "id": "tools",
+          "label": "Narzędzia (Tools)"
+        },
+        {
+          "id": "settings",
+          "label": "Ustawienia"
+        },
+        {
+          "id": "appLibrary",
+          "label": "App Library"
+        },
+        {
+          "id": "features",
+          "label": "Funkcje zaawansowane"
+        },
+        {
+          "id": "shortcuts",
+          "label": "Skróty klawiszowe"
+        },
+        {
+          "id": "faq",
+          "label": "FAQ"
+        }
+      ]
+    },
+    {
+      "id": "intro",
+      "title": "Wprowadzenie",
+      "content": "MultiWeb Manager to aplikacja łącząca funkcje przeglądarki, narzędzi developerskich, zarządzania zadaniami, projektami, notatkami oraz zestawu narzędzi (Tools).\n\nPo lewej stronie znajduje się Sidebar — centrum nawigacji. Po prawej — WebView, Notepad, TaskPanel, Tools i inne moduły."
+    },
+    {
+      "id": "sidebar",
+      "title": "Sidebar i Profile",
+      "content": "Sidebar zawiera:\n- wyszukiwarkę profili,\n- kategorie (AI, Dev, Design, Productivity, Special),\n- listę profili,\n- ostatnio używane,\n- narzędzia (Tools),\n- App Library,\n- Settings,\n- Help.\n\nKażdy profil to osobna aplikacja otwierana w WebView.\nMożesz:\n- dodawać profile,\n- edytować je w modalach,\n- zmieniać kolejność (drag & drop),\n- przypinać (isPinned),\n- oznaczać jako ulubione (isFavorite),\n- ustawiać jako domyślne (isDefault),\n- dodawać notatki i etykiety,\n- ustawiać userAgent,\n- włączać/wyłączać AdBlocker per profil."
+    },
+    {
+      "id": "webview",
+      "title": "WebView i przeglądarka",
+      "content": "Każdy profil otwiera się w WebView z pełnym toolbar'em:\n- Back / Forward\n- Refresh\n- Address Bar (readonly lub edytowalny)\n- Copy URL\n- Open in Browser\n- Zoom In / Out\n- DevTools\n- Clear Cache\n- Screenshot WebView\n- Single App Mode\n- Resource Monitor\n\nDodatkowe funkcje:\n- Sleep Tabs — usypianie nieaktywnych zakładek\n- AdBlocker globalny + per profil\n- Tile View — wiele WebView obok siebie\n- Custom User Agent"
+    },
+    {
+      "id": "notepad",
+      "title": "Notepad",
+      "content": "Notepad działa jak edytor z zakładkami:\n- multi‑tab,\n- rename zakładek,\n- autosave tylko przy zmianie,\n- tryb plain text,\n- syntax highlight (CodeMirror/Monaco),\n- rich text (bold, italic, listy).\n\nNotatki są zapisywane automatycznie i trwale."
+    },
+    {
+      "id": "tasks",
+      "title": "TaskPanel i zadania",
+      "content": "TaskPanel umożliwia:\n- dodawanie zadań (TaskModal),\n- edycję zadań,\n- filtrowanie po priorytecie (A–E),\n- wyszukiwanie zadań,\n- oznaczanie jako wykonane,\n- przypisywanie do projektów,\n- ustawianie terminów,\n- opis rich text.\n\nZadania są zapisywane w tasksStore."
+    },
+    {
+      "id": "projects",
+      "title": "Projekty i AggregatedTasks",
+      "content": "ProjectManager pozwala tworzyć projekty z opisem i statusem (aktywne/archiwalne).\n\nAggregatedTasks wyświetla zadania pogrupowane według projektów:\n- liczba zadań,\n- collapse/expand,\n- hide/show,\n- sortowanie,\n- integracja z TaskPanel.\n\nUstawienia widoczności są zapisywane w settings.aggregatedTasks."
+    },
+    {
+      "id": "terminal",
+      "title": "Terminal",
+      "content": "Terminal oparty jest o node-pty + xterm.js.\n\nFunkcje:\n- pełna obsługa komend,\n- kolorowanie ANSI,\n- historia komend (strzałki góra/dół),\n- restart sesji,\n- clear,\n- cleanup event listenerów,\n- integracja z preload.js i main.js.\n\nTerminal działa w osobnym kontenerze i nie blokuje UI."
+    },
+    {
+      "id": "tools",
+      "title": "Narzędzia (Tools)",
+      "content": "Dostępne narzędzia:\n- JSON/YAML/XML Formatter\n- Regex Tester\n- Markdown Previewer\n- Image Tools (compress/resize/convert)\n- SVG → PNG Converter\n- File Previewer\n- Mini Postman (API Tester)\n- Clipboard History\n- Cookie Grabber\n\nKażde narzędzie ma własny komponent i wpis w helpData."
+    },
+    {
+      "id": "settings",
+      "title": "Ustawienia",
+      "content": "Settings zawiera:\n- język (PL/EN),\n- motyw (dark/light/system),\n- debugMode,\n- API keys,\n- hotkeys manager,\n- eksport/import ustawień,\n- folder logów,\n- Sleep Tabs timeout,\n- Resource Monitor thresholds,\n- AdBlocker globalny,\n- Address Bar editable,\n- domyślne kategorie profili.\n\nUstawienia są mergowane — nigdy nie nadpisywane."
+    },
+    {
+      "id": "appLibrary",
+      "title": "App Library",
+      "content": "App Library to lista gotowych aplikacji podzielonych na kategorie.\n\nKażda aplikacja ma:\n- id\n- name\n- url\n- icon\n- isPinned\n- isDefault\n- isFavorite\n\nMożesz dodać aplikację do Sidebar jednym kliknięciem."
+    },
+    {
+      "id": "features",
+      "title": "Funkcje zaawansowane",
+      "content": "Zaawansowane funkcje aplikacji:\n- Single App Mode — otwieranie profilu w osobnym oknie\n- Resource Monitor — zużycie RAM/CPU WebView\n- Sleep Tabs — usypianie nieaktywnych zakładek\n- Screenshot WebView — zapis do schowka\n- Cookie Grabber — pobieranie cookies z WebView\n- Tile View — wiele WebView obok siebie\n- Unified Search — globalne wyszukiwanie (Ctrl+K)\n- Quick Switcher — szybkie przełączanie (Ctrl+P)"
+    },
+    {
+      "id": "shortcuts",
+      "title": "Skróty klawiszowe",
+      "content": "Globalne skróty:\n- Ctrl+K — Unified Search\n- Ctrl+P — Quick Switcher\n- Ctrl+L — fokus na Address Bar\n- Ctrl+R — reload\n- Alt+← / Alt+→ — back/forward\n\nHotkeys Manager pozwala tworzyć własne skróty."
+    },
+    {
+      "id": "faq",
+      "title": "FAQ",
+      "content": "**Czy mogę otworzyć aplikację na drugim monitorze?**\nTak — użyj Single App Mode.\n\n**Czy mogę wyłączyć AdBlocker tylko dla jednego profilu?**\nTak — w ProfileModal.\n\n**Czy mogę eksportować ustawienia?**\nTak — w Settings → Eksport/Import.\n\n**Czy mogę zmienić motyw?**\nTak — Settings → Theme."
+    }
+  ]
+}

@@ -1,15 +1,15 @@
-=============================================================================
-FILE: Project_Initialization_Guide.md
-PATH: DOC/Project_Initialization_Guide.md
-VERSION: 0.0.3
-PURPOSE: Kompletny przewodnik startowy — jak rozpocząć nowy projekt (AI-first)
-DEPENDS ON: AI_Development_Standards.md, DevelopersGuide.md, structure.txt, ModulesOverview.md
-=============================================================================
+<!-- =============================================================================
+ FILE: Project_Initialization_Guide.md
+ PATH: doc/Project_Initialization_Guide.md
+ VERSION: 0.0.3
+ PURPOSE: Dokumentacja specyfikacji projektowej - Kompletny przewodnik startowy — jak rozpocząć nowy projekt (AI-first)
+ FUNCTIONS: Dokumentacja: 12 sekcji głównych
+ DEPENDS ON: -
+ UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+ ============================================================================= -->
 
-# =============================================================================
 # PROJECT INITIALIZATION GUIDE — AI-FIRST DEVELOPMENT
-# =============================================================================
-
+---
 ## Cel dokumentu
 Ten dokument opisuje **kompletny proces startowy** dla nowego projektu:
 - jak przygotować repozytorium,
@@ -18,206 +18,142 @@ Ten dokument opisuje **kompletny proces startowy** dla nowego projektu:
 - jak przygotować dokumentację,
 - jak prowadzić projekt zgodnie z dobrymi praktykami,
 - jak AI powinno pracować nad projektem od pierwszej linijki.
-
-Dokument jest **uniwersalny** — działa dla:
-- React,
-- Electron,
-- Web (HTML/JS/CSS),
-- projektów hybrydowych,
-- projektów AI-first.
-
+Dokument jest **uniwersalny** — działa dla: React, Electron, Web (HTML/JS/CSS), projektów hybrydowych i AI-first.
 ---
-
-# =============================================================================
-# 1. STRUKTURA REPOZYTORIUM (ROOT)
-# =============================================================================
-
+## 1. STRUKTURA REPOZYTORIUM (ROOT)
 Każdy projekt powinien zaczynać się od następującej struktury:
-
-/project-root  
-├── src/  
-│   ├── core/  
-│   ├── engine/  
-│   ├── ui/  
-│   ├── utils/  
-│   ├── data/  
-│   ├── locales/  
-│   └── index.js / main.js  
-├── docs/  
-│   ├── AI_Development_Standards.md  
-│   ├── DevelopersGuide.md  
-│   ├── Project_Initialization_Guide.md  
-│   ├── ModulesOverview.md  
-│   ├── Definition_Mockups_UI_UX.md  
-│   ├── requirements.md  
-│   └── structure.txt  
-├── package.json  
-├── README.md  
-└── .gitignore
+```
+/project-root
+├── assets/
+├── src/
+│   ├── stores/       # store'y (settings, profiles, tasks, notepad, projects, history, workspaces, clipboard)
+│   ├── engine/     # silniki (adBlocker, hotkeysManager, sleepTabsManager, updateService, webviewRegistry)
+│   ├── ui/         # komponenty React (modułowo: sidebar, taskpanel, notepad, tools, settings, ...)
+│   ├── utils/      # funkcje pomocnicze (logger, translations, icons, fileUtils, imageUtils, ...)
+│   ├── data/       # statyczne dane (app-library.json, defaultProfiles.json, defaultSettings.json, icons.js)
+│   ├── locales/    # tłumaczenia (pl.json, en.json, help.pl.json, help.en.json)
+│   ├── hooks/      # hooki (useSettings, useTasks, useNotepad, useProjects, ...)
+│   ├── ipc/        # handlery IPC (ipcMainHandlers_.js)
+│   ├── loaders/    # dynamiczne loadery (testsLoader.js, ipcLoader.js)
+│   ├── tools/      # backend narzędzi (apiClient, markdownRenderer, regexEngine, svgToPng)
+│   ├── App.jsx     # główny komponent React
+│   ├── index.jsx   # entrypoint React
+│   ├── config.js   # konfiguracja aplikacji (feature flags, limity, ścieżki)
+│   └── constants.js # stałe aplikacji (enumy, mapy kategorii)
+├── public/
+│   └── index.html
+├── tests/          # testy jednostkowe (TestRunner_.js)
+├── doc/            # dokumentacja (.md)
+├── package.json
+├── main.js         # proces główny Electron
+├── preload.cjs     # mostek IPC (bezpieczeństwo)
+├── config.js       # re-eksport z src/config.js (dla kompatybilności)
+└── README.md
+```
 
 ---
 
-# =============================================================================
-# 2. BRANCHOWANIE — STANDARD ENTERPRISE
-# =============================================================================
+## 2. BRANCHOWANIE — STANDARD ENTERPRISE
 
-## Główne branche
+### Główne branche
 
-### master  
-- stabilna wersja produkcyjna  
-- tylko merge po pełnych testach  
-- tagi wersji (v1.0.0, v1.1.0, itp.)
+| Branch | Opis |
+|--------|------|
+| `master` | Stabilna wersja produkcyjna. Tylko merge po pełnych testach. Tagi wersji (`v1.0.0`, `v1.1.0`, itp.). |
+| `dev` | Główny branch developerski. Integracja funkcji, testy developerskie. |
+| `sat` | System Acceptance Testing — testy systemowe, łączenie funkcji, przygotowanie do UAT. |
+| `uat` | User Acceptance Testing — testy użytkownika, wersje RC (release candidate). |
 
-### dev  
-- główny branch developerski  
-- integracja funkcji  
-- testy developerskie
+### Branche funkcjonalne
 
-### sat (System Acceptance Testing)  
-- testy systemowe  
-- łączenie wielu funkcji w jedną wersję  
-- przygotowanie do UAT
-
-### uat (User Acceptance Testing)  
-- testy użytkownika  
-- wersje RC (release candidate)
-
-## Branche funkcjonalne
-
+```
 feature/nazwa-funkcji
 feature/nazwa-wymagania
-fix/nazwa-poprawki  
-refactor/nazwa-modulu  
-experiment/nazwa-testu  
+fix/nazwa-poprawki
+refactor/nazwa-modulu
+experiment/nazwa-testu
+```
 
 ---
 
-# =============================================================================
-# 3. ŚRODOWISKO — INSTALACJA I WYMAGANIA
-# =============================================================================
+## 3. ŚRODOWISKO — INSTALACJA I WYMAGANIA
 
-## Wymagane oprogramowanie
+### Wymagane oprogramowanie
 
 - Node.js LTS (zalecane 18.x lub 20.x)
 - NPM lub PNPM
 - Git
 - Visual Studio Code
-- (Electron projects) Python 3 + build tools
+- (Electron) Python 3 + build tools
 - (Terminal) node-pty (kompatybilna wersja)
-- (WebView) Chromium/Electron runtime
+- (WebView) Chromium / Electron runtime
 
-## Instalacja projektu
+### Instalacja projektu
 
-npm install  
-lub  
+```bash
+npm install
+# lub
 pnpm install
+```
 
-## Uruchomienie środowiska DEV
+### Uruchomienie środowiska DEV
 
-npm run dev  
-npm run start  
-npm run electron:dev (dla Electron)
+```bash
+npm run dev
+npm run start
+npm run electron:dev   # dla Electron
+```
 
-## Build produkcyjny
+### Build produkcyjny
 
-npm run build  
+```bash
+npm run build
 npm run electron:build
+```
 
-## Wybór architektury startowej
-React + Electron: od razu planuj modułowość (src/core/, src/ui/, src/engine/).
-Web (HTML/JS/CSS): od razu podział na js/, css/, assets/, lib/.
-Chrome Extension: od razu manifest.json, background/, content/, popup/.
+### Wybór architektury startowej
 
----
-
-# =============================================================================
-# 4. PLIKI DOKUMENTACYJNE — CO MUSI ISTNIEĆ OD POCZĄTKU
-# =============================================================================
-
-## 4.1 structure.txt (OBOWIĄZKOWY)
-Zawiera:
-
-- pełną strukturę katalogów i plików,
-- opis odpowiedzialności każdego modułu,
-- zależności między modułami,
-- kolejność ładowania/importów,
-- wskazanie entrypointów,
-- wskazanie plików krytycznych,
-- komentarze architektoniczne.
-
-Jeśli structure.txt nie istnieje — **należy go stworzyć natychmiast**.
+| Typ projektu | Zalecenia startowe |
+|---|---|
+| React + Electron | Od razu planuj modułowość: `src/stores/`, `src/ui/`, `src/engine/` |
+| Web (HTML/JS/CSS) | Podział na `js/`, `css/`, `assets/`, `lib/` |
+| Chrome Extension | Od razu: `manifest.json`, `background/`, `content/`, `popup/` |
 
 ---
 
-## 4.2 DevelopersGuide.md
-Zawiera:
+## 4. PLIKI DOKUMENTACYJNE — CO MUSI ISTNIEĆ OD POCZĄTKU
 
-- zasady architektury,
-- zasady stabilności,
-- zasady IPC,
-- zasady WebView,
-- zasady UI/UX,
-- zasady testów,
-- zasady loggera,
-- zasady cleanupów,
-- zasady merge settings,
-- zasady profili,
-- zasady CSS,
-- zasady buildów,
-- zasady debugowania.
+### 4.1. `Structure.md` (OBOWIĄZKOWY)
 
----
+Zawiera: pełną strukturę katalogów i plików, opis odpowiedzialności każdego modułu, zależności między modułami, kolejność ładowania/importów, wskazanie entrypointów i plików krytycznych, komentarze architektoniczne.
 
-## 4.3 ModulesOverview.md
-Zawiera:
+> Jeśli `Structure.md` nie istnieje — należy go stworzyć natychmiast.
 
-- listę modułów,
-- opis przeznaczenia,
-- opis danych wejściowych/wyjściowych,
-- opis zależności,
-- opis powiązań,
-- status (DONE / TODO / DO-ANALYSIS),
-- priorytety.
+### 4.2. `DevelopersGuide.md`
+
+Zawiera zasady: architektury, stabilności, IPC, WebView, UI/UX, testów, loggera, cleanupów, merge settings, profili, CSS, buildów, debugowania.
+
+### 4.3. `ModulesOverview.md`
+
+Zawiera: listę modułów, opis przeznaczenia, opis danych wejściowych/wyjściowych, opis zależności i powiązań, status (`DONE` / `TODO` / `DO-ANALYSIS`), priorytety.
+
+### 4.4. `Definition_Mockups_UI_UX.md`
+
+Zawiera: opisowe mockupy ekranów, opis zachowania UI, opis interakcji, opis stanów (`loading` / `error` / `empty` / `success`), opis layoutów, modali, toastów, tooltipów, komponentów UI, responsywności i stylów globalnych.
+
+### 4.5. `Requirements.md`
+
+Zawiera: wymagania funkcjonalne, niefunkcjonalne, techniczne, UI/UX, wydajnościowe, bezpieczeństwa, integracyjne oraz historię zmian wymagań.
 
 ---
 
-## 4.4 Definition_Mockups_UI_UX.md
-Zawiera:
+## 5. `.gitignore` — OBOWIĄZKOWY W KAŻDYM PROJEKCIE
 
-- opisowe mockupy ekranów,
-- opis zachowania UI,
-- opis interakcji,
-- opis stanów (loading/error/empty/success),
-- opis layoutów,
-- opis modali, toastów, tooltipów,
-- opis komponentów UI,
-- opis responsywności,
-- opis stylów globalnych.
+Jeżeli projekt korzysta z frameworków lub narzędzi generujących pliki tymczasowe, cache lub foldery zależności (np. `node_modules`), należy utworzyć plik `.gitignore`.
 
----
+### Minimalny `.gitignore` dla projektów JS / Electron / React
 
-## 4.5 requirements.md
-Zawiera:
-
-- wymagania funkcjonalne,
-- wymagania niefunkcjonalne,
-- wymagania techniczne,
-- wymagania UI/UX,
-- wymagania dotyczące wydajności,
-- wymagania dotyczące bezpieczeństwa,
-- wymagania dotyczące integracji,
-- historię zmian wymagań.
-
-
-# =============================================================================
-# 4.6 .GITIGNORE — OBOWIĄZKOWY W KAŻDYM PROJEKCIE
-# =============================================================================
-
-Jeżeli projekt korzysta z frameworków lub narzędzi generujących pliki tymczasowe,
-cache lub foldery zależności (np. node_modules), należy utworzyć plik .gitignore.
-
-## Minimalny .gitignore dla projektów JS/Electron/React
-
+```
 node_modules/
 dist/
 build/
@@ -231,234 +167,237 @@ yarn-error.log*
 coverage/
 .cache/
 *.tmp
+```
 
-## Zasady
+### Zasady
 
 - Do repozytorium trafiają tylko pliki potrzebne do developmentu.
-- Pliki generowane automatycznie (node_modules, build, dist) nigdy nie są commitowane.
-- Jeśli projekt wymaga dodatkowych wykluczeń — dopisać je w .gitignore.
+- Pliki generowane automatycznie (`node_modules`, `build`, `dist`) **nigdy** nie są commitowane.
+- Jeśli projekt wymaga dodatkowych wykluczeń — dopisać je w `.gitignore`.
 
 ---
 
-# =============================================================================
-# 4.7 REQUIREMENTS.MD — ROZSZERZENIE
-# =============================================================================
+## 6. `.clinerules` — INSTRUKCJE DLA AI W VSCODE
 
-Plik requirements.md jest obowiązkowy w każdym projekcie.  
-Zawiera pełną listę wymagań funkcjonalnych i niefunkcjonalnych, podzielonych na moduły.
+Plik `.clinerules` (bez rozszerzenia) umieść w root projektu. Zawiera rygorystyczne zasady dla AI (Roo Code / Cline / GitHub Copilot):
 
-## Struktura pliku
+### Zasady (skrót)
 
-Plik requirements.md musi być podzielony na sekcje odpowiadające modułom projektu.
+- **ZAKAZ** generowania kodu od zera dla istniejących plików — tylko niezbędne poprawki.
+- **Zachowanie kontekstu konfiguracyjnego** — merge, nie nadpisywanie.
+- **Aktywny preload bridge** — tylko `preload.cjs`; `preload.js` jest wyłączony.
+- **Weryfikacja wersji** — zawsze z `package.json`, nie z pamięci cache.
+- **Nagłówek pliku** — obowiązkowy (`FILE`, `PATH`, `VERSION`, `PURPOSE`, `FUNCTIONS`, `DEPENDS ON`, `UWAGA`).
+- **Stack technologiczny** — Electron + React, bezpieczeństwo IPC.
+- **System logowania** — centralny, przez `loggerRenderer.js` (JSX) lub `logger.js` (JS).
+- **Zakaz natywnych okien** — `alert`, `confirm`, `prompt` → modale, toasty.
+- **Brak hardcoded tekstów** — wszystko przez `TranslationContext`.
+- **Import ikon** — tylko z `src/utils/icons.js` (reeksport).
+- **Testy** — obowiązkowe dla nowych modułów, aktualizacja istniejących.
+- **Cykl życia dokumentacji** — `pending_updates_for_Definition_Mockups_UI_UX.md` na bieżące zmiany UI.
+- **Zasady generowania kodu** — bez automatycznych commitów, kod po polsku.
 
-## [Nazwa Modułu]
-- ID: unikalny identyfikator wymagania, nawiązujący też do modułu np. (SETTINGS_REQ-001, SETTINGS_REQ-002, ...)
-- Opis: pełny opis wymagania
-- Status: IN_SPRINT / BLOCKED / BACKLOG / DONE
-- Priorytet: CRITICAL / MAJOR / MINOR
-- Version (opcjonalnie): wersja aplikacji, w której wymaganie ma być dostępne
-- Komentarz: dodatkowe informacje, powody blokady, zależności, cokolwiek użytecznego
-
-## Statusy
-
-### IN_SPRINT  
-Wymaganie jest aktualnie implementowane.
-
-### BLOCKED  
-Wymaganie nie może być realizowane (np. brak API, brak danych, zależność od innego modułu).  
-Zalecane: dopisać komentarz z powodem blokady.
-
-### BACKLOG  
-Wymaganie zaplanowane na później.
-
-### DONE  
-Wymaganie zaimplementowane, przetestowane i potwierdzone.
-
-## Priorytety
-
-### CRITICAL  
-Blokuje działanie aplikacji lub kluczowych funkcji.
-
-### MAJOR  
-Istotne wymaganie, ale nie blokujące.
-
-### MINOR  
-Dodatkowe funkcje, ulepszenia, kosmetyka.
-
-## Zasady aktualizacji
-
-- Każda zmiana w projekcie → aktualizacja requirements.md  
-- Każdy nowy pomysł → wpis do BACKLOG  
-- Każdy błąd → wpis jako nowe wymaganie (CRITICAL lub MAJOR)  
-- Każdy sprint → przeniesienie wymagań do IN_SPRINT  
-- Po wdrożeniu → DONE + Version
-
-requirements.md jest jednym z głównych dokumentów projektowych
-i musi być spójny z ModulesOverview.md oraz DevelopersGuide.md.
-
-
-Każda zmiana w projekcie → również aktualizacja requirements.md.
+> Plik jest krytyczny dla współpracy z AI — nie modyfikuj go bez potrzeby. Jeśli zmieniasz zasady, upewnij się, że są spójne z `AI_Development_Standards.md` i `DevelopersGuide.md`.
 
 ---
 
-# =============================================================================
-# 5. ARCHITEKTURA STARTOWA — DOBRE PRAKTYKI
-# =============================================================================
+## 7. PLIK TYMCZASOWY NA ZMIANY UI/UX
 
-## 5.1 Modułowość
-Każdy moduł powinien być:
+**Plik:** `doc/pending_updates_for_Definition_Mockups_UI_UX.md`
 
-- izolowany,
-- testowalny,
-- niezależny,
-- posiadać własny folder,
-- posiadać własne style,
-- posiadać własne testy,
-- posiadać własną dokumentację.
+**Cel:** Uniknięcie częstej modyfikacji dużego pliku `Definition_Mockups_UI_UX.md` (~500 linii).
 
-## 5.2 Podział na warstwy
-- core → logika biznesowa  
-- engine → silniki (np. sleep tabs, resource monitor)  
-- ui → komponenty  
-- utils → funkcje pomocnicze  
-- data → statyczne dane  
-- locales → tłumaczenia  
+### Zasada
 
-## 5.3 Zasada „Single Responsibility”
+| Plik | Kiedy modyfikować |
+|------|-------------------|
+| `Definition_Mockups_UI_UX.md` | Rzadko, zbiorczo — np. przed dużym kamieniem milowym |
+| `pending_updates_...md` | Na bieżąco — AI dopisuje tu zmiany UI/UX w trakcie sprintu |
+
+### Format wpisu
+
+```markdown
+## [YYYY-MM-DD] Nazwa zmiany
+- **Plik:** src/ui/komponent/Plik.jsx
+- **Opis:** co się zmieniło
+- **Nowe zachowanie:** ...
+- **Wpływ na inne komponenty:** ...
+```
+
+### Przed commitem / PR
+
+Użytkownik ręcznie scala zmiany z głównym plikiem. Po scaleniu — plik tymczasowy jest czyszczony (lub usuwany).
+
+> Główny plik makiet ma ~500 linii. Częste modyfikacje generują dużo szumu w diffie i mogą powodować konflikty merge.
+
+---
+
+## 8. ARCHITEKTURA STARTOWA — DOBRE PRAKTYKI
+
+### 8.1. Modułowość
+
+Każdy moduł powinien być: izolowany, testowalny, niezależny — posiadać własny folder, własne style, testy i dokumentację.
+
+### 8.2. Podział na warstwy
+
+| Warstwa | Odpowiedzialność |
+|---------|-----------------|
+| `stores/` | Logika biznesowa (store'y) |
+| `engine/` | Silniki (np. sleep tabs, resource monitor) |
+| `ui/` | Komponenty React |
+| `utils/` | Funkcje pomocnicze |
+| `data/` | Statyczne dane |
+| `locales/` | Tłumaczenia |
+
+### 8.3. Zasada „Single Responsibility"
+
 Każdy plik robi jedną rzecz.
 
-## 5.4 Zasada „No Hardcoded”
-- brak tekstów,
-- brak ikon,
-- brak URL,
-- brak promptów,
-- brak alertów.
+### 8.4. Zasada „No Hardcoded"
 
-## 5.5 Zasada „Clean Imports”
-Importy uporządkowane:
+Brak hardcoded: tekstów, ikon, URL, promptów, alertów.
 
-1. biblioteki zewnętrzne  
-2. moduły core  
-3. utils  
-4. komponenty  
-5. style  
-6. dane  
+### 8.5. Zasada „Clean Imports"
 
-## 5.6 Plik konfiguracyjny config.js”
-Zawiera wszystkie rzeczy z innych modulów, które mogą być łatwo zmieniane, jeśli dotyczą aplikacji, jak:
-- DEBUG MODE true/false
-- DEFAULT_LANGUAGE
-- wszelkiego rodzaju ilosci, jak np. ilosc wpisów, jakie ClipboardHistory ma przechowywać, czy czas, po jakim cos się ma zadziać jako event/akcja,
-- DEFAULT_THEME
-- DEFAULT_PROFILE
-- inne rzeczy z modułów, które warto mieć zebrane w jednym miejscu, z opisanym komentarzem, za co odpowiadają, a mają istotny wpływ jako konfiguracja
+Importy uporządkowane w kolejności: biblioteki zewnętrzne → moduły stores → utils → komponenty → style → dane.
 
 ---
 
-# =============================================================================
-# 6. AI-FIRST DEVELOPMENT — JAK AI MA PROWADZIĆ PROJEKT
-# =============================================================================
+## 9. AI-FIRST DEVELOPMENT — JAK AI MA PROWADZIĆ PROJEKT
 
-## 6.1 AI musi:
-- generować kod zgodnie z AI_Development_Standards.md,
-- aktualizować dokumentację,
-- aktualizować structure.txt,
-- aktualizować ModulesOverview.md,
-- aktualizować requirements.md,
-- generować testy,
-- generować komentarze,
-- generować mockupy UI,
-- generować architekturę,
-- generować pliki startowe.
+### AI musi
 
-## 6.2 AI nie może:
+- generować kod zgodnie z `AI_Development_Standards.md`,
+- aktualizować dokumentację: `Structure.md`, `ModulesOverview.md`, `Requirements.md`,
+- generować testy, komentarze, mockupy UI (w pliku tymczasowym),
+- generować architekturę i pliki startowe.
+
+### AI nie może
+
 - tworzyć hardcoded tekstów,
-- pomijać komentarzy,
-- pomijać nagłówków plików,
-- pomijać testów,
-- pomijać dokumentacji.
+- pomijać komentarzy, nagłówków plików, testów, dokumentacji.
 
 ---
 
-# =============================================================================
-# 7. CHECKLISTA STARTOWA — NOWY PROJEKT
-# =============================================================================
+## 10. CHECKLISTA STARTOWA — NOWY PROJEKT
 
-## 7.1 Utwórz repozytorium
-- z branchami master / dev / sat / uat / feature/nazwa-funkcji
+### 10.1. Utwórz repozytorium
 
-## 7.2 Utwórz dokumentację
-- AI_Development_Standards.md  
-- DevelopersGuide.md  
-- Project_Initialization_Guide.md  
-- ModulesOverview.md  
-- Definition_Mockups_UI_UX.md  
-- requirements.md  
-- structure.txt  
+Z branchami: `master` / `dev` / `sat` / `uat` / `feature/nazwa-funkcji`.
 
-## 7.3 Utwórz strukturę katalogów
-src/core  
-src/engine  
-src/ui  
-src/utils  
-src/data  
-src/locales  
+### 10.2. Utwórz dokumentację
 
-## 7.4 Przygotuj środowisko
-npm install  
-npm run dev  
+```
+AI_Development_Standards.md
+DevelopersGuide.md
+Project_Initialization_Guide.md
+ModulesOverview.md
+Definition_Mockups_UI_UX.md
+pending_updates_for_Definition_Mockups_UI_UX.md
+Requirements.md
+Structure.md
+```
 
-## 7.5 Przygotuj architekturę
-- entrypointy  
-- moduły  
-- utils  
-- style  
-- locales  
-- testy  
+### 10.3. Utwórz strukturę katalogów
 
-## 7.6 Przygotuj UI/UX
-- mockupy  
-- layouty  
-- modale  
-- toasty  
-- tooltipy  
-- stany ładowania  
+```
+src/stores/
+src/engine/
+src/ui/
+src/utils/
+src/data/
+src/locales/
+src/hooks/
+src/ipc/
+src/loaders/
+src/tools/
+```
 
-## 7.7 Checklista przed pierwszym commitem
-- Struktura folderów zgodna z structure.txt
-- config.js z ustawieniami konfiguracyjnymi
-- icons.js z ikonami aplikacji
-- locales/pl.json i locales/en.json z podstawowymi kluczami
-- locales - osobno od całości, klucze dla fabuły i eventów w grach (lore, events) lub help
-- main.js (Electron) lub index.html (web)
-- package.json z poprawnie skonfigurowanymi skryptami
-- .gitignore z wykluczeniami (node_modules, dist, build, .env, *.log itp.)
+### 10.4. Przygotuj środowisko
 
----
+```bash
+npm install
+npm run dev
+```
 
-# =============================================================================
-# 8. DOBRE PRAKTYKI — UNIWERSALNE
-# =============================================================================
+### 10.5. Przygotuj architekturę
 
-- Każdy moduł ma własny folder.  
-- Każdy moduł ma testy.  
-- Każdy moduł ma dokumentację.  
-- Każdy plik ma nagłówek.  
-- Każdy tekst jest w locales.  
-- Każda ikona jest w icons.js.  
-- Każdy modal jest komponentem.  
-- Każdy toast jest komponentem.  
-- Każdy tooltip jest komponentem.  
-- Każdy WebView ma cleanup.  
-- Każdy IPC ma walidację.  
-- Każdy błąd ma logger.  
-- Każdy build jest powtarzalny. 
-- Nie mieszaj logiki z UI – core/ i engine/ są od tego.
-- Nie twórz src/components/ – od razu src/ui/[modul]/.
-- Nie używaj **alertów/promptów** – od razu modale.
+Entrypointy, moduły, utils, style, locales, testy.
+
+### 10.6. Przygotuj UI/UX
+
+Mockupy (w pliku tymczasowym), layouty, modale, toasty, tooltipy, stany ładowania.
+
+### 10.7. Checklista przed pierwszym commitem
+
+- [ ] Struktura folderów zgodna z `Structure.md`
+- [ ] `config.js` z ustawieniami konfiguracyjnymi
+- [ ] `icons.js` z ikonami aplikacji
+- [ ] `locales/pl.json` i `locales/en.json` z podstawowymi kluczami
+- [ ] `main.js` (Electron) lub `index.html` (web)
+- [ ] `package.json` z poprawnie skonfigurowanymi skryptami
+- [ ] `.gitignore` z wykluczeniami (`node_modules`, `dist`, `build`, `.env`, `*.log` itp.)
+- [ ] `.clinerules` w root projektu
 
 ---
 
-# =============================================================================
-# KONIEC DOKUMENTU
-# =============================================================================
+## 11. DOBRE PRAKTYKI — UNIWERSALNE
+
+- Każdy moduł ma własny folder, testy i dokumentację.
+- Każdy plik ma nagłówek.
+- Każdy tekst jest w `locales`, każda ikona w `icons.js`.
+- Każdy modal, toast i tooltip jest komponentem.
+- Każdy WebView ma cleanup, każdy IPC ma walidację.
+- Każdy błąd ma logger, każdy build jest powtarzalny.
+- Nie mieszaj logiki z UI — `stores/` i `engine/` są od tego.
+- Nie twórz `src/components/` — od razu `src/ui/[modul]/`.
+- Nie używaj `alert` / `prompt` — od razu modale.
+
+---
+
+## 12. LOGI TESTÓW (LOGWRITER)
+
+### Konfiguracja
+
+Po pierwszym uruchomieniu z `debugMode = true`, aplikacja zapyta o zgodę na zapis logów testów.
+
+- **Plik logów:** `userData/logs/test-fails.log`
+- **Warunki zapisu:** `settings.debugMode === true` oraz użytkownik wyraził zgodę
+
+### Limity
+
+- Maksymalnie 500 linii
+- Nadpisywane od najstarszych (FIFO)
+
+### UI w Settings (Data & Logs)
+
+- Przełącznik włącz/wyłącz logowania (widoczny tylko gdy `debugMode = true`)
+- Przycisk „Otwórz folder logów"
+- Przycisk „Wyczyść logi testów"
+
+### Integracja z testami
+
+TestRunnerzy używają `runTests(moduleName, tests)` z `testUtils.js`, która automatycznie loguje rozpoczęcie testów, wywołuje `appendTestFailLog` przy failu i podsumowuje wyniki. Nie wymaga ręcznej ingerencji w testy.
+
+### Handlery IPC
+
+| Handler | Opis |
+|---------|------|
+| `append-log-file` | Dopisuje linię do pliku (używane przez LogWriter) |
+| `get-logs-file` | Odczytuje zawartość (dla podglądu w Settings) |
+| `clear-logs-file` | Usuwa plik (przycisk czyszczenia) |
+
+### Konfiguracja w `config.js`
+
+```js
+export const CONFIG = {
+  logsEnabled: false,   // czy logi są włączone (override ustawienia)
+  logsMaxLines: 500     // maksymalna liczba linii
+};
+```
+
+---
+
+<!-- ============================================================================= -->
+<!-- KONIEC DOKUMENTU -->
+<!-- ============================================================================= -->

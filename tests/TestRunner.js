@@ -2,66 +2,94 @@
 // FILE: TestRunner.js
 // PATH: tests/TestRunner.js
 // VERSION: 0.0.3
-// PURPOSE: Orchestrator testów przy starcie (debugMode + FEATURES.startupTests).
-//          Uruchamia zarejestrowane testy i loguje wyniki.
+// PURPOSE: Orchestrator testów – uruchamia wszystkie TestRunner_*.js
 // FUNCTIONS: runAllTests
-// DEPENDS ON: logger.js, src/data/icons.js
-// UWAGA: Nie usuwaj komentarzy — opisują przeznaczenie funkcji i sekcji.
+// DEPENDS ON: url, logger.js, icons.js, logWriter.js, testsLoader.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { logInfo, logError } from "../src/utils/logger.js";
-import { ICONS } from "../src/utils/icons.js";
+import { fileURLToPath } from 'url';
+import { logInfo, logError } from '../src/utils/logger.js';
+import { ICONS } from '../src/utils/icons.js';
+import { initLogWriter } from '../src/utils/logWriter.js';
+import { loadAndRunAllTests } from '../src/loaders/testsLoader.js';
 
-// ----------------------------------------------------------------
-// Lista testów startowych — dodawaj tutaj kolejne test-runnery
-// ----------------------------------------------------------------
-const tests = [
-  {
-    name: "config load",
-    run: async () => {
-      const { DEFAULT_SETTINGS } = await import("../src/config.js");
-      // Weryfikuje, że konfiguracja domyślna jest dostępna i ma wymagane klucze
-      return !!DEFAULT_SETTINGS?.language && !!DEFAULT_SETTINGS?.theme;
-    }
-  },
-  {
-    name: "icons registry",
-    run: async () => {
-      // Weryfikuje, że rejestr ikon zawiera kluczowe wpisy
-      return !!ICONS.TEST_PASS && !!ICONS.TEST_FAIL && !!ICONS.SETTINGS;
-    }
-  }
-];
+// Parsowanie argumentów wiersza poleceń
+const args = process.argv.slice(2);
+const jsonOutput = args.includes('--json');
+const verbose = args.includes('--verbose');
 
-// ----------------------------------------------------------------
-// runAllTests() – uruchamia wszystkie testy i zwraca podsumowanie
-//   options.logToFile  – czy logować do pliku (przyszłość)
-//   options.verbose    – czy logować każdy test
-// ----------------------------------------------------------------
-export async function runAllTests(options = {}) {
-  let passed = 0;
-  let failed = 0;
+const DEBUG = true;
 
-  for (const t of tests) {
-    try {
-      const ok = await t.run();
-      const result = { ok: !!ok, name: t.name };
-
-      // TEST_PASS = ✅, TEST_FAIL = ❌ z icons.js
-      logInfo(`${result.ok ? ICONS.TEST_PASS : ICONS.TEST_FAIL} ${result.name}`);
-
-      if (result.ok) passed++;
-      else failed++;
-    } catch (err) {
-      logError(`${ICONS.TEST_FAIL} ${t.name}`, err);
-      failed++;
-    }
-  }
-
-  logInfo(`Tests: ${passed} passed, ${failed} failed`);
-  return { passed, failed, skipped: false };
+// === TYLKO w trybie JSON przekierowujemy console.log na stderr ===
+let originalConsoleLog = null;
+if (jsonOutput) {
+    originalConsoleLog = console.log;
+    console.log = (...args) => {
+        // Logi idą na stderr, tylko finalny JSON pójdzie na stdout
+        process.stderr.write(args.join(' ') + '\n');
+    };
 }
 
-// =============================================================================
-// END OF FILE
-// =============================================================================
+export async function runAllTests(options = {}) {
+    // Inicjalizacja logWritera (tylko jeśli mamy window – w Node pomijamy)
+    if (typeof window !== 'undefined') {
+        await initLogWriter();
+    }
+
+    if (DEBUG) {
+        console.log('DEBUG: runAllTests called with options:', options);
+    }
+
+    logInfo('ui', `${ICONS.DEBUG} Running tests via loader...`);
+    const { passed, failed, results } = await loadAndRunAllTests({ ...options, verbose });
+    logInfo('ui', `${ICONS.TEST_PASS} Tests completed: ${passed} passed, ${failed} failed`);
+
+    return { passed, failed, results };
+}
+
+if (DEBUG) {
+    console.log('DEBUG: import.meta.url =', import.meta.url);
+    console.log('DEBUG: process.argv[1] =', process.argv[1]);
+    console.log('DEBUG: fileURLToPath =', fileURLToPath(import.meta.url));
+}
+
+// Sprawdzenie, czy plik został uruchomiony bezpośrednio (nie zaimportowany)
+const isMainModule = process.argv[1] === fileURLToPath(import.meta.url);
+
+if (isMainModule) {
+    runAllTests({ jsonOutput, verbose })
+        .then(({ passed, failed, results }) => {
+            if (jsonOutput) {
+                // Przywróć oryginalny console.log przed wypisaniem JSON
+                if (originalConsoleLog) console.log = originalConsoleLog;
+                // Teraz JSON pójdzie na stdout (bo przywróciliśmy)
+                console.log(JSON.stringify({ passed, failed, results }, null, 2));
+            }
+            process.exit(failed > 0 ? 1 : 0);
+        })
+        .catch((err) => {
+            if (jsonOutput) {
+                if (originalConsoleLog) console.log = originalConsoleLog;
+                console.log(JSON.stringify({ 
+                    passed: 0, 
+                    failed: 1, 
+                    error: err.message,
+                    stack: err.stack 
+                }, null, 2));
+            } else {
+                console.error('Fatal error:', err);
+            }
+            process.exit(1);
+        });
+}
+
+// Automatyczne uruchomienie jeśli debugMode (tylko w przeglądarce)
+if (typeof window !== 'undefined' && window.electronAPI?.getDebugMode) {
+    window.electronAPI.getDebugMode().then((debugMode) => {
+        if (debugMode) {
+            logInfo('ui', '🐛 Debug mode enabled – running tests...');
+            runAllTests();
+        }
+    });
+}

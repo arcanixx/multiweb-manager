@@ -1,0 +1,17 @@
+[
+  { "id": "slack", "name": "Slack", "url": "https://slack.com", "icon": "https://slack.com/favicon.ico", "categoryId": "communication" },
+  { "id": "discord", "name": "Discord", "url": "https://discord.com", "icon": "https://discord.com/favicon.ico", "categoryId": "communication" },
+  { "id": "whatsapp", "name": "WhatsApp", "url": "https://web.whatsapp.com", "icon": "https://web.whatsapp.com/favicon.ico", "categoryId": "communication" },
+  { "id": "telegram", "name": "Telegram", "url": "https://web.telegram.org", "icon": "https://web.telegram.org/favicon.ico", "categoryId": "communication" },
+  { "id": "teams", "name": "Microsoft Teams", "url": "https://teams.microsoft.com", "icon": "https://teams.microsoft.com/favicon.ico", "categoryId": "communication" },
+  { "id": "messenger", "name": "Messenger", "url": "https://www.messenger.com", "icon": "https://www.messenger.com/favicon.ico", "categoryId": "communication" },
+  { "id": "skype", "name": "Skype", "url": "https://web.skype.com", "icon": "https://web.skype.com/favicon.ico", "categoryId": "communication" },
+  { "id": "google_meet", "name": "Google Meet", "url": "https://meet.google.com", "icon": "https://www.gstatic.com/meet/google_meet_favicon_v2.ico", "categoryId": "communication" },
+  { "id": "zoom", "name": "Zoom", "url": "https://zoom.us", "icon": "https://zoom.us/favicon.ico", "categoryId": "communication" },
+  { "id": "signal", "name": "Signal", "url": "https://signal.org", "icon": "https://signal.org/favicon.ico", "categoryId": "communication" },
+  { "id": "wechat", "name": "WeChat", "url": "https://web.wechat.com", "icon": "https://web.wechat.com/favicon.ico", "categoryId": "communication" },
+  { "id": "line", "name": "Line", "url": "https://line.me", "icon": "https://line.me/favicon.ico", "categoryId": "communication" },
+  { "id": "viber", "name": "Viber", "url": "https://www.viber.com", "icon": "https://www.viber.com/favicon.ico", "categoryId": "communication" },
+  { "id": "rocket_chat", "name": "Rocket.Chat", "url": "https://rocket.chat", "icon": "https://rocket.chat/favicon.ico", "categoryId": "communication" },
+  { "id": "mattermost", "name": "Mattermost", "url": "https://mattermost.com", "icon": "https://mattermost.com/favicon.ico", "categoryId": "communication" }
+]

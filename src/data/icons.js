@@ -3,17 +3,18 @@
 // PATH: src/data/icons.js
 // VERSION: 0.0.3
 // PURPOSE: Centralny rejestr wszystkich ikon używanych w aplikacji.
-//          ZASADA: Żadna ikona nie może być wpisana na twardo w komponencie.
-//          Zawsze używaj ICONS.KLUCZ z tego pliku.
-// DEPENDS ON: brak
+// FUNCTIONS: -
+// DEPENDS ON: -
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 export const ICONS = {
-  // ─────────────── Ogólne akcje ───────────────
+  // ========== Akcje ogólne ==========
   PLUS: "➕",
   MINUS: "➖",
   EDIT: "✏️",
   DELETE: "🗑️",
+  CLEAR: "🗑️", // Przeniesione z code review
   SAVE: "💾",
   COPY: "📋",
   CLOSE: "✖",
@@ -21,6 +22,7 @@ export const ICONS = {
   WARNING: "⚠️",
   INFO: "ℹ️",
   SEARCH: "🔍",
+  SEARCH_GLOBAL: "🌐",
   EXPORT: "📤",
   IMPORT: "📥",
   DOWNLOAD: "⬇️",
@@ -39,11 +41,15 @@ export const ICONS = {
   COMMENT: "💬",
   BELL: "🔔",
   BELL_OFF: "🔕",
+  NOTIFICATION: "🔔", // Przeniesione z code review
   LOCK: "🔒",
   UNLOCK: "🔓",
   DEFAULT: "🌐",
+  SKIP: "⏭️",
+  RESTART: "🔄",
+  SHUTDOWN: "⏹️",
 
-  // ─────────────── Nawigacja / UI ───────────────
+  // ========== Nawigacja ==========
   CHEVRON_DOWN: "▼",
   CHEVRON_UP: "▲",
   CHEVRON_RIGHT: "▶",
@@ -54,8 +60,9 @@ export const ICONS = {
   MENU: "☰",
   BACK: "◀",
   FORWARD: "▶",
+  TABS: "🗂️", // Przeniesione z code review
 
-  // ─────────────── Przeglądarka / WebView ───────────────
+  // ========== WebView ==========
   BROWSER: "🌐",
   ZOOM_IN: "🔎",
   ZOOM_OUT: "🔍",
@@ -65,13 +72,12 @@ export const ICONS = {
   FULLSCREEN: "⛶",
   TAB_NEW: "＋",
   SCREENSHOT: "📸",
-  // Nowe — WebView extended features
-  SINGLE_APP: "🪟",
+  SINGLE_APP: "🖥",
   RESOURCE_MONITOR: "📊",
   SLEEP: "💤",
   WAKE: "⚡",
 
-  // ─────────────── Kafelki specjalne (Sidebar) ───────────────
+  // ========== Sidebar / Moduły ==========
   NOTEPAD: "📝",
   PROJECTMANAGER: "📁",
   REMOVEBG: "🖼️",
@@ -86,25 +92,35 @@ export const ICONS = {
   APPS: "🧩",
   TOOLS: "🛠️",
   HOTKEYS: "⌨️",
+  APP_LIBRARY: "📚", // Przeniesione z code review
 
-  // ─────────────── Motywy / Theme ───────────────
+  // ========== Motywy ==========
   THEME_LIGHT: "☀️",
   THEME_DARK: "🌙",
   THEME_SYSTEM: "🖥️",
 
-  // ─────────────── Priorytety tasków ───────────────
+  // ========== Statusy zadań (TaskPanel) ==========
+  STATUS_TODO:        "○",
+  STATUS_IN_PROGRESS: "▶",
+  STATUS_BLOCKED:     "⊘",
+  STATUS_DONE:        "✓",
+  STATUS_CANCELLED:   "✕",
+  TASK_GROUP:         "🗂️",
+  ADD:                "＋",
+
+  // ========== Priorytety ==========
   PRIORITY_A: "🔴",
   PRIORITY_B: "🟠",
   PRIORITY_C: "🟡",
   PRIORITY_D: "🔵",
   PRIORITY_E: "🟢",
 
-  // ─────────────── Terminal ───────────────
+  // ========== Terminal ==========
   TERMINAL_RUN: "▶",
   TERMINAL_STOP: "■",
   TERMINAL_ADMIN: "🛡️",
 
-  // ─────────────── Narzędzia ───────────────
+  // ========== Narzędzia i Formaty ==========
   IMAGE: "🖼️",
   PROCESS: "⚡",
   FORMATTER: "🧹",
@@ -114,41 +130,56 @@ export const ICONS = {
   POSTMAN: "📮",
   IMAGE_TOOLS: "🖌️",
   CLIPBOARD: "📋",
+  JSON: "{}",
+  HTML: "🌐", // Przeniesione z code review
+  SVG: "🎨", // Przeniesione z code review
+  RAW: "📄",
 
-  // ─────────────── Status / Sieć ───────────────
+  // ========== Integracje i Komunikacja ==========
+  API: "🔌",
+  PUSHBULLET: "📡", // Przeniesione z code review
+  COOKIE: "🍪",
+
+  // ========== Status i Procesy ==========
   ONLINE: "🟢",
   OFFLINE: "🔴",
   LOADING: "⏳",
+  PROCESSING: "⏳",
+  CONVERTING: "🔄",
+  UPLOAD: "📤",
+  RESPONSE: "📨",
 
-  // ─────────────── Dev / Wersja ───────────────
+  // ========== Dev / Dane / Logi ==========
   VERSION: "🏷️",
   DEBUG: "🐛",
   TEST: "🧪",
   TEST_PASS: "✅",
   TEST_FAIL: "❌",
+  DATA: "🗄️", // Przeniesione z code review
+  LOGS: "📊",
+  HOTKEY: "⌨️",
 
-  // ─────────────── Modale / Dialogi ───────────────
+  // ========== Onboarding ==========
+  ONBOARDING_LOGO: null, // placeholder – renderowany jako SVG/PNG z assets/
+  ONBOARDING_THEME_DARK: "🌙",
+  ONBOARDING_THEME_LIGHT: "☀️",
+  ONBOARDING_LANGUAGE: "🌐",
+  ONBOARDING_ACCOUNT: "👤",
+  ONBOARDING_CHECK: "✅",
+  ONBOARDING_ARROW: "➡️",
+  SPLASH: "🔷",
   CONFIRM: "❓",
   ALERT: "🚨",
   SUCCESS: "✅",
-  ERROR: "❌"
-};
+  ERROR: "❌",
 
-// ---------------------------------------------------------------------------
-// SIDEBAR_ICON_MAP – mapowanie ID kafelka na klucz ICONS
-// ---------------------------------------------------------------------------
-export const SIDEBAR_ICON_MAP = {
-  notepad:        "NOTEPAD",
-  projectManager: "PROJECTMANAGER",
-  aggregatedTasks: "AGGREGATEDTASKS",
-  history:        "HISTORY",
-  removebg:       "REMOVEBG",
-  stringCombiner: "STRINGCOMBINER",
-  terminal:       "TERMINAL",
-  settings:       "SETTINGS",
-  help:           "HELP"
+  // ========== Kategorie App Library ==========
+  CAT_AI: "🤖",
+  CAT_DEV: "💻",
+  CAT_PRODUCTIVITY: "🚀",
+  CAT_COMMUNICATION: "💬",
+  CAT_SOCIAL: "🌐",
+  CAT_DESIGN: "🎨",
+  CAT_CLOUD: "☁️",
+  CAT_ENTERTAINMENT: "📺"
 };
-
-// =============================================================================
-// END OF FILE
-// =============================================================================

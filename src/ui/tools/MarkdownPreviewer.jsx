@@ -1,0 +1,76 @@
+// =============================================================================
+// FILE: MarkdownPreviewer.jsx
+// PATH: src/ui/tools/MarkdownPreviewer.jsx
+// VERSION: 0.0.3
+// PURPOSE: Podgląd Markdown na żywo (split view)
+// FUNCTIONS: MarkdownPreviewer
+// DEPENDS ON: react, config.js, loggerRenderer.js, translations.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+// =============================================================================
+
+import React, { useState } from 'react';
+import { isFeatureEnabled } from '../../config.js';
+import { logError, logDebug } from '../../utils/loggerRenderer.js';
+import { TranslationContext } from '../../utils/translations.js';
+
+export default function MarkdownPreviewer() {
+  const { t } = React.useContext(TranslationContext);
+  const [markdown, setMarkdown] = useState('# Hello World\n\nThis is **Markdown** previewer.');
+  const [html, setHtml] = useState('');
+
+  if (!isFeatureEnabled('markdownPreviewer')) return null;
+
+  // Prosta konwersja Markdown → HTML (uproszczona, bez zależności)
+  // ─── convertToHtml() – Konwertuje tekst Markdown na uproszczony HTML przy użyciu wyrażeń regularnych (obsługuje nagłówki, pogrubienie, kursywę, linki, listy i akapity).
+  //   @param {string} md – tekst Markdown do konwersji
+  //   @returns {string} – wygenerowany HTML
+  const convertToHtml = (md) => {
+    try {
+      const result = md
+        .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+        .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+        .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+        .replace(/^- (.*$)/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/^(?!<[a-z])/gm, '<p>$&</p>');
+      logDebug('tools', `MarkdownPreviewer: converted ${md.length} chars to HTML`);
+      return `<div class="markdown-body">${result}</div>`;
+    } catch (err) {
+      logError('tools', 'MarkdownPreviewer: convertToHtml failed', err);
+      return '<div class="markdown-body"></div>';
+    }
+  };
+
+  // ─── handleChange() – Obsługuje zmianę tekstu w edytorze Markdown – aktualizuje stan markdown oraz przetwarza go na HTML do podglądu.
+  //   @param {React.ChangeEvent<HTMLTextAreaElement>} e – zdarzenie zmiany zawartości pola tekstowego
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setMarkdown(value);
+    setHtml(convertToHtml(value));
+  };
+
+  return (
+    <div className="tool-container markdown-previewer">
+      <h2>{t('tools.markdownPreviewer')}</h2>
+      <div className="split-view">
+        <div className="split-pane">
+          <label>{t('tools.editor')}</label>
+          <textarea
+            value={markdown}
+            onChange={handleChange}
+            rows={20}
+            placeholder={t('tools.markdownPlaceholder')}
+          />
+        </div>
+        <div className="split-pane">
+          <label>{t('tools.preview')}</label>
+          <div className="preview-content" dangerouslySetInnerHTML={{ __html: html }} />
+        </div>
+      </div>
+    </div>
+  );
+}

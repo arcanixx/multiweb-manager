@@ -1,17 +1,12 @@
 /* =============================================================================
-   FILE: index.css
-   PATH: src/index.css
-   VERSION: v1.0
-   PURPOSE: Globalne style aplikacji MultiWeb Manager
-            - Tailwind base
-            - zmienne CSS dla motywów jasny/ciemny
-            - utility classes
-            - elementy UI (formularze, modale, przyciski)
-   NOTE: Ten plik jest głównym stylesheetem aplikacji.
-         Layout komponentów (sidebar, main-area, moduły) znajduje się w:
-         src/ui/layout.css
-============================================================================= */
-
+ * FILE: theme.css
+ * PATH: src/ui/styles/theme.css
+ * VERSION: 0.0.3
+ * PURPOSE: Globalne style aplikacji MultiWeb Manager
+ * FUNCTIONS: -
+ * DEPENDS ON: -
+ * UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+ * ============================================================================= */
 
 /* ─── Zmienne motywu jasnego (default) ─── */
 :root {
@@ -21,30 +16,23 @@
   --bg-card:        #ffffff;
   --bg-hover:       #e2e8f0;
   --bg-active:      #dbeafe;
-
   --text-primary:   #0f172a;
   --text-secondary: #64748b;
   --text-muted:     #94a3b8;
-
   --border:         #cbd5e1;
   --border-active:  #3b82f6;
-
   --accent:         #3b82f6;
   --accent-hover:   #2563eb;
   --accent-text:    #ffffff;
-
   --danger:         #ef4444;
   --success:        #22c55e;
   --warning:        #f59e0b;
-
   --shadow-sm:      0 1px 3px rgba(0,0,0,0.08);
   --shadow-md:      0 4px 16px rgba(0,0,0,0.1);
-
   --radius:         8px;
   --sidebar-width:  240px;
   --taskpanel-width:300px;
 }
-
 /* ─── Motyw ciemny ─── */
 .dark {
   --bg-primary:     #0f172a;
@@ -53,14 +41,11 @@
   --bg-card:        #1e293b;
   --bg-hover:       #334155;
   --bg-active:      #1d3a6b;
-
   --text-primary:   #f1f5f9;
   --text-secondary: #94a3b8;
   --text-muted:     #64748b;
-
   --border:         #334155;
   --border-active:  #3b82f6;
-
   --accent:         #3b82f6;
   --accent-hover:   #60a5fa;
   --accent-text:    #ffffff;

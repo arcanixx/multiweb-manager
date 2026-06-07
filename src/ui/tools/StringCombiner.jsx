@@ -1,22 +1,21 @@
 // =============================================================================
 // FILE: StringCombiner.jsx
-// PATH: src/components/StringCombiner.jsx
+// PATH: src/ui/tools/StringCombiner.jsx
 // VERSION: 0.0.3
 // PURPOSE: Generator kombinacji stringów. Podajesz tekst bazowy, znak podziału
-//          i N zmiennych (każda z listą wartości). Generator produkuje macierz
-//          wszystkich kombinacji – każda combo w osobnym bloku.
-//          NAPRAWIONE: cartesian obsługuje 0 zmiennych, prawidłowa obsługa
-//          znaku 'enter' jako podziału.
-// DEPENDS ON: icons.js, useTranslation.js, logger.js
-// FUNCTIONS: generate, cartesian, addVariable, removeVariable,
-//            copyResult, clearAllicons.js, useTranslation.js, logger.js
+// FUNCTIONS: StringCombiner
+// DEPENDS ON: react, loggerRenderer.js, icons, translations.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useState, useCallback } from "react";
+import { logInfo, logError, logWarn, logDebug } from '../utils/loggerRenderer.js';
 import { ICONS } from "../../utils/icons";
-import { useTranslation } from "../../hooks/useTranslation";
-import { log } from "../../utils/loggerRenderer";
+import { TranslationContext } from '../utils/translations.js';
 
+// ─── cartesian() – generuje iloczyn kartezjański tablic
+//   @param {Array} arrays – tablica tablic do połączenia
+//   @returns {Array} – wszystkie możliwe kombinacje
 function cartesian(arrays) {
   if (!arrays || arrays.length === 0) return [[]];
   if (arrays.length === 1) return arrays[0].map(v => [v]);
@@ -31,6 +30,9 @@ function cartesian(arrays) {
   }, [[]]);
 }
 
+// ─── parseSplitChar() – parsuje znak podziału
+//   @param {string} raw – opis znakowy (\n, \t, space)
+//   @returns {string} – rzeczywisty znak
 function parseSplitChar(raw) {
   if (raw === "\\n" || raw === "enter" || raw === "newline") return "\n";
   if (raw === "\\t" || raw === "tab") return "\t";
@@ -38,9 +40,11 @@ function parseSplitChar(raw) {
   return raw || " ";
 }
 
-export default function StringCombiner() {
-  const { t } = useTranslation();
+// ─── StringCombiner() – generator kombinacji stringów
+//   @returns {JSX.Element} – renderowany interfejs narzędzia
 
+export default function StringCombiner() {
+  const { t } = React.useContext(TranslationContext);
   const [baseText, setBaseText] = useState("");
   const [splitChar, setSplitChar] = useState(" ");
   const [variables, setVariables] = useState([
@@ -49,10 +53,8 @@ export default function StringCombiner() {
   const [result, setResult] = useState("");
   const [count, setCount] = useState(0);
   const [copied, setCopied] = useState(false);
-
   const generate = useCallback(() => {
     const sep = parseSplitChar(splitChar);
-
     const validVars = variables
       .map(v => ({
         ...v,
@@ -63,7 +65,7 @@ export default function StringCombiner() {
     if (validVars.length === 0) {
       setResult(baseText);
       setCount(1);
-      log("StringCombiner: no variables, output = base text");
+      logInfo('tools', "StringCombiner: no variables, output = base text");
       return;
     }
 
@@ -77,9 +79,10 @@ export default function StringCombiner() {
     const output = lines.join("\n\n");
     setResult(output);
     setCount(combos.length);
-    log(`StringCombiner: generated ${combos.length} combinations`);
+    logInfo('tools', `StringCombiner: generated ${combos.length} combinations`);
   }, [baseText, splitChar, variables]);
 
+  // ─── addVariable() – dodaje nową zmienną z domyślną nazwą i wartością
   const addVariable = () => {
     setVariables(v => [
       ...v,
@@ -87,10 +90,16 @@ export default function StringCombiner() {
     ]);
   };
 
+  // ─── removeVariable() – usuwa zmienną o podanym indeksie
+  //   @param {number} i - indeks zmiennej do usunięcia
   const removeVariable = i => {
     setVariables(v => v.filter((_, idx) => idx !== i));
   };
 
+  // ─── updateVariable() – aktualizuje pole zmiennej o podanym indeksie
+  //   @param {number} i - indeks zmiennej
+  //   @param {string} field - nazwa pola do aktualizacji (name lub values)
+  //   @param {string} value - nowa wartość
   const updateVariable = (i, field, value) => {
     setVariables(v =>
       v.map((item, idx) => {
@@ -104,15 +113,16 @@ export default function StringCombiner() {
         return { ...item, [field]: value };
       })
     );
-  };
+};
 
+  // ─── copyResult() – kopiuję wynik do schowka (z fallbackiem dla starszych przeglądarek)
   const copyResult = async () => {
     if (!result) return;
     try {
       await navigator.clipboard.writeText(result);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      log("StringCombiner: result copied to clipboard");
+      logInfo('tools', "StringCombiner: result copied to clipboard");
     } catch {
       const ta = document.createElement("textarea");
       ta.value = result;

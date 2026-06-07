@@ -1,0 +1,13 @@
+[
+  { "id": "youtube", "name": "YouTube", "url": "https://www.youtube.com", "icon": "https://www.youtube.com/favicon.ico", "categoryId": "entertainment" },
+  { "id": "netflix", "name": "Netflix", "url": "https://www.netflix.com", "icon": "https://www.netflix.com/favicon.ico", "categoryId": "entertainment" },
+  { "id": "spotify", "name": "Spotify", "url": "https://open.spotify.com", "icon": "https://open.spotify.com/favicon.ico", "categoryId": "entertainment" },
+  { "id": "twitch", "name": "Twitch", "url": "https://www.twitch.tv", "icon": "https://static.twitchcdn.net/assets/favicon-32-d6025c14e90053916ee1.png", "categoryId": "entertainment" },
+  { "id": "soundcloud", "name": "SoundCloud", "url": "https://soundcloud.com", "icon": "https://soundcloud.com/favicon.ico", "categoryId": "entertainment" },
+  { "id": "disney_plus", "name": "Disney+", "url": "https://www.disneyplus.com", "icon": "https://www.disneyplus.com/favicon.ico", "categoryId": "entertainment" },
+  { "id": "hulu", "name": "Hulu", "url": "https://www.hulu.com", "icon": "https://www.hulu.com/favicon.ico", "categoryId": "entertainment" },
+  { "id": "prime_video", "name": "Prime Video", "url": "https://www.primevideo.com", "icon": "https://www.primevideo.com/favicon.ico", "categoryId": "entertainment" },
+  { "id": "apple_music", "name": "Apple Music", "url": "https://music.apple.com", "icon": "https://music.apple.com/favicon.ico", "categoryId": "entertainment" },
+  { "id": "tidal", "name": "Tidal", "url": "https://listen.tidal.com", "icon": "https://tidal.com/favicon.ico", "categoryId": "entertainment" },
+  { "id": "hbomax", "name": "HBO Max", "url": "https://www.hbomax.com", "icon": "https://www.hbomax.com/favicon.ico", "categoryId": "entertainment" }
+]

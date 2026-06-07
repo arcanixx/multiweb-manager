@@ -1,0 +1,55 @@
+// =============================================================================
+// FILE: ipcMainHandlers_files.js
+// PATH: src/ipc/ipcMainHandlers_files.js
+// VERSION: 0.0.3
+// PURPOSE: IPC handlery zapisu plików – tekst i dane binarne przez dialog systemowy.
+// FUNCTIONS: const:IPC_CHANNELS.FILES.SAVE_TEXT, const:IPC_CHANNELS.FILES.SAVE_BINARY
+// DEPENDS ON: electron, fs, path, logger.js, ipcChannels.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+// =============================================================================
+
+import { ipcMain, dialog } from 'electron';
+import fs from 'fs';
+import path from 'path';
+import { logInfo, logError } from '../utils/logger.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
+
+// ─── files:saveText – otwiera dialog zapisu i zapisuje tekst do pliku
+ipcMain.handle(IPC_CHANNELS.FILES.SAVE_TEXT, async (_, content, name, folder) => {
+  try {
+    const dialogOptions = {
+      defaultPath: folder ? path.join(folder, name || 'plik.txt') : (name || 'plik.txt'),
+      filters: [{ name: 'Pliki tekstowe', extensions: ['txt', 'md', 'json', 'log'] }, { name: 'Wszystkie', extensions: ['*'] }]
+    };
+    const { canceled, filePath } = await dialog.showSaveDialog(dialogOptions);
+    if (canceled || !filePath) return { ok: false, error: 'CANCELLED' };
+    fs.writeFileSync(filePath, content, 'utf8');
+    logInfo('ipc', 'files:saveText success', filePath);
+    return { ok: true, data: { filePath } };
+  } catch (err) {
+    logError('ipc', 'files:saveText failed', err);
+    return { ok: false, error: err.message };
+  }
+});
+
+// ─── files:saveBinary – zapisuje dane binarne (Buffer/Uint8Array) do pliku przez dialog
+//   @param {Object} payload – { data: Buffer|Uint8Array, name?: string, folder?: string }
+ipcMain.handle(IPC_CHANNELS.FILES.SAVE_BINARY, async (_, payload) => {
+  try {
+    if (!payload || !payload.data) return { ok: false, error: 'INVALID_PAYLOAD' };
+    const dialogOptions = {
+      defaultPath: payload.folder
+        ? path.join(payload.folder, payload.name || 'plik')
+        : (payload.name || 'plik'),
+      filters: [{ name: 'Wszystkie', extensions: ['*'] }]
+    };
+    const { canceled, filePath } = await dialog.showSaveDialog(dialogOptions);
+    if (canceled || !filePath) return { ok: false, error: 'CANCELLED' };
+    fs.writeFileSync(filePath, Buffer.from(payload.data));
+    logInfo('ipc', 'files:saveBinary success', filePath);
+    return { ok: true, data: { filePath } };
+  } catch (err) {
+    logError('ipc', 'files:saveBinary failed', err);
+    return { ok: false, error: err.message };
+  }
+});

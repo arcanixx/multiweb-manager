@@ -1,0 +1,72 @@
+// =============================================================================
+// FILE: ipcMainHandlers_notepad.js
+// PATH: src/ipc/ipcMainHandlers_notepad.js
+// VERSION: 0.0.3
+// PURPOSE: IPC dla notatek (Notepad, hooks useNotepad).
+// FUNCTIONS: -
+// DEPENDS ON: electron, notepadStore.js, logger.js, ipcChannels.js
+// UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+// =============================================================================
+
+import { ipcMain } from "electron";
+import {
+  getAllNotepad,
+  addNote,
+  updateNote,
+  deleteNote
+} from "../stores/notepadStore.js";
+import { logError } from "../utils/logger.js";
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
+ipcMain.handle(IPC_CHANNELS.notepad.GET_ALL, async () => {
+  try {
+    return { ok: true, data: getAllNotepad() };
+  } catch (err) {
+    logError('ipc', "notepad:getAll", err);
+    return { ok: false, error: err.message };
+  }
+});
+ipcMain.handle(IPC_CHANNELS.notepad.ADD, async (_, payload) => {
+  try {
+    if (!payload || typeof payload !== 'object') {
+      throw new Error('NOTE_INVALID_PAYLOAD');
+    }
+    const note = payload;
+    if (!note.id || typeof note.id !== 'string') {
+      throw new Error('NOTE_INVALID_ID');
+    }
+    return { ok: true, data: addNote(note) };
+  } catch (err) {
+    logError('ipc', "notepad:add", err);
+    return { ok: false, error: err.message };
+  }
+});
+ipcMain.handle(IPC_CHANNELS.notepad.UPDATE, async (_, payload) => {
+  try {
+    if (!payload || typeof payload !== 'object' || !('id' in payload) || !('patch' in payload)) {
+      throw new Error('INVALID_PAYLOAD');
+    }
+    const { id, patch } = payload;
+    if (!id || typeof id !== 'string') throw new Error('NOTE_ID_REQUIRED');
+    if (!patch || typeof patch !== 'object') throw new Error('NOTE_INVALID_PATCH');
+    return { ok: true, data: updateNote(id, patch) };
+  } catch (err) {
+    logError('ipc', "notepad:update", err);
+    return { ok: false, error: err.message };
+  }
+});
+ipcMain.handle(IPC_CHANNELS.notepad.DELETE, async (_, payload) => {
+  try {
+    if (!payload || typeof payload !== 'string') {
+      throw new Error('NOTE_ID_REQUIRED');
+    }
+    const id = payload;
+    if (!id || typeof id !== 'string') {
+      throw new Error('NOTE_ID_REQUIRED');
+    }
+    deleteNote(id);
+    return { ok: true };
+  } catch (err) {
+    logError('ipc', "notepad:delete", err);
+    return { ok: false, error: err.message };
+  }
+});
