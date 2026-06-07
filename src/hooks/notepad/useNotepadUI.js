@@ -9,14 +9,14 @@
 // =============================================================================
 
 import { useState, useEffect, useCallback, useContext } from 'react';
-import { TranslationContext } from '../utils/translations.js';
+import { TranslationContext } from '../../utils/translations.js';
 import { useNotepadTabs } from './useNotepadTabs.js';
 import { useNotepadContent } from './useNotepadContent.js';
-import { useNotepadAutosave } from './notepad/useNotepadAutosave.js';
-import { useNotepadModals } from './notepad/useNotepadModals.js';
-import { useNotepadTabActions } from './notepad/useNotepadTabActions.js';
-import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
-import { showToast as showGlobalToast } from '../utils/notificationsManager.js';
+import { useNotepadAutosave } from './useNotepadAutosave.js';
+import { useNotepadModals } from './useNotepadModals.js';
+import { useNotepadTabActions } from './useNotepadTabActions.js';
+import { logInfo, logError, logWarn } from "../../utils/loggerRenderer.js";
+import { showToast as showGlobalToast } from '../../utils/notificationsManager.js';
 
 // ─── useNotepadUI() – główny hook orkiestrator notatnika
 // @param {Object} props
