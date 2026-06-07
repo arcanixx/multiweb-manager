@@ -9,7 +9,7 @@
 // =============================================================================
 
 import { useState, useEffect, useCallback } from 'react';
-import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
+import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
 
 // ─── useTaskGroups() – zarządza grupami zadań
 //   @returns {Object} – groups, loading, addGroup, updateGroup, deleteGroup,
