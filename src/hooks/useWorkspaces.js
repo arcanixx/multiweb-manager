@@ -10,7 +10,7 @@
 
 import { useEffect, useState, useContext } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
-import { TranslationContext } from '../../utils/translations.js';
+import { TranslationContext } from '../utils/translations.js';
 
 // ─── useWorkspaces() – hook do zarządzania workspace'ami
 //   @returns {Object} – obiekt z workspaces, loading i funkcjami saveWorkspace, deleteWorkspace
@@ -41,11 +41,14 @@ export function useWorkspaces() {
   }
 
   // ─── save() – zapisuje workspace do backendu
+  //   Handler IPC (workspaces:save) oczekuje tablicy workspace'ów.
+  //   Hook wysyła pojedynczy workspace owinięty w tablicę – handler robi upsert.
   //   @param {Object} workspace – obiekt workspace do zapisania
   //   @returns {Promise<Object>}
   async function save(workspace) {
     try {
-      const res = await window.electronAPI.invoke("workspaces:save", workspace);
+      // Handler IPC oczekuje Array – wysyłamy [workspace], handler robi upsert po id
+      const res = await window.electronAPI.invoke("workspaces:save", [workspace]);
       if (res?.ok) {
         logInfo("store", "useWorkspaces.save success", workspace.id);
         await load();
