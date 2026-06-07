@@ -977,7 +977,7 @@ root/
 │   │   ├── 📜 notepadStore.js                     <!-- VERSION: 0.0.3 PATH: src/stores/notepadStore.js
 │   │   │                                               PURPOSE: Zarządzanie notatkami użytkownika – ładowanie,
 │   │   │                                                        zapisywanie oraz operacje CRUD na danych notatek.
-│   │   │                                               FUNCTIONS: getAllnotepad, addNote, updateNote, deleteNote
+│   │   │                                               FUNCTIONS: getAllNotepad, addNote, updateNote, deleteNote
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 profilesStore.js                    <!-- VERSION: 0.0.3 PATH: src/stores/profilesStore.js
@@ -3308,7 +3308,7 @@ root/
 │   │   ├── 📜 notepadStore.js                     <!-- VERSION: 0.0.3 PATH: src/stores/notepadStore.js
 │   │   │                                               PURPOSE: Zarządzanie notatkami użytkownika – ładowanie,
 │   │   │                                                        zapisywanie oraz operacje CRUD na danych notatek.
-│   │   │                                               FUNCTIONS: getAllnotepad, addNote, updateNote, deleteNote
+│   │   │                                               FUNCTIONS: getAllNotepad, addNote, updateNote, deleteNote
 │   │   │                                               DEPENDS ON: fs, path, electron, logger.js
 │   │   │                                               -->
 │   │   ├── 📜 profilesStore.js                    <!-- VERSION: 0.0.3 PATH: src/stores/profilesStore.js
