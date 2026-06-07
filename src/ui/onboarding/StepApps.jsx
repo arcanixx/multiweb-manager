@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { ICONS } from '../../utils/icons.js';
-import { QUICK_START_MAP } from './onboardingConfig.js';
+import { QUICK_START_MAP } from '../../config/onboardingConfig.js';
 import appLibraryData from '../../data/app-library.json';
 
 // ─── StepApps() – krok 4: szybki start – wybór aplikacji z App Library
