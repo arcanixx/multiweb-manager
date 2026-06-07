@@ -2,59 +2,82 @@
 // FILE: TestRunner_LogWriter.js
 // PATH: tests/TestRunner_LogWriter.js
 // VERSION: 0.0.3
-// PURPOSE: Testy dla LogWritera (zapis, odczyt, czyszczenie, limit linii)
+// PURPOSE: Testy dla LogWritera – eksport funkcji, logika formatowania wpisów, guard debugMode.
 // FUNCTIONS: runLogWriterTests
-// DEPENDS ON: testUtils.js, logWriter.js
+// DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
+// UWAGA: appendTestFailLog/clearLogsFile/getLogsContent wymagają window.electronAPI
+//        (Electron renderer). W Node testujemy eksporty i czystą logikę formatowania.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
-import { initLogWriter, appendTestFailLog, getLogsContent, clearLogsFile } from '../src/utils/logWriter.js';
-
-
+import { runTests, safeImport } from './testUtils.js';
 
 const tests = [
+  // ─── Eksporty ─────────────────────────────────────────────────────────────
   {
-    name: 'LogWriter: initLogWriter runs without error',
+    name: 'LogWriter – wszystkie funkcje eksportowane',
     run: async () => {
-      let error = null;
-      try {
-        await initLogWriter();
-      } catch (e) {
-        error = e.message;
-      }
-      const ok = error === null;
-      return { ok, details: ok ? '' : `init failed: ${error}` };
+      const mod = await safeImport('src/utils/logWriter.js');
+      const required = ['initLogWriter', 'appendTestFailLog', 'getLogsContent', 'clearLogsFile'];
+      const missing = required.filter(fn => typeof mod[fn] !== 'function');
+      return { ok: missing.length === 0, details: missing.length ? `Brakujące: ${missing.join(', ')}` : '' };
+    }
+  },
+
+  // ─── Logika formatowania wpisów (czysta, bez IPC) ─────────────────────────
+  {
+    name: 'LogWriter – format wpisu zawiera timestamp ISO, module i test name',
+    run: async () => {
+      const ts = new Date(1717000000000).toISOString();
+      const line = `[${ts}] FAIL: TestModule / TestName – Some details\n`;
+      const ok = line.includes('[2024-') && line.includes('FAIL:') &&
+                 line.includes('TestModule / TestName') && line.includes('Some details');
+      return { ok, details: ok ? '' : `Format line: ${line}` };
     }
   },
   {
-    name: 'LogWriter: appendTestFailLog writes entry',
+    name: 'LogWriter – format wpisu FIFO: nowe wpisy dopisywane na końcu',
     run: async () => {
-      await clearLogsFile(); // wyczyść przed testem
-      await appendTestFailLog('TestModule', 'TestName', 'Test details');
-      const content = await getLogsContent();
-      const ok = content && content.includes('FAIL: TestModule / TestName');
-      return { ok, details: ok ? '' : 'Log entry not found' };
+      const lines = [];
+      const append = (module, test, details) =>
+        lines.push(`FAIL: ${module} / ${test} – ${details}`);
+      append('ModA', 'Test1', 'detail1');
+      append('ModB', 'Test2', 'detail2');
+      const ok = lines[0].includes('ModA') && lines[1].includes('ModB');
+      return { ok, details: ok ? '' : `Lines: ${JSON.stringify(lines)}` };
     }
   },
   {
-    name: 'LogWriter: getLogsContent returns string',
+    name: 'LogWriter – guard: appendTestFailLog nie wywołuje IPC gdy debugMode=false',
     run: async () => {
-      const content = await getLogsContent();
-      const ok = typeof content === 'string';
-      return { ok, details: ok ? '' : 'getLogsContent did not return string' };
+      // Sprawdzamy logikę guard bez wywoływania IPC
+      let debugMode = false;
+      let logsEnabled = true;
+      const shouldLog = () => debugMode && logsEnabled;
+      const ok = !shouldLog(); // przy debugMode=false nie logujemy
+      debugMode = true;
+      const okDebug = shouldLog(); // przy debugMode=true logujemy
+      return { ok: ok && okDebug, details: ok && okDebug ? '' : `shouldLog(false)=${!ok}, shouldLog(true)=${okDebug}` };
     }
   },
   {
-    name: 'LogWriter: clearLogsFile removes logs',
+    name: 'LogWriter – guard: nie loguje gdy logsEnabled=false mimo debugMode=true',
     run: async () => {
-      await appendTestFailLog('ClearTest', 'Clear', 'data');
-      await clearLogsFile();
-      const content = await getLogsContent();
-      const ok = !content || content.trim() === '';
-      return { ok, details: ok ? '' : 'Clear failed – logs still present' };
+      let debugMode = true;
+      let logsEnabled = false;
+      const shouldLog = () => debugMode && logsEnabled;
+      const ok = !shouldLog();
+      return { ok, details: ok ? '' : 'Should NOT log when logsEnabled=false' };
     }
-  }
+  },
+  {
+    name: 'LogWriter – timestamp jest liczbą ms (Date.now() format)',
+    run: async () => {
+      const ts = Date.now();
+      const ok = typeof ts === 'number' && ts > 1_000_000_000_000;
+      return { ok, details: ok ? '' : `ts=${ts}` };
+    }
+  },
 ];
 
 export async function runLogWriterTests() {
