@@ -9,7 +9,7 @@
 // =============================================================================
 
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { logDebug, logError } from '../utils/loggerRenderer.js';
+import { logDebug, logError } from '../../utils/loggerRenderer.js';
 
 // ─── DEBOUNCE_MS – opóźnienie wyszukiwania globalnego (ms)
 // UWAGA: Ta stała celowo pozostaje w tym pliku – dotyczy wyłącznie logiki tego hooka.
