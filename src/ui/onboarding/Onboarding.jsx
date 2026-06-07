@@ -12,7 +12,7 @@ import React, { useState, useContext, useCallback } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
 import { logInfo, logDebug } from '../../utils/loggerRenderer.js';
-import { ONBOARDING_STEPS, STEP_TITLE_KEYS } from './onboardingConfig.js';
+import { ONBOARDING_STEPS, STEP_TITLE_KEYS } from '../../config/onboardingConfig.js';
 import StepIndicator from './StepIndicator.jsx';
 import StepTheme     from './StepTheme.jsx';
 import StepLanguage  from './StepLanguage.jsx';
