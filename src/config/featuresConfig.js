@@ -27,6 +27,11 @@ export const FEATURES = {
   resourceMonitor: true,
   sleepTabs: true,
   adBlocker: true,
+
+  // WebView Script Injector — wstrzykiwanie custom CSS/JS do WebView
+  // Stan: BACKLOG – implementacja gotowa (src/engine/webviewScriptInjector.js),
+  //        brakuje UI konfiguracji. Ustaw true gdy UI będzie gotowe.
+  webviewScriptInjector: false,
   devTools: false,
 
   // Notepad
