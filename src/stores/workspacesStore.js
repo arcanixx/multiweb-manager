@@ -11,13 +11,24 @@
 import fs from "fs";
 import path from "path";
 import { app } from "electron";
-import { logInfo, logError } from "../utils/logger.js";
-const WORKSPACES_FILE = path.join(app.getPath("userData"), "workspaces.json");
+import { logInfo, logError, logWarn } from "../utils/logger.js";
+
+// ─── WORKSPACES_FILE – ścieżka do pliku workspaces.json w userData
+//   Owinięty w try/catch – app.getPath() może rzucić jeśli zostanie wywołany
+//   zanim Electron zainicjalizuje app (np. w testach jednostkowych).
+let WORKSPACES_FILE;
+try {
+  WORKSPACES_FILE = path.join(app.getPath("userData"), "workspaces.json");
+} catch (err) {
+  logError("store", "workspacesStore: nie można ustalić ścieżki userData – używam fallback", err.message);
+  WORKSPACES_FILE = path.join(".", "workspaces.json"); // fallback do katalogu roboczego
+}
 
 // ─── loadStore() – Wczytuje i analizuje plik konfiguracyjny workspaces.json z katalogu użytkownika; przy błędzie lub braku pliku zwraca obiekt z pustą tablicą
 function loadStore() {
   try {
     if (!fs.existsSync(WORKSPACES_FILE)) {
+      logWarn("store", "workspacesStore.loadStore: plik nie istnieje, zwracam pustą listę");
       return { version: "0.0.3", data: [] };
     }
     return JSON.parse(fs.readFileSync(WORKSPACES_FILE, "utf8"));
