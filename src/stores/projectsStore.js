@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
+import { getUserDataPath, readJsonFile, writeJsonFile } from "../utils/persistence.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
 import fs from 'fs';
 
