@@ -4,13 +4,14 @@
 // VERSION: 0.0.3
 // PURPOSE: Widok zbiorczy zadań – orkiestrator renderujący filtry, nagłówek i listę grup. Logika w useAggregatedTasks.
 // FUNCTIONS: AggregatedTasks
-// DEPENDS ON: react, translations.js, icons.js, AggregatedProjectSection.jsx, useAggregatedTasks.js
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js, AggregatedProjectSection.jsx, useAggregatedTasks.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
+import { logError } from '../../utils/loggerRenderer.js';
 import AggregatedProjectSection from './AggregatedProjectSection.jsx';
 import { useAggregatedTasks, STATUSES, PRIORITIES, SECTIONS } from '../../hooks/useAggregatedTasks.js';
 

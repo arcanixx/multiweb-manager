@@ -4,13 +4,14 @@
 // VERSION: 0.0.3
 // PURPOSE: Widok sekcji powiadomień – toasty UI, powiadomienia systemowe OS, Pushbullet. Logika w useNotificationsSection.
 // FUNCTIONS: NotificationsSection
-// DEPENDS ON: react, translations.js, icons.js, useNotificationsSection.js
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js, useNotificationsSection.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
+import { logDebug } from '../../utils/loggerRenderer.js';
 import { useNotificationsSection } from '../../hooks/settings/useNotificationsSection.js';
 
 // ─── NotificationsSection() – sekcja ustawień powiadomień
@@ -21,6 +22,8 @@ export default function NotificationsSection() {
     pushbulletApiKey, setPushbulletApiKey,
     handleToastsToggle, handleSystemNotifToggle, handlePushbulletSave,
   } = useNotificationsSection();
+
+  logDebug('settings', 'NotificationsSection: render');
 
   return (
     <section className="settings-section">

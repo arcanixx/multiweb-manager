@@ -64,23 +64,28 @@ export function useHotkeysManager() {
     }
   };
 
+  // ─── showConfirm() – otwiera modal potwierdzenia z dynamicznym tytułem i callbackiem
   const showConfirm = (title, message, onConfirm) => {
     logDebug('ui', 'useHotkeysManager: showing confirm');
     setConfirmState({ isOpen: true, title, message, onConfirm });
   };
 
+  // ─── closeConfirm() – zamyka modal potwierdzenia i resetuje stan
   const closeConfirm = () => setConfirmState({ isOpen: false, title: '', message: '', onConfirm: null });
 
+  // ─── handleAdd() – otwiera modal tworzenia nowego skrótu z pustym szablonem
   const handleAdd = () => {
     setEditingHotkey({ id: `hk-${Date.now()}`, shortcut: '', name: '', text: '', enabled: true, action: 'insertText' });
     setModalOpen(true);
   };
 
+  // ─── handleEdit() – otwiera modal edycji z kopią wybranego skrótu
   const handleEdit = (hotkey) => {
     setEditingHotkey({ ...hotkey });
     setModalOpen(true);
   };
 
+  // ─── handleDelete() – wyświetla confirm, a po akceptacji usuwa skrót po id
   const handleDelete = (id) => {
     showConfirm(t('hotkeys.deleteConfirmTitle'), t('hotkeys.deleteConfirmMessage'), async () => {
       try {
@@ -92,6 +97,7 @@ export function useHotkeysManager() {
     });
   };
 
+  // ─── handleSave() – waliduje i zapisuje edytowany skrót (nowy lub istniejący)
   const handleSave = async () => {
     if (!editingHotkey?.shortcut || !editingHotkey?.name) {
       showNotification(t('hotkeys.validationError'), 'error');
@@ -112,13 +118,16 @@ export function useHotkeysManager() {
     setEditingHotkey(null);
   };
 
+  // ─── handleToggleEnabled() – przełącza pole enabled dla skrótu o danym id
   const handleToggleEnabled = async (id, enabled) => {
     await saveHotkeys(hotkeys.map(h => h.id === id ? { ...h, enabled } : h));
     logInfo('settings', `useHotkeysManager: toggle ${id} → ${enabled}`);
   };
 
+  // ─── handleModalChange() – aktualizuje pole w edytowanym skrócie (controlled input)
   const handleModalChange = (field, value) => setEditingHotkey(prev => ({ ...prev, [field]: value }));
 
+  // ─── closeModal() – zamyka modal edycji i czyści stan editingHotkey
   const closeModal = () => { setModalOpen(false); setEditingHotkey(null); };
 
   return {

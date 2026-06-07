@@ -33,6 +33,7 @@ export function useLogsSection() {
     load();
   }, []);
 
+  // ─── handleOpenLogs() – otwiera folder z plikami logów w eksploratorze systemu
   const handleOpenLogs = async () => {
     try {
       await window.electronAPI?.openLogsFolder?.();
@@ -40,6 +41,7 @@ export function useLogsSection() {
     } catch (err) { logError('settings', 'useLogsSection: open logs failed', err.message); }
   };
 
+  // ─── handleViewLogs() – pobiera zawartość pliku logów i otwiera modal podglądu
   const handleViewLogs = async () => {
     try {
       const res = await window.electronAPI?.logsGet?.();
@@ -47,6 +49,7 @@ export function useLogsSection() {
     } catch (err) { logError('settings', 'useLogsSection: view logs failed', err.message); }
   };
 
+  // ─── handleClearLogs() – czyści plik logów i resetuje podgląd
   const handleClearLogs = async () => {
     try {
       await window.electronAPI?.logsClear?.();
@@ -55,6 +58,7 @@ export function useLogsSection() {
     } catch (err) { logError('settings', 'useLogsSection: clear logs failed', err.message); }
   };
 
+  // ─── handleToggleLogs() – przełącza flagę logsEnabled i zapisuje przez IPC
   const handleToggleLogs = async () => {
     try {
       const newValue = !settings?.logsEnabled;
@@ -66,6 +70,7 @@ export function useLogsSection() {
 
   // ─── Event log handlers (ARCH_REQ-044) ──────────────────────────────────
 
+  // ─── handleToggleEventLog() – przełącza flagę eventLogEnabled i emituje event aplikacji
   const handleToggleEventLog = async () => {
     try {
       const newValue = !settings?.eventLogEnabled;
@@ -76,6 +81,7 @@ export function useLogsSection() {
     } catch (err) { logError('settings', 'useLogsSection: toggle event log failed', err.message); }
   };
 
+  // ─── handleViewEventLog() – pobiera zawartość dziennika zdarzeń i otwiera modal
   const handleViewEventLog = async () => {
     try {
       const res = await window.electronAPI?.invoke?.('events:getFile');
@@ -83,6 +89,7 @@ export function useLogsSection() {
     } catch (err) { logError('settings', 'useLogsSection: view event log failed', err.message); }
   };
 
+  // ─── handleClearEventLog() – czyści dziennik zdarzeń przez IPC i resetuje podgląd
   const handleClearEventLog = async () => {
     try {
       await window.electronAPI?.invoke?.('events:clear');

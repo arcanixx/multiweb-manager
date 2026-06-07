@@ -4,13 +4,14 @@
 // VERSION: 0.0.3
 // PURPOSE: Widok zarządzania skrótami klawiszowymi – orkiestrator renderujący podkomponenty. Logika w useHotkeysManager.
 // FUNCTIONS: HotkeysManager
-// DEPENDS ON: react, config.js, translations.js, useHotkeysManager.js, HotkeysListSection.jsx, HotkeyModal.jsx, ConfirmModal.jsx
+// DEPENDS ON: react, config.js, translations.js, loggerRenderer.js, useHotkeysManager.js, HotkeysListSection.jsx, HotkeyModal.jsx, ConfirmModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useContext } from 'react';
 import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../../utils/translations.js';
+import { logDebug } from '../../utils/loggerRenderer.js';
 import { useHotkeysManager } from '../../hooks/useHotkeysManager.js';
 import HotkeysList  from './HotkeysListSection.jsx';
 import HotkeyModal  from '../modals/HotkeyModal.jsx';
@@ -29,6 +30,8 @@ export default function HotkeysManager() {
 
   if (!isFeatureEnabled('hotkeysManager')) return null;
   if (loading) return <div className="settings-loading-small">{t('common.loading')}</div>;
+
+  logDebug('settings', 'HotkeysManager: render');
 
   return (
     <section className="settings-section">

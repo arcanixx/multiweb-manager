@@ -35,6 +35,7 @@ export function useNotificationsSection() {
     load();
   }, []);
 
+  // ─── handleToastsToggle() – przełącza toastsEnabled i emituje event aplikacji
   const handleToastsToggle = async (e) => {
     try {
       const enabled = e.target.checked;
@@ -45,6 +46,7 @@ export function useNotificationsSection() {
     } catch (err) { logError('settings', 'useNotificationsSection: toastsToggle failed', err.message); }
   };
 
+  // ─── handleSystemNotifToggle() – przełącza systemNotificationsEnabled i zapisuje przez IPC
   const handleSystemNotifToggle = async (e) => {
     try {
       const enabled = e.target.checked;
@@ -54,6 +56,7 @@ export function useNotificationsSection() {
     } catch (err) { logError('settings', 'useNotificationsSection: systemNotif failed', err.message); }
   };
 
+  // ─── handlePushbulletSave() – zapisuje klucz API Pushbullet przez IPC
   const handlePushbulletSave = async () => {
     try {
       await window.electronAPI?.invoke?.('settings:update', { pushbulletApiKey });

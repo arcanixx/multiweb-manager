@@ -4,13 +4,14 @@
 // VERSION: 0.0.3
 // PURPOSE: Widok sekcji zarządzania logami – logi testów i dziennik zdarzeń. Logika w useLogsSection.
 // FUNCTIONS: LogsSection
-// DEPENDS ON: react, translations.js, icons.js, Modal, useLogsSection.js
+// DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js, Modal, useLogsSection.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import React, { useContext } from 'react';
 import { TranslationContext } from '../../utils/translations.js';
 import { ICONS } from '../../utils/icons.js';
+import { logDebug } from '../../utils/loggerRenderer.js';
 import Modal from '../modals/Modal';
 import { useLogsSection } from '../../hooks/settings/useLogsSection.js';
 
@@ -26,6 +27,8 @@ export default function LogsSection() {
   } = useLogsSection();
 
   if (!settings || settings.debugMode === false) return null;
+
+  logDebug('settings', 'LogsSection: render');
 
   const logsEnabled     = settings.logsEnabled     || false;
   const eventLogEnabled = settings.eventLogEnabled || false;

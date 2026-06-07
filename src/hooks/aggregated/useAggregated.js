@@ -75,29 +75,34 @@ export function useAggregatedTasks() {
   const totalGroups = new Set(allTasks.map(t => t.taskGroupId)).size;
   const hasFilter   = filterText || filterStatus || filterPriority || filterSection;
 
+  // ─── toggleCollapse() – przełącza zwinięcie grupy i zapisuje stan do ustawień
   const toggleCollapse = useCallback((groupId) => {
     const next = { ...collapsed, [groupId]: !collapsed[groupId] };
     setCollapsed(next);
     window.electronAPI.saveSettings({ collapsedTaskGroups: next }).catch(() => {});
   }, [collapsed]);
 
+  // ─── toggleHidden() – przełącza ukrycie grupy i zapisuje stan do ustawień
   const toggleHidden = useCallback((groupId) => {
     const next = { ...hidden, [groupId]: !hidden[groupId] };
     setHidden(next);
     window.electronAPI.saveSettings({ hiddenTaskGroups: next }).catch(() => {});
   }, [hidden]);
 
+  // ─── collapseAll() – zwija wszystkie widoczne grupy i zapisuje stan
   const collapseAll = () => {
     const next = Object.fromEntries(grouped.map(g => [g.groupId, true]));
     setCollapsed(next);
     window.electronAPI.saveSettings({ collapsedTaskGroups: next }).catch(() => {});
   };
 
+  // ─── expandAll() – rozwija wszystkie grupy (czyści stan collapsed)
   const expandAll = () => {
     setCollapsed({});
     window.electronAPI.saveSettings({ collapsedTaskGroups: {} }).catch(() => {});
   };
 
+  // ─── clearFilters() – resetuje wszystkie aktywne filtry widoku zbiorczego
   const clearFilters = () => {
     setFilterText(''); setFilterStatus(''); setFilterPriority(''); setFilterSection('');
   };
