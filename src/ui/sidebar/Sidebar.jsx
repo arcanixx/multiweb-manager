@@ -63,6 +63,8 @@ export default function Sidebar({ onSelect, activeItem, onOpenTaskPanel, onModal
     return <div className="sidebar-loading">{t('common.loading')}</div>;
   }
 
+  logDebug('ui', 'Sidebar: render');
+
   return (
     <div style={{
       width: 'var(--sidebar-width)', minWidth: 200, maxWidth: 280,
