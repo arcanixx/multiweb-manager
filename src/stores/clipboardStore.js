@@ -9,7 +9,7 @@
 // =============================================================================
 
 import { clipboard } from "electron";
-import { LIMITS } from "../../config.js";
+import { LIMITS } from "../config.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
 // In-memory historia (nie jest persystowana między restartami)
 let history = [];
