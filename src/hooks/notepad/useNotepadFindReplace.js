@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: useNotepadFindReplace.js
-// PATH: src/hooks/useNotepadFindReplace.js
+// PATH: src/hooks/notepad/useNotepadFindReplace.js
 // VERSION: 0.0.3
 // PURPOSE: Hook React obsługujący logikę wyszukiwania i zastępowania tekstu w edytorze notatnika.
 // FUNCTIONS: useNotepadFindReplace

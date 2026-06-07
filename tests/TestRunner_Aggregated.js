@@ -1,10 +1,10 @@
 // =============================================================================
-// FILE: TestRunner_Tasks.js
-// PATH: tests/TestRunner_Tasks.js
+// FILE: TestRunner_Aggregated.js
+// PATH: tests/TestRunner_Aggregated.js
 // VERSION: 0.0.3
 // PURPOSE: Testy logiki domenowej systemu zadań: model danych, reguły section↔status, normalizeTask, tasksStore CRUD. Testy izolowane – nie wymagają Electron ani IPC.
 // FUNCTIONS: runTasksTests
-// DEPENDS ON: testUtils.js, tasksStore.js
+// DEPENDS ON: testUtils.js, taskPanelStore.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -15,10 +15,7 @@ import {
   resolveSection,
   STATUS_TO_SECTION,
   VALID_STATUSES,
-} from '../src/stores/tasksStore.js';
-
-
-
+} from '../src/stores/taskPanelStore.js';
 
 // ─── Fabryka zadania testowego
 const makeTask = (overrides = {}) => ({

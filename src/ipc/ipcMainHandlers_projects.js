@@ -10,7 +10,7 @@
 //          projects:archive      – archiwizuje projekt
 //          projects:delete       – usuwa projekt
 // FUNCTIONS: const:IPC_CHANNELS.PROJECTS.GET_ALL, const:IPC_CHANNELS.PROJECTS.GET_WITH_TASKS, const:IPC_CHANNELS.PROJECTS.CREATE, const:IPC_CHANNELS.PROJECTS.UPDATE, const:IPC_CHANNELS.PROJECTS.ARCHIVE, const:IPC_CHANNELS.PROJECTS.DELETE
-// DEPENDS ON: electron, projectsStore.js, tasksStore.js, logger.js, ipcChannels.js
+// DEPENDS ON: electron, projectsStore.js, taskPanelStore.js, logger.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -23,7 +23,7 @@ import {
   deleteProject,
   archiveProject
 } from "../stores/projectsStore.js";
-import { loadTasksByProject } from "../stores/tasksStore.js";
+import { loadTasksByProject } from "../stores/taskPanelStore.js";
 import { logError } from "../utils/logger.js";
 import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 // =============================================================================

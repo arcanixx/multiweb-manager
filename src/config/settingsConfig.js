@@ -1,14 +1,14 @@
 // =============================================================================
-// FILE: settings.js
-// PATH: src/config/settings.js
+// FILE: settingsConfig.js
+// PATH: src/config/settingsConfig.js
 // VERSION: 0.0.3
 // PURPOSE: Domyślne ustawienia aplikacji (DEFAULT_SETTINGS), per-modułowe flagi debugowania (DEBUG_MODULES) i helper getDefaultSetting.
 // FUNCTIONS: getDefaultSetting
-// DEPENDS ON: app.js
+// DEPENDS ON: appConfig.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { DEBUG_DEFAULT, DEFAULT_LANGUAGE } from './app.js';
+import { DEBUG_DEFAULT, DEFAULT_LANGUAGE } from './appConfig.js';
 
 // =============================================================================
 // DEBUG MODULES — per-modułowe logowanie gdy debugMode === true

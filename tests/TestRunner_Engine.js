@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: TestRunner_MainEngine.js
-// PATH: tests/TestRunner_MainEngine.js
+// FILE: TestRunner_Engine.js
+// PATH: tests/TestRunner_Engine.js
 // VERSION: 0.0.3
 // PURPOSE: Testy modułów silnika głównego: webviewRegistry, resourceMonitor, webviewScriptInjector, hotkeysManager.
 // FUNCTIONS: runMainEngineTests
@@ -11,7 +11,6 @@
 import { runTests, safeImport } from './testUtils.js';
 import { join } from 'path';
 const ROOT = process.cwd();
-
 
 const tests = [
   // ── webviewRegistry ─────────────────────────────────────────────────────

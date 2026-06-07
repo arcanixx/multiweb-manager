@@ -4,14 +4,14 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla widoku zbiorczego zadań (AggregatedTasks). Łączy zadania z grupami (TaskGroup) i profilami.
 // FUNCTIONS: const:IPC_CHANNELS.AGGREGATED_TASKS.GET_ALL, const:IPC_CHANNELS.AGGREGATED_TASKS.FILTER, const:IPC_CHANNELS.AGGREGATED_TASKS.SORT
-// DEPENDS ON: electron, ipcChannels.js, tasksStore.js, taskGroupsStore.js, logger.js
+// DEPENDS ON: electron, ipcChannels.js, taskPanelStore.js, aggregatedStore.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { ipcMain } from 'electron';
 import { IPC_CHANNELS } from '../constants/ipcChannels.js';
-import { loadTasks } from '../stores/tasksStore.js';
-import { loadTaskGroups } from '../stores/taskGroupsStore.js';
+import { loadTasks } from '../stores/taskPanelStore.js';
+import { loadTaskGroups } from '../stores/aggregatedStore.js';
 import { logError } from '../utils/logger.js';
 
 // ─── enrich() – uzupełnia zadania o nazwę grupy (zamiast projectName)

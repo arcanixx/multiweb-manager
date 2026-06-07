@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: useSettings.js
-// PATH: src/hooks/useSettings.js
+// PATH: src/hooks/settings/useSettings.js
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania ustawieniami użytkownika – ładowanie przez StorageService (cache + IPC), zapis z notyfikacją subskrybentów.
 // FUNCTIONS: useSettings

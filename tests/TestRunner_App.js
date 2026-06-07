@@ -79,7 +79,7 @@ const tests = [
     name: 'DEFAULT_SETTINGS – firstRun jest true domyślnie',
     run: async () => {
       try {
-        const { DEFAULT_SETTINGS } = await safeImport('src/config/settings.js');
+        const { DEFAULT_SETTINGS } = await safeImport('src/config/settingsConfig.js');
         const ok = DEFAULT_SETTINGS?.firstRun === true;
         return { ok, details: ok ? '' : `firstRun: ${DEFAULT_SETTINGS?.firstRun}` };
       } catch (e) {

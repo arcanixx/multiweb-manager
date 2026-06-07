@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: TestRunner_UseAsync.js
-// PATH: tests/TestRunner_UseAsync.js
+// FILE: TestRunner_HooksUseAsync.js
+// PATH: tests/TestRunner_HooksUseAsync.js
 // VERSION: 0.0.3
 // PURPOSE: Testy hooka useAsync i useAsyncMutation – poprawność stanów loading/error/data, obsługa błędów IPC, optimistic updates, rollback.
 // FUNCTIONS: runUseAsyncTests
@@ -9,7 +9,6 @@
 // =============================================================================
 
 import { runTests } from './testUtils.js';
-
 
 // ─── Pomocnicze factory dla mocków IPC
 const makeOk  = (data) => async () => ({ ok: true, data });

@@ -8,24 +8,19 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { checkSourceExport, runTests, safeImport } from './testUtils.js';
+import { checkSourceExport, runTests, safeImport, mockElectronAPI } from './testUtils.js';
 
-// ─── Pomocnik: tymczasowy mock window.electronAPI ─────────────────────────────
-function mockElectronAPI(overrides = {}) {
-  const original = window.electronAPI;
-  window.electronAPI = { ...original, ...overrides };
-  return () => { window.electronAPI = original; };
-}
-
-// ─── Pomocnik: mock React context dla TranslationContext ─────────────────────
-function mockTranslationContext() {
-  const originalReact = globalThis.React;
-  globalThis.React = {
-    ...originalReact,
-    useContext: () => ({ t: (key) => key }),
-    createContext: (val) => val,
-  };
-  return () => { globalThis.React = originalReact; };
+// ─── ensureElectronWindow() – upewnia się że window.electronAPI istnieje (używa mockElectronAPI z testUtils)
+function ensureElectronWindow() {
+  // Użyj mockElectronAPI z testUtils – ona już poprawnie ustawia globalThis.window
+  const restore = mockElectronAPI({
+    invoke: async (channel, ...args) => {
+      if (channel === 'events:append') return { ok: true };
+      if (channel === 'settings:get') return { ok: true, data: { eventLogEnabled: true } };
+      return { ok: true };
+    }
+  });
+  return restore;
 }
 
 const tests = [
@@ -254,7 +249,41 @@ const tests = [
       return { ok, details: ok ? '' : 'useNotepadFindReplace nie jest eksportowane' };
     }
   },
-
+  // ============================================================================
+  // NOTEPAD HOOKS (8 hooków)
+  // ============================================================================
+  {
+    name: 'useNotepadHandlers – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadHandlers.js', 'useNotepadHandlers')
+  },
+  {
+    name: 'useNotepadAutosave – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadAutosave.js', 'useNotepadAutosave')
+  },
+  {
+    name: 'useNotepadContent – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadContent.js', 'useNotepadContent')
+  },
+  {
+    name: 'useNotepadFindReplace – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadFindReplace.js', 'useNotepadFindReplace')
+  },
+  {
+    name: 'useNotepadModals – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadModals.js', 'useNotepadModals')
+  },
+  {
+    name: 'useNotepadTabActions – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadTabActions.js', 'useNotepadTabActions')
+  },
+  {
+    name: 'useNotepadTabs – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadTabs.js', 'useNotepadTabs')
+  },
+  {
+    name: 'useNotepadUI – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/notepad/useNotepadUI.js', 'useNotepadUI')
+  },
   // ─── useWebViewActions / useWebViewEvents
   {
     name: 'useWebViewActions – eksportowany jako funkcja',

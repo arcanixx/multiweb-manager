@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: useHotkeysManager.js
-// PATH: src/hooks/useHotkeysManager.js
+// PATH: src/hooks/settings/useHotkeysManager.js
 // VERSION: 0.0.3
 // PURPOSE: Hook logiki HotkeysManager – ładowanie, CRUD skrótów, walidacja, zapis IPC
 // FUNCTIONS: useHotkeysManager

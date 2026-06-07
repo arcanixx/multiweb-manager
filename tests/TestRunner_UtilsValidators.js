@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: TestRunner_Validators.js
-// PATH: tests/TestRunner_Validators.js
+// FILE: TestRunner_UtilsValidators.js
+// PATH: tests/TestRunner_UtilsValidators.js
 // VERSION: 0.0.3
 // PURPOSE: Testy modułu validators — ensureString, ensureObject, validateUrl, validateEmail, validateLength, validateNoSpecialChars, validatePassword, validatePhone.
 // FUNCTIONS: runValidatorsTests

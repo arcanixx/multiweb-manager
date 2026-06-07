@@ -2,9 +2,9 @@
 // FILE: SettingsContainer.jsx
 // PATH: src/ui/views/SettingsContainer.jsx
 // VERSION: 0.0.3
-// PURPOSE: Kontener renderowania widoków ustawień/pomocy/historii/zadań. Używa SETTINGS_REGISTRY zamiast switch-case — nowy widok = wpis w src/config/settingsRegistry.js, bez modyfikacji kontenera.
+// PURPOSE: Kontener renderowania widoków ustawień/pomocy/historii/zadań. Używa SETTINGS_REGISTRY zamiast switch-case — nowy widok = wpis w src/config/settingsRegistryConfig.js, bez modyfikacji kontenera.
 // FUNCTIONS: SettingsContainer
-// DEPENDS ON: react, loggerRenderer.js, translations.js, Spinner.jsx, settingsRegistry.js
+// DEPENDS ON: react, loggerRenderer.js, translations.js, Spinner.jsx, settingsRegistryConfig.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -12,10 +12,10 @@ import React, { Suspense, useContext, useEffect } from 'react';
 import { logWarn, logDebug } from '../../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { Spinner } from './Spinner.jsx';
-import { getSettingsComponent } from '../../config/settingsRegistry.js';
+import { getSettingsComponent } from '../../config/settingsRegistryConfig.js';
 
 // ─── SettingsContainer() – renderuje widok systemowy na podstawie activeItem.id z rejestru
-//   Dodaj nowy widok w src/config/settingsRegistry.js — tu nie zmieniać.
+//   Dodaj nowy widok w src/config/settingsRegistryConfig.js — tu nie zmieniać.
 //   @param {Object}   props.activeItem      – aktywny element (id, ...)
 //   @param {Object}   props.settings        – ustawienia aplikacji
 //   @param {Function} props.onSaveSettings  – callback zapisu ustawień

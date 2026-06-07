@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: useNotepadContent.js
-// PATH: src/hooks/useNotepadContent.js
+// PATH: src/hooks/notepad/useNotepadContent.js
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania treścią notatnika – stan edycji, zapis ręczny, zapis do pliku, skróty klawiszowe.
 // FUNCTIONS: useNotepadContent

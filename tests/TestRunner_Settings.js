@@ -35,7 +35,7 @@ const tests = [
   {
     name: 'DEFAULT_SETTINGS – theme is dark|light|system',
     run: async () => {
-      const { DEFAULT_SETTINGS } = await safeImport('src/config/settings.js');
+      const { DEFAULT_SETTINGS } = await safeImport('src/config/settingsConfig.js');
       const ok = ['dark', 'light', 'system'].includes(DEFAULT_SETTINGS.theme);
       return { ok, details: ok ? '' : `Invalid theme: ${DEFAULT_SETTINGS.theme}` };
     }
@@ -43,7 +43,7 @@ const tests = [
   {
     name: 'getDefaultSetting – returns value for known key',
     run: async () => {
-      const { getDefaultSetting, DEFAULT_SETTINGS } = await safeImport('src/config/settings.js');
+      const { getDefaultSetting, DEFAULT_SETTINGS } = await safeImport('src/config/settingsConfig.js');
       const ok = getDefaultSetting('theme') === DEFAULT_SETTINGS.theme
               && getDefaultSetting('hotkeysEnabled') === DEFAULT_SETTINGS.hotkeysEnabled;
       return { ok, details: ok ? '' : 'getDefaultSetting mismatch' };
@@ -52,7 +52,7 @@ const tests = [
   {
     name: 'getDefaultSetting – unknown key returns undefined',
     run: async () => {
-      const { getDefaultSetting } = await safeImport('src/config/settings.js');
+      const { getDefaultSetting } = await safeImport('src/config/settingsConfig.js');
       const ok = getDefaultSetting('__nonexistent__') === undefined;
       return { ok, details: ok ? '' : 'Should return undefined for unknown key' };
     }
@@ -60,7 +60,7 @@ const tests = [
   {
     name: 'DEBUG_MODULES – contains all required module names',
     run: async () => {
-      const { DEBUG_MODULES } = await safeImport('src/config/settings.js');
+      const { DEBUG_MODULES } = await safeImport('src/config/settingsConfig.js');
       const required = ['webview', 'terminal', 'tasks', 'tools', 'settings', 'engine', 'store', 'ipc', 'ui'];
       const missing = required.filter(m => !(m in DEBUG_MODULES));
       const ok = missing.length === 0;
@@ -106,7 +106,7 @@ const tests = [
   {
     name: 'Export data structure has required fields',
     run: async () => {
-      const { DEFAULT_SETTINGS } = await safeImport('src/config/settings.js');
+      const { DEFAULT_SETTINGS } = await safeImport('src/config/settingsConfig.js');
       const exportData = {
         version: '0.0.3',
         exportedAt: Date.now(),

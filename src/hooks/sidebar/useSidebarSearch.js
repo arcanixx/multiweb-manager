@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: useSidebarSearch.js
-// PATH: src/hooks/useSidebarSearch.js
+// PATH: src/hooks/sidebar/useSidebarSearch.js
 // VERSION: 0.0.3
 // PURPOSE: Hook React do wyszukiwania i filtrowania profilów w sidebarze – tryb lokalny (profile/kategorie) i globalny (notepad, tasks, projects, profiles przez IPC).
 // FUNCTIONS: useSidebarSearch

@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: TestRunner_Categories.js
-// PATH: tests/TestRunner_Categories.js
+// FILE: TestRunner_HooksCategories.js
+// PATH: tests/TestRunner_HooksCategories.js
 // VERSION: 0.0.3
 // PURPOSE: Testy hooka useCategories – CRUD kategorii, stan zwinięcia, persistencja przez mock electronAPI.
 // FUNCTIONS: runCategoriesTests

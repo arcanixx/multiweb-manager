@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla grup zadań (TaskGroup) — CRUD + przypisanie profili. Mapuje profile WebView na wspólne panele zadań.
 // FUNCTIONS: const:IPC_CHANNELS.TASK_GROUPS.GET_ALL, const:IPC_CHANNELS.TASK_GROUPS.CREATE, const:IPC_CHANNELS.TASK_GROUPS.UPDATE, const:IPC_CHANNELS.TASK_GROUPS.DELETE, const:IPC_CHANNELS.TASK_GROUPS.GET_FOR_PROFILE, const:IPC_CHANNELS.TASK_GROUPS.ENSURE_FOR_PROFILE, const:IPC_CHANNELS.TASK_GROUPS.ASSIGN_PROFILE, const:IPC_CHANNELS.TASK_GROUPS.UNASSIGN_PROFILE
-// DEPENDS ON: electron, ipcChannels.js, taskGroupsStore.js, logger.js
+// DEPENDS ON: electron, ipcChannels.js, aggregatedStore.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -17,7 +17,7 @@ import {
   deleteTaskGroup,
   getGroupForProfile,
   ensureDefaultGroup,
-} from '../stores/taskGroupsStore.js';
+} from '../stores/aggregatedStore.js';
 import { logError, logInfo } from '../utils/logger.js';
 
 // ─── taskGroups:getAll – wszystkie grupy zadań

@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: TestRunner_TasksPanel.js
-// PATH: tests/TestRunner_TasksPanel.js
+// FILE: TestRunner_TaskPanel.js
+// PATH: tests/TestRunner_TaskPanel.js
 // VERSION: 0.0.3
 // PURPOSE: Testy integracyjne komponentów UI TaskPanel (src/ui/taskpanel) i AggregatedTasks (src/ui/tasks). Weryfikuje eksporty komponentów, stałe, IPC API dla TaskGroups oraz logikę AggregatedTasks.
 // FUNCTIONS: runTasksPanelTests
@@ -9,7 +9,6 @@
 // =============================================================================
 
 import { runTests } from './testUtils.js';
-
 
 // ─── Mock electronAPI dla testów bez prawdziwego Electron
 const _mockGroups = [

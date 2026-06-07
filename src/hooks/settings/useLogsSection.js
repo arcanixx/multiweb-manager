@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: useLogsSection.js
-// PATH: src/hooks/useLogsSection.js
+// PATH: src/hooks/settings/useLogsSection.js
 // VERSION: 0.0.3
 // PURPOSE: Hook logiki sekcji logów – ładowanie ustawień, handlery logów testów i dziennika zdarzeń
 // FUNCTIONS: useLogsSection

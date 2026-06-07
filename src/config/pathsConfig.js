@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: paths.js
-// PATH: src/config/paths.js
+// FILE: pathsConfig.js
+// PATH: src/config/pathsConfig.js
 // VERSION: 0.0.3
 // PURPOSE: Ścieżki katalogów i plików w userData (PATHS).
 // FUNCTIONS: -

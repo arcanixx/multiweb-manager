@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: useNotepadTabs.js
-// PATH: src/hooks/useNotepadTabs.js
+// PATH: src/hooks/notepad/useNotepadTabs.js
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania zakładkami notatnika – tworzenie, przełączanie, zamykanie, zmiana nazw.
 // FUNCTIONS: useNotepadTabs

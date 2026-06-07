@@ -1,9 +1,9 @@
 // =============================================================================
-// FILE: toastReducer.js
-// PATH: src/ui/system/toast/toastReducer.js
+// FILE: toastReducerStore.js
+// PATH: src/stores/toastReducerStore.js
 // VERSION: 0.0.3
 // PURPOSE: Reducer zarządzający stanem kolejki toastów (active + queue FIFO)
-// FUNCTIONS: toastReducer, initialState
+// FUNCTIONS: toastReducer
 // DEPENDS ON: toastConfig.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================

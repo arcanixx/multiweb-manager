@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: limits.js
-// PATH: src/config/limits.js
+// FILE: limitsConfig.js
+// PATH: src/config/limitsConfig.js
 // VERSION: 0.0.3
 // PURPOSE: Limity aplikacji – maksymalne liczby elementów w kolekcjach (LIMITS) i helper getLimit.
 // FUNCTIONS: getLimit

@@ -6,8 +6,6 @@
 // FUNCTIONS: runLogWriterTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
-// UWAGA: appendTestFailLog/clearLogsFile/getLogsContent wymagają window.electronAPI
-//        (Electron renderer). W Node testujemy eksporty i czystą logikę formatowania.
 // =============================================================================
 
 import { runTests, safeImport } from './testUtils.js';

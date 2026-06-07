@@ -242,7 +242,7 @@ Plik logów jest ograniczony do 500 linii (nadpisywane od najstarszych). Można 
 **Architektura re-eksportów:**
 ```
 config.js (root)           export * from "./src/config.js"
-  └── src/config.js        export * from "./config/app.js" + features + limits + ...
+  └── src/config.js        export * from "./config/appConfig.js" + features + limits + ...
         ├── config/app.js        APP_ENV, LANGUAGES, UI_ZOOM, stałe profilowe
         ├── config/features.js   FEATURES, isFeatureEnabled(), isToolEnabled()
         ├── config/limits.js     LIMITS, getLimit()
@@ -1003,7 +1003,7 @@ Rich text: bold, italic, underline, listy, linki, nagłówki.
 **Pliki:**
 - `src/ui/taskpanel/TaskPanel.jsx`
 - `src/ui/taskpanel/TaskModal.jsx`
-- `src/stores/tasksStore.js`
+- `src/stores/taskPanelStore.js`
 - `src/locales/pl.json`, `en.json`
 
 **Struktura zadania:**
@@ -1064,7 +1064,7 @@ const filtered = tasks.filter(t =>
 - `src/ui/aggregated/AggregatedProjectSection.jsx`
 - `src/ui/aggregated/AggregatedTaskItem.jsx`
 - `src/stores/projectsStore.js`
-- `src/stores/tasksStore.js`
+- `src/stores/taskPanelStore.js`
 - `src/locales/pl.json`, `en.json`
 
 **Cel:** Wyświetlanie zadań pogrupowanych według projektów.

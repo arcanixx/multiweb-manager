@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: useNotepadModals.js
-// PATH: src/hooks/useNotepadModals.js
+// PATH: src/hooks/notepad/useNotepadModals.js
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie stanem modali i powiadomień dla notatnika.
 // FUNCTIONS: useNotepadModals

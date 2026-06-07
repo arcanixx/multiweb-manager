@@ -1,10 +1,10 @@
 // =============================================================================
 // FILE: useToastQueue.js
-// PATH: src/ui/system/toast/useToastQueue.js
+// PATH: src/hooks/useToastQueue.js
 // VERSION: 0.0.3
 // PURPOSE: Hook zarządzający cyklem życia toastów – subskrypcja eventu, timery, dispatch
 // FUNCTIONS: useToastQueue
-// DEPENDS ON: react, loggerRenderer.js, toastConfig.js, toastReducer.js
+// DEPENDS ON: react, loggerRenderer.js, toastConfig.js, toastReducerStore.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

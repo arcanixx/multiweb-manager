@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: TestRunner_Toast.js
-// PATH: tests/TestRunner_Toast.js
+// FILE: TestRunner_SystemToast.js
+// PATH: tests/TestRunner_SystemToast.js
 // VERSION: 0.0.3
 // PURPOSE: Testy systemu toastów – reducer, konfiguracja, stałe, kolejkowanie
 // FUNCTIONS: runToastTests

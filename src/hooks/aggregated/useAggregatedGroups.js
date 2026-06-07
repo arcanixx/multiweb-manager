@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: useTaskGroups.js
-// PATH: src/hooks/useTaskGroups.js
+// FILE: useAggregatedGroups.js
+// PATH: src/hooks/aggregated/useAggregatedGroups.js
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania grupami zadań (TaskGroup) – CRUD + przypisanie profili przez IPC.
 // FUNCTIONS: useTaskGroups

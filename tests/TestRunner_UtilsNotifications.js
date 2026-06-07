@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: TestRunner_Notifications.js
-// PATH: tests/TestRunner_Notifications.js
+// FILE: TestRunner_UtilsNotifications.js
+// PATH: tests/TestRunner_UtilsNotifications.js
 // VERSION: 0.0.3
 // PURPOSE: Testy jednostkowe globalnego systemu toastów — kolejkowanie, typy, guard toastsEnabled. (UIUX_REQ-021)
 // FUNCTIONS: runNotificationsTests

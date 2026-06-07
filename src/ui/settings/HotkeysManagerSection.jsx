@@ -1,10 +1,10 @@
 // =============================================================================
-// FILE: HotkeysManager.jsx
-// PATH: src/ui/settings/HotkeysManager.jsx
+// FILE: HotkeysManagerSection.jsx
+// PATH: src/ui/settings/HotkeysManagerSection.jsx
 // VERSION: 0.0.3
 // PURPOSE: Widok zarządzania skrótami klawiszowymi – orkiestrator renderujący podkomponenty. Logika w useHotkeysManager.
 // FUNCTIONS: HotkeysManager
-// DEPENDS ON: react, config.js, translations.js, useHotkeysManager.js, HotkeysList, HotkeyModal, ConfirmModal
+// DEPENDS ON: react, config.js, translations.js, useHotkeysManager.js, HotkeysListSection.jsx, HotkeyModal.jsx, ConfirmModal.jsx
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 

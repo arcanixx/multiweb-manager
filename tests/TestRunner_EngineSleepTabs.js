@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: TestRunner_SleepTabs.js
-// PATH: tests/TestRunner_SleepTabs.js
+// FILE: TestRunner_EngineSleepTabs.js
+// PATH: tests/TestRunner_EngineSleepTabs.js
 // VERSION: 0.0.3
 // PURPOSE: Testy jednostkowe dla Sleep Tabs – sleepTabsManager (getSleepTimeoutMs, shouldSleepTab, markTabActive, getSleepPlaceholderState)
 // FUNCTIONS: runSleepTabsTests
@@ -9,7 +9,6 @@
 // =============================================================================
 
 import { runTests } from './testUtils.js';
-
 
 const tests = [
   // ─── Eksporty modułu

@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: useNotificationsSection.js
-// PATH: src/hooks/useNotificationsSection.js
+// PATH: src/hooks/settings/useNotificationsSection.js
 // VERSION: 0.0.3
 // PURPOSE: Hook logiki sekcji powiadomień – ładowanie ustawień, handlery toastów, systemu OS i Pushbullet
 // FUNCTIONS: useNotificationsSection

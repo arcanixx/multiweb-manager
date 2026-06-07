@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: HotkeysList.jsx
-// PATH: src/ui/settings/HotkeysList.jsx
+// FILE: HotkeysListSection.jsx
+// PATH: src/ui/settings/HotkeysListSection.jsx
 // VERSION: 0.0.3
 // PURPOSE: Komponent tabeli wyświetlającej listę skrótów klawiszowych z akcjami edycji i usuwania.
 // FUNCTIONS: HotkeysList

@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: tasksStore.js
-// PATH: src/stores/tasksStore.js
+// FILE: taskPanelStore.js
+// PATH: src/stores/taskPanelStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zadania per TaskGroup (TaskPanel, AggregatedTasks). Jeden plik JSON per taskGroupId. Zawiera logikę mapowania section↔status.
 // FUNCTIONS: resolveSection, normalizeTask, loadTasksSections, loadTasksByGroup, saveTasksForGroup, loadAllTasksGrouped, loadTasks

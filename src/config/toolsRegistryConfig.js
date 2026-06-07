@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: toolsRegistry.js
-// PATH: src/config/toolsRegistry.js
+// FILE: toolsRegistryConfig.js
+// PATH: src/config/toolsRegistryConfig.js
 // VERSION: 0.0.3
 // PURPOSE: Centralny rejestr narzędzi (tools) używanych w ToolsContainer. Eliminuje switch-case z kontenera – nowe narzędzie = nowy wpis w rejestrze. Zawiera lazy import, featureFlag, propsy i opis.
 // FUNCTIONS: getToolComponent

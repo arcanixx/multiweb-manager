@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: useNotepadAutosave.js
-// PATH: src/hooks/useNotepadAutosave.js
+// PATH: src/hooks/notepad/useNotepadAutosave.js
 // VERSION: 0.0.3
 // PURPOSE: Izolowana logika automatycznego zapisu dla notatnika.
 // FUNCTIONS: useNotepadAutosave

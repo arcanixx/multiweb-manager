@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: TestRunner_Update.js
-// PATH: tests/TestRunner_Update.js
+// FILE: TestRunner_EngineUpdate.js
+// PATH: tests/TestRunner_EngineUpdate.js
 // VERSION: 0.0.3
 // PURPOSE: Testy serwisu aktualizacji (src/engine/updateService.js) — checkForUpdates stub + kształt odpowiedzi.
 // FUNCTIONS: runUpdateTests

@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: TestRunner_AdBlocker.js
-// PATH: tests/TestRunner_AdBlocker.js
+// FILE: TestRunner_EngineAdBlocker.js
+// PATH: tests/TestRunner_EngineAdBlocker.js
 // VERSION: 0.0.3
 // PURPOSE: Testy jednostkowe dla AdBlockera (globalny + per profil, wykrywanie URL)
 // FUNCTIONS: runAdBlockerTests

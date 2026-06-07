@@ -2,9 +2,9 @@
 // FILE: ToolsContainer.jsx
 // PATH: src/ui/views/ToolsContainer.jsx
 // VERSION: 0.0.3
-// PURPOSE: Kontener renderowania narzędzi specjalnych. Używa TOOLS_REGISTRY zamiast switch-case – nowe narzędzie = wpis w src/config/toolsRegistry.js, bez modyfikacji kontenera.
+// PURPOSE: Kontener renderowania narzędzi specjalnych. Używa TOOLS_REGISTRY zamiast switch-case – nowe narzędzie = wpis w src/config/toolsRegistryConfig.js, bez modyfikacji kontenera.
 // FUNCTIONS: ToolsContainer
-// DEPENDS ON: react, loggerRenderer.js, translations.js, Spinner.jsx, toolsRegistry.js
+// DEPENDS ON: react, loggerRenderer.js, translations.js, Spinner.jsx, toolsRegistryConfig.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -12,10 +12,10 @@ import React, { Suspense, useEffect, useContext } from 'react';
 import { logWarn, logDebug } from '../../utils/loggerRenderer.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { Spinner } from './Spinner.jsx';
-import { getToolComponent } from '../../config/toolsRegistry.js';
+import { getToolComponent } from '../../config/toolsRegistryConfig.js';
 
 // ─── ToolsContainer() – renderuje narzędzie na podstawie activeItem.id z rejestru
-//   Dodaj nowe narzędzie w src/config/toolsRegistry.js — tu nie zmieniać.
+//   Dodaj nowe narzędzie w src/config/toolsRegistryConfig.js — tu nie zmieniać.
 //   @param {Object}   props.activeItem   – aktywny element (id, cwd, ...)
 //   @param {Object}   props.settings     – ustawienia aplikacji
 //   @param {Function} props.onOpenTasks  – callback otwierający TaskPanel

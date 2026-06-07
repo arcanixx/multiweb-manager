@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: settingsRegistry.js
-// PATH: src/config/settingsRegistry.js
+// FILE: settingsRegistryConfig.js
+// PATH: src/config/settingsRegistryConfig.js
 // VERSION: 0.0.3
 // PURPOSE: Centralny rejestr widoków ustawień i narzędzi systemowych (SettingsContainer). Eliminuje switch-case — nowy widok = nowy wpis w rejestrze. Wzorzec analogiczny do toolsRegistry.js.
 // FUNCTIONS: getSettingsComponent

@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: useAggregatedTasks.js
-// PATH: src/hooks/useAggregatedTasks.js
+// FILE: useAggregated.js
+// PATH: src/hooks/aggregated/useAggregated.js
 // VERSION: 0.0.3
 // PURPOSE: Hook logiki widoku zbiorczego zadań – ładowanie danych, filtrowanie, grupowanie, zwijanie/ukrywanie grup
 // FUNCTIONS: useAggregatedTasks

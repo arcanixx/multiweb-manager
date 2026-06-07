@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: TestRunner_UrlUtils.js
-// PATH: tests/TestRunner_UrlUtils.js
+// FILE: TestRunner_UtilsUrlUtils.js
+// PATH: tests/TestRunner_UtilsUrlUtils.js
 // VERSION: 0.0.3
 // PURPOSE: Testy modułu urlUtils (normalizeWebUrl, isValidWebUrl, isSafeUrl) — walidacja URL, blokowanie niebezpiecznych schematów, edge cases.
 // FUNCTIONS: runUrlUtilsTests

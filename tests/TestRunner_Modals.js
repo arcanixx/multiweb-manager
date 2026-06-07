@@ -2,7 +2,7 @@
 // FILE: TestRunner_Modals.js
 // PATH: tests/TestRunner_Modals.js
 // VERSION: 0.0.3
-// PURPOSE: Testy komponentow modalnych oraz podstawowych kontraktow formularzy.
+// PURPOSE: Testy komponentow modalnych – eksporty JSX (Modal, ConfirmModal, CategoryModal, ProfileModal, PromptModal, CommentModal, TaskModal)
 // FUNCTIONS: runModalsTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -14,10 +14,12 @@ import { checkSourceExport, runTests } from './testUtils.js';
 
 const modalComponents = [
   ['CategoryModal', 'src/ui/modals/CategoryModal.jsx'],
+  ['CommentModal', 'src/ui/modals/CommentModal.jsx'],
   ['ConfirmModal', 'src/ui/modals/ConfirmModal.jsx'],
   ['Modal', 'src/ui/modals/Modal.jsx'],
   ['ProfileModal', 'src/ui/modals/ProfileModal.jsx'],
-  ['PromptModal', 'src/ui/modals/PromptModal.jsx']
+  ['PromptModal', 'src/ui/modals/PromptModal.jsx'],
+  ['TaskModal', 'src/ui/modals/TaskModal.jsx'],
 ];
 
 const tests = [

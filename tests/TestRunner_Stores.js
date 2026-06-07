@@ -206,7 +206,7 @@ const tests = [
   {
     name: 'taskGroupsStore – all functions exported',
     run: async () => {
-      const r = await imp('src/stores/taskGroupsStore.js');
+      const r = await imp('src/stores/aggregatedStore.js');
       if (!r.ok) return { ok: false, details: r.error };
       const required = ['loadTaskGroups', 'saveTaskGroups', 'createTaskGroup',
         'updateTaskGroup', 'deleteTaskGroup', 'getGroupForProfile', 'ensureDefaultGroup'];
@@ -243,7 +243,7 @@ const tests = [
   {
     name: 'tasksStore – VALID_STATUSES and STATUS_TO_SECTION exported',
     run: async () => {
-      const r = await imp('src/stores/tasksStore.js');
+      const r = await imp('src/stores/taskPanelStore.js');
       if (!r.ok) return { ok: false, details: r.error };
       const ok = r.mod.VALID_STATUSES && r.mod.STATUS_TO_SECTION;
       return { ok, details: ok ? '' : 'VALID_STATUSES or STATUS_TO_SECTION missing' };
@@ -252,7 +252,7 @@ const tests = [
   {
     name: 'tasksStore – resolveSection maps status to correct section',
     run: async () => {
-      const r = await imp('src/stores/tasksStore.js');
+      const r = await imp('src/stores/taskPanelStore.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { resolveSection } = r.mod;
       if (typeof resolveSection !== 'function') return { ok: false, details: 'resolveSection not exported' };
@@ -270,7 +270,7 @@ const tests = [
   {
     name: 'tasksStore – resolveSection falls back to backlog for unknown status',
     run: async () => {
-      const r = await imp('src/stores/tasksStore.js');
+      const r = await imp('src/stores/taskPanelStore.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { resolveSection } = r.mod;
       const result = resolveSection('__unknown__', 'backlog');
@@ -280,7 +280,7 @@ const tests = [
   {
     name: 'tasksStore – normalizeTask exported as function',
     run: async () => {
-      const r = await imp('src/stores/tasksStore.js');
+      const r = await imp('src/stores/taskPanelStore.js');
       if (!r.ok) return { ok: false, details: r.error };
       const ok = typeof r.mod.normalizeTask === 'function';
       return { ok, details: ok ? '' : 'normalizeTask not exported' };
@@ -289,7 +289,7 @@ const tests = [
   {
     name: 'tasksStore – VALID_STATUSES covers all three sections',
     run: async () => {
-      const r = await imp('src/stores/tasksStore.js');
+      const r = await imp('src/stores/taskPanelStore.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { VALID_STATUSES } = r.mod;
       const ok = 'active' in VALID_STATUSES && 'backlog' in VALID_STATUSES && 'done' in VALID_STATUSES;
@@ -301,7 +301,7 @@ const tests = [
   {
     name: 'tasksStore – FS functions exported',
     run: async () => {
-      const r = await imp('src/stores/tasksStore.js');
+      const r = await imp('src/stores/taskPanelStore.js');
       if (!r.ok) return { ok: false, details: r.error };
       const required = ['loadTasksSections', 'loadTasksByGroup', 'saveTasksForGroup',
         'loadAllTasksGrouped', 'loadTasks'];
@@ -312,7 +312,7 @@ const tests = [
   {
     name: 'tasksStore – legacy alias exports preserved',
     run: async () => {
-      const r = await imp('src/stores/tasksStore.js');
+      const r = await imp('src/stores/taskPanelStore.js');
       if (!r.ok) return { ok: false, details: r.error };
       const ok = typeof r.mod.loadTasksSectionsLegacy === 'function'
               && typeof r.mod.saveTasksForProject === 'function'

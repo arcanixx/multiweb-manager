@@ -28,6 +28,38 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
     }
   },
 ```
+### src/ui/aggregated/AggregatedProjectSection.jsx
+
+```js
+  {
+    name: 'AggregatedProjectSection – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/aggregated/AggregatedProjectSection.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'AggregatedProjectSection nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/aggregated/AggregatedTaskItem.jsx
+
+```js
+  {
+    name: 'AggregatedTaskItem – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/aggregated/AggregatedTaskItem.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'AggregatedTaskItem nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
 ### src/ui/modals/CategoryModal.jsx
 
 ```js
@@ -38,6 +70,22 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
         const module = await import('../../../src/ui/modals/CategoryModal.jsx');
         const ok = typeof module.default === 'function';
         return { ok, details: ok ? '' : 'CategoryModal nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
+### src/ui/modals/CommentModal.jsx
+
+```js
+  {
+    name: 'CommentModal – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/modals/CommentModal.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'CommentModal nie jest eksportowany jako default' };
       } catch (e) {
         return { ok: false, details: `Import failed: ${e.message}` };
       }
@@ -252,32 +300,32 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
     }
   },
 ```
-### src/ui/settings/HotkeysList.jsx
+### src/ui/settings/HotkeysListSection.jsx
 
 ```js
   {
-    name: 'HotkeysList – eksportowany jako komponent React',
+    name: 'HotkeysListSection – eksportowany jako komponent React',
     run: async () => {
       try {
-        const module = await import('../../../src/ui/settings/HotkeysList.jsx');
+        const module = await import('../../../src/ui/settings/HotkeysListSection.jsx');
         const ok = typeof module.default === 'function';
-        return { ok, details: ok ? '' : 'HotkeysList nie jest eksportowany jako default' };
+        return { ok, details: ok ? '' : 'HotkeysListSection nie jest eksportowany jako default' };
       } catch (e) {
         return { ok: false, details: `Import failed: ${e.message}` };
       }
     }
   },
 ```
-### src/ui/settings/HotkeysManager.jsx
+### src/ui/settings/HotkeysManagerSection.jsx
 
 ```js
   {
-    name: 'HotkeysManager – eksportowany jako komponent React',
+    name: 'HotkeysManagerSection – eksportowany jako komponent React',
     run: async () => {
       try {
-        const module = await import('../../../src/ui/settings/HotkeysManager.jsx');
+        const module = await import('../../../src/ui/settings/HotkeysManagerSection.jsx');
         const ok = typeof module.default === 'function';
-        return { ok, details: ok ? '' : 'HotkeysManager nie jest eksportowany jako default' };
+        return { ok, details: ok ? '' : 'HotkeysManagerSection nie jest eksportowany jako default' };
       } catch (e) {
         return { ok: false, details: `Import failed: ${e.message}` };
       }
@@ -460,22 +508,6 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
     }
   },
 ```
-### src/ui/taskpanel/CommentModal.jsx
-
-```js
-  {
-    name: 'CommentModal – eksportowany jako komponent React',
-    run: async () => {
-      try {
-        const module = await import('../../../src/ui/taskpanel/CommentModal.jsx');
-        const ok = typeof module.default === 'function';
-        return { ok, details: ok ? '' : 'CommentModal nie jest eksportowany jako default' };
-      } catch (e) {
-        return { ok: false, details: `Import failed: ${e.message}` };
-      }
-    }
-  },
-```
 ### src/ui/taskpanel/TaskDetails.jsx
 
 ```js
@@ -534,38 +566,6 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
         const module = await import('../../../src/ui/taskpanel/TaskList.jsx');
         const ok = typeof module.default === 'function';
         return { ok, details: ok ? '' : 'TaskList nie jest eksportowany jako default' };
-      } catch (e) {
-        return { ok: false, details: `Import failed: ${e.message}` };
-      }
-    }
-  },
-```
-### src/ui/aggregated/AggregatedProjectSection.jsx
-
-```js
-  {
-    name: 'AggregatedProjectSection – eksportowany jako komponent React',
-    run: async () => {
-      try {
-        const module = await import('../../../src/ui/aggregated/AggregatedProjectSection.jsx');
-        const ok = typeof module.default === 'function';
-        return { ok, details: ok ? '' : 'AggregatedProjectSection nie jest eksportowany jako default' };
-      } catch (e) {
-        return { ok: false, details: `Import failed: ${e.message}` };
-      }
-    }
-  },
-```
-### src/ui/aggregated/AggregatedTaskItem.jsx
-
-```js
-  {
-    name: 'AggregatedTaskItem – eksportowany jako komponent React',
-    run: async () => {
-      try {
-        const module = await import('../../../src/ui/aggregated/AggregatedTaskItem.jsx');
-        const ok = typeof module.default === 'function';
-        return { ok, details: ok ? '' : 'AggregatedTaskItem nie jest eksportowany jako default' };
       } catch (e) {
         return { ok: false, details: `Import failed: ${e.message}` };
       }

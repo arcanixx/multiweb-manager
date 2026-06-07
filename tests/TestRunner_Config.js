@@ -55,7 +55,7 @@ const tests = [
   {
     name: 'FEATURES – all flags are boolean',
     run: async () => {
-      const r = await importModule('src/config/features.js');
+      const r = await importModule('src/config/featuresConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { FEATURES } = r.data;
       if (!FEATURES) return { ok: false, details: 'FEATURES not exported' };
@@ -67,7 +67,7 @@ const tests = [
   {
     name: 'isFeatureEnabled – returns correct boolean',
     run: async () => {
-      const r = await importModule('src/config/features.js');
+      const r = await importModule('src/config/featuresConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { isFeatureEnabled, FEATURES } = r.data;
       if (typeof isFeatureEnabled !== 'function') return { ok: false, details: 'isFeatureEnabled not a function' };
@@ -82,7 +82,7 @@ const tests = [
   {
     name: 'isToolEnabled – alias isFeatureEnabled, works identically',
     run: async () => {
-      const r = await importModule('src/config/features.js');
+      const r = await importModule('src/config/featuresConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { isToolEnabled, isFeatureEnabled } = r.data;
       if (typeof isToolEnabled !== 'function') return { ok: false, details: 'isToolEnabled not exported' };
@@ -93,7 +93,7 @@ const tests = [
   {
     name: 'FEATURES – required keys present',
     run: async () => {
-      const r = await importModule('src/config/features.js');
+      const r = await importModule('src/config/featuresConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { FEATURES } = r.data;
       const required = ['helpScreen', 'appLibrary', 'sleepTabs', 'adBlocker', 'clipboardHistory',
@@ -108,7 +108,7 @@ const tests = [
   {
     name: 'LIMITS – all values are positive numbers',
     run: async () => {
-      const r = await importModule('src/config/limits.js');
+      const r = await importModule('src/config/limitsConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { LIMITS } = r.data;
       if (!LIMITS) return { ok: false, details: 'LIMITS not exported' };
@@ -120,7 +120,7 @@ const tests = [
   {
     name: 'getLimit – returns correct value for known key',
     run: async () => {
-      const r = await importModule('src/config/limits.js');
+      const r = await importModule('src/config/limitsConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { getLimit, LIMITS } = r.data;
       if (typeof getLimit !== 'function') return { ok: false, details: 'getLimit not a function' };
@@ -132,7 +132,7 @@ const tests = [
   {
     name: 'getLimit – returns undefined for unknown key',
     run: async () => {
-      const r = await importModule('src/config/limits.js');
+      const r = await importModule('src/config/limitsConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { getLimit } = r.data;
       const ok = getLimit('__nonexistent__') === undefined;
@@ -144,7 +144,7 @@ const tests = [
   {
     name: 'DEFAULT_SETTINGS – required keys present',
     run: async () => {
-      const r = await importModule('src/config/settings.js');
+      const r = await importModule('src/config/settingsConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { DEFAULT_SETTINGS } = r.data;
       if (!DEFAULT_SETTINGS) return { ok: false, details: 'DEFAULT_SETTINGS not exported' };
@@ -158,7 +158,7 @@ const tests = [
   {
     name: 'getDefaultSetting – returns correct values',
     run: async () => {
-      const r = await importModule('src/config/settings.js');
+      const r = await importModule('src/config/settingsConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { getDefaultSetting, DEFAULT_SETTINGS } = r.data;
       if (typeof getDefaultSetting !== 'function') return { ok: false, details: 'getDefaultSetting not a function' };
@@ -170,7 +170,7 @@ const tests = [
   {
     name: 'DEBUG_MODULES – all values are boolean',
     run: async () => {
-      const r = await importModule('src/config/settings.js');
+      const r = await importModule('src/config/settingsConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { DEBUG_MODULES } = r.data;
       if (!DEBUG_MODULES) return { ok: false, details: 'DEBUG_MODULES not exported' };
@@ -186,7 +186,7 @@ const tests = [
   {
     name: 'PATHS – all values are strings',
     run: async () => {
-      const r = await importModule('src/config/paths.js');
+      const r = await importModule('src/config/pathsConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { PATHS } = r.data;
       if (!PATHS) return { ok: false, details: 'PATHS not exported' };
@@ -200,7 +200,7 @@ const tests = [
   {
     name: 'API_ENDPOINTS – all values are valid http(s) URLs',
     run: async () => {
-      const r = await importModule('src/config/endpoints.js');
+      const r = await importModule('src/config/endpointsConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { API_ENDPOINTS } = r.data;
       if (!API_ENDPOINTS) return { ok: false, details: 'API_ENDPOINTS not exported' };
@@ -224,16 +224,16 @@ const tests = [
 
   // ── settingsRegistry.js ────────────────────────────────────────────────────
   {
-    name: 'src/config/settingsRegistry.js exists',
+    name: 'src/config/settingsRegistryConfig.js exists',
     run: async () => {
-      const exists = existsSync(join(ROOT, 'src/config/settingsRegistry.js'));
-      return { ok: exists, details: exists ? '' : 'src/config/settingsRegistry.js not found' };
+      const exists = existsSync(join(ROOT, 'src/config/settingsRegistryConfig.js'));
+      return { ok: exists, details: exists ? '' : 'src/config/settingsRegistryConfig.js not found' };
     }
   },
   {
     name: 'settingsRegistry – SETTINGS_REGISTRY is non-empty array',
     run: async () => {
-      const r = await importModule('src/config/settingsRegistry.js');
+      const r = await importModule('src/config/settingsRegistryConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const { SETTINGS_REGISTRY } = r.data;
       const ok = Array.isArray(SETTINGS_REGISTRY) && SETTINGS_REGISTRY.length > 0;
@@ -243,7 +243,7 @@ const tests = [
   {
     name: 'settingsRegistry – getSettingsComponent exported as function',
     run: async () => {
-      const r = await importModule('src/config/settingsRegistry.js');
+      const r = await importModule('src/config/settingsRegistryConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const ok = typeof r.data.getSettingsComponent === 'function';
       return { ok, details: ok ? '' : 'getSettingsComponent not a function' };
@@ -252,7 +252,7 @@ const tests = [
   {
     name: 'settingsRegistry – getSettingsComponent returns null for unknown id (no logger needed for no-op)',
     run: async () => {
-      const r = await importModule('src/config/settingsRegistry.js');
+      const r = await importModule('src/config/settingsRegistryConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const result = r.data.getSettingsComponent('__nonexistent__');
       // UWAGA: settingsRegistry nie używa logger.js — getSettingsComponent cicho zwraca null.
@@ -263,7 +263,7 @@ const tests = [
   {
     name: 'settingsRegistry – disabled=false for entry without featureFlag',
     run: async () => {
-      const r = await importModule('src/config/settingsRegistry.js');
+      const r = await importModule('src/config/settingsRegistryConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       // 'settings' nie ma featureFlag — powinno być zawsze dostępne
       const entry = r.data.getSettingsComponent('settings');
@@ -274,7 +274,7 @@ const tests = [
   {
     name: 'settingsRegistry – no duplicate ids',
     run: async () => {
-      const r = await importModule('src/config/settingsRegistry.js');
+      const r = await importModule('src/config/settingsRegistryConfig.js');
       if (!r.ok) return { ok: false, details: r.error };
       const ids = r.data.SETTINGS_REGISTRY.map(e => e.id);
       const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);

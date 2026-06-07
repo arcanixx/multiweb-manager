@@ -1,14 +1,11 @@
 // =============================================================================
-// FILE: TestRunner_SplashScreen.js
-// PATH: tests/TestRunner_SplashScreen.js
+// FILE: TestRunner_SystemSplashScreen.js
+// PATH: tests/TestRunner_SystemSplashScreen.js
 // VERSION: 0.0.3
 // PURPOSE: Testy komponentu SplashScreen – eksport, logika animacji i konfiguracja.
 // FUNCTIONS: runSplashScreenTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
-// UWAGA: ReactDOMServer.renderToString pominięty – SplashScreen używa TranslationContext
-//        i setTimeout, które wymagają pełnego środowiska Electron/JSDOM. Testy sprawdzają
-//        eksport źródłowy i czystą logikę animacji.
 // =============================================================================
 
 import { checkSourceExport, runTests } from './testUtils.js';

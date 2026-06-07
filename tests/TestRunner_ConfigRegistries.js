@@ -1,15 +1,12 @@
 // =============================================================================
-// FILE: TestRunner_Registries.js
-// PATH: tests/TestRunner_Registries.js
+// FILE: TestRunner_ConfigRegistries.js
+// PATH: tests/TestRunner_ConfigRegistries.js
 // VERSION: 0.0.3
 // PURPOSE: Testy rejestrów komponentów (settingsRegistry, toolsRegistry) – eksporty,
 //          kompletność wpisów, featureFlag, getSettingsComponent/getToolComponent.
 // FUNCTIONS: runRegistriesTests
-// DEPENDS ON: testUtils.js
+// DEPENDS ON: testUtils.js, fs, path
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
-// UWAGA: settingsRegistry.js i toolsRegistry.js używają React.lazy() – nie można ich
-//        importować bezpośrednio w Node bez bundlera. Używamy checkSourceExport +
-//        parsowania źródła dla weryfikacji struktury.
 // =============================================================================
 
 import { checkSourceExport, runTests, safeImport } from './testUtils.js';
@@ -37,9 +34,9 @@ function sourceContains(relativePath, ...patterns) {
   }
 }
 
-const SETTINGS_PATH = 'src/config/settingsRegistry.js';
-const TOOLS_PATH    = 'src/config/toolsRegistry.js';
-const FEATURES_PATH = 'src/config/features.js';
+const SETTINGS_PATH = 'src/config/settingsRegistryConfig.js';
+const TOOLS_PATH    = 'src/config/toolsRegistryConfig.js';
+const FEATURES_PATH = 'src/config/featuresConfig.js';
 
 const tests = [
   // ── settingsRegistry – eksporty przez checkSourceExport ──────────────────

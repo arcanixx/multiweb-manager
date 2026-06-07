@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: useNotepadUI.js
-// PATH: src/hooks/useNotepadUI.js
+// PATH: src/hooks/notepad/useNotepadUI.js
 // VERSION: 0.0.3
 // PURPOSE: Orkiestrator hooków notatnika – koordynuje zakładki, treść, modale i akcje użytkownika.
 // FUNCTIONS: useNotepadUI

@@ -1,6 +1,6 @@
 // =============================================================================
-// FILE: TestRunner_SearchIndex.js
-// PATH: tests/TestRunner_SearchIndex.js
+// FILE: TestRunner_UtilsSearchIndex.js
+// PATH: tests/TestRunner_UtilsSearchIndex.js
 // VERSION: 0.0.3
 // PURPOSE: Testy modułu globalnego wyszukiwania (src/utils/searchIndex.js) — buildSearchIndex, searchAll, filtrowanie i edge cases.
 // FUNCTIONS: runSearchIndexTests
