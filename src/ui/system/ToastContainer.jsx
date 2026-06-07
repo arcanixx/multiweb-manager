@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { useToastQueue } from './toast/useToastQueue.js';
-import ToastItem        from './toast/ToastItem.jsx';
+import ToastItem        from './ToastItem.jsx';
 
 // ─── ToastContainer() – renderuje stos aktywnych toastów
 //   @param {boolean} props.enabled – czy toasty są włączone (z settings.toastsEnabled)

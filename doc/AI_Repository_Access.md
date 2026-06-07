@@ -260,9 +260,9 @@ Wszystkie pliki posiadają bezpośrednie odnośniki **RAW**. Jeśli potrzebujesz
 │   │   │   ├── ⚛️ [TaskSection.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/taskpanel/TaskSection.jsx)
 │   │   │   └── ⚛️ [TaskSectionList.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/taskpanel/TaskSectionList.jsx)
 │   │   ├── 📁 📁 tasks/
-│   │   │   ├── ⚛️ [AggregatedProjectSection.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/tasks/AggregatedProjectSection.jsx)
-│   │   │   ├── ⚛️ [AggregatedTaskItem.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/tasks/AggregatedTaskItem.jsx)
-│   │   │   └── ⚛️ [AggregatedTasks.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/tasks/AggregatedTasks.jsx)
+│   │   │   ├── ⚛️ [AggregatedProjectSection.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/aggregated/AggregatedProjectSection.jsx)
+│   │   │   ├── ⚛️ [AggregatedTaskItem.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/aggregated/AggregatedTaskItem.jsx)
+│   │   │   └── ⚛️ [AggregatedTasks.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/aggregated/AggregatedTasks.jsx)
 │   │   ├── 📁 📁 terminal/
 │   │   │   └── ⚛️ [Terminal.jsx](https://raw.githubusercontent.com/arcanixx/multiweb-manager/refs/heads/UAT-v0.0.4/src/ui/terminal/Terminal.jsx)
 │   │   ├── 📁 📁 tools/

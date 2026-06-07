@@ -1060,9 +1060,9 @@ const filtered = tasks.filter(t =>
 ## 6a. Widok zbiorczy zadań per projekt
 
 **Pliki:**
-- `src/ui/tasks/AggregatedTasks.jsx`
-- `src/ui/tasks/AggregatedProjectSection.jsx`
-- `src/ui/tasks/AggregatedTaskItem.jsx`
+- `src/ui/aggregated/AggregatedTasks.jsx`
+- `src/ui/aggregated/AggregatedProjectSection.jsx`
+- `src/ui/aggregated/AggregatedTaskItem.jsx`
 - `src/stores/projectsStore.js`
 - `src/stores/tasksStore.js`
 - `src/locales/pl.json`, `en.json`

@@ -1538,7 +1538,7 @@ root/
 │ │ │ DEPENDS ON: react, translations.js, TaskSection.jsx
 │ │ │ -->
 │ │ ├── tasks/
-│ │ │ ├── AggregatedProjectSection.jsx <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedProjectSection.jsx
+│ │ │ ├── AggregatedProjectSection.jsx <!-- VERSION: 0.0.3 PATH: src/ui/aggregated/AggregatedProjectSection.jsx
 │ │ │ │ PURPOSE: Pojedyncza sekcja grupy zadań (TaskGroup) w widoku
 │ │ │ │ zbiorczym. Wyświetla zadania per sekcja z pinem na
 │ │ │ │ górze.
@@ -1546,14 +1546,14 @@ root/
 │ │ │ │ DEPENDS ON: react, translations.js, icons.js,
 │ │ │ │ AggregatedTaskItem.jsx
 │ │ │ │ -->
-│ │ │ ├── AggregatedTaskItem.jsx <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTaskItem.jsx
+│ │ │ ├── AggregatedTaskItem.jsx <!-- VERSION: 0.0.3 PATH: src/ui/aggregated/AggregatedTaskItem.jsx
 │ │ │ │ PURPOSE: Pojedynczy element zadania w widoku zbiorczym.
 │ │ │ │ Wyświetla status (ikona), priorytet (kolor), nazwę,
 │ │ │ │ flagę pinned, komentarz, wersję.
 │ │ │ │ FUNCTIONS: AggregatedTaskItem
 │ │ │ │ DEPENDS ON: react, translations.js, icons.js, loggerRenderer.js
 │ │ │ │ -->
-│ │ │ └── AggregatedTasks.jsx <!-- VERSION: 0.0.3 PATH: src/ui/tasks/AggregatedTasks.jsx
+│ │ │ └── AggregatedTasks.jsx <!-- VERSION: 0.0.3 PATH: src/ui/aggregated/AggregatedTasks.jsx
 │ │ │ PURPOSE: Widok zbiorczy zadań ze wszystkich grup (TaskGroup).
 │ │ │ Filtrowanie po statusie, priorytecie, sekcji.
 │ │ │ Zwijanie/rozwijanie per grupa.

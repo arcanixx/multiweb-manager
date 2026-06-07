@@ -12,9 +12,9 @@ import React, { useContext } from 'react';
 import { isFeatureEnabled } from '../../config.js';
 import { TranslationContext } from '../../utils/translations.js';
 import { useHotkeysManager } from '../../hooks/useHotkeysManager.js';
-import HotkeysList  from './HotkeysList';
-import HotkeyModal  from './HotkeyModal';
-import ConfirmModal from '../modals/ConfirmModal';
+import HotkeysList  from './HotkeysListSection.jsx';
+import HotkeyModal  from '../modals/HotkeyModal.jsx';
+import ConfirmModal from '../modals/ConfirmModal.jsx';
 
 // ─── HotkeysManager() – widok zarządzania skrótami klawiszowymi
 export default function HotkeysManager() {

@@ -51,7 +51,7 @@ export const TOOLS_REGISTRY = [
   },
   {
     id:          'aggregatedTasks',
-    component:   lazy(() => import('../ui/tasks/AggregatedTasks.jsx')),
+    component:   lazy(() => import('../ui/aggregated/AggregatedTasks.jsx')),
     featureFlag: 'aggregatedTasks',
   },
 ];

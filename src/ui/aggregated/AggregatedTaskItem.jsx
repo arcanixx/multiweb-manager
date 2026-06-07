@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: AggregatedTaskItem.jsx
-// PATH: src/ui/tasks/AggregatedTaskItem.jsx
+// PATH: src/ui/aggregated/AggregatedTaskItem.jsx
 // VERSION: 0.0.3
 // PURPOSE: Pojedynczy element zadania w widoku zbiorczym. Wyświetla status (ikona), priorytet (kolor), nazwę, flagę pinned, komentarz, wersję.
 // FUNCTIONS: AggregatedTaskItem

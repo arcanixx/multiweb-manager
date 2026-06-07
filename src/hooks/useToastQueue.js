@@ -9,9 +9,9 @@
 // =============================================================================
 
 import { useReducer, useEffect, useRef, useCallback } from 'react';
-import { logDebug } from '../../../utils/loggerRenderer.js';
-import { TOAST_EVENT, VISIBLE_MS, ANIMATE_MS } from './toastConfig.js';
-import { toastReducer, initialState } from './toastReducer.js';
+import { logDebug } from '../utils/loggerRenderer.js';
+import { TOAST_EVENT, VISIBLE_MS, ANIMATE_MS } from '../config/toastConfig.js';
+import { toastReducer, initialState } from '../stores/toastReducerStore.js';
 
 // ─── useToastQueue() – zarządza kolejką toastów
 //   @param {boolean} enabled – czy system toastów jest aktywny

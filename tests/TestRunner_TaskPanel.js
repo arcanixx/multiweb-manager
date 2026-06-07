@@ -109,7 +109,7 @@ const tests = [
   {
     name: '[Export] AggregatedTasks.jsx eksportuje komponent default',
     run: async () => {
-      const mod = await import('../src/ui/tasks/AggregatedTasks.jsx').catch(e => ({ error: e.message }));
+      const mod = await import('../src/ui/aggregated/AggregatedTasks.jsx').catch(e => ({ error: e.message }));
       const ok  = !mod.error && typeof mod.default === 'function';
       return { ok, details: ok ? '' : (mod.error || 'Brak default export') };
     },

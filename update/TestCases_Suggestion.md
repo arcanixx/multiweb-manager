@@ -1031,14 +1031,14 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
     }
   },
 ```
-### src/ui/tasks/AggregatedProjectSection.jsx
+### src/ui/aggregated/AggregatedProjectSection.jsx
 
 ```js
   {
     name: 'AggregatedProjectSection – eksportowany jako komponent React',
     run: async () => {
       try {
-        const module = await import('../../../src/ui/tasks/AggregatedProjectSection.jsx');
+        const module = await import('../../../src/ui/aggregated/AggregatedProjectSection.jsx');
         const ok = typeof module.default === 'function';
         return { ok, details: ok ? '' : 'AggregatedProjectSection nie jest eksportowany jako default' };
       } catch (e) {
@@ -1047,14 +1047,14 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
     }
   },
 ```
-### src/ui/tasks/AggregatedTaskItem.jsx
+### src/ui/aggregated/AggregatedTaskItem.jsx
 
 ```js
   {
     name: 'AggregatedTaskItem – eksportowany jako komponent React',
     run: async () => {
       try {
-        const module = await import('../../../src/ui/tasks/AggregatedTaskItem.jsx');
+        const module = await import('../../../src/ui/aggregated/AggregatedTaskItem.jsx');
         const ok = typeof module.default === 'function';
         return { ok, details: ok ? '' : 'AggregatedTaskItem nie jest eksportowany jako default' };
       } catch (e) {

@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: ToastItem.jsx
-// PATH: src/ui/system/toast/ToastItem.jsx
+// PATH: src/ui/system/ToastItem.jsx
 // VERSION: 0.0.3
 // PURPOSE: Pojedynczy toast – wyświetla ikonę, treść i przycisk zamknięcia
 // FUNCTIONS: ToastItem
@@ -9,8 +9,8 @@
 // =============================================================================
 
 import React from 'react';
-import { ICONS } from '../../../utils/icons.js';
-import { TOAST_CONFIG } from './toastConfig.js';
+import { ICONS } from '../../utils/icons.js';
+import { TOAST_CONFIG } from '../../config/toastConfig.js';
 
 // ─── ToastItem() – pojedynczy toast
 export default function ToastItem({ toast, onDismiss }) {

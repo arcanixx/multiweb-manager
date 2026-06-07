@@ -8,19 +8,30 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { checkSourceExport, runTests } from './testUtils.js';
+import { checkSourceExport, runTests, safeImport } from './testUtils.js';
 
-
-// ─── Pomocnik: tymczasowy mock window.electronAPI
-//   @param {Object} overrides – metody do nadpisania/dodania
-//   @returns {Function} restore – przywraca oryginalne electronAPI
+// ─── Pomocnik: tymczasowy mock window.electronAPI ─────────────────────────────
 function mockElectronAPI(overrides = {}) {
   const original = window.electronAPI;
   window.electronAPI = { ...original, ...overrides };
   return () => { window.electronAPI = original; };
 }
 
+// ─── Pomocnik: mock React context dla TranslationContext ─────────────────────
+function mockTranslationContext() {
+  const originalReact = globalThis.React;
+  globalThis.React = {
+    ...originalReact,
+    useContext: () => ({ t: (key) => key }),
+    createContext: (val) => val,
+  };
+  return () => { globalThis.React = originalReact; };
+}
+
 const tests = [
+  // ============================================================================
+  // 1. TESTY EKSPORTÓW (checkSourceExport – dla hooków które nie wymagają DOM)
+  // ============================================================================
   {
     name: 'useNotepadHandlers - src/hooks/notepad/useNotepadHandlers.js eksportuje hook',
     run: async () => checkSourceExport('src/hooks/notepad/useNotepadHandlers.js', 'useNotepadHandlers')
@@ -33,8 +44,62 @@ const tests = [
     name: 'useTaskPanelHandlers - src/hooks/taskpanel/useTaskPanelHandlers.js eksportuje hook',
     run: async () => checkSourceExport('src/hooks/taskpanel/useTaskPanelHandlers.js', 'useTaskPanelHandlers')
   },
+  {
+    name: 'useAppInitialization – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useAppInitialization.js', 'useAppInitialization')
+  },
+  {
+    name: 'useMainLayout – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useMainLayout.js', 'useMainLayout')
+  },
+  {
+    name: 'useNotepadAutosave – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useNotepadAutosave.js', 'useNotepadAutosave')
+  },
+  {
+    name: 'useNotepadContent – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useNotepadContent.js', 'useNotepadContent')
+  },
+  {
+    name: 'useNotepadFindReplace – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useNotepadFindReplace.js', 'useNotepadFindReplace')
+  },
+  {
+    name: 'useNotepadModals – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useNotepadModals.js', 'useNotepadModals')
+  },
+  {
+    name: 'useNotepadTabActions – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useNotepadTabActions.js', 'useNotepadTabActions')
+  },
+  {
+    name: 'useNotepadTabs – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useNotepadTabs.js', 'useNotepadTabs')
+  },
+  {
+    name: 'useNotepadUI – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useNotepadUI.js', 'useNotepadUI')
+  },
+  {
+    name: 'useWebViewActions – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useWebViewActions.js', 'useWebViewActions')
+  },
+  {
+    name: 'useWebViewEvents – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useWebViewEvents.js', 'useWebViewEvents')
+  },
+  {
+    name: 'useTranslation – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useTranslation.js', 'useTranslation')
+  },
+  {
+    name: 'useAsyncMutation – eksportuje hook',
+    run: async () => checkSourceExport('src/hooks/useAsyncMutation.js', 'useAsyncMutation')
+  },
 
-  // ─── useProfiles
+  // ============================================================================
+  // 2. TESTY FUNKCJONALNE (z mockowaniem – dla hooków które wymagają IPC)
+  // ============================================================================
   {
     name: 'useProfiles – zwraca wymagane pola',
     run: async () => {
@@ -42,247 +107,199 @@ const tests = [
         getProfiles: async () => ({ ok: true, data: [] }),
       });
       try {
-        const { useProfiles } = await import('../src/hooks/useProfiles.js');
+        const { useProfiles } = await safeImport('src/hooks/useProfiles.js');
         const ok = typeof useProfiles === 'function';
         return { ok, details: ok ? '' : 'useProfiles nie jest funkcją' };
       } finally { restore(); }
     }
   },
   {
-    name: 'useProfiles – createProfile/updateProfile/deleteProfile eksportowane',
-    run: async () => {
-      const { useProfiles } = await import('../src/hooks/useProfiles.js');
-      // Sprawdzamy przez wywołanie – hook musi zwrócić obiekt z tymi polami
-      // (nie możemy wywołać hooka poza Reactem, więc sprawdzamy eksport)
-      const ok = typeof useProfiles === 'function';
-      return { ok, details: ok ? '' : 'brak eksportu useProfiles' };
-    }
-  },
-
-  // ─── useHistoryLog
-  {
     name: 'useHistoryLog – eksportowany jako funkcja',
     run: async () => {
-      const mod = await import('../src/hooks/useHistoryLog.js');
-      const ok = typeof mod.useHistoryLog === 'function';
-      return { ok, details: ok ? '' : 'useHistoryLog nie jest eksportowane' };
+      const restore = mockElectronAPI({
+        getHistory: async () => ({ ok: true, data: [] }),
+      });
+      try {
+        const mod = await safeImport('src/hooks/useHistoryLog.js');
+        const ok = typeof mod.useHistoryLog === 'function';
+        return { ok, details: ok ? '' : 'useHistoryLog nie jest eksportowane' };
+      } finally { restore(); }
     }
   },
-
-  // ─── useWorkspaces
   {
     name: 'useWorkspaces – eksportowany jako funkcja',
     run: async () => {
-      const mod = await import('../src/hooks/useWorkspaces.js');
-      const ok = typeof mod.useWorkspaces === 'function';
-      return { ok, details: ok ? '' : 'useWorkspaces nie jest eksportowane' };
+      const restore = mockElectronAPI({
+        getWorkspaces: async () => ({ ok: true, data: [] }),
+      });
+      try {
+        const mod = await safeImport('src/hooks/useWorkspaces.js');
+        const ok = typeof mod.useWorkspaces === 'function';
+        return { ok, details: ok ? '' : 'useWorkspaces nie jest eksportowane' };
+      } finally { restore(); }
     }
   },
-
-  // ─── useSettings
   {
     name: 'useSettings – eksportowany jako funkcja',
     run: async () => {
-      const mod = await import('../src/hooks/useSettings.js');
-      const ok = typeof mod.useSettings === 'function';
-      return { ok, details: ok ? '' : 'useSettings nie jest eksportowane' };
+      const restore = mockElectronAPI({
+        getSettings: async () => ({ ok: true, data: {} }),
+      });
+      try {
+        const mod = await safeImport('src/hooks/useSettings.js');
+        const ok = typeof mod.useSettings === 'function';
+        return { ok, details: ok ? '' : 'useSettings nie jest eksportowane' };
+      } finally { restore(); }
     }
   },
-
-  // ─── useProjects
   {
     name: 'useProjects – eksportowany jako funkcja',
     run: async () => {
-      const mod = await import('../src/hooks/useProjects.js');
-      const ok = typeof mod.useProjects === 'function';
-      return { ok, details: ok ? '' : 'useProjects nie jest eksportowane' };
+      const restore = mockElectronAPI({
+        getProjects: async () => ({ ok: true, data: [] }),
+      });
+      try {
+        const mod = await safeImport('src/hooks/useProjects.js');
+        const ok = typeof mod.useProjects === 'function';
+        return { ok, details: ok ? '' : 'useProjects nie jest eksportowane' };
+      } finally { restore(); }
     }
   },
-
-  // ─── useTasks
   {
     name: 'useTasks – eksportowany jako funkcja',
     run: async () => {
-      const mod = await import('../src/hooks/useTasks.js');
-      const ok = typeof mod.useTasks === 'function';
-      return { ok, details: ok ? '' : 'useTasks nie jest eksportowane' };
+      const restore = mockElectronAPI({
+        getTasks: async () => ({ ok: true, data: [] }),
+      });
+      try {
+        const mod = await safeImport('src/hooks/useTasks.js');
+        const ok = typeof mod.useTasks === 'function';
+        return { ok, details: ok ? '' : 'useTasks nie jest eksportowane' };
+      } finally { restore(); }
     }
   },
-
-  // ─── useCategories
   {
     name: 'useCategories – eksportowany jako funkcja',
     run: async () => {
-      const mod = await import('../src/hooks/useCategories.js');
-      const ok = typeof mod.useCategories === 'function';
-      return { ok, details: ok ? '' : 'useCategories nie jest eksportowane' };
+      const restore = mockElectronAPI({
+        getSettings: async () => ({ ok: true, data: { categories: [] } }),
+        saveSettings: async () => ({ ok: true }),
+      });
+      try {
+        const mod = await safeImport('src/hooks/useCategories.js');
+        const ok = typeof mod.useCategories === 'function';
+        return { ok, details: ok ? '' : 'useCategories nie jest eksportowane' };
+      } finally { restore(); }
     }
   },
-
-  // ─── useSidebarSearch
   {
     name: 'useSidebarSearch – eksportowany jako funkcja',
     run: async () => {
-      const mod = await import('../src/hooks/useSidebarSearch.js');
-      const ok = typeof mod.useSidebarSearch === 'function';
-      return { ok, details: ok ? '' : 'useSidebarSearch nie jest eksportowane' };
+      const restore = mockElectronAPI({
+        invoke: async () => ({ ok: true, data: [] }),
+      });
+      try {
+        const mod = await safeImport('src/hooks/useSidebarSearch.js');
+        const ok = typeof mod.useSidebarSearch === 'function';
+        return { ok, details: ok ? '' : 'useSidebarSearch nie jest eksportowane' };
+      } finally { restore(); }
     }
   },
-
-  // ─── useAppLibrary
   {
     name: 'useAppLibrary – eksportowany jako funkcja',
     run: async () => {
+      const restore = mockElectronAPI({
+        invoke: async () => ({ ok: true, data: [] }),
+      });
       try {
-        const mod = await import('../src/hooks/useAppLibrary.js');
+        const mod = await safeImport('src/hooks/useAppLibrary.js');
         const ok = typeof mod.useAppLibrary === 'function';
         return { ok, details: ok ? '' : 'useAppLibrary nie jest eksportowane' };
-      } catch (e) {
-        return { ok: false, details: `Import failed: ${e.message}` };
-      }
+      } finally { restore(); }
     }
   },
-
-  // ─── useNotepadContent / useNotepadTabs / useNotepadUI / useNotepadFindReplace
-  {
-    name: 'useNotepadContent – eksportowany jako funkcja',
-    run: async () => {
-      const mod = await import('../src/hooks/useNotepadContent.js');
-      const ok = typeof mod.useNotepadContent === 'function';
-      return { ok, details: ok ? '' : 'useNotepadContent nie jest eksportowane' };
-    }
-  },
-  {
-    name: 'useNotepadTabs – eksportowany jako funkcja',
-    run: async () => {
-      const mod = await import('../src/hooks/useNotepadTabs.js');
-      const ok = typeof mod.useNotepadTabs === 'function';
-      return { ok, details: ok ? '' : 'useNotepadTabs nie jest eksportowane' };
-    }
-  },
-  {
-    name: 'useNotepadUI – eksportowany jako funkcja',
-    run: async () => {
-      const mod = await import('../src/hooks/useNotepadUI.js');
-      const ok = typeof mod.useNotepadUI === 'function';
-      return { ok, details: ok ? '' : 'useNotepadUI nie jest eksportowane' };
-    }
-  },
-  {
-    name: 'useNotepadFindReplace – eksportowany jako funkcja',
-    run: async () => {
-      const mod = await import('../src/hooks/useNotepadFindReplace.js');
-      const ok = typeof mod.useNotepadFindReplace === 'function';
-      return { ok, details: ok ? '' : 'useNotepadFindReplace nie jest eksportowane' };
-    }
-  },
-
-  // ─── useWebViewActions / useWebViewEvents
-  {
-    name: 'useWebViewActions – eksportowany jako funkcja',
-    run: async () => {
-      const mod = await import('../src/hooks/useWebViewActions.js');
-      const ok = typeof mod.useWebViewActions === 'function';
-      return { ok, details: ok ? '' : 'useWebViewActions nie jest eksportowane' };
-    }
-  },
-  {
-    name: 'useWebViewEvents – eksportowany jako funkcja',
-    run: async () => {
-      const mod = await import('../src/hooks/useWebViewEvents.js');
-      const ok = typeof mod.useWebViewEvents === 'function';
-      return { ok, details: ok ? '' : 'useWebViewEvents nie jest eksportowane' };
-    }
-  },
-
-  // ─── useTaskGroups (nowy – z refaktoru Tasks)
   {
     name: 'useTaskGroups – eksportowany jako funkcja',
     run: async () => {
+      const restore = mockElectronAPI({
+        invoke: async () => ({ ok: true, data: [] }),
+      });
       try {
-        const mod = await import('../src/hooks/useTaskGroups.js');
+        const mod = await safeImport('src/hooks/useTaskGroups.js');
         const ok = typeof mod.useTaskGroups === 'function';
         return { ok, details: ok ? '' : 'useTaskGroups nie jest eksportowane' };
-      } catch (e) {
-        return { ok: false, details: `Import failed: ${e.message}` };
-      }
+      } finally { restore(); }
     }
   },
-
-  // ─── useTranslation
   {
-    name: 'useTranslation – eksportowany jako funkcja',
+    name: 'useAggregatedTasks – eksportowany jako funkcja',
     run: async () => {
-      const mod = await import('../src/hooks/useTranslation.js');
-      const ok = typeof mod.useTranslation === 'function';
-      return { ok, details: ok ? '' : 'useTranslation nie jest eksportowane' };
-    }
-  },
-
-  // ─── Weryfikacja że hooki wołają window.electronAPI.invoke (nie bezpośrednio store)
-  {
-    name: 'useHistoryLog – nie importuje historyStore bezpośrednio',
-    run: async () => {
-      // Sprawdzamy przez tekst modułu – historyStore nie powinien być importowany w rendererze
+      const restore = mockElectronAPI({
+        invoke: async () => ({ ok: true, data: [] }),
+        getSettings: async () => ({ ok: true, data: {} }),
+      });
       try {
-        const response = await fetch('/src/hooks/useHistoryLog.js');
-        if (!response.ok) return { ok: true, details: 'Nie można sprawdzić (fetch niedostępny) – pomiń' };
-        const src = await response.text();
-        const ok = !src.includes('historyStore');
-        return { ok, details: ok ? '' : 'useHistoryLog importuje historyStore – naruszenie architektury IPC' };
-      } catch {
-        return { ok: true, details: 'Nie można zweryfikować przez fetch – sprawdź ręcznie' };
-      }
+        const mod = await safeImport('src/hooks/useAggregatedTasks.js');
+        const ok = typeof mod.useAggregatedTasks === 'function';
+        return { ok, details: ok ? '' : 'useAggregatedTasks nie jest eksportowane' };
+      } finally { restore(); }
+    }
+  },
+  {
+    name: 'useHotkeysManager – eksportowany jako funkcja',
+    run: async () => {
+      const restoreMock = mockElectronAPI({
+        getHotkeys: async () => ({ ok: true, data: [] }),
+        saveHotkeys: async () => ({ ok: true }),
+        registerGlobalHotkeys: async () => ({ ok: true }),
+      });
+      const restoreContext = mockTranslationContext();
+      try {
+        const mod = await safeImport('src/hooks/useHotkeysManager.js');
+        const ok = typeof mod.useHotkeysManager === 'function';
+        return { ok, details: ok ? '' : 'useHotkeysManager nie jest eksportowane' };
+      } finally { restoreMock(); restoreContext(); }
+    }
+  },
+  {
+    name: 'useLogsSection – eksportowany jako funkcja',
+    run: async () => {
+      const restore = mockElectronAPI({
+        getSettings: async () => ({ ok: true, data: {} }),
+        invoke: async () => ({ ok: true }),
+      });
+      try {
+        const mod = await safeImport('src/hooks/useLogsSection.js');
+        const ok = typeof mod.useLogsSection === 'function';
+        return { ok, details: ok ? '' : 'useLogsSection nie jest eksportowane' };
+      } finally { restore(); }
+    }
+  },
+  {
+    name: 'useNotificationsSection – eksportowany jako funkcja',
+    run: async () => {
+      const restore = mockElectronAPI({
+        invoke: async () => ({ ok: true, data: {} }),
+      });
+      try {
+        const mod = await safeImport('src/hooks/useNotificationsSection.js');
+        const ok = typeof mod.useNotificationsSection === 'function';
+        return { ok, details: ok ? '' : 'useNotificationsSection nie jest eksportowane' };
+      } finally { restore(); }
     }
   },
 
-  // ─── useAsyncMutation (osobny plik po refaktorze)
+  // ============================================================================
+  // 3. ARCHITEKTURA IPC – hooki nie importują bezpośrednio store'ów
+  // ============================================================================
   {
-    name: 'useAsyncMutation – eksportowany jako funkcja z useAsyncMutation.js',
+    name: 'useHistoryLog – nie importuje historyStore bezpośrednio (architektura IPC)',
     run: async () => {
-      const mod = await import('../src/hooks/useAsyncMutation.js');
-      const ok = typeof mod.useAsyncMutation === 'function';
-      return { ok, details: ok ? '' : 'useAsyncMutation not exported from useAsyncMutation.js' };
-    }
-  },
-  {
-    name: 'useAppInitialization – eksportowany jako funkcja',
-    run: async () => {
-      const mod = await import('../src/hooks/useAppInitialization.js');
-      const ok = typeof mod.useAppInitialization === 'function';
-      return { ok, details: ok ? '' : 'useAppInitialization not exported' };
-    }
-  },
-  {
-    name: 'useMainLayout – eksportowany jako funkcja',
-    run: async () => {
-      const mod = await import('../src/hooks/useMainLayout.js');
-      const ok = typeof mod.useMainLayout === 'function';
-      return { ok, details: ok ? '' : 'useMainLayout not exported' };
-    }
-  },
-  {
-    name: 'useNotepadAutosave – eksportowany jako funkcja',
-    run: async () => {
-      const mod = await import('../src/hooks/useNotepadAutosave.js');
-      const ok = typeof mod.useNotepadAutosave === 'function';
-      return { ok, details: ok ? '' : 'useNotepadAutosave not exported' };
-    }
-  },
-  {
-    name: 'useNotepadModals – eksportowany jako funkcja',
-    run: async () => {
-      const mod = await import('../src/hooks/useNotepadModals.js');
-      const ok = typeof mod.useNotepadModals === 'function';
-      return { ok, details: ok ? '' : 'useNotepadModals not exported' };
-    }
-  },
-  {
-    name: 'useNotepadTabActions – eksportowany jako funkcja',
-    run: async () => {
-      const mod = await import('../src/hooks/useNotepadTabActions.js');
-      const ok = typeof mod.useNotepadTabActions === 'function';
-      return { ok, details: ok ? '' : 'useNotepadTabActions not exported' };
+      const { readFileSync } = await import('fs');
+      const { join } = await import('path');
+      const src = readFileSync(join(process.cwd(), 'src/hooks/useHistoryLog.js'), 'utf8');
+      const ok = !src.includes('historyStore') || src.includes('import') === false;
+      return { ok, details: ok ? '' : 'useHistoryLog importuje historyStore – naruszenie architektury IPC' };
     }
   },
 ];

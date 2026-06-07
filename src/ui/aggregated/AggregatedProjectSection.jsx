@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: AggregatedProjectSection.jsx
-// PATH: src/ui/tasks/AggregatedProjectSection.jsx
+// PATH: src/ui/aggregated/AggregatedProjectSection.jsx
 // VERSION: 0.0.3
 // PURPOSE: Pojedyncza sekcja grupy zadań (TaskGroup) w widoku zbiorczym. Wyświetla zadania per sekcja z pinem na górze.
 // FUNCTIONS: AggregatedProjectSection

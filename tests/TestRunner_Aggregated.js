@@ -39,8 +39,8 @@ const tests = [
     ['TaskEditor', 'src/ui/taskpanel/TaskEditor.jsx'],
     ['TaskEmptyState', 'src/ui/taskpanel/TaskEmptyState.jsx'],
     ['TaskList', 'src/ui/taskpanel/TaskList.jsx'],
-    ['AggregatedProjectSection', 'src/ui/tasks/AggregatedProjectSection.jsx'],
-    ['AggregatedTaskItem', 'src/ui/tasks/AggregatedTaskItem.jsx']
+    ['AggregatedProjectSection', 'src/ui/aggregated/AggregatedProjectSection.jsx'],
+    ['AggregatedTaskItem', 'src/ui/aggregated/AggregatedTaskItem.jsx']
   ].map(([name, path]) => ({
     name: `${name} - ${path} eksportuje komponent`,
     run: async () => checkSourceExport(path, name)

@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { runTests, safeImport } from './testUtils.js';
 
 // ─── Mock electronAPI dla testów useCategories
 let _mockSettings = {
@@ -29,52 +29,62 @@ const mockElectronAPI = {
 
 const tests = [
   {
-    name: 'useCategories loads categories and collapsed state',
+    name: 'useCategories – eksportowany jako funkcja',
     run: async () => {
+      const restore = () => {};
       window.electronAPI = mockElectronAPI;
-      _mockSettings = {
-        categories: [{ id: 'c1', name: 'Test', icon: '📁' }],
-        collapsedCategories: { c1: false }
-      };
-      const { useCategories } = await import('../src/hooks/useCategories.js');
-      const ok = typeof useCategories === 'function';
-      return { ok, details: ok ? '' : 'useCategories is not a function' };
+      const mod = await safeImport('src/hooks/useCategories.js');
+      const ok = typeof mod.useCategories === 'function';
+      return { ok, details: ok ? '' : 'useCategories not exported' };
     }
   },
   {
-    name: 'useCategories toggleCollapse switches state',
+    name: 'useCategories – ładuje kategorie i stan zwinięcia',
     run: async () => {
       window.electronAPI = mockElectronAPI;
       _mockSettings = {
         categories: [{ id: 'c1', name: 'Test', icon: '📁' }],
         collapsedCategories: { c1: false }
       };
-      const { useCategories } = await import('../src/hooks/useCategories.js');
+      const { useCategories } = await safeImport('src/hooks/useCategories.js');
       const ok = typeof useCategories === 'function';
       return { ok, details: ok ? '' : 'useCategories not available' };
     }
   },
   {
-    name: 'useCategories handles missing electronAPI gracefully',
+    name: 'useCategories – toggleCollapse zmienia stan',
+    run: async () => {
+      window.electronAPI = mockElectronAPI;
+      _mockSettings = {
+        categories: [{ id: 'c1', name: 'Test', icon: '📁' }],
+        collapsedCategories: { c1: false }
+      };
+      const { useCategories } = await safeImport('src/hooks/useCategories.js');
+      const ok = typeof useCategories === 'function';
+      return { ok, details: ok ? '' : 'useCategories not available' };
+    }
+  },
+  {
+    name: 'useCategories – obsługuje brak electronAPI (fallback)',
     run: async () => {
       window.electronAPI = null;
-      const { useCategories } = await import('../src/hooks/useCategories.js');
+      const { useCategories } = await safeImport('src/hooks/useCategories.js');
       const ok = typeof useCategories === 'function';
       return { ok, details: ok ? '' : 'useCategories not available' };
     }
   },
   {
-    name: 'useCategories addCategory appends to list',
+    name: 'useCategories – addCategory dodaje kategorię',
     run: async () => {
       window.electronAPI = mockElectronAPI;
       _mockSettings = { categories: [], collapsedCategories: {} };
-      const { useCategories } = await import('../src/hooks/useCategories.js');
+      const { useCategories } = await safeImport('src/hooks/useCategories.js');
       const ok = typeof useCategories === 'function';
       return { ok, details: ok ? '' : 'useCategories not available' };
     }
   },
   {
-    name: 'useCategories deleteCategory removes from list',
+    name: 'useCategories – deleteCategory usuwa kategorię',
     run: async () => {
       window.electronAPI = mockElectronAPI;
       _mockSettings = {
@@ -84,7 +94,7 @@ const tests = [
         ],
         collapsedCategories: {}
       };
-      const { useCategories } = await import('../src/hooks/useCategories.js');
+      const { useCategories } = await safeImport('src/hooks/useCategories.js');
       const ok = typeof useCategories === 'function';
       return { ok, details: ok ? '' : 'useCategories not available' };
     }

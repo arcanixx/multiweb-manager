@@ -1,6 +1,6 @@
 // =============================================================================
 // FILE: AggregatedTasks.jsx
-// PATH: src/ui/tasks/AggregatedTasks.jsx
+// PATH: src/ui/aggregated/AggregatedTasks.jsx
 // VERSION: 0.0.3
 // PURPOSE: Widok zbiorczy zadań – orkiestrator renderujący filtry, nagłówek i listę grup. Logika w useAggregatedTasks.
 // FUNCTIONS: AggregatedTasks

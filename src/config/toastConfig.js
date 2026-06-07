@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { ICONS } from '../../../utils/icons.js';
+import { ICONS } from '../utils/icons.js';
 
 export const MAX_ACTIVE  = 3;
 export const VISIBLE_MS  = 2000;
