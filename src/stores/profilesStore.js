@@ -11,7 +11,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { getUserDataPath, readJsonFile, writeJsonFile } from "./persistence.js";
+import { getUserDataPath, readJsonFile, writeJsonFile } from "../utils/persistence.js";
 import { logInfo, logError, logWarn } from "../utils/logger.js";
 
 import { DEFAULT_PROFILE_CATEGORY } from '../config.js';
