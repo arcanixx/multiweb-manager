@@ -3,7 +3,7 @@
 // PATH: src/stores/notepadStore.js
 // VERSION: 0.0.3
 // PURPOSE: Zarządzanie notatkami użytkownika – ładowanie, zapisywanie oraz operacje CRUD na danych notatek.
-// FUNCTIONS: getAllnotepad, addNote, updateNote, deleteNote
+// FUNCTIONS: getAllNotepad, addNote, updateNote, deleteNote
 // DEPENDS ON: fs, path, electron, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -59,12 +59,12 @@ function saveStore(store) {
   }
 }
 
-// ─── getAllnotepad() – Pobiera i zwraca tablicę wszystkich zarejestrowanych notatek użytkownika
-export function getAllnotepad() {
+// ─── getAllNotepad() – Pobiera i zwraca tablicę wszystkich zarejestrowanych notatek użytkownika
+export function getAllNotepad() {
   try {
     return loadStore().data || [];
   } catch (err) {
-    logError("store", "notepadStore.getAllnotepad failed", err.message);
+    logError("store", "notepadStore.getAllNotepad failed", err.message);
     return [];
   }
 }
