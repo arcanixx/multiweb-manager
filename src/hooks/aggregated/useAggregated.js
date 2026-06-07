@@ -9,7 +9,7 @@
 // =============================================================================
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { logError, logInfo } from '../utils/loggerRenderer.js';
+import { logError, logInfo } from '../../utils/loggerRenderer.js';
 
 export const STATUSES   = ['in_progress', 'todo', 'blocked', 'done', 'cancelled'];
 export const PRIORITIES = ['A', 'B', 'C', 'D', 'E'];
