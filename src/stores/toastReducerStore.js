@@ -8,7 +8,7 @@
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { MAX_ACTIVE } from './toastConfig.js';
+import { MAX_ACTIVE } from '../config/toastConfig.js';
 
 export const initialState = {
   active: [],  // Aktualnie widoczne toasty (max MAX_ACTIVE)
