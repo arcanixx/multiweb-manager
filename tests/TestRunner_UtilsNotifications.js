@@ -33,6 +33,7 @@ function ensureWindowEvents() {
 const tests = [
   {
     name: 'showToast: dispatches CustomEvent mwm:toast',
+    env: 'react',
     run: async () => {
       ensureWindowEvents();
       let received = null;
@@ -55,6 +56,7 @@ const tests = [
 
   {
     name: 'showToast: generuje unikalny id dla każdego toastu',
+    env: 'react',
     run: async () => {
       ensureWindowEvents();
       const ids = [];
@@ -78,6 +80,7 @@ const tests = [
 
   {
     name: 'showToast: akceptuje wszystkie typy (success/error/warning/info)',
+    env: 'react',
     run: async () => {
       ensureWindowEvents();
       const types = ['success', 'error', 'warning', 'info'];
