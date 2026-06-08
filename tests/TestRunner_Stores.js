@@ -269,10 +269,11 @@ const tests = [
   },
 
   // ── IPC-level store tests (wymagają electronAPI – działają przy starcie apki) ──
+  // ─── Store IPC – testy runtime (env:'react' – wymagają window.electronAPI) ──
   {
     name: 'Store IPC – settings is object with required keys',
+    env: 'react',
     run: async () => {
-      if (typeof window === 'undefined' || !window.electronAPI) return { ok: false, details: 'electronAPI missing' };
       const settings = await window.electronAPI.getSettings().catch(() => null);
       const ok = settings && typeof settings === 'object'
               && 'language' in settings && 'theme' in settings && 'debugMode' in settings;
@@ -281,8 +282,8 @@ const tests = [
   },
   {
     name: 'Store IPC – notepad has tabs array',
+    env: 'react',
     run: async () => {
-      if (typeof window === 'undefined' || !window.electronAPI) return { ok: false, details: 'electronAPI missing' };
       const notepad = await window.electronAPI.getnotepad().catch(() => ({ tabs: [] }));
       const ok = notepad && Array.isArray(notepad.tabs);
       return { ok, details: ok ? '' : 'notepad.tabs is not an array' };
@@ -290,8 +291,8 @@ const tests = [
   },
   {
     name: 'Store IPC – history is array within limit',
+    env: 'react',
     run: async () => {
-      if (typeof window === 'undefined' || !window.electronAPI) return { ok: false, details: 'electronAPI missing' };
       const history = await window.electronAPI.getHistory().catch(() => []);
       const ok = Array.isArray(history) && history.length <= 100;
       return { ok, details: ok ? '' : `history len=${history.length}` };
