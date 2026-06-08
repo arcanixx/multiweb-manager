@@ -18,34 +18,44 @@ import { logInfo, logWarn, logError, setDebugMode } from '../utils/logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// ─── Verbose mode – activated by --verbose flag in process.argv ───────────────
 const VERBOSE = process.argv.includes('--verbose');
 if (VERBOSE) {
   setDebugMode(true);
   logInfo('ui', 'testsLoader: --verbose mode active');
 }
 
-// ─── Files excluded from test discovery ──────────────────────────────────────
-// Wykluczamy tylko orchestrator i utility – wszystkie TestRunner_*.js są ładowane
 const EXCLUDED = new Set([
-  'TestRunner.js',   // orchestrator – nie zawiera testów
-  'testUtils.js',    // utility – nie zawiera testów
+  'TestRunner.js',
+  'testUtils.js',
 ]);
 
+// ─── Wzorce identyfikujące błąd importu spowodowany zależnością od Electron ──
+// Pliki których import failuje z tych powodów są oznaczane jako skipped (nie fail).
+const ELECTRON_IMPORT_PATTERNS = [
+  'electron',
+  "Named export 'app' not found",
+  "The requested module 'electron'",
+];
+
+function isElectronImportError(msg) {
+  return ELECTRON_IMPORT_PATTERNS.some(p => msg.includes(p));
+}
+
 // =============================================================================
-// loadAndRunAllTests() – scans tests/ for TestRunner_*.js modules, dynamically
-//   imports each one, calls their run*() function and aggregates results.
-//   @param {object} options – passed through to each test module
-//   @returns {Promise<{ passed: number, failed: number, results: object }>}
+// loadAndRunAllTests()
 //
-// UWAGA: results[fileName].error zawiera komunikat błędu dla testów które failują
-//        z przyczyn technicznych (import, błąd wykonania) lub gdy testy same
-//        zwrócą error. Pozwala to na filtrowanie w build_structure.py.
+// Obsługa wyników:
+//   Import OK, testy OK           → { passed, failed }
+//   Import OK, testy failują      → { passed, failed, error: "N test(s) failed: name1, name2" }
+//   Import FAIL (Electron)        → { passed:0, failed:0, skipped:true, original_error: msg }
+//   Import FAIL (inny)            → { passed:0, failed:0, error: "import failed: msg" }
+//
+// UWAGA: skipped NIE wlicza się do totalFailed.
+// failedNames (z runTests w testUtils.js) → trafiają do error: "N test(s) failed: name1, ..."
 // =============================================================================
 export async function loadAndRunAllTests(options = {}) {
   const testsDir = join(__dirname, '..', '..', 'tests');
 
-  // ── Read test file list ────────────────────────────────────────────────────
   let files;
   try {
     files = readdirSync(testsDir).filter(
@@ -56,98 +66,80 @@ export async function loadAndRunAllTests(options = {}) {
     return { passed: 0, failed: 0, results: {} };
   }
 
-  if (VERBOSE) logInfo('ui', `testsLoader: found ${files.length} test files`, files);
+  if (VERBOSE) logInfo('ui', `testsLoader: found ${files.length} test files`);
 
   let totalPassed = 0;
   let totalFailed = 0;
   const results = {};
 
   for (const file of files) {
-    if (EXCLUDED.has(file)) {
-      if (VERBOSE) logInfo('ui', `testsLoader: skipping ${file} (excluded)`);
-      continue;
-    }
+    if (EXCLUDED.has(file)) continue;
 
     const filePath = pathToFileURL(join(testsDir, file)).href;
 
-    // ── Dynamic import with precise error handling ─────────────────────────
     let module;
     try {
       module = await import(filePath);
     } catch (importErr) {
-      const isSyntax = importErr instanceof SyntaxError;
       const errorMsg = importErr.message || String(importErr);
-      logError('ui', `testsLoader: cannot load ${file} — ${isSyntax ? 'syntax error' : 'runtime error'}`, errorMsg);
-      if (VERBOSE) logError('ui', `testsLoader: stack for ${file}:`, importErr.stack);
-      // Zapisujemy błąd – przyda się przy filtrowaniu testów wymagających Electrona
+
+      // Import zakończony błędem Electron → SKIPPED (nie liczy się jako fail w skrypcie)
+      if (isElectronImportError(errorMsg)) {
+        logWarn('ui', `testsLoader: skipping ${file} — requires Electron (expected in Node env)`);
+        results[file] = { passed: 0, failed: 0, skipped: true, original_error: errorMsg };
+        continue;  // NIE inkrementujemy totalFailed
+      }
+
+      // Inny błąd importu → liczymy jako fail
+      logError('ui', `testsLoader: cannot load ${file}`, errorMsg);
       results[file] = { passed: 0, failed: 0, error: `import failed: ${errorMsg}` };
       totalFailed++;
       continue;
     }
 
-    // ── Find exported run*() function ─────────────────────────────────────
-    // Szukamy dowolnej funkcji eksportowanej której nazwa zaczyna się od 'run'
-    // (np. runNotepadTests, runTasksTests, runAdBlockerTests)
     const runFn = Object.values(module).find(
       (v) => typeof v === 'function' && v.name?.startsWith('run')
     );
 
     if (!runFn) {
-      logWarn('ui', `testsLoader: no run*() function found in ${file} — skipping`);
+      logWarn('ui', `testsLoader: no run*() function found in ${file}`);
       results[file] = { passed: 0, failed: 0, error: 'no run*() function' };
       continue;
     }
 
-    // ── Run tests ─────────────────────────────────────────────────────────
     try {
       if (VERBOSE) logInfo('ui', `testsLoader: running ${file} → ${runFn.name}()`);
       const result = await runFn({ ...options, verbose: VERBOSE });
-      
-      // Inicjalizacja wyników dla tego pliku
+
       const fileResults = {
         passed: result?.passed || 0,
-        failed: result?.failed || 0
+        failed: result?.failed || 0,
       };
-      
-      // === KRYTYCZNE: przekazujemy błędy do build_structure.py ===
-      // Dzięki temu skrypt Python może odfiltrować testy wymagające Electrona
-      // i oznaczyć je jako 'skipped' zamiast 'failed'
-      
-      // Sprawdź czy result bezpośrednio zawiera error
+
+      // Dołącz nazwy failujących testów do error – widoczne w JSON bez (no details)
+      // Format: "2 test(s) failed: NazwaTestu1, NazwaTestu2"
       if (result?.error) {
         fileResults.error = result.error;
-      } 
-      // Sprawdź czy result zawiera details z błędami (format z testrunner.js)
-      else if (result?.failed > 0 && result?.details) {
-        const errors = result.details
-          .filter(d => !d.ok)
-          .map(d => d.error || d.details || 'unknown error');
-        if (errors.length) {
-          fileResults.error = errors.join('; ');
-        }
-      } 
-      // Fallback: testy failują bez szczegółów
-      else if (result?.failed > 0 && !result?.error) {
-        fileResults.error = `${result.failed} test(s) failed (no details)`;
+      } else if (result?.failed > 0) {
+        const names = result?.failedNames?.length ? result.failedNames.join(', ') : null;
+        fileResults.error = names
+          ? `${result.failed} test(s) failed: ${names}`
+          : `${result.failed} test(s) failed (no details)`;
       }
-      
+
       results[file] = fileResults;
       totalPassed += result?.passed || 0;
       totalFailed += result?.failed || 0;
-      
+
       logInfo('ui', `testsLoader: ${file} — ✅ ${result?.passed || 0} / ❌ ${result?.failed || 0}`);
-      
-      // W trybie verbose pokaż szczegóły failed testów
-      if (VERBOSE && result?.failed > 0 && result?.details) {
-        result.details.filter(d => !d.ok).forEach(d => {
-          logError('ui', `  ❌ ${d.name}: ${d.details || d.error || 'failed'}`);
-        });
+
+      if (VERBOSE && result?.failedNames?.length) {
+        result.failedNames.forEach(name => logError('ui', `  ❌ ${name}`));
       }
-      
+
     } catch (runErr) {
       const errorMsg = runErr.message || String(runErr);
       logError('ui', `testsLoader: error running ${file}`, errorMsg);
-      if (VERBOSE) logError('ui', `testsLoader: stack for ${file}:`, runErr.stack);
       results[file] = { passed: 0, failed: 0, error: `runtime error: ${errorMsg}` };
       totalFailed++;
     }
@@ -156,7 +148,3 @@ export async function loadAndRunAllTests(options = {}) {
   logInfo('ui', `testsLoader: done — ✅ ${totalPassed} / ❌ ${totalFailed} across ${files.length} modules`);
   return { passed: totalPassed, failed: totalFailed, results };
 }
-
-// =============================================================================
-// END OF FILE
-// =============================================================================
