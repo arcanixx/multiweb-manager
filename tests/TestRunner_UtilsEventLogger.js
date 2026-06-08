@@ -3,6 +3,7 @@
 // PATH: tests/TestRunner_UtilsEventLogger.js
 // VERSION: 0.0.3
 // PURPOSE: Testy jednostkowe modułu eventLogger — sanityzacja params, guard eventLogEnabled, format wpisu. (ARCH_REQ-044)
+// ŚRODOWISKO: Wszystkie testy env:'react' — eventLogger używa window.electronAPI.invoke wewnętrznie.
 // FUNCTIONS: runEventLoggerTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
@@ -26,6 +27,7 @@ function ensureElectronWindow() {
 const tests = [
   {
     name: 'logEvent: nie zapisuje gdy eventLogEnabled=false (domyślne)',
+    env: 'react',
     run: async () => {
       const calls = [];
       // Ustaw mock z eventLogEnabled=false
@@ -55,6 +57,7 @@ const tests = [
 
   {
     name: 'logEvent: sanityzuje blacklistowane klucze params',
+    env: 'react',
     run: async () => {
       const calls = [];
       const restore = mockElectronAPI({
@@ -98,6 +101,7 @@ const tests = [
 
   {
     name: 'logEvent: wpis zawiera wymagane pola (ts, module, fn, action, source)',
+    env: 'react',
     run: async () => {
       const calls = [];
       const restore = mockElectronAPI({
