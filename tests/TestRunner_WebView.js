@@ -11,39 +11,15 @@
 import { checkSourceExport, runTests } from './testUtils.js';
 
 const tests = [
-  {
-    name: 'WebViewContainer - src/ui/views/WebViewContainer.jsx eksportuje komponent',
-    run: async () => checkSourceExport('src/ui/views/WebViewContainer.jsx', 'WebViewContainer')
-  },
-  {
-    name: 'WebViewTab - src/ui/webview/WebViewTab.jsx eksportuje komponent',
-    run: async () => checkSourceExport('src/ui/webview/WebViewTab.jsx', 'WebViewTab')
-  },
-  {
-    name: 'WebViewToolbar - src/ui/webview/WebViewToolbar.jsx eksportuje komponent',
-    run: async () => checkSourceExport('src/ui/webview/WebViewToolbar.jsx', 'WebViewToolbar')
-  },
-  {
-    name: 'Single App Mode – IPC available',
-    run: async () => {
-      const hasIPC = typeof window !== 'undefined' && !!window.electronAPI?.openSingleWindow;
-      return { ok: hasIPC, details: hasIPC ? '' : 'window.electronAPI.openSingleWindow missing' };
-    }
-  },
-  {
-    name: 'Screenshot – captureWebView IPC available',
-    run: async () => {
-      const hasCapture = typeof window !== 'undefined' && !!window.electronAPI?.captureWebView;
-      return { ok: hasCapture, details: hasCapture ? '' : 'window.electronAPI.captureWebView missing' };
-    }
-  },
-  {
-    name: 'Resource Monitor – IPC available',
-    run: async () => {
-      const hasMonitor = typeof window !== 'undefined' && !!window.electronAPI?.getWebViewResourceInfo;
-      return { ok: hasMonitor, details: hasMonitor ? '' : 'window.electronAPI.getWebViewResourceInfo missing' };
-    }
-  },
+  // ─── Eksporty komponentów (checkSourceExport – bezpieczne w Node) ──────────
+  { name: 'WebViewContainer – eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/views/WebViewContainer.jsx', 'WebViewContainer') },
+  { name: 'WebViewTab – eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/webview/WebViewTab.jsx', 'WebViewTab') },
+  { name: 'WebViewToolbar – eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/webview/WebViewToolbar.jsx', 'WebViewToolbar') },
+
+  // ─── Zoom – czysta logika (Node-safe) ─────────────────────────────────────
   {
     name: 'Zoom in/out – setZoomFactor works',
     run: async () => {
@@ -54,9 +30,35 @@ const tests = [
       mockWebView.setZoomFactor(mockWebView.getZoomFactor() + 0.1);
       return { ok: mockWebView._zoom === 1.1, details: `Expected 1.1, got ${mockWebView._zoom}` };
     }
-  }
+  },
+
+  // ─── Testy IPC (env:'react' – wymagają window.electronAPI) ────────────────
+  {
+    name: 'Single App Mode – IPC available',
+    env: 'react',
+    run: async () => {
+      const ok = !!window.electronAPI?.openSingleWindow;
+      return { ok, details: ok ? '' : 'window.electronAPI.openSingleWindow missing' };
+    }
+  },
+  {
+    name: 'Screenshot – captureWebView IPC available',
+    env: 'react',
+    run: async () => {
+      const ok = !!window.electronAPI?.captureWebView;
+      return { ok, details: ok ? '' : 'window.electronAPI.captureWebView missing' };
+    }
+  },
+  {
+    name: 'Resource Monitor – IPC available',
+    env: 'react',
+    run: async () => {
+      const ok = !!window.electronAPI?.getWebViewResourceInfo;
+      return { ok, details: ok ? '' : 'window.electronAPI.getWebViewResourceInfo missing' };
+    }
+  },
 ];
+
 export async function runWebViewTests() {
   return runTests('WebView', tests);
 }
-
