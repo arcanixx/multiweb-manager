@@ -67,6 +67,7 @@ const tests = [
   // ─── Eksporty komponentów ─────────────────────────────────────
   {
     name: '[Export] TaskPanel.jsx eksportuje komponent default',
+    env: 'react',
     run: async () => {
       const mod = await import('../src/ui/taskpanel/TaskPanel.jsx').catch(e => ({ error: e.message }));
       const ok  = !mod.error && (typeof mod.default === 'function');
@@ -75,6 +76,7 @@ const tests = [
   },
   {
     name: '[Export] TaskModal.jsx eksportuje komponent default',
+    env: 'react',
     run: async () => {
       const mod = await import('../src/ui/taskpanel/TaskModal.jsx').catch(e => ({ error: e.message }));
       const ok  = !mod.error && typeof mod.default === 'function';
@@ -83,6 +85,7 @@ const tests = [
   },
   {
     name: '[Export] TaskItem.jsx eksportuje komponent default',
+    env: 'react',
     run: async () => {
       const mod = await import('../src/ui/taskpanel/TaskItem.jsx').catch(e => ({ error: e.message }));
       const ok  = !mod.error && typeof mod.default === 'function';
@@ -91,6 +94,7 @@ const tests = [
   },
   {
     name: '[Export] TaskSection.jsx eksportuje komponent default',
+    env: 'react',
     run: async () => {
       const mod = await import('../src/ui/taskpanel/TaskSection.jsx').catch(e => ({ error: e.message }));
       const ok  = !mod.error && typeof mod.default === 'function';
@@ -99,6 +103,7 @@ const tests = [
   },
   {
     name: '[Export] TaskSectionList.jsx eksportuje komponent default',
+    env: 'react',
     run: async () => {
       const mod = await import('../src/ui/taskpanel/TaskSectionList.jsx').catch(e => ({ error: e.message }));
       const ok  = !mod.error && typeof mod.default === 'function';
@@ -107,6 +112,7 @@ const tests = [
   },
   {
     name: '[Export] AggregatedTasks.jsx eksportuje komponent default',
+    env: 'react',
     run: async () => {
       const mod = await import('../src/ui/aggregated/AggregatedTasks.jsx').catch(e => ({ error: e.message }));
       const ok  = !mod.error && typeof mod.default === 'function';
@@ -115,6 +121,7 @@ const tests = [
   },
   {
     name: '[Export] useTaskGroups.js eksportuje hook useTaskGroups',
+    env: 'react',
     run: async () => {
       const mod = await import('../src/hooks/useTaskGroups.js').catch(e => ({ error: e.message }));
       const ok  = !mod.error && typeof mod.useTaskGroups === 'function';
@@ -123,6 +130,7 @@ const tests = [
   },
   {
     name: '[Export] useTasks.js eksportuje hook useTasks',
+    env: 'react',
     run: async () => {
       const mod = await import('../src/hooks/useTasks.js').catch(e => ({ error: e.message }));
       const ok  = !mod.error && typeof mod.useTasks === 'function';
@@ -133,6 +141,7 @@ const tests = [
   // ─── IPC API (preload) ─────────────────────────────────────────
   {
     name: '[IPC API] getTaskGroups jest funkcją',
+    env: 'react',
     run: async () => {
       const ok = typeof window.electronAPI?.getTaskGroups === 'function';
       return { ok, details: ok ? '' : 'getTaskGroups missing' };
@@ -140,6 +149,7 @@ const tests = [
   },
   {
     name: '[IPC API] createTaskGroup jest funkcją',
+    env: 'react',
     run: async () => {
       const ok = typeof window.electronAPI?.createTaskGroup === 'function';
       return { ok, details: ok ? '' : 'createTaskGroup missing' };
@@ -147,6 +157,7 @@ const tests = [
   },
   {
     name: '[IPC API] ensureTaskGroupForProfile jest funkcją',
+    env: 'react',
     run: async () => {
       const ok = typeof window.electronAPI?.ensureTaskGroupForProfile === 'function';
       return { ok, details: ok ? '' : 'ensureTaskGroupForProfile missing' };
@@ -154,6 +165,7 @@ const tests = [
   },
   {
     name: '[IPC API] assignProfileToTaskGroup jest funkcją',
+    env: 'react',
     run: async () => {
       const ok = typeof window.electronAPI?.assignProfileToTaskGroup === 'function';
       return { ok, details: ok ? '' : 'assignProfileToTaskGroup missing' };
