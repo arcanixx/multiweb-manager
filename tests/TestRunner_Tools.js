@@ -227,9 +227,10 @@ const tests = [
     }
   },
 
-  // ── Cookie Grabber (IPC) ──────────────────────────────────────────────────
+  // ── Cookie Grabber (IPC – env:'react') ───────────────────────────────────
   {
     name: 'Cookie Grabber – getCookies IPC available',
+    env: 'react',
     run: async () => {
       if (!window?.electronAPI?.getCookies) return { ok: false, details: 'getCookies not available' };
       const result = await window.electronAPI.getCookies(null);
