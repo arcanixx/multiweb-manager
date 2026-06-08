@@ -124,8 +124,11 @@ const tests = [
   },
 
   // ── hotkeysManager ───────────────────────────────────────────────────────
+  // getAllHotkeys() wywołuje electron store (ipcMain) – dostępny tylko w procesie Electron.
+  // env:'react' → test uruchomi się przy starcie apki; w Node jest pomijany.
   {
     name: 'hotkeysManager – getAllHotkeys returns array',
+    env: 'react',
     run: async () => {
       const { getAllHotkeys } = await safeImport('src/engine/hotkeysManager.js');
       const hotkeys = await getAllHotkeys();
@@ -135,6 +138,7 @@ const tests = [
   },
   {
     name: 'hotkeysManager – required functions exported',
+    env: 'react',
     run: async () => {
       const mod = await safeImport('src/engine/hotkeysManager.js');
       const required = ['getAllHotkeys', 'setMainWindow', 'unregisterAllHotkeys',
