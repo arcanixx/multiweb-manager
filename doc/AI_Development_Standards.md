@@ -199,21 +199,61 @@ Po każdej istotnej zmianie:
 
 ## 13. ZASADY MODYFIKACJI TESTÓW
 
-- **NIGDY** nie zastępuj testu `checkSourceExport` gdy hook/komponent zaczyna failować — dodaj fallback Node
-- **NIGDY** nie upraszczaj testu "żeby przechodził" — zachowaj oryginalną funkcjonalność
-- Wzorzec fallback:
-  ```js
+### 13.1 Dwa środowiska — jedna zasada
+
+Testy istnieją w dwóch kontekstach:
+
+- **Node.js** (skrypt `build_structure.py --run-tests`) — brak DOM, brak React, brak Electron
+- **React/Electron** (start apki z `debugMode=true`) — pełne środowisko
+
+Testy React **MUSZĄ istnieć** — uruchamiają się przy starcie apki i diagnozują co nie działa.
+W skrypcie Node są oznaczone `env: 'react'` i traktowane jako **SKIPPED**, nie FAIL.
+
+### 13.2 Pole `env` w definicji testu
+
+```js
+{ name: 'useHook – działa', env: 'react', run: async () => { ... } }  // pominięty w Node
+{ name: 'store – eksporty', run: async () => { ... } }                 // działa w obu
+```
+
+| Wartość `env` | Node | React/Electron |
+|---|---|---|
+| `'react'` | SKIPPED (nie FAIL) | wykonany |
+| `'node'` | wykonany | SKIPPED |
+| brak | wykonany | wykonany |
+
+### 13.3 Kiedy używać `checkSourceExport`
+
+**TYLKO:** pliki z `React.lazy()`, czyste re-eksporty, czyste stałe.
+**NIGDY:** do testowania hooków i komponentów — tam użyj `env: 'react'` + prawdziwy test.
+
+> `checkSourceExport` to sprawdzenie czy eksport istnieje, nie czy działa.
+
+### 13.4 Wzorzec fallback (Typ C — hook z częściową logiką Node-dostępną)
+
+```js
+{
+  name: 'useExample – hook dostępny',
   run: async () => {
-    if (typeof window === 'undefined') {
+    if (isNodeEnv()) {
       const mod = await safeImport('src/hooks/useExample.js');
       return { ok: typeof mod.useExample === 'function', details: 'Node fallback' };
     }
-    // normalny test z mockElectronAPI
+    const restore = mockElectronAPI({ invoke: async () => ({ ok: true, data: [] }) });
+    try {
+      const { useExample } = await import('../src/hooks/useExample.js');
+      return { ok: typeof useExample === 'function' };
+    } finally { restore(); }
   }
-  ```
-- `checkSourceExport` tylko dla: re-exportów, `React.lazy()`, czystych stałych
-- Szczegóły: `doc/DevelopersGuide.md` sekcja 23
+}
+```
 
+### 13.5 Zakazy bezwzględne
+
+- **NIGDY** nie zastępuj testu `checkSourceExport` gdy hook zaczyna failować w Node — dodaj `env: 'react'`
+- **NIGDY** nie upraszczaj testu "żeby przechodził" — zachowaj oryginalną funkcjonalność
+- **NIGDY** nie usuwaj testów React bo "failują w skrypcie" — to ich naturalne środowisko
+
+Szczegóły i przykłady: `doc/DevelopersGuide.md` sekcja 23
 
 <!-- KONIEC DOKUMENTU -->
-
