@@ -2094,27 +2094,58 @@ window.electronAPI.invoke('webview:removeInjection', {
 
 # 23. ZASADY TWORZENIA TESTÓW (DLA AI)
 
-## 23.1. Złota zasada: NIE USUWAJ TESTÓW — DODAWAJ FALLBACKI
+---
 
-Jeśli test failuje w środowisku Node (np. `window is not defined`, `document is not defined`, `TranslationContext` missing):
+## 23.0. Filozofia: dwa środowiska, jeden plik testów
 
-**❌ ZŁE podejście:**
+Testy w tym projekcie działają w **dwóch różnych kontekstach**:
+
+| Kontekst | Kiedy | Środowisko | Co może importować |
+|---|---|---|---|
+| **Node.js (pre-commit)** | `build_structure.py --run-tests` | Czysty Node, brak DOM | Czyste JS stores, reducery, helpery, logikę domenową |
+| **React/Electron (runtime)** | Start apki z `debugMode=true` | Electron renderer, pełne DOM | Wszystko — hooki React, komponenty, `window.electronAPI` |
+
+**Zasada kluczowa:**
+> Testy React **MUSZĄ ISTNIEĆ** w plikach — bo działają przy uruchomieniu apki i dają wartość diagnostyczną.
+> W raporcie pre-commit takie testy są oznaczone jako `SKIPPED (react-only)` — **nie jako FAIL**.
+> Fałszywy fail w raporcie = szum informacyjny = ignorowanie całego raportu. To jest złe.
+
+---
+
+## 23.1. Trzy typy testów i kiedy ich używać
+
+### Typ A — brak `env` — testy czysto Node.js
+Testują logikę bez żadnych zależności od DOM, React, czy Electron.
+
 ```js
-// Zastąpienie testu checkSourceExport (traci funkcjonalność)
-{ name: 'useProfiles – eksportuje hook',
-  run: async () => checkSourceExport('src/hooks/useProfiles.js', 'useProfiles') }
+{
+  name: 'tasksStore – resolveSection zwraca poprawną sekcję',
+  // env: brak → działa w obu środowiskach
+  run: async () => {
+    const { resolveSection } = await safeImport('src/stores/tasksStore.js');
+    const ok = resolveSection('in_progress') === 'active';
+    return { ok, details: ok ? '' : `Got: ${resolveSection('in_progress')}` };
+  }
+}
 ```
 
-**✅ DOBRE podejście:**
+**Kiedy:** stores, reducery, helpery, czysta logika domenowa, pliki `.js` bez React.
+
+---
+
+### Typ B — `env: 'react'` — testy wymagające środowiska React/Electron
+Testują hooki, komponenty, `window.electronAPI`. W Node są **pomijane jako SKIPPED**, nie FAIL.
+
 ```js
-// Fallback – testuje tyle ile może w danym środowisku
-{ name: 'useProfiles – eksportuje hook i ma podstawowe funkcje',
+{
+  name: 'useProfiles – zwraca listę profili po inicjalizacji',
+  env: 'react',   // ← TO JEST KLUCZ
   run: async () => {
-    if (typeof window === 'undefined') {
-      const mod = await safeImport('src/hooks/useProfiles.js');
-      return { ok: typeof mod.useProfiles === 'function', details: 'Node fallback' };
-    }
-    const restore = mockElectronAPI({ getProfiles: async () => ({ ok: true, data: [] }) });
+    const restore = mockElectronAPI({
+      invoke: async (ch) => ch === 'profiles:getAll'
+        ? { ok: true, data: [{ id: 'p1', name: 'Test' }] }
+        : { ok: true }
+    });
     try {
       const { useProfiles } = await import('../src/hooks/useProfiles.js');
       return { ok: typeof useProfiles === 'function' };
@@ -2123,49 +2154,123 @@ Jeśli test failuje w środowisku Node (np. `window is not defined`, `document i
 }
 ```
 
-## 23.2. Kiedy używać `checkSourceExport`?
+**Kiedy:** hooki React (`use*.js`), komponenty `.jsx`, testy z `window.electronAPI`.
 
-**TYLKO gdy:**
-- Plik zawiera `React.lazy()` (nie można zaimportować w Node)
-- Plik jest re-eksportem (eksportuje tylko z innego pliku)
-- Testujemy czystą stałą (np. `export const MAX_ACTIVE = 3`)
+---
 
-**NIGDY do:**
-- Testowania hooków React (chyba że mają fallback)
-- Testowania komponentów React (chyba że mają fallback)
-
-## 23.3. Wzorzec testu hooka z mockowaniem
+### Typ C — fallback Node + pełny React (dla hooków z częściową logiką Node-dostępną)
 
 ```js
-import { mockElectronAPI, safeImport } from './testUtils.js';
-
 {
-  name: 'useExample – działa poprawnie',
+  name: 'useProfiles – hook dostępny',
   run: async () => {
-    if (typeof window === 'undefined') {
-      const mod = await safeImport('src/hooks/useExample.js');
-      return { ok: typeof mod.useExample === 'function', details: 'Node fallback' };
+    if (isNodeEnv()) {
+      // Node: sprawdź eksport
+      const mod = await safeImport('src/hooks/useProfiles.js');
+      return { ok: typeof mod.useProfiles === 'function', details: 'Node fallback' };
     }
-    const restore = mockElectronAPI({ getData: async () => ({ ok: true, data: [] }) });
+    // React: pełny test
+    const restore = mockElectronAPI({ invoke: async () => ({ ok: true, data: [] }) });
     try {
-      const { useExample } = await import('../src/hooks/useExample.js');
-      return { ok: typeof useExample === 'function' };
+      const { useProfiles } = await import('../src/hooks/useProfiles.js');
+      return { ok: typeof useProfiles === 'function' };
     } finally { restore(); }
   }
 }
 ```
 
-## 23.4. Zasady dla AI przy modyfikacji testów
+---
 
-| Co robić | Czego NIE robić |
+## 23.2. Kiedy używać `checkSourceExport`?
+
+**TYLKO gdy:**
+- Plik zawiera `React.lazy()` (nie można zaimportować w Node)
+- Plik jest re-eksportem (bez własnej logiki)
+- Testujemy czystą stałą (np. `export const MAX = 3`)
+
+**NIGDY gdy:**
+- Testujemy logikę hooka lub komponentu → użyj `env: 'react'`
+- "Bo inaczej failuje w Node" → to NIE jest powód. Dodaj `env: 'react'`
+
+> `checkSourceExport` to jak sprawdzanie czy plik istnieje. Mówi: "eksport gdzieś jest". Nie mówi: "funkcja działa".
+
+---
+
+## 23.3. Jak oznaczyć test jako React-only — krok po kroku
+
+1. Dodaj `env: 'react'` do obiektu testu
+2. `runTests()` w `testUtils.js` automatycznie:
+   - Pomija test w Node z komunikatem `⏭️ [REACT-ONLY] nazwa`
+   - Wykonuje test normalnie w Electron
+   - Wynik `skippedReact` **NIE wlicza się do `failed`**
+
+---
+
+## 23.4. Wzorzec kompletnego TestRunner
+
+```js
+import { runTests, safeImport, mockElectronAPI, isNodeEnv, checkSourceExport } from './testUtils.js';
+
+const tests = [
+
+  // ── TESTY NODE (czysta logika) ────────────────────────────────────────────
+  {
+    name: 'myStore – all functions exported',
+    run: async () => {
+      const mod = await safeImport('src/stores/myStore.js');
+      const required = ['getAll', 'save', 'delete'];
+      const missing = required.filter(fn => typeof mod[fn] !== 'function');
+      return { ok: missing.length === 0, details: missing.join(', ') };
+    }
+  },
+
+  // ── EKSPORTY JSX (checkSourceExport – bezpieczne w Node) ─────────────────
+  {
+    name: 'MyComponent – eksportuje komponent',
+    run: async () => checkSourceExport('src/ui/myModule/MyComponent.jsx', 'MyComponent')
+  },
+
+  // ── TESTY REACT (env:'react' → SKIP w Node, wykonane w Electron) ──────────
+  {
+    name: 'useMyHook – zwraca dane po inicjalizacji',
+    env: 'react',
+    run: async () => {
+      const restore = mockElectronAPI({
+        invoke: async (ch) => ch === 'my:getAll' ? { ok: true, data: [] } : { ok: true }
+      });
+      try {
+        const { useMyHook } = await import('../src/hooks/useMyHook.js');
+        return { ok: typeof useMyHook === 'function' };
+      } finally { restore(); }
+    }
+  },
+];
+
+export async function runMyModuleTests() {
+  return runTests('MyModule', tests);
+}
+```
+
+---
+
+## 23.5. Zasady dla AI przy modyfikacji testów
+
+| ✅ CO ROBIĆ | ❌ CZEGO NIE ROBIĆ |
 |---|---|
-| Dodawać fallbacki dla środowiska Node | Zastępować testy `checkSourceExport` |
-| Używać `safeImport` dla importów w Node | Zakładać że `window` istnieje |
-| Mockować `window.electronAPI` | Importować pliki z `React.lazy()` w Node |
-| Sprawdzać czy plik istnieje przed dodaniem testu | Dodawać testy dla nieistniejących plików |
-| Zachowywać oryginalną funkcjonalność testu | Upraszczać test "żeby przechodził" |
+| Dodawać `env: 'react'` do testów hooków/komponentów | Zastępować testy `checkSourceExport` żeby nie failowały |
+| Używać `safeImport` dla czystego JS w Node | Zakładać że `window` istnieje w środowisku Node |
+| Mockować `window.electronAPI` przez `mockElectronAPI()` z testUtils | Importować `.jsx` bez `env: 'react'` |
+| Pisać Typ C (fallback) dla hooków z logiką Node-dostępną | Usuwać testy bo "failują w skrypcie" |
+| Zostawiać testy `env: 'react'` — uruchomią się przy starcie apki | Upraszczać test "żeby przechodził" |
 
+---
 
-<!-- KONIEC DOKUMENTU -->
-<!-- ============================================================================= -->
+## 23.6. Checklist nowego TestRunner
 
+- [ ] Import `runTests, safeImport, mockElectronAPI, isNodeEnv` z `testUtils.js`
+- [ ] Testy czyste logicznie (stores, reducery, helpery): brak `env`
+- [ ] Testy hooków React i komponentów JSX z `window.electronAPI`: `env: 'react'`
+- [ ] `checkSourceExport` tylko dla re-eksportów i `React.lazy()`
+- [ ] Eksportowana funkcja `run[Nazwa]Tests()` zgodna z konwencją `testsLoader.js`
+
+<!-- KONIEC SEKCJI 23 -->
