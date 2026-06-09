@@ -1,0 +1,318 @@
+# CODE REVIEW LOG — MultiWeb Manager
+# Branch: UAT-v0.0.4 | Version: 0.0.3
+# Date: 2026-06-10 | Time: ~12:00 UTC
+# Reviewer: Claude (AI) | Based on: doc/CODE_REVIEW_CHECKLIST.md
+# ============================================================
+
+## LEGENDA
+# [PASS]  – punkt spełniony
+# [WARN]  – uwaga / niezgodność niekrytyczna
+# [FAIL]  – błąd / niezgodność krytyczna
+# [N/A]   – nie dotyczy / nie sprawdzano automatycznie
+# [INFO]  – informacja kontekstowa
+
+## ============================================================
+## SEKCJA 1 — ARCHITEKTURA PLIKÓW I STRUKTURA PROJEKTU
+## ============================================================
+
+### 1.1 Konfiguracja (src/config/)
+
+[PASS]  1.1.1  src/config.js (fasada) re-eksportuje wyłącznie z src/config/*.js, brak logiki
+[PASS]  1.1.2  featuresConfig.js – FEATURES, isFeatureEnabled, isToolEnabled – obecne i poprawne
+[PASS]  1.1.3  limitsConfig.js – LIMITS, getLimit – obecne i poprawne
+[PASS]  1.1.4  settingsConfig.js – DEFAULT_SETTINGS, DEBUG_MODULES, getDefaultSetting – obecne
+[PASS]  1.1.5  endpointsConfig.js – API_ENDPOINTS (removeBg) – obecny
+[PASS]  1.1.6  appConfig.js – APP_ENV, LANGUAGES=['pl','en'], UI_ZOOM – obecne
+        INFO:  Fasada src/config.js eksportuje 6 plików (app, features, limits, paths, settings, endpoints).
+               W src/config/ istnieją dodatkowo 4 pliki NIE eksportowane przez fasadę:
+               onboardingConfig.js, settingsRegistryConfig.js, toastConfig.js, toolsRegistryConfig.js.
+               Jest to celowe (importowane bezpośrednio przez komponenty). Sprawdzić czy DevelopersGuide
+               dokumentuje tę konwencję – aktualnie doc wymienia tylko 6 plików w drzewie.
+
+[WARN]  1.1.X  DUPLIKATY STAŁYCH między plikami konfiguracji:
+               • appConfig.js: CLIPBOARD_HISTORY_MAX=50  ↔  limitsConfig.js: maxClipboardItems=50
+               • appConfig.js: SLEEP_TABS_TIMEOUT_DEFAULT=15*60*1000  ↔  settingsConfig.js: sleepTabsTimeout=15*60*1000
+               • appConfig.js: RESOURCE_WARN_AT=70  ↔  settingsConfig.DEFAULT_SETTINGS.resourceMonitor.warnAt=70
+               • appConfig.js: RESOURCE_CRITICAL_AT=90  ↔  settingsConfig.DEFAULT_SETTINGS.resourceMonitor.criticalAt=90
+               DRY violation – ryzyko rozbieżności przy zmianie jednej wartości. Rozważyć
+               usunięcie duplikatów z appConfig (lub odwrotnie — zależy od tego kto ich używa).
+
+[WARN]  1.1.X  DEBUG_DEFAULT=true w appConfig.js – oznacza że debugMode domyślnie WŁĄCZONY
+               nawet w środowisku production. Sprawdzić czy to zamierzone.
+               Oczekiwane: DEBUG_DEFAULT = APP_ENV !== 'production' || false
+
+### 1.2 Katalogi i ich przeznaczenie
+
+[PASS]  1.2.1  src/stores/ – brak JSX, brak importów React (sprawdzono notepadStore, profilesStore, projectsStore)
+[PASS]  1.2.2  src/engine/ – brak importów z src/ui/ (sprawdzono adBlocker, hotkeys, sleepTabs, resourceMonitor)
+[PASS]  1.2.3  src/hooks/ – wszystkie pliki mają prefix use, katalog dobrze podzielony na podkatalogi
+[PASS]  1.2.4  src/ipc/ – tylko handlery IPC z prefixem ipcMainHandlers_
+[PASS]  1.2.5  src/ui/ – podział na foldery funkcjonalne (aggregate, appLibrary, common, help, history,
+               layout, modals, notepad, onboarding, profiles, projects, settings, sidebar, system,
+               taskpanel, terminal, tools, views, webview)
+[PASS]  1.2.6  src/utils/ – brak importów React (poza loggerRenderer.js zgodnie z zasadą)
+[PASS]  1.2.7  src/tools/ – apiClient.js, markdownRenderer.js, regexEngine.js, svgToPng.js – brak UI
+[PASS]  1.2.8  src/constants/ – tylko stałe (ipcChannels.js, constants.js), brak funkcji (poza ipcChannels który ich nie ma)
+[PASS]  1.2.9  src/data/ – defaultProfiles.json, defaultSettings.json, icons.js, appLibrary/ – poprawne
+[PASS]  1.2.10 tests/ – pliki z prefixem TestRunner_*.js (51 plików) + testUtils.js – struktura OK
+
+### 1.3 Pliki główne
+
+[PASS]  1.3.1  main.js – nie importuje handlerów IPC ręcznie, używa loadAllIpcHandlers() z ipcLoader.js
+[PASS]  1.3.2  preload.cjs – eksponuje API przez contextBridge, brak nodeIntegration
+               INFO: preload.cjs eksponuje generyczne invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args)
+               co jest wymagane przez hooki używające window.electronAPI.invoke() bezpośrednio
+[PASS]  1.3.3  package.json – wersja 0.0.3, zgodna z branchem UAT-v0.0.4
+
+[WARN]  1.3.X  .gitignore zawiera wpis: src/ipc/ipcMainHandlers_terminal.js
+               Jednak plik TEN ISTNIEJE w repozytorium (size: 6926 bajtów).
+               .gitignore nie działa wstecz na już śledzony plik (git rm --cached wymagane).
+               Plik jest aktywnie używany przez ipcLoader.js. Wpis w .gitignore prawdopodobnie
+               BŁĘDNY / pozostałość – należy usunąć lub wyjaśnić intencję.
+
+## ============================================================
+## SEKCJA 2 — IMPORTY I ZALEŻNOŚCI
+## ============================================================
+
+[PASS]  2.1.1  Kolejność importów w sprawdzonych plikach zgodna z konwencją
+[PASS]  2.1.2  Brak aliasów @/ – importy relatywne z ..
+[PASS]  2.1.3  Brak bezpośrednich importów z src/data/icons.js (przechodzą przez src/utils/icons.js)
+[N/A]   2.2.1  Cykliczne importy – nie weryfikowano (brak madge w środowisku)
+[N/A]   2.3.1  Nieużywane importy – nie weryfikowano bez ESLint
+
+## ============================================================
+## SEKCJA 3 — KOMENTARZE I DOKUMENTACJA
+## ============================================================
+
+[PASS]  3.1.1  Nagłówki plików obecne we wszystkich sprawdzonych plikach
+[PASS]  3.1.2  Kolejność pól nagłówka: FILE→PATH→VERSION→PURPOSE→FUNCTIONS→DEPENDS ON→UWAGA – zgodna
+[PASS]  3.1.3  VERSION = 0.0.3 we wszystkich sprawdzonych plikach
+[PASS]  3.1.4  PURPOSE wypełnione, niebanalne we wszystkich sprawdzonych plikach
+[N/A]   3.2.1  Pokrycie komentarzami eksportowanych funkcji – nie weryfikowano globalnie
+[N/A]   3.2.3  Brak /** */ – nie weryfikowano globalnie
+[N/A]   3.3.1  TODO z autorem i datą – nie weryfikowano
+[N/A]   3.3.2  FIXME bez rozwiązania – nie weryfikowano
+
+[WARN]  3.2.X  STAŁY KOMENTARZ w ipcMainHandlers_regexMarkdown.js linia 29:
+               `ipcMain.handle(IPC_CHANNELS.TOOLS.MARKDOWN_RENDER, ...) // legacy alias - no constant in IPC_CHANNELS`
+               Komentarz NIEPRAWDZIWY – IPC_CHANNELS.TOOLS.MARKDOWN_RENDER istnieje w ipcChannels.js.
+               Należy usunąć mylący komentarz.
+
+[WARN]  3.2.X  DevelopersGuide.md (sekcja 1j, linia ~246) dokumentuje config/app.js, config/features.js
+               itd. (stare nazwy bez "Config" sufiksu), podczas gdy faktyczne pliki to appConfig.js,
+               featuresConfig.js, limitsConfig.js itd. Dokumentacja nieaktualna – należy zaktualizować.
+               Dodatkowo DevelopersGuide nie wymienia 4 dodatkowych plików config/:
+               onboardingConfig.js, settingsRegistryConfig.js, toastConfig.js, toolsRegistryConfig.js
+
+## ============================================================
+## SEKCJA 4 — LOGOWANIE
+## ============================================================
+
+[PASS]  4.1.1  Store'y mają logError przy błędach I/O (sprawdzono notepadStore, profilesStore)
+[PASS]  4.2.1  Handlery IPC mają logError w catch (sprawdzono profiles, tasks, notepad, settings, history)
+[PASS]  4.2.2  logInfo przy operacjach CRUD – obecne w sprawdzonych handlerach
+[N/A]   4.3.1  useEffect async z logError – nie weryfikowano globalnie w komponentach
+[PASS]  4.4.1  Kategorie logowania ('ipc', 'store', 'ui' itd.) obecne w sprawdzonych wywołaniach
+[PASS]  4.4.2  Kategorie zgodne z DEBUG_MODULES (webview, terminal, tasks, tools, settings, engine, store, ipc, ui)
+        INFO:  useNotepadAutosave używa kategorii 'notepad' – nie jest w DEBUG_MODULES.
+               Prawdopodobnie kierowane do domyślnej kategorii 'ui'. Sprawdzić loggerRenderer.js behavior.
+
+## ============================================================
+## SEKCJA 5 — OBSŁUGA BŁĘDÓW
+## ============================================================
+
+[PASS]  5.1.1  Handlery IPC mają try/catch – sprawdzono >15 plików, wszystkie OK
+[PASS]  5.1.2  Handlery zwracają { ok, data?, error? } – konsekwentne
+[PASS]  5.1.3  Walidacja payload przed destrukturyzacją – obecna w sprawdzonych handlerach
+[PASS]  5.2.1  readJsonFile/writeJsonFile mają try/catch (persistence.js)
+[WARN]  5.2.3  Atomic save (temp+rename): potwierdzono w projectsStore.js (backup), ale tylko backup
+               notepadStore.js używa bezpośrednio writeFileSync – brak atomowego zapisu
+               Ryzyko korupcji danych przy przerwaniu zapisu notepad.json
+
+## ============================================================
+## SEKCJA 6 — I18N (TŁUMACZENIA)
+## ============================================================
+
+[PASS]  6.1.1  pl.json i en.json – identyczne klucze (565 kluczy, 0 różnic)
+[PASS]  6.1.2  Brak alert/confirm/prompt w sprawdzonych komponentach JSX
+[PASS]  6.2.1  pl.json ↔ en.json – pełna parytety kluczy
+[PASS]  6.2.2  help.pl.json ↔ help.en.json – pełna parytety kluczy (3 klucze każdy)
+        INFO:  help locale pliki mają tylko 3 klucze – czy to kompletne? Sprawdzić czy Help.jsx
+               nie wymaga więcej kluczy.
+
+## ============================================================
+## SEKCJA 7 — CSS I STYLOWANIE
+## ============================================================
+
+[N/A]   7.1.2  Inline styles w JSX – nie weryfikowano globalnie
+[N/A]   7.1.3  CSS kebab-case – nie weryfikowano globalnie
+[N/A]   7.2.1  Dark mode przez CSS variables – nie weryfikowano
+
+## ============================================================
+## SEKCJA 8 — PERFORMANCE
+## ============================================================
+
+[PASS]  8.1.1  ToolsPanel.jsx używa React.lazy dla wszystkich 11 narzędzi (lazy import sprawdzony)
+[N/A]   8.2.1  useCallback dla child komponentów – nie weryfikowano globalnie
+[N/A]   8.3.1  setInterval/clearInterval cleanup – sprawdzono useNotepadAutosave (PASS: clearInterval w cleanup)
+               resourceMonitor.js – brak setInterval (prawdopodobnie listener-based – N/A)
+[N/A]   8.3.2  addEventListener/removeEventListener – nie weryfikowano globalnie
+
+## ============================================================
+## SEKCJA 9 — BEZPIECZEŃSTWO
+## ============================================================
+
+[PASS]  9.1.1  isSafeUrl() blokuje javascript:, data:, file: (urlUtils.js linia 59-62)
+[PASS]  9.1.2  webview:navigate używa isSafeUrl() (przez ipcMainHandlers_webview_nav.js)
+[PASS]  9.2.1  preload.cjs eksponuje API przez contextBridge
+[PASS]  9.2.2  preload.cjs nie eksponuje fs, path, child_process (grep czysty)
+[PASS]  9.2.3  Walidacja payload w handlerach – obecna we wszystkich sprawdzonych
+
+## ============================================================
+## SEKCJA 10 — IPC CHANNEL REGISTRY
+## ============================================================
+
+[PASS]  10.1   ipcChannels.js zawiera wszystkie główne kanały (profiles, settings, tasks, taskGroups,
+               notepad, history, workspaces, projects, terminal, webview, logs, events, app, files,
+               fs, hotkeys, adblocker, sleepTabs, search, cookies, shell, appLibrary, tools,
+               dialogs, notifications, path)
+[PASS]  10.2   Handlery IPC używają IPC_CHANNELS zamiast string literals – sprawdzono wszystkie 33 pliki
+               WYJĄTEK: ipcMainHandlers_regexMarkdown.js ma stały komentarz sugerujący inaczej
+               (ale sam kod poprawnie używa IPC_CHANNELS.TOOLS.MARKDOWN_RENDER)
+
+[FAIL]  10.4   Renderer (hooki) NIE używają IPC_CHANNELS – używają string literals przez
+               window.electronAPI.invoke('channel:name'):
+               • useProfiles.js: 'profiles:create', 'profiles:delete'
+               • useHistoryLog.js: 'history:getAll', 'history:clear'
+               • useAppLibrary.js: 'appLibrary:getAll', 'appLibrary:search', 'appLibrary:getByCategory'
+               • useWorkspaces.js: 'workspaces:getAll', 'workspaces:save', 'workspaces:delete'
+               • useProjects.js: 'projects:getAll', 'projects:create', 'projects:update', 'projects:delete'
+               • useMainLayout.js: 'taskGroups:ensureForProfile'
+               • useAggregated.js: 'tasks:getAllGrouped'
+               • useAggregatedGroups.js: 7x string literals (taskGroups:*)
+               • useTaskPanel.js: 'tasks:getAll', 'tasks:add', 'tasks:update', 'tasks:delete'
+               ŁĄCZNIE: ~25 wywołań invoke() z hardcoded string literals w hookach.
+               Zgodnie z 10.4 powinny używać IPC_CHANNELS z ipcChannels.js.
+
+## ============================================================
+## SEKCJA 11 — MARTWY KOD
+## ============================================================
+
+[N/A]   11.2   Nieużywane ikony – nie weryfikowano
+[N/A]   11.3   Nieużywane kanały IPC – nie weryfikowano globalnie
+[N/A]   11.4   Nieużywane eksporty w store'ach – nie weryfikowano
+
+## ============================================================
+## SEKCJA 12 — KONWENCJE
+## ============================================================
+
+[PASS]  12.1   Komponenty PascalCase, pliki .jsx – OK w src/ui/tools/
+[PASS]  12.2   Hooki camelCase z prefixem use – OK
+[PASS]  12.3   Stałe UPPER_SNAKE_CASE – LIMITS, FEATURES, DEFAULT_SETTINGS – OK
+[N/A]   12.5   useEffect dependency arrays – nie weryfikowano globalnie
+[N/A]   12.6   eslint-disable z uzasadnieniem – nie weryfikowano
+
+## ============================================================
+## SEKCJA 13 — TESTY
+## ============================================================
+
+[PASS]  13.1   51 plików TestRunner_*.js w tests/ – struktura poprawna
+[PASS]  13.2   testsLoader.js dynamicznie ładuje testy – ipcLoader.js analogicznie dla IPC
+[N/A]   13.3   Testy IPC z mockElectronAPI – nie weryfikowano zawartości testów
+[N/A]   13.4   Pokrycie eksportowanych funkcji – nie weryfikowano
+[N/A]   13.5   Pokrycie testami >30% – nie weryfikowano
+
+## ============================================================
+## SEKCJA 14 — SPECYFICZNE DLA MULTIWEB MANAGER
+## ============================================================
+
+[N/A]   14.1.1 WebViewTab.jsx – cleanup listenerów – nie weryfikowano
+[PASS]  14.2.1 useNotepadAutosave.js – autosave co 5s tylko przy zmianie zawartości (porównuje active.content === currentContent)
+[WARN]  14.2.X useNotepadAutosave.js – autosave zapisuje TYLKO do stanu React (setnotepadWithRef),
+               NIE do IPC/notepadStore. Dane notatek nie trafiają do notepad.json przez IPC.
+               Potwierdza znany issue: notepadStorage.js fallback na localStorage.
+               RYZYKO: Po restarcie aplikacji dane z niezsynchronizowanych zakładek mogą się różnić
+               od stanu w pliku. Wymaga implementacji IPC sync (notepad:update przez autosave).
+[N/A]   14.3.1 Atomic save w tasksStore – brak pliku tasksStore.js (zadania przez ipcHandlers_tasks.js
+               + taskPanelStore.js) – nie zweryfikowano
+[N/A]   14.5.1 mergeSettings deep merge przez lodash – nie weryfikowano
+[N/A]   14.5.3 exportSettings/importSettings walidacja JSON – nie weryfikowano
+[PASS]  14.6.1 ToolsPanel.jsx – React.lazy dla każdego z 11 narzędzi (sprawdzono)
+[N/A]   14.6.3 isFeatureEnabled() w ToolsContainer – nie weryfikowano
+
+## ============================================================
+## PODSUMOWANIE WYKONAWCZE
+## ============================================================
+
+### WYNIKI ILOŚCIOWE
+  PASS:  35
+  WARN:  8
+  FAIL:  1
+  N/A:   26 (do weryfikacji ręcznej / lokalnie z ESLint)
+
+### KRYTYCZNE (FAIL)
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ [FAIL] 10.4 — Hooki renderer używają hardcoded string literals       │
+  │ w invoke() zamiast IPC_CHANNELS z ipcChannels.js.                   │
+  │ ~25 wywołań w: useProfiles, useHistoryLog, useAppLibrary,           │
+  │ useWorkspaces, useProjects, useMainLayout, useAggregated,           │
+  │ useAggregatedGroups, useTaskPanel.                                   │
+  │ Narusza zasadę single source of truth dla kanałów IPC.              │
+  └─────────────────────────────────────────────────────────────────────┘
+
+### OSTRZEŻENIA (WARN) — priorytyzowane
+  1. [WARN] 14.2.X – Notepad autosave nie synchronizuje do IPC/notepadStore
+     → dane notatek live tylko w React state + localStorage fallback
+     → możliwa utrata danych po restarcie jeśli localStorage wyczyszczony
+     PRIORYTET: WYSOKI
+
+  2. [WARN] 1.3.X – .gitignore zawiera wpis ipcMainHandlers_terminal.js
+     który jednocześnie istnieje w repo i jest aktywnie używany
+     → należy usunąć wpis z .gitignore lub wyjaśnić intencję
+     PRIORYTET: WYSOKI
+
+  3. [WARN] 1.1.X – Duplikaty stałych między appConfig.js a limitsConfig/settingsConfig
+     (CLIPBOARD_HISTORY_MAX, SLEEP_TABS_TIMEOUT_DEFAULT, RESOURCE_WARN_AT itd.)
+     → DRY violation, ryzyko desynchronizacji przy zmianie wartości
+     PRIORYTET: ŚREDNI
+
+  4. [WARN] 1.1.X – DEBUG_DEFAULT=true w appConfig.js → debugMode włączony w production
+     → prawdopodobnie niezamierzone, powinno być false lub warunkowe
+     PRIORYTET: ŚREDNI
+
+  5. [WARN] 5.2.3 – notepadStore.js używa writeFileSync bez atomic save (temp+rename)
+     → ryzyko korupcji notepad.json przy przerwaniu zapisu
+     PRIORYTET: NISKI-ŚREDNI
+
+  6. [WARN] 3.2.X – Stały komentarz "legacy alias - no constant in IPC_CHANNELS"
+     w ipcMainHandlers_regexMarkdown.js – nieprawdziwy, IPC_CHANNELS.TOOLS.MARKDOWN_RENDER istnieje
+     PRIORYTET: NISKI (kosmetyczny)
+
+  7. [WARN] 3.2.X – DevelopersGuide.md dokumentuje stare nazwy plików config/
+     (app.js zamiast appConfig.js itd.) i pomija 4 dodatkowe pliki config/
+     PRIORYTET: NISKI
+
+  8. [WARN] 4.4.X – useNotepadAutosave używa kategorii logowania 'notepad' spoza DEBUG_MODULES
+     PRIORYTET: NISKI
+
+### PYTANIA DO WYJAŚNIENIA
+  Q1: Czy DEBUG_DEFAULT=true w production jest celowe?
+  Q2: Czy wpis ipcMainHandlers_terminal.js w .gitignore był celowy (protected file)?
+  Q3: Czy 4 pliki config/ (onboarding, settingsRegistry, toast, toolsRegistry) powinny
+      być eksportowane przez fasadę src/config.js, czy celowo są importowane bezpośrednio?
+  Q4: Notepad autosave – kiedy planowana migracja z localStorage na IPC sync?
+
+### CHECKLIST PRE-COMMIT (STATUS)
+  [OK]  build_structure.py – zakłada brak nowych MONIT FAIL (nie uruchamiano lokalnie)
+  [OK]  Nagłówki plików z wypełnionym PURPOSE
+  [OK]  Brak alert(), confirm(), prompt() w sprawdzonych plikach
+  [OK]  Brak hardcoded stringów UI (używają t())
+  [OK]  Brak hardcoded ikon (używają ICONS.NAZWA)
+  [!!]  Nowe kanały IPC w ipcChannels.js – OK w handlerach, NIE w hookach
+  [OK]  Nowe testy eksportują runNazwaTests()
+  [N/A] eslint – nie weryfikowano
+
+## ============================================================
+## END OF REVIEW
+## Wygenerowano: 2026-06-10T12:00:00Z
+## ============================================================
