@@ -67,6 +67,11 @@ root/
 │ │ FUNCTIONS: Dokumentacja: 15 sekcji głównych
 │ │ DEPENDS ON: -
 │ │ -->
+│ ├── MWM_Mockup_v0.0.3.html <!-- VERSION: 0.0.3 PATH: doc/MWM_Mockup_v0.0.3.html
+│ │ PURPOSE: Mockup aplikacji na obecnej werji
+│ │ FUNCTIONS: -
+│ │ DEPENDS ON: -
+│ │ -->
 │ ├── ModulesOverview.md <!-- VERSION: 0.0.3 PATH: doc/ModulesOverview.md
 │ │ PURPOSE: Dokumentacja specyfikacji projektowej - Ujednolicona
 │ │ lista modułów + opis przeznaczenia dla AI i devów
@@ -2089,7 +2094,9 @@ root/
 │ │ PURPOSE: Testy dostępności wszystkich kanałów IPC przez
 │ │ window.electronAPI – profiles, settings, history,
 │ │ workspaces, tasks, terminal, notes, hotkeys, adBlocker,
-│ │ webview, tools, search, logs.
+│ │ webview, tools, search, logs. Testy IPC_CHANNELS
+│ │ (stałe) działają w Node; testy window.electronAPI
+│ │ wymagają React/Electron (env:'react').
 │ │ FUNCTIONS: runIPCTests
 │ │ DEPENDS ON: testUtils.js
 │ │ -->
@@ -2251,7 +2258,9 @@ root/
 │ ├── TestRunner_UtilsEventLogger.js <!-- VERSION: 0.0.3 PATH: tests/TestRunner_UtilsEventLogger.js
 │ │ PURPOSE: Testy jednostkowe modułu eventLogger — sanityzacja
 │ │ params, guard eventLogEnabled, format wpisu.
-│ │ (ARCH_REQ-044)
+│ │ (ARCH_REQ-044) ŚRODOWISKO: Wszystkie testy env:'react'
+│ │ — eventLogger używa window.electronAPI.invoke
+│ │ wewnętrznie.
 │ │ FUNCTIONS: runEventLoggerTests
 │ │ DEPENDS ON: testUtils.js
 │ │ -->
@@ -2298,10 +2307,10 @@ root/
 │ │ -->
 │ └── testUtils.js <!-- VERSION: 0.0.3 PATH: tests/testUtils.js
 │ PURPOSE: Wspólne funkcje dla wszystkich testów (runner,
-│ logowanie, mocki)
-│ FUNCTIONS: safeImport, checkSourceExport, mockElectronAPI,
-│ mockTranslationContext, runTests
-│ DEPENDS ON: icons.js, url, path, fs, ...
+│ logowanie, mocki, detekcja środowiska)
+│ FUNCTIONS: isReactEnv, isNodeEnv, safeImport, checkSourceExport,
+│ mockElectronAPI, mockTranslationContext, runTests
+│ DEPENDS ON: icons.js, url, path, fs
 │ -->
 ├── config.js <!-- VERSION: 0.0.3 PATH: config.js
 │ PURPOSE: Re-eksport konfiguracji z src/config.js.

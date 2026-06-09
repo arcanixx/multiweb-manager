@@ -572,6 +572,22 @@ Poniższe testy można dodać do odpowiednich plików `TestRunner_*.js`.
     }
   },
 ```
+### src/ui/terminal/Terminal.jsx
+
+```js
+  {
+    name: 'Terminal – eksportowany jako komponent React',
+    run: async () => {
+      try {
+        const module = await import('../../../src/ui/terminal/Terminal.jsx');
+        const ok = typeof module.default === 'function';
+        return { ok, details: ok ? '' : 'Terminal nie jest eksportowany jako default' };
+      } catch (e) {
+        return { ok: false, details: `Import failed: ${e.message}` };
+      }
+    }
+  },
+```
 ### src/ui/tools/ClipboardHistory.jsx
 
 ```js

@@ -3,8 +3,7 @@
 // PATH: tests/testUtils.js
 // VERSION: 0.0.3
 // PURPOSE: Wspólne funkcje dla wszystkich testów (runner, logowanie, mocki, detekcja środowiska)
-// FUNCTIONS: safeImport, checkSourceExport, mockElectronAPI, mockTranslationContext,
-//            runTests, isReactEnv, isNodeEnv
+// FUNCTIONS: isReactEnv, isNodeEnv, safeImport, checkSourceExport, mockElectronAPI, mockTranslationContext, runTests
 // DEPENDS ON: icons.js, url, path, fs
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
@@ -111,22 +110,23 @@ export function mockTranslationContext() {
 //
 // POLE env W DEFINICJI TESTU:
 //   env: 'react'  → wymaga środowiska React/Electron
-//                  W Node: POMINIĘTY (SKIP), NIE FAIL
-//                  W React: wykonany normalnie
+//                   W Node: POMINIĘTY (SKIP), NIE FAIL
+//                   W React: wykonany normalnie
 //   env: 'node'   → działa tylko w Node. W React pomijany.
 //   (brak)        → uruchamiany w obu środowiskach
 //
-// Wynik: { passed, failed, skippedReact }
+// Wynik: { passed, failed, skippedReact, failedNames }
 //   skippedReact NIE wlicza się do failed
+//   failedNames  – lista nazw testów które nie przeszły (używana przez testsLoader do JSON)
 // ============================================================================
 export async function runTests(moduleName, testFunctions) {
   const inReact = isReactEnv();
-  console.log(`
-${ICONS.TEST} Running ${moduleName} Tests... [env: ${inReact ? 'React/Electron' : 'Node.js'}]`);
+  console.log(`\n${ICONS.TEST} Running ${moduleName} Tests... [env: ${inReact ? 'React/Electron' : 'Node.js'}]`);
 
   let passed = 0;
   let failed = 0;
   let skippedReact = 0;
+  const failedNames = [];
 
   for (const testDef of testFunctions) {
     const { name, run, env } = testDef;
@@ -152,17 +152,17 @@ ${ICONS.TEST} Running ${moduleName} Tests... [env: ${inReact ? 'React/Electron' 
       } else {
         console.log(`${ICONS.TEST_FAIL} ${name} – ${result.details || 'failed'}`);
         failed++;
+        failedNames.push(name);
       }
     } catch (err) {
       console.log(`${ICONS.TEST_FAIL} ${name} – crashed: ${err.message}`);
       failed++;
+      failedNames.push(name);
     }
   }
 
   const skippedInfo = skippedReact > 0 ? `, ${skippedReact} react-only (skipped in Node)` : '';
-  console.log(`
-${ICONS.LOGS} ${moduleName} Tests: ${passed} passed, ${failed} failed${skippedInfo}
-`);
+  console.log(`\n${ICONS.LOGS} ${moduleName} Tests: ${passed} passed, ${failed} failed${skippedInfo}\n`);
 
-  return { passed, failed, skippedReact };
+  return { passed, failed, skippedReact, failedNames };
 }

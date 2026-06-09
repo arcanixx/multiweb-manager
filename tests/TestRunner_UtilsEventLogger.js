@@ -3,7 +3,7 @@
 // PATH: tests/TestRunner_UtilsEventLogger.js
 // VERSION: 0.0.3
 // PURPOSE: Testy jednostkowe modułu eventLogger — sanityzacja params, guard eventLogEnabled, format wpisu. (ARCH_REQ-044)
-// ŚRODOWISKO: Wszystkie testy env:'react' — eventLogger używa window.electronAPI.invoke wewnętrznie.
+//          ŚRODOWISKO: Wszystkie testy env:'react' — eventLogger używa window.electronAPI.invoke wewnętrznie.
 // FUNCTIONS: runEventLoggerTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
