@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania profilami WebView – CRUD, favorite, persistencja przez StorageService (cache + IPC). Optimistic updates z rollbackiem.
 // FUNCTIONS: useProfiles
-// DEPENDS ON: react, loggerRenderer.js, StorageService.js, useAsync.js
+// DEPENDS ON: react, loggerRenderer.js, StorageService.js, useAsync.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -12,6 +12,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { logDebug, logWarn } from '../utils/loggerRenderer.js';
 import { storageService } from '../utils/StorageService.js';
 import { useAsyncMutation } from './useAsync.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── useProfiles() – hook do zarządzania profilami z cache (StorageService) i optimistic updates
 //   @returns {Object} – profiles, loading, error, reloadProfiles, addProfile, updateProfile, deleteProfile, toggleFavorite
@@ -64,10 +65,10 @@ export function useProfiles() {
   }, [loadFromService]);
 
   // ─── addProfile – dodaje nowy profil z optimistic update
-  //   Używa profiles:create (nie profiles:update) przez bezpośrednie invoke()
+  //   Używa IPC_CHANNELS.PROFILES.CREATE przez bezpośrednie invoke()
   const { execute: addProfile, loading: adding } = useAsyncMutation(
     async (profileData) => {
-      const res = await window.electronAPI.invoke('profiles:create', profileData);
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.PROFILES.CREATE, profileData);
       if (!res?.ok) throw new Error(res?.error ?? 'CREATE_FAILED');
       // Invaliduj cache — następny get() pobierze świeże dane z IPC
       storageService.invalidate('profiles');
@@ -108,11 +109,11 @@ export function useProfiles() {
   );
 
   // ─── deleteProfile – usuwa profil z optimistic update
-  //   Używa profiles:delete (nie profiles:update) przez bezpośrednie invoke()
+  //   Używa IPC_CHANNELS.PROFILES.DELETE przez bezpośrednie invoke()
   //   Handler oczekuje id jako string (nie obiekt)
   const { execute: deleteProfile, loading: deleting } = useAsyncMutation(
     async (id) => {
-      const res = await window.electronAPI.invoke('profiles:delete', id);
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.PROFILES.DELETE, id);
       if (!res?.ok) throw new Error(res?.error ?? 'DELETE_FAILED');
       // Invaliduj cache — następny get() pobierze świeże dane z IPC
       storageService.invalidate('profiles');
