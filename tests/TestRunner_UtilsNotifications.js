@@ -2,13 +2,13 @@
 // FILE: TestRunner_UtilsNotifications.js
 // PATH: tests/TestRunner_UtilsNotifications.js
 // VERSION: 0.0.3
-// PURPOSE: Testy jednostkowe globalnego systemu toastów — kolejkowanie, typy, guard toastsEnabled. (UIUX_REQ-021)
+// PURPOSE: Testy jednostkowe globalnego systemu toastów — kolejkowanie, typy, guard toastsEnabled. (UIUX_REQ-021) Oraz weryfikacja eksportu showSystemNotification.
 // FUNCTIONS: runNotificationsTests
 // DEPENDS ON: testUtils.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
-import { runTests } from './testUtils.js';
+import { runTests, safeImport } from './testUtils.js';
 
 function ensureWindowEvents() {
   if (typeof globalThis.window === 'undefined') {
@@ -98,6 +98,16 @@ const tests = [
         window.removeEventListener('mwm:toast', handler);
       }
     },
+  },
+
+  // ── showSystemNotification – eksport (przeniesiony z TestRunner_Utils.js) ─
+  {
+    name: 'notificationsManager – showSystemNotification eksportowany jako funkcja',
+    run: async () => {
+      const mod = await safeImport('src/utils/notificationsManager.js');
+      const ok = typeof mod.showSystemNotification === 'function';
+      return { ok, details: ok ? '' : 'showSystemNotification not exported' };
+    }
   },
 ];
 
