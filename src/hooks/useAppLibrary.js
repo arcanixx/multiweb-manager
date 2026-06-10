@@ -4,13 +4,14 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React do pobierania i wyszukiwania w bibliotece aplikacji (App Library) przez IPC.
 // FUNCTIONS: useAppLibrary
-// DEPENDS ON: react, loggerRenderer.js, translations.js
+// DEPENDS ON: react, loggerRenderer.js, translations.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { useState, useCallback, useEffect, useContext } from 'react';
 import { logInfo, logError, logWarn } from '../utils/loggerRenderer.js';
 import { TranslationContext } from '../utils/translations.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── useAppLibrary() – hook do zarządzania biblioteką aplikacji przez IPC
 // @returns {Object} – categories, loading, search, searchResults, getByCategory
@@ -24,7 +25,7 @@ export function useAppLibrary() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await window.electronAPI.invoke('appLibrary:getAll');
+        const res = await window.electronAPI.invoke(IPC_CHANNELS.APP_LIBRARY.GET_ALL);
         if (res?.ok) {
           const rawData = res.data || [];
           // Mapujemy surowe dane, tłumacząc klucze nazw kategorii na tekst UI
@@ -55,7 +56,7 @@ export function useAppLibrary() {
       return;
     }
     try {
-      const res = await window.electronAPI.invoke('appLibrary:search', query);
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.APP_LIBRARY.SEARCH, query);
       if (res?.ok) {
         setSearchResults(res.data || []);
         logInfo('ui', `useAppLibrary: search "${query}" found`, res.data?.length);
@@ -73,7 +74,7 @@ export function useAppLibrary() {
   //   @param {string} categoryId – ID kategorii
   const getByCategory = useCallback(async (categoryId) => {
     try {
-      const res = await window.electronAPI.invoke('appLibrary:getByCategory', categoryId);
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.APP_LIBRARY.GET_BY_CATEGORY, categoryId);
       if (res?.ok) {
         return res.data || [];
       }
