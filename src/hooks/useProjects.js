@@ -4,13 +4,14 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania projektami użytkownika – CRUD przez mostek IPC z optimistic updates i rollbackiem.
 // FUNCTIONS: useProjects
-// DEPENDS ON: react, loggerRenderer.js, useAsync.js
+// DEPENDS ON: react, loggerRenderer.js, useAsync.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { useCallback, useState, useEffect } from 'react';
 import { logWarn } from '../utils/loggerRenderer.js';
 import { useAsync, useAsyncMutation } from './useAsync.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── useProjects() – hook do zarządzania projektami z optimistic updates
 //   @returns {Object} – projects, loading, error, reloadProjects, addProject, updateProject, deleteProject
@@ -20,7 +21,7 @@ export function useProjects() {
 
   // ─── loadFn – ładuje wszystkie projekty przez IPC
   const loadFn = useCallback(
-    () => window.electronAPI.invoke('projects:getAll'),
+    () => window.electronAPI.invoke(IPC_CHANNELS.PROJECTS.GET_ALL),
     []
   );
 
@@ -39,7 +40,7 @@ export function useProjects() {
 
   // ─── addProject – dodaje nowy projekt z optimistic update
   const { execute: addProject, loading: adding } = useAsyncMutation(
-    (project) => window.electronAPI.invoke('projects:create', project),
+    (project) => window.electronAPI.invoke(IPC_CHANNELS.PROJECTS.CREATE, project),
     {
       key: 'useProjects.add',
       onMutate: (project) => {
@@ -56,7 +57,7 @@ export function useProjects() {
   //   @param {string} id    – ID projektu
   //   @param {Object} patch – pola do zaktualizowania
   const { execute: _updateExecute, loading: updating } = useAsyncMutation(
-    ({ id, patch }) => window.electronAPI.invoke('projects:update', { id, patch }),
+    ({ id, patch }) => window.electronAPI.invoke(IPC_CHANNELS.PROJECTS.UPDATE, { id, patch }),
     {
       key: 'useProjects.update',
       onMutate: ({ id, patch }) => {
@@ -75,7 +76,7 @@ export function useProjects() {
 
   // ─── deleteProject – usuwa projekt z optimistic update
   const { execute: deleteProject, loading: deleting } = useAsyncMutation(
-    (id) => window.electronAPI.invoke('projects:delete', { id }),
+    (id) => window.electronAPI.invoke(IPC_CHANNELS.PROJECTS.DELETE, { id }),
     {
       key: 'useProjects.delete',
       onMutate: (id) => {
