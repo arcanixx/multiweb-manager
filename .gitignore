@@ -35,5 +35,4 @@ forge.config.js
 .roo/mcp.json
 *.py
 *.bat
-src/ipc/ipcMainHandlers_terminal.js
 update/to_check_0.0.3.txt
