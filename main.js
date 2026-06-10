@@ -79,12 +79,18 @@ export function createWindow() {
 
 // CSP – Content Security Policy
 // Ogranicza możliwość wykonywania niebezpiecznego kodu (XSS, script injection)
+// W trybie dev CRA wstrzykuje inline scripts (hot-reload) – unsafe-inline wymagane.
+// W produkcji CRA generuje tylko zewnętrzne pliki .js – unsafe-inline usunięte.
+const cspScriptSrc = isDev
+  ? "script-src 'self' 'unsafe-inline'"
+  : "script-src 'self'";
+
 session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
   callback({
     responseHeaders: {
       ...details.responseHeaders,
       'Content-Security-Policy': [
-        "default-src 'self'; img-src * data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
+        `default-src 'self'; img-src * data:; ${cspScriptSrc}; style-src 'self' 'unsafe-inline';`
       ]
     }
   });
