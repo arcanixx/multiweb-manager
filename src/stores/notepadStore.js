@@ -59,7 +59,10 @@ function saveStore(store) {
     if (!store.data.every(n => n.id && typeof n.title === 'string')) {
       throw new Error("Validation failed: Note missing ID or Title");
     }
-    fs.writeFileSync(notepad_FILE, JSON.stringify(store, null, 2), "utf8");
+    // Atomic save: zapis do pliku tymczasowego + rename (zapobiega korupcji przy przerwaniu)
+    const tmpFile = notepad_FILE + '.tmp';
+    fs.writeFileSync(tmpFile, JSON.stringify(store, null, 2), "utf8");
+    fs.renameSync(tmpFile, notepad_FILE);
     logInfo("store", "notepadStore.saveStore success");
     return true;
   } catch (err) {
