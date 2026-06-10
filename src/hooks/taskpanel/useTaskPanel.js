@@ -4,12 +4,13 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania zadaniami użytkownika per taskGroupId – CRUD przez IPC z optimistic update i rollbackiem.
 // FUNCTIONS: useTasks
-// DEPENDS ON: react, loggerRenderer.js
+// DEPENDS ON: react, loggerRenderer.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+import { IPC_CHANNELS } from '../../constants/ipcChannels.js';
 
 // ─── useTasks() – hook do zarządzania zadaniami dla taskGroupId
 //   @returns {Object} – tasks, loading, reloadTasks, addTask, updateTask, deleteTask
@@ -25,8 +26,8 @@ export function useTasks() {
     currentGroupRef.current = taskGroupId || null;
     setLoading(true);
     try {
-      const res = await window.electronAPI.invoke('tasks:getAll', taskGroupId || undefined);
-      // Ignoruj odpowiedź jeśli grupaz mienia się w trakcie
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.TASKS.GET_ALL, taskGroupId || undefined);
+      // Ignoruj odpowiedź jeśli grupa zmienia się w trakcie
       if (currentGroupRef.current !== (taskGroupId || null)) return;
       if (res?.ok) {
         setTasks(res.data || []);
@@ -53,7 +54,7 @@ export function useTasks() {
     setTasks(prev => [...prev, optimistic]);
 
     try {
-      const res = await window.electronAPI.invoke('tasks:add', task);
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.TASKS.ADD, task);
       if (res?.ok) {
         // Zamień optimistic na rzeczywisty obiekt zwrócony z backendu
         setTasks(prev => prev.map(t => t.id === optimisticId ? res.data : t));
@@ -82,7 +83,7 @@ export function useTasks() {
     setTasks(prev => prev.map(t => t.id === id ? { ...t, ...patch } : t));
 
     try {
-      const res = await window.electronAPI.invoke('tasks:update', { id, patch });
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.TASKS.UPDATE, { id, patch });
       if (res?.ok) {
         // Zastąp stanem z backendu (poprawna section z normalizeTask)
         setTasks(prev => prev.map(t => t.id === id ? res.data : t));
@@ -108,7 +109,7 @@ export function useTasks() {
     setTasks(prev => prev.filter(t => t.id !== id));
 
     try {
-      const res = await window.electronAPI.invoke('tasks:delete', { id });
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.TASKS.DELETE, { id });
       if (res?.ok) {
         logInfo('tasks', 'useTasks.delete', id);
       } else {
