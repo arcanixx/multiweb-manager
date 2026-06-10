@@ -12,9 +12,10 @@
 export const APP_ENV = process.env.NODE_ENV || 'production';
 
 // Globalny debug (fallback gdy store niedostępny)
-// UWAGA: true tylko na czas developmentu – przed release zmienić na:
-//   export const DEBUG_DEFAULT = APP_ENV !== 'production';
-export const DEBUG_DEFAULT = true;
+// Na gałęziach deweloperskich (UAT, feature/*) zostaje true dla wygody.
+// Na production (NODE_ENV=production) automatycznie false – nie wymaga ręcznej zmiany przed release.
+// Aby wymusić debug w production: NODE_ENV=development npm run make
+export const DEBUG_DEFAULT = APP_ENV !== 'production';
 
 // =============================================================================
 // JĘZYKI
