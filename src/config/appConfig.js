@@ -12,6 +12,8 @@
 export const APP_ENV = process.env.NODE_ENV || 'production';
 
 // Globalny debug (fallback gdy store niedostępny)
+// UWAGA: true tylko na czas developmentu – przed release zmienić na:
+//   export const DEBUG_DEFAULT = APP_ENV !== 'production';
 export const DEBUG_DEFAULT = true;
 
 // =============================================================================
@@ -38,11 +40,13 @@ export const UI_ZOOM = {
 // STAŁE RÓŻNE
 // =============================================================================
 
-export const CLIPBOARD_HISTORY_MAX      = 50;
-export const SLEEP_TABS_TIMEOUT_DEFAULT = 15 * 60 * 1000; // 15 minut
-export const MAX_LAST_USED_PROFILES     = 10;
-export const RESOURCE_WARN_AT           = 70;
-export const RESOURCE_CRITICAL_AT       = 90;
-export const CPU_WARN_AT                = 50;
-export const CPU_CRITICAL_AT            = 80;
-export const DEFAULT_PROFILE_CATEGORY   = 'AI';
+// UWAGA: CLIPBOARD_HISTORY_MAX, SLEEP_TABS_TIMEOUT_DEFAULT, RESOURCE_WARN_AT,
+//        RESOURCE_CRITICAL_AT zostały usunięte – kanoniczne wartości w:
+//          • limitsConfig.js → LIMITS.maxClipboardItems
+//          • settingsConfig.js → DEFAULT_SETTINGS.sleepTabsTimeout
+//          • settingsConfig.js → DEFAULT_SETTINGS.resourceMonitor.warnAt / criticalAt
+
+export const MAX_LAST_USED_PROFILES   = 10;
+export const CPU_WARN_AT              = 50;
+export const CPU_CRITICAL_AT          = 80;
+export const DEFAULT_PROFILE_CATEGORY = 'AI';
