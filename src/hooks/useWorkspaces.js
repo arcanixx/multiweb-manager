@@ -4,13 +4,14 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania przestrzeniami roboczymi (workspaces) użytkownika przez mostek IPC.
 // FUNCTIONS: useWorkspaces
-// DEPENDS ON: react, loggerRenderer.js, translations.js
+// DEPENDS ON: react, loggerRenderer.js, translations.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { useEffect, useState, useContext } from "react";
 import { logInfo, logError, logWarn } from "../utils/loggerRenderer.js";
 import { TranslationContext } from '../utils/translations.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── useWorkspaces() – hook do zarządzania workspace'ami
 //   @returns {Object} – obiekt z workspaces, loading i funkcjami saveWorkspace, deleteWorkspace
@@ -24,7 +25,7 @@ export function useWorkspaces() {
   async function load() {
     try {
       setLoading(true);
-      const res = await window.electronAPI.invoke("workspaces:getAll");
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.WORKSPACES.GET_ALL);
       if (res?.ok) {
         setWorkspaces(res.data);
         logInfo("store", "useWorkspaces.load success", res.data.length);
@@ -48,7 +49,7 @@ export function useWorkspaces() {
   async function save(workspace) {
     try {
       // Handler IPC oczekuje Array – wysyłamy [workspace], handler robi upsert po id
-      const res = await window.electronAPI.invoke("workspaces:save", [workspace]);
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.WORKSPACES.SAVE, [workspace]);
       if (res?.ok) {
         logInfo("store", "useWorkspaces.save success", workspace.id);
         await load();
@@ -81,7 +82,7 @@ export function useWorkspaces() {
         }
       }
 
-      const res = await window.electronAPI.invoke("workspaces:delete", { id });
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.WORKSPACES.DELETE, { id });
       if (res?.ok) {
         logInfo("store", "useWorkspaces.remove success", id);
         await load();
