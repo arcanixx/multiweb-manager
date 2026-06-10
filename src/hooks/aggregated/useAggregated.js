@@ -4,12 +4,13 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook logiki widoku zbiorczego zadań – ładowanie danych, filtrowanie, grupowanie, zwijanie/ukrywanie grup
 // FUNCTIONS: useAggregatedTasks
-// DEPENDS ON: react, loggerRenderer.js
+// DEPENDS ON: react, loggerRenderer.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { logError, logInfo } from '../../utils/loggerRenderer.js';
+import { IPC_CHANNELS } from '../../constants/ipcChannels.js';
 
 export const STATUSES   = ['in_progress', 'todo', 'blocked', 'done', 'cancelled'];
 export const PRIORITIES = ['A', 'B', 'C', 'D', 'E'];
@@ -31,7 +32,7 @@ export function useAggregatedTasks() {
     setLoading(true);
     try {
       const [tasksRes, settings] = await Promise.all([
-        window.electronAPI.invoke('tasks:getAllGrouped'),
+        window.electronAPI.invoke(IPC_CHANNELS.TASKS.GET_ALL_GROUPED),
         window.electronAPI.getSettings(),
       ]);
       if (tasksRes?.ok) {
