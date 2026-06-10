@@ -26,7 +26,7 @@ ipcMain.handle(IPC_CHANNELS.TOOLS.REGEX_TEST, async (_, payload) => {
     return { ok: false, error: err.message };
   }
 });
-ipcMain.handle(IPC_CHANNELS.TOOLS.MARKDOWN_RENDER, async (_, payload) => { // legacy alias - no constant in IPC_CHANNELS
+ipcMain.handle(IPC_CHANNELS.TOOLS.MARKDOWN_RENDER, async (_, payload) => {
   try {
     if (!payload || typeof payload !== 'string') {
       throw new Error('INVALID_PAYLOAD');
