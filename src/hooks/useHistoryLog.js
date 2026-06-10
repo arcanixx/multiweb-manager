@@ -4,13 +4,14 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania i odświeżania logów historii aktywności użytkownika. Komunikuje się z historyStore przez mostek IPC.
 // FUNCTIONS: useHistoryLog
-// DEPENDS ON: react, loggerRenderer.js, useAsync.js
+// DEPENDS ON: react, loggerRenderer.js, useAsync.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { useCallback } from 'react';
 import { logWarn } from '../utils/loggerRenderer.js';
 import { useAsync, useAsyncMutation } from './useAsync.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── useHistoryLog() – hook do zarządzania historią akcji użytkownika
 //   @returns {Object} – entries, loading, error, reloadHistory, clearHistory
@@ -18,7 +19,7 @@ export function useHistoryLog() {
 
   // ─── loadFn – ładuje wszystkie wpisy historii przez IPC
   const loadFn = useCallback(
-    () => window.electronAPI.invoke('history:getAll'),
+    () => window.electronAPI.invoke(IPC_CHANNELS.HISTORY.GET_ALL),
     []
   );
 
@@ -32,7 +33,7 @@ export function useHistoryLog() {
 
   // ─── clearHistory – usuwa wszystkie wpisy historii
   const { execute: clearHistory, loading: clearing } = useAsyncMutation(
-    () => window.electronAPI.invoke('history:clear'),
+    () => window.electronAPI.invoke(IPC_CHANNELS.HISTORY.CLEAR),
     {
       key: 'useHistoryLog.clear',
       onSuccess: () => reloadHistory(),
