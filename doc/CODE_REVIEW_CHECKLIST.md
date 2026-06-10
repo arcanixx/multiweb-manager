@@ -13,6 +13,14 @@
 > **Użycie:** Przed każdym pull requestem lub po większych zmianach, przejdź przez poniższe punkty.
 > **Dla AI:** Jeśli punkt jest oznaczony `[AUTO]`, może być zweryfikowany skryptem lub `TestRunner_Audit.js`. Jeśli `[MANUAL]` – wymaga ręcznej inspekcji.
 
+> **Instrukcja zapisu dla AI:** Po zakończeniu code review zapisz wynik do pliku:
+> `logs/CODE_REVIEW_CHECKLIST_YYYYMMDD_HHMMSS.log`
+> gdzie timestamp to czas UTC wykonania review (format: `20260610_143022`).
+> Plik tworzy się przez GitHub API (PUT) lub lokalnie – zawiera wszystkie punkty
+> z oznaczeniami `[PASS]`, `[FAIL]`, `[WARN]`, `[INFO]` oraz sekcję PODSUMOWANIE.
+> Istniejące pliki `logs/*.log` NIE są nadpisywane – każdy przegląd dostaje własny plik z datą.
+
+
 ---
 
 ## 1. ARCHITEKTURA PLIKÓW I STRUKTURA PROJEKTU
