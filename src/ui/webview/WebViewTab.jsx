@@ -143,6 +143,24 @@ export default function WebViewTab({ profile, isActive, onTitleChange, onLoadErr
   ]);
 
   // =========================================================================
+  // ─── useEffect – session cleanup przy unmount (W8: zapobiega session leak) ──
+  // =========================================================================
+  // Electron nie zwalnia automatycznie storage dla named partitions.
+  // Przy zamknięciu WebView (unmount) czyścimy: cache, cookies, storage dla tej partycji.
+  // UWAGA: clearStorageData() woła IPC do main process (clearProfileCache handler).
+  //        Nie czyści storageData sesji zdalnych – to zamierzone (persist: = trwałe profile).
+  useEffect(() => {
+    return () => {
+      // Cleanup tylko dla nietrwałych (in-memory) partycji – persist: zostawiamy celowo
+      if (!partition.startsWith('persist:')) {
+        window.electronAPI?.clearProfileCache?.(profile.id)
+          .catch(err => logDebug('webview', `WebViewTab: session cleanup failed for ${profile.id}`, err));
+        logDebug('webview', `WebViewTab: cleaned up non-persist session for ${profile.id}`);
+      }
+    };
+  }, [partition, profile.id]);
+
+  // =========================================================================
   // ─── Render ────────────────────────────────────────────────────────────────────────────
   // =========================================================================
   const webviewSrc        = profile.url || 'about:blank';
