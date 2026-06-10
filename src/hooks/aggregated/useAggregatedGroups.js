@@ -4,12 +4,13 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook React do zarządzania grupami zadań (TaskGroup) – CRUD + przypisanie profili przez IPC.
 // FUNCTIONS: useTaskGroups
-// DEPENDS ON: react, loggerRenderer.js
+// DEPENDS ON: react, loggerRenderer.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { useState, useEffect, useCallback } from 'react';
 import { logInfo, logError, logWarn } from '../../utils/loggerRenderer.js';
+import { IPC_CHANNELS } from '../../constants/ipcChannels.js';
 
 // ─── useTaskGroups() – zarządza grupami zadań
 //   @returns {Object} – groups, loading, addGroup, updateGroup, deleteGroup,
@@ -22,7 +23,7 @@ export function useTaskGroups() {
   const reload = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await window.electronAPI.invoke('taskGroups:getAll');
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.TASK_GROUPS.GET_ALL);
       if (res?.ok) {
         setGroups(res.data || []);
         logInfo('tasks', 'useTaskGroups.reload', res.data?.length);
@@ -45,7 +46,7 @@ export function useTaskGroups() {
   //   @returns {Promise<TaskGroup|null>}
   const ensureForProfile = useCallback(async (profileId, profileName) => {
     try {
-      const res = await window.electronAPI.invoke('taskGroups:ensureForProfile', {
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.TASK_GROUPS.ENSURE_FOR_PROFILE, {
         profileId, profileName,
       });
       if (res?.ok) {
@@ -65,7 +66,7 @@ export function useTaskGroups() {
   //   @returns {Promise<Object>}
   const addGroup = useCallback(async (groupData) => {
     try {
-      const res = await window.electronAPI.invoke('taskGroups:create', groupData);
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.TASK_GROUPS.CREATE, groupData);
       if (res?.ok) {
         setGroups(res.data || []);
         logInfo('tasks', 'useTaskGroups.addGroup', groupData.name);
@@ -86,7 +87,7 @@ export function useTaskGroups() {
   //   @returns {Promise<Object>}
   const updateGroup = useCallback(async (id, patch) => {
     try {
-      const res = await window.electronAPI.invoke('taskGroups:update', { id, patch });
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.TASK_GROUPS.UPDATE, { id, patch });
       if (res?.ok) {
         setGroups(res.data || []);
         logInfo('tasks', 'useTaskGroups.updateGroup', id);
@@ -105,7 +106,7 @@ export function useTaskGroups() {
   //   @returns {Promise<Object>}
   const deleteGroup = useCallback(async (id) => {
     try {
-      const res = await window.electronAPI.invoke('taskGroups:delete', { id });
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.TASK_GROUPS.DELETE, { id });
       if (res?.ok) {
         setGroups(res.data || []);
         logInfo('tasks', 'useTaskGroups.deleteGroup', id);
@@ -125,7 +126,7 @@ export function useTaskGroups() {
   //   @returns {Promise<Object>}
   const assignProfile = useCallback(async (groupId, profileId) => {
     try {
-      const res = await window.electronAPI.invoke('taskGroups:assignProfile', { groupId, profileId });
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.TASK_GROUPS.ASSIGN_PROFILE, { groupId, profileId });
       if (res?.ok) {
         setGroups(res.data || []);
         logInfo('tasks', `useTaskGroups.assignProfile ${profileId} → ${groupId}`);
@@ -144,7 +145,7 @@ export function useTaskGroups() {
   //   @returns {Promise<Object>}
   const unassignProfile = useCallback(async (profileId) => {
     try {
-      const res = await window.electronAPI.invoke('taskGroups:unassignProfile', { profileId });
+      const res = await window.electronAPI.invoke(IPC_CHANNELS.TASK_GROUPS.UNASSIGN_PROFILE, { profileId });
       if (res?.ok) {
         await reload();
         logInfo('tasks', 'useTaskGroups.unassignProfile', profileId);
