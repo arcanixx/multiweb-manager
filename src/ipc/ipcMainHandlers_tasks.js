@@ -4,7 +4,7 @@
 // VERSION: 0.0.3
 // PURPOSE: IPC handlers dla zadań (TaskPanel) – CRUD z walidacją section↔status i mapowaniem na taskGroupId.
 // FUNCTIONS: const:IPC_CHANNELS.TASKS.GET_ALL, const:IPC_CHANNELS.TASKS.GET_ALL_GROUPED, const:IPC_CHANNELS.TASKS.ADD, const:IPC_CHANNELS.TASKS.UPDATE, const:IPC_CHANNELS.TASKS.DELETE, const:IPC_CHANNELS.TASKS.SAVE_SECTIONS
-// DEPENDS ON: electron, ipcChannels.js, taskPanelStore.js, logger.js
+// DEPENDS ON: electron, ipcChannels.js, taskPanelStore.js, limitsConfig.js, logger.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
@@ -19,7 +19,8 @@ import {
   normalizeTask,
   resolveSection,
 } from '../stores/taskPanelStore.js';
-import { logError, logInfo } from '../utils/logger.js';
+import { LIMITS } from '../config/limitsConfig.js';
+import { logError, logInfo, logWarn } from '../utils/logger.js';
 
 // ─── tasks:getAll – płaska lista zadań dla grupy lub wszystkich
 //   payload opcjonalny: string = taskGroupId → płaska lista dla grupy; brak = wszystkie
@@ -59,6 +60,21 @@ ipcMain.handle(IPC_CHANNELS.TASKS.ADD, async (_, payload) => {
     if (!payload.name || !String(payload.name).trim()) throw new Error('TASKS_NAME_REQUIRED');
 
     const { taskGroupId, ...taskData } = payload;
+
+    // ─── Guard: limit zadań per grupa (LIMITS.maxTasks) ───────────────────────
+    // Zliczamy łącznie zadania we wszystkich sekcjach danej grupy przed dodaniem.
+    // Odrzucamy żądanie jeśli osiągnięto limit – zapobiega nieograniczonemu wzrostowi pliku JSON.
+    const currentSections = loadTasksSections(taskGroupId);
+    const currentCount = (currentSections.active?.length  || 0)
+                       + (currentSections.backlog?.length || 0)
+                       + (currentSections.done?.length    || 0);
+
+    if (currentCount >= LIMITS.maxTasks) {
+      logWarn('ipc', `tasks:add – limit ${LIMITS.maxTasks} reached for group=${taskGroupId} (current=${currentCount})`);
+      return { ok: false, error: `TASKS_LIMIT_REACHED:${LIMITS.maxTasks}` };
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     const newTask = normalizeTask({
       id:        `task_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
       ...taskData,
@@ -73,7 +89,7 @@ ipcMain.handle(IPC_CHANNELS.TASKS.ADD, async (_, payload) => {
     const sections = loadTasksSections(taskGroupId);
     sections[newTask.section] = [...(sections[newTask.section] || []), newTask];
     saveTasksForGroup(taskGroupId, { tasks: sections });
-    logInfo('ipc', `tasks:add → group=${taskGroupId} id=${newTask.id}`);
+    logInfo('ipc', `tasks:add → group=${taskGroupId} id=${newTask.id} (${currentCount + 1}/${LIMITS.maxTasks})`);
     return { ok: true, data: newTask };
   } catch (err) {
     logError('ipc', 'tasks:add', err);
