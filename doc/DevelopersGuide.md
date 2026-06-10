@@ -243,15 +243,19 @@ Plik logów jest ograniczony do 500 linii (nadpisywane od najstarszych). Można 
 ```
 config.js (root)           export * from "./src/config.js"
   └── src/config.js        export * from "./config/appConfig.js" + features + limits + ...
-        ├── config/app.js        APP_ENV, LANGUAGES, UI_ZOOM, stałe profilowe
-        ├── config/features.js   FEATURES, isFeatureEnabled(), isToolEnabled()
-        ├── config/limits.js     LIMITS, getLimit()
-        ├── config/paths.js      PATHS
-        ├── config/settings.js   DEBUG_MODULES, DEFAULT_SETTINGS, getDefaultSetting()
-        └── config/endpoints.js  API_ENDPOINTS
+        ├── config/appConfig.js              APP_ENV, LANGUAGES, UI_ZOOM, MAX_LAST_USED_PROFILES, CPU_WARN_AT
+        ├── config/featuresConfig.js         FEATURES, isFeatureEnabled(), isToolEnabled()
+        ├── config/limitsConfig.js           LIMITS, getLimit()
+        ├── config/pathsConfig.js            PATHS
+        ├── config/settingsConfig.js         DEBUG_MODULES, DEFAULT_SETTINGS, getDefaultSetting()
+        ├── config/endpointsConfig.js        API_ENDPOINTS
+        ├── config/onboardingConfig.js       ONBOARDING_STEPS, STEP_TITLE_KEYS, QUICK_START_APPS
+        ├── config/settingsRegistryConfig.js SETTINGS_REGISTRY, getSettingsComponent()
+        ├── config/toastConfig.js            MAX_ACTIVE, VISIBLE_MS, TOAST_EVENT, TOAST_CONFIG
+        └── config/toolsRegistryConfig.js    TOOLS_REGISTRY, getToolComponent()
 ```
 
-**Importy — zasada:** Wszystkie importy wskazują na `config.js` lub `src/config.js` (zależnie od głębokości pliku). Nie importuj bezpośrednio z `src/config/*.js`.
+**Importy — zasada:** Wszystkie importy wskazują na `config.js` lub `src/config.js` (zależnie od głębokości pliku). Bezpośredni import z `src/config/*.js` jest dopuszczalny tylko dla plików, które wymagają React.lazy lub mają zależność cykliczną (onboardingConfig, settingsRegistryConfig, toastConfig, toolsRegistryConfig).
 
 ```js
 // pliki w src/engine/, src/hooks/, src/stores/, src/utils/
