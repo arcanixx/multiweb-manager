@@ -13,6 +13,14 @@
 > **Użycie:** Przed głównym release'em (v0.0.4) lub przy zmianie zespołu. Audyt jest głębszy niż Code Review – ocenia ryzyko, koszty utrzymania, skalowalność i compliance.
 > **Dla AI:** Punkty `[AUTO]` mogą być zweryfikowane przez `TestRunner_Audit.js`. `[MANUAL]` wymaga ręcznej analizy.
 
+> **Instrukcja zapisu dla AI:** Po zakończeniu audytu zapisz wynik do pliku:
+> `logs/Audit_Checklist_YYYYMMDD_HHMMSS.log`
+> gdzie timestamp to czas UTC wykonania audytu (format: `20260610_143022`).
+> Plik tworzy się przez GitHub API (PUT) lub lokalnie – zawiera wszystkie punkty
+> z oznaczeniami `[PASS]`, `[FAIL]`, `[WARN]`, `[INFO]`, `[BACK]` oraz sekcję PODSUMOWANIE.
+> Istniejące pliki `logs/*.log` NIE są nadpisywane – każdy audyt dostaje własny plik z datą.
+
+
 ---
 
 ## 1. BEZPIECZEŃSTWO
