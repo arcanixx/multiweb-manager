@@ -39,7 +39,7 @@ export function useNotepadAutosave({
       const updatedNotepad = { ...currentNotepad, tabs: updatedTabs };
       setnotepadWithRef(updatedNotepad);
       markTabAsDirty(active.id, false);
-      logInfo('notepad', `useNotepadAutosave: autosaved tab ${active.id}`);
+      logInfo('ui', `useNotepadAutosave: autosaved tab ${active.id}`);
     }, 5000);
 
     return () => clearInterval(interval);
