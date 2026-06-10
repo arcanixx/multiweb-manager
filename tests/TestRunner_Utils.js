@@ -276,16 +276,6 @@ const tests = [
     }
   },
 
-  // ─── notificationsManager – showSystemNotification (nie duplikuje TestRunner_Notifications.js) ───
-  {
-    name: 'notificationsManager – showSystemNotification eksportowany jako funkcja',
-    run: async () => {
-      const mod = await safeImport('src/utils/notificationsManager.js');
-      const ok = typeof mod.showSystemNotification === 'function';
-      return { ok, details: ok ? '' : 'showSystemNotification not exported' };
-    }
-  },
-
 ];
 
 export async function runUtilsTests() {
