@@ -4,13 +4,14 @@
 // VERSION: 0.0.3
 // PURPOSE: Hook zarządzający stanem globalnym layoutu aplikacji – TaskPanel, modal potwierdzenia oraz klasa CSS body w zależności od aktywnego widoku.
 // FUNCTIONS: useMainLayout
-// DEPENDS ON: react, translations.js, loggerRenderer.js
+// DEPENDS ON: react, translations.js, loggerRenderer.js, ipcChannels.js
 // UWAGA: Nie usuwać komentarzy – opisują flow aplikacji.
 // =============================================================================
 
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { TranslationContext } from '../utils/translations.js';
 import { logInfo, logError } from '../utils/loggerRenderer.js';
+import { IPC_CHANNELS } from '../constants/ipcChannels.js';
 
 // ─── useMainLayout() – zarządza stanem layoutu: TaskPanel, modal potwierdzenia, klasa body
 //   @param {Object} activeItem – aktywny element nawigacji (z Sidebaru)
@@ -56,7 +57,7 @@ export function useMainLayout(activeItem) {
 
       if (typeof profileOrProject === 'object' && profileOrProject?.id) {
         // Profil – wyznacz grupę przez IPC
-        const res = await window.electronAPI.invoke('taskGroups:ensureForProfile', {
+        const res = await window.electronAPI.invoke(IPC_CHANNELS.TASK_GROUPS.ENSURE_FOR_PROFILE, {
           profileId:   profileOrProject.id,
           profileName: profileOrProject.name || profileOrProject.id,
         });
